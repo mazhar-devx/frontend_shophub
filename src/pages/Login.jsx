@@ -57,7 +57,7 @@ export default function Login() {
           </p>
         </div>
         
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <div className="mt-8 space-y-6">
           {(error || Object.keys(validationErrors).length > 0) && (
             <div className="rounded-xl bg-red-500/10 border border-red-500/20 p-4 animate-shake">
               <div className="flex">
@@ -132,7 +132,8 @@ export default function Login() {
 
           <div>
             <button
-              type="submit"
+              type="button"
+              onClick={handleSubmit}
               disabled={loading}
               className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-purple-500 disabled:opacity-50 hover:shadow-[0_0_20px_rgba(124,58,237,0.5)] transition-all transform hover:-translate-y-0.5"
             >
@@ -152,7 +153,7 @@ export default function Login() {
               {loading ? "Authenticating..." : "Sign in"}
             </button>
           </div>
-        </form>
+        </div>
         
         <div className="text-center mt-6">
           <p className="text-sm text-gray-400">
