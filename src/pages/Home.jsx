@@ -92,14 +92,15 @@ export default function Home() {
   }, [dispatch]);
   
   // Logic: Use Real Products if available, otherwise fallback to Dummy
+  // Improved: If we have ANY products (even 1), we prefer them over dummy data.
   const realProducts = products && products.length > 0 ? products : [];
   const displayProducts = realProducts.length > 0 ? realProducts : dummyProducts;
 
   // Featured: Sort by Rating (High to Low), take 8
   const featuredProducts = [...displayProducts].sort((a, b) => b.ratingsAverage - a.ratingsAverage).slice(0, 8);
   
-  // Trending Fallback
-  const finalTrending = (trendingProducts && trendingProducts.length > 0) ? trendingProducts : displayProducts.slice(0, 4);
+  // Trending Fallback: use fetched trending if available, else featured
+  const finalTrending = (trendingProducts && trendingProducts.length > 0) ? trendingProducts : featuredProducts.slice(0, 4);
 
   // Brands data
   const brands = [
