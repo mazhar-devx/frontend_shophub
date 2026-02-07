@@ -1,0 +1,250 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --neon-blue: #00f3ff;
+    --neon-purple: #bc13fe;
+    /* Dark Mode Defaults (Ultra Premium) */
+    --deep-bg: #030014;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --glass-bg: rgba(17, 25, 40, 0.75);
+    --glass-border: rgba(255, 255, 255, 0.125);
+    --card-bg: rgba(17, 25, 40, 0.6);
+
+    /* Card Variables - Dark Mode Default */
+    --ultra-card-bg: linear-gradient(145deg, rgba(20, 20, 20, 0.9), rgba(10, 10, 10, 0.95));
+    --ultra-card-border: #222;
+    --ultra-card-shadow-hover: 0 10px 30px -10px rgba(188, 19, 254, 0.2);
+    --ultra-card-border-hover: var(--neon-purple);
+  }
+
+  /* Light Theme Overrides (Ultra Advanced Premium) */
+  [data-theme='light'] {
+    --deep-bg: #f8fafc;
+    /* Slate-50: Crisp, clean background */
+    --text-primary: #0f172a;
+    /* Slate-900: Sharper black for headers */
+    --text-secondary: #475569;
+    /* Slate-600: Readable gray */
+
+    /* Glassmorphism optimized for light mode */
+    --glass-bg: rgba(255, 255, 255, 0.90);
+    /* More opaque white */
+    --glass-border: rgba(226, 232, 240, 1);
+    /* Slate-200: Solid border */
+
+    --card-bg: #ffffff;
+
+    /* Card Variables - Light Mode Override */
+    --ultra-card-bg: linear-gradient(145deg, #ffffff, #f1f5f9);
+    --ultra-card-border: #e2e8f0;
+    /* Slate-200 */
+    --ultra-card-shadow-hover: 0 15px 30px -5px rgba(0, 0, 0, 0.1);
+    --ultra-card-border-hover: #0ea5e9;
+    /* Sky-500 */
+
+    /* Neon accents adapted for light mode visibility */
+    --neon-blue: #0ea5e9;
+    --neon-purple: #7c3aed;
+
+    /* Shadow for depth in light mode (critical for premium feel) */
+    --shadow-glow: 0 10px 40px -10px rgba(148, 163, 184, 0.3);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--deep-bg);
+    color: var(--text-primary);
+    font-family: 'Inter', system-ui, sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* Restored & New Animations */
+  @keyframes gradient-x {
+
+    0%,
+    100% {
+      background-size: 200% 200%;
+      background-position: left center;
+    }
+
+    50% {
+      background-size: 200% 200%;
+      background-position: right center;
+    }
+  }
+
+  @keyframes fade-in-down {
+    0% {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fade-in-up {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes float {
+    0% {
+      transform: translateY(0px) rotate(0deg);
+    }
+
+    50% {
+      transform: translateY(-10px) rotate(1deg);
+    }
+
+    100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+  }
+
+  @keyframes ping {
+
+    75%,
+    100% {
+      transform: scale(1.2);
+      opacity: 0;
+    }
+  }
+
+  @keyframes glow {
+
+    0%,
+    100% {
+      box-shadow: 0 0 5px rgba(0, 243, 255, 0.2);
+    }
+
+    50% {
+      box-shadow: 0 0 20px rgba(0, 243, 255, 0.6), 0 0 10px rgba(188, 19, 254, 0.4);
+    }
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #0a0a0a;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+}
+
+@layer utilities {
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+    /* Softer shadow default */
+    color: var(--text-primary);
+    /* Ensure text adapts */
+  }
+
+  /* Theme-aware Text Colors */
+  .text-primary {
+    color: var(--text-primary);
+  }
+
+  .text-secondary {
+    color: var(--text-secondary);
+  }
+
+  .bg-main {
+    background-color: var(--deep-bg);
+  }
+
+  /* Helper to force text white in dark mode but dark in light mode if needed, 
+     but standard text-primary handles this. 
+     We need to override existing hardcoded classes. */
+
+  .glass-hover:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 15px rgba(0, 243, 255, 0.1);
+  }
+
+  .text-gradient {
+    background: linear-gradient(to right, var(--neon-blue), var(--neon-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .ultra-card {
+    background: var(--ultra-card-bg);
+    border: 1px solid var(--ultra-card-border);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+
+  .ultra-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--ultra-card-shadow-hover);
+    border-color: var(--ultra-card-border-hover);
+  }
+
+  .animate-gradient-x {
+    animation: gradient-x 15s ease infinite;
+  }
+
+  .animate-fade-in-down {
+    animation: fade-in-down 1s ease-out;
+  }
+
+  .animate-fade-in-up {
+    animation: fade-in-up 1s ease-out;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-ping {
+    animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+  }
+
+  .animate-glow {
+    animation: glow 3s infinite;
+  }
+
+  .animation-delay-1000 {
+    animation-delay: 1s;
+  }
+
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
+}
