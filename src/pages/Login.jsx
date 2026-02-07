@@ -27,13 +27,19 @@ export default function Login() {
   };
   
   const handleSubmit = (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
+    
+    alert("Attempting to login...");
+    
     dispatch(login(formData))
       .unwrap()
-      .then(() => {
+      .then((user) => {
+        alert("Login Successful! Redirecting to home...");
         navigate("/");
       })
       .catch((err) => {
+        const errorMessage = err.message || "Login failed unknown error";
+        alert("Login Error: " + errorMessage);
         console.error("Login failed:", err);
       });
   };
