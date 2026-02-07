@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../services/api";
 import { Link } from "react-router-dom";
 
 export default function AdminDashboard() {
@@ -19,11 +19,9 @@ export default function AdminDashboard() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        // Use api instance or axios with credentials
-        // Assuming axios is imported, we should use the configured api instance or add withCredentials
         
         // Fetch stats from our new endpoint
-        const { data } = await axios.get("http://localhost:5000/api/v1/dashboard/stats", { withCredentials: true });
+        const { data } = await api.get("/dashboard/stats");
         
         if (data.status === 'success') {
            const statsData = data.data;
