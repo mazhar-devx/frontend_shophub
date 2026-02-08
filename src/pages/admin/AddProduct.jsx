@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import api from "../../services/api";
 import { fetchProducts } from "../../features/products/productSlice";
+import { categories } from "../../data/categories";
 
 export default function AddProduct() {
   const navigate = useNavigate();
@@ -60,14 +61,18 @@ export default function AddProduct() {
       data.append('name', formData.name);
       data.append('description', formData.description);
       data.append('price', formData.price);
-      data.append('category', formData.category);
+      
+      // Handle Custom Category
+      const finalCategory = formData.category === 'other' ? formData.customCategory : formData.category;
+      if (!finalCategory) throw new Error("Please specify a category");
+      data.append('category', finalCategory);
+      
       data.append('brand', formData.brand);
       data.append('stock', formData.countInStock || 0);
       
       // Append Image URL if provided
       if (formData.imageUrl) {
         data.append('images', formData.imageUrl);
-        // data.append('image', formData.imageUrl); // Optional: if backend expects single 'image' field too
       }
 
       // Append Files
@@ -75,7 +80,12 @@ export default function AddProduct() {
         data.append('images', file);
       });
 
-      const response = await api.post('/products', data);
+      // IMPORTANT: Set Content-Type to undefined to let browser set boundary
+      const response = await api.post('/products', data, {
+        headers: {
+            'Content-Type': undefined
+        }
+      });
       
       if (response.data.status === 'success') {
          dispatch(fetchProducts()); 
@@ -166,13 +176,25 @@ export default function AddProduct() {
                       onChange={handleChange}
                       className="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-purple-500 transition-all appearance-none cursor-pointer"
                     >
-                       <option value="electronics">Electronics</option>
-                       <option value="clothing">Clothing</option>
-                       <option value="home">Home & Living</option>
-                       <option value="beauty">Beauty</option>
-                       <option value="sports">Sports</option>
-                       <option value="books">Books</option>
+                       <option value="">Select Category</option>
+                       {categories.map((cat, index) => (
+                           <option key={index} value={cat.id}>{cat.icon} {cat.name}</option>
+                       ))}
+                       <option value="other">Other (Custom)</option>
                     </select>
+
+                    {formData.category === 'other' && (
+                        <div className="mt-4 animate-fade-in-down">
+                           <input 
+                             type="text" 
+                             name="customCategory" 
+                             value={formData.customCategory || ''} 
+                             onChange={handleChange}
+                             placeholder="Enter custom category name..."
+                             className="w-full bg-black/30 border border-purple-500/50 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all shadow-[0_0_15px_rgba(168,85,247,0.15)]"
+                           />
+                        </div>
+                     )}
                  </div>
                  <div className="space-y-2">
                     <label className="text-gray-300 text-sm font-bold ml-1">Brand</label>
