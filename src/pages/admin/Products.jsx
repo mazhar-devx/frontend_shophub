@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import api from "../../services/api";
 import { formatPrice } from "../../utils/currency";
+import { getProductImageUrl } from "../../utils/constants";
 
 export default function AdminProducts() {
   const [products, setProducts] = useState([]);
@@ -209,10 +210,16 @@ export default function AdminProducts() {
                   <tr key={product._id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <div className="bg-gradient-to-br from-purple-100 to-indigo-100 border-2 border-dashed border-purple-200 rounded-xl w-12 h-12 mr-4 flex items-center justify-center">
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
-                          </svg>
+                        <div className="h-12 w-12 mr-4 flex-shrink-0">
+                          <img 
+                            src={getProductImageUrl(product.image)} 
+                            alt={product.name}
+                            className="h-12 w-12 rounded-xl object-cover border border-purple-200"
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = "/placeholder.svg"; // Fallback
+                            }}
+                          />
                         </div>
                         <div>
                           <div className="text-sm font-semibold text-gray-900">{product.name}</div>
