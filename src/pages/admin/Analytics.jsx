@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../services/api";
 
 
 export default function AdminAnalytics() {
@@ -17,7 +17,7 @@ export default function AdminAnalytics() {
 
   const fetchStats = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/v1/dashboard/stats", { withCredentials: true });
+      const response = await api.get("/dashboard/stats");
       if (response.data.status === 'success') {
          setStats(response.data.data);
       }
