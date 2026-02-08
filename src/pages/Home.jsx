@@ -7,6 +7,9 @@ import ProductList from "../components/ProductList";
 import { Link } from "react-router-dom";
 import CountdownTimer from "../components/CountdownTimer";
 import api from "../services/api";
+import { addToCart } from "../features/cart/cartSlice";
+import { useUIStore } from "../zustand/uiStore";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -115,65 +118,95 @@ export default function Home() {
   
   return (
     <div className="p-2 sm:p-4 md:p-6 min-h-screen">
-      <div className="relative rounded-3xl overflow-hidden mb-8 sm:mb-12 min-h-[400px] md:h-[600px] flex flex-col justify-center border border-white/5 bg-gray-900 shadow-2xl">
-        {/* Background Image - Optimized */}
-        {settings?.image && (
-             <div className="absolute inset-0 z-0">
-                <img 
-                  src={getProductImageUrl(settings.image)} 
-                  alt="Hero" 
-                  className="w-full h-full object-cover opacity-60" 
-                  loading="eager"
-                />
-                {/* Gradient Overlay for Text Readability - Lightweight */}
-                <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent"></div>
-             </div>
-        )}
+      <div className="relative rounded-[2.5rem] overflow-hidden mb-16 sm:mb-24 min-h-[600px] md:h-[800px] flex flex-col justify-center border border-white/5 bg-gray-900 shadow-2xl group">
+        {/* Background Image - Optimized & Fixed */}
+        <div className="absolute inset-0 z-0 overflow-hidden">
+             {settings?.image ? (
+                 <img 
+                   src={getProductImageUrl(settings.image)} 
+                   alt="Hero" 
+                   className="w-full h-full object-cover opacity-50 scale-105 group-hover:scale-100 transition-transform duration-[20s] ease-linear" 
+                   loading="eager"
+                 />
+             ) : (
+                 <img 
+                   src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80" 
+                   alt="Hero" 
+                   className="w-full h-full object-cover opacity-60 scale-105 group-hover:scale-100 transition-transform duration-[20s] ease-linear" 
+                 />
+             )}
+             <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent"></div>
+             <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
+        </div>
 
-        {/* Fallback Gradient if no image */}
-        {!settings?.image && (
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-900 to-black z-0"></div>
-        )}
+        {/* Floating Elements */}
+        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-[120px] animate-pulse"></div>
+        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-cyan-600/20 rounded-full blur-[120px] animate-pulse animation-delay-2000"></div>
 
-        <div className="relative z-10 w-full flex flex-col md:flex-row items-center justify-between text-primary px-4 py-8 md:px-12 md:py-0">
-          <div className="max-w-2xl mb-8 md:mb-0 text-center md:text-left">
-            <h1 className="text-3xl sm:text-5xl md:text-7xl font-black mb-4 sm:mb-6 text-white leading-tight">
-              {settings?.title?.split(' ').slice(0, -1).join(' ') || "Future"} <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">{settings?.title?.split(' ').slice(-1) || "Commerce"}</span>
+        <div className="relative z-10 w-full flex flex-col md:flex-row items-center justify-between text-primary px-6 sm:px-12 py-12 md:py-0 max-w-[1400px] mx-auto">
+          <div className="max-w-3xl mb-12 md:mb-0 text-center md:text-left">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8 animate-fade-in-down">
+                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                <span className="text-sm font-medium text-gray-300">New Collection Available</span>
+            </div>
+            
+            <h1 className="text-5xl sm:text-6xl md:text-8xl font-black mb-8 text-white leading-tight tracking-tight animate-fade-in-up">
+              {settings?.title?.split(' ').slice(0, -1).join(' ') || "Future"} <br/>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 animate-gradient-x">{settings?.title?.split(' ').slice(-1) || "Commerce"}</span>
             </h1>
-            <p className="text-base sm:text-xl md:text-2xl mb-6 sm:mb-10 text-gray-300 font-light">
+            
+            <p className="text-lg sm:text-xl md:text-2xl mb-10 text-gray-300 font-light max-w-2xl mx-auto md:mx-0 leading-relaxed animate-fade-in-up animation-delay-1000">
               {settings?.subtitle || "Experience the next generation of shopping with AI-driven recommendations and ultra-fast delivery."}
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 justify-center md:justify-start">
-              <Link to={settings?.buttonLink || "/products"} className="bg-cyan-500 hover:bg-cyan-400 text-black font-bold py-3 px-6 sm:py-4 sm:px-10 rounded-full text-sm sm:text-lg transition-transform hover:scale-105 shadow-lg shadow-cyan-500/20">
-                {settings?.buttonText || "Start Exploring"}
+            
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center md:justify-start animate-fade-in-up animation-delay-2000">
+              <Link to={settings?.buttonLink || "/products"} className="group relative px-8 py-5 rounded-full bg-white text-black font-bold text-lg overflow-hidden transition-transform hover:scale-105 shadow-[0_0_40px_rgba(255,255,255,0.3)]">
+                <span className="relative z-10 flex items-center gap-2 group-hover:gap-4 transition-all">
+                    {settings?.buttonText || "Start Exploring"}
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                </span>
               </Link>
-              <Link to="/products?category=electronics" className="bg-white/5 border border-white/10 text-white font-bold py-3 px-6 sm:py-4 sm:px-10 rounded-full text-sm sm:text-lg hover:bg-white/10 transition-colors">
-                Latest Tech
+              <Link to="/products?category=electronics" className="px-8 py-5 rounded-full bg-white/5 border border-white/10 text-white font-bold text-lg hover:bg-white/10 transition-all backdrop-blur-md hover:border-white/30 flex items-center justify-center gap-2">
+                 <span>Latest Tech</span>
               </Link>
             </div>
           </div>
           
-          <div className="relative w-full md:w-1/2 flex justify-center">
-            <div className="relative w-64 h-64 md:w-96 md:h-96">
-              {/* Simplified graphics */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/20 rounded-full blur-3xl"></div>
-              <div className="absolute bottom-0 left-0 w-40 h-40 bg-cyan-500/20 rounded-full blur-3xl"></div>
-              
-              <div className="w-full h-full rounded-3xl flex items-center justify-center border border-white/10 relative overflow-hidden group bg-white/5">
-                 <div className="absolute inset-0 bg-gradient-to-tr from-transparent to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                 <div className="text-center p-8">
-                    <span className="block text-6xl md:text-8xl font-black text-white mb-2">
-                        {settings?.price || "50%"}
-                    </span>
-                    <span className="text-xl md:text-2xl text-cyan-300 font-light tracking-widest uppercase">
-                        {settings?.price ? "Starting At" : "Off Everything"}
-                    </span>
-                 </div>
-              </div>
-            </div>
+          <div className="relative w-full md:w-1/2 flex justify-center animate-float">
+             <div className="relative w-72 h-72 md:w-[30rem] md:h-[30rem]">
+                <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/20 to-purple-500/20 rounded-full blur-[60px]"></div>
+                <div className="w-full h-full rounded-[3rem] border border-white/10 bg-white/5 backdrop-blur-xl relative overflow-hidden flex items-center justify-center shadow-2xl rotate-3 hover:rotate-0 transition-all duration-500">
+                   <div className="text-center p-12">
+                      <div className="text-8xl md:text-9xl mb-4 transform hover:scale-110 transition-transform cursor-default">🛍️</div>
+                      <div className="text-4xl font-black text-white mb-2">{settings?.price || "50%"}</div>
+                      <div className="text-cyan-400 tracking-[0.5em] uppercase text-sm font-bold">OFF EVERYTHING</div>
+                   </div>
+                   
+                   {/* Decorative lines */}
+                   <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+                   <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+                </div>
+             </div>
           </div>
         </div>
       </div>
+
+      {/* Why Choose Us - New Section */}
+      <section className="mb-24">
+         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+                { icon: "🚀", title: "Ultra Fast Delivery", desc: "Get your orders within 24 hours with our hyper-local logistics network." },
+                { icon: "🛡️", title: "Secure Payments", desc: "Bank-grade encryption ensures your data is always protected." },
+                { icon: "🎧", title: "24/7 Expert Support", desc: "Our AI and human experts are here to help you anytime, day or night." }
+            ].map((feature, i) => (
+                <div key={i} className="glass p-8 rounded-3xl border border-white/5 hover:border-purple-500/30 transition-all hover:-translate-y-2 group">
+                   <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center text-4xl mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-black/20 group-hover:bg-white/10">{feature.icon}</div>
+                   <h3 className="text-xl font-bold text-white mb-3">{feature.title}</h3>
+                   <p className="text-gray-400 leading-relaxed">{feature.desc}</p>
+                </div>
+            ))}
+         </div>
+      </section>
       
       <section className="mb-20">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-4">
@@ -281,44 +314,62 @@ export default function Home() {
         </div>
       </section>
       
-      {/* Deals of the Day */}
-      <section className="mb-12 sm:mb-20 relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl group">
-        <div className="absolute inset-0 bg-gradient-to-r from-red-900 to-black z-0"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-red-500/20 via-transparent to-transparent"></div>
+      {/* Deals of the Day - Ultra Responsive */}
+      <section className="mb-12 sm:mb-20 relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl group min-h-[500px] flex items-center">
+        <div className="absolute inset-0 bg-gradient-to-r from-red-900 via-black to-black z-0"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,_rgba(220,38,38,0.2),transparent_70%)] animate-pulse"></div>
         
-        <div className="relative z-10 p-6 sm:p-8 md:p-16 flex flex-col md:flex-row items-center justify-between gap-8 md:gap-0">
-            <div className="md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left order-2 md:order-1">
-                <div className="flex flex-col sm:flex-row items-center gap-3 sm:space-x-4 mb-4 sm:mb-6">
-                    <span className="bg-red-600 text-white text-[10px] sm:text-xs font-bold px-3 py-1 rounded-full animate-pulse">FLASH SALE</span>
+        <div className="relative z-10 p-6 sm:p-10 md:p-16 flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12 w-full">
+            <div className="md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left order-2 md:order-1 w-full">
+                <div className="flex flex-col sm:flex-row items-center gap-3 sm:space-x-4 mb-6">
+                    <span className="bg-red-600 text-white text-xs font-bold px-4 py-1.5 rounded-full animate-bounce shadow-lg shadow-red-600/40">FLASH SALE</span>
                     <CountdownTimer />
                 </div>
                 
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4 bg-clip-text text-transparent bg-gradient-to-r from-red-100 to-white dark:from-white dark:to-red-200">
-                    {flashSale?.title || "Premium Headphones"}
+                <h2 className="text-4xl sm:text-5xl md:text-6xl font-black mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-red-200 leading-tight">
+                    {flashSale?.title || "Sonic X-Pro"}
                 </h2>
-                <p className="text-sm sm:text-base text-gray-200 dark:text-gray-300 mb-6 sm:mb-8 max-w-md">
-                    {flashSale?.subtitle || "Immerse yourself in pure sound. Active Noise Cancelling, 30-hour battery life, and ultra-comfortable earcups."}
+                <p className="text-base sm:text-lg text-gray-300 mb-8 max-w-lg leading-relaxed">
+                    {flashSale?.subtitle || "Active Noise Cancelling, 30-hour battery life, and ultra-comfortable earcups. The future of sound is here."}
                 </p>
                 
-                <div className="flex flex-col sm:flex-row items-center gap-4 sm:space-x-6 w-full sm:w-auto">
-                    <div className="flex items-center gap-3">
-                        <div className="text-2xl sm:text-3xl font-bold text-white">{formatPrice(flashSale?.price || 199.99)}</div>
-                        <div className="text-lg sm:text-xl text-gray-400 line-through">{formatPrice(flashSale?.originalPrice || 399.99)}</div>
+                <div className="flex flex-col w-full sm:w-auto gap-4">
+                    <div className="flex items-center justify-center md:justify-start gap-4 mb-2">
+                        <div className="text-4xl font-black text-white">{formatPrice(flashSale?.price || 199.99)}</div>
+                        <div className="text-xl text-gray-500 line-through decoration-red-500 decoration-2">{formatPrice(flashSale?.originalPrice || 399.99)}</div>
                     </div>
-                    <Link to="/products" className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full transition-all shadow-[0_0_20px_rgba(220,38,38,0.5)] hover:shadow-[0_0_30px_rgba(220,38,38,0.7)] text-center">
-                        Buy Now
-                    </Link>
+                    
+                    <div className="flex flex-col sm:flex-row gap-4 w-full">
+                        <button 
+                            onClick={() => navigate('/products')}
+                            className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-xl transition-all shadow-[0_0_30px_rgba(220,38,38,0.4)] hover:shadow-[0_0_40px_rgba(220,38,38,0.6)] text-lg transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2"
+                        >
+                            <span>⚡ Shop Now</span>
+                        </button>
+                        <button 
+                             onClick={() => navigate('/products')}
+                            className="flex-1 bg-white/5 hover:bg-white/10 text-white font-bold py-4 px-8 rounded-xl transition-all border border-white/10 hover:border-white/30 backdrop-blur-md text-lg transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2"
+                        >
+                            <span>🛒 View Collection</span>
+                        </button>
+                    </div>
                 </div>
             </div>
             
-            <div className="md:w-1/2 flex justify-center relative order-1 md:order-2 w-full">
-                 <div className="absolute inset-0 bg-red-500/20 blur-3xl rounded-full transform scale-75 md:scale-100"></div>
-                 <div className="glass w-56 h-56 sm:w-72 sm:h-72 rounded-full flex items-center justify-center border border-white/10 relative z-10 overflow-hidden bg-white/5 mx-auto">
+            <div className="md:w-1/2 flex justify-center relative order-1 md:order-2 w-full mb-8 md:mb-0">
+                 <div className="absolute inset-0 bg-red-600/30 blur-[80px] rounded-full transform scale-75 animate-pulse"></div>
+                 <div className="glass w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 rounded-[2rem] flex items-center justify-center border border-white/10 relative z-10 overflow-hidden bg-black/20 group-hover:scale-105 transition-transform duration-700 shadow-2xl skew-y-3 group-hover:skew-y-0">
                     {flashSale?.image ? (
                         <img src={getProductImageUrl(flashSale.image)} alt={flashSale.title} className="w-full h-full object-cover" />
                     ) : (
-                        <span className="text-gray-500 text-sm">Product Image</span>
+                        <div className="text-center">
+                            <span className="text-6xl mb-4 block">🎧</span>
+                            <span className="text-gray-400 text-sm tracking-widest uppercase">Sonic X-Pro</span>
+                        </div>
                     )}
+                    
+                    {/* Glossy reflection */}
+                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent pointer-events-none"></div>
                  </div>
             </div>
         </div>
@@ -369,6 +420,38 @@ export default function Home() {
             </button>
           </form>
         </div>
+      </section>
+
+      {/* Infinite Product Marquee */}
+      <section className="mb-20 overflow-hidden relative group">
+         <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[var(--deep-bg)] to-transparent z-10 pointer-events-none"></div>
+         <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[var(--deep-bg)] to-transparent z-10 pointer-events-none"></div>
+         
+         <div className="mb-8 text-center">
+            <h2 className="text-2xl font-bold text-gray-400 uppercase tracking-widest">Global Favorites</h2>
+         </div>
+
+         <div className="flex w-max animate-scroll group-hover:[animation-play-state:paused]">
+            {/* Duplicated list for seamless scrolling */}
+            {[...displayProducts, ...displayProducts, ...displayProducts].map((product, idx) => (
+               <Link 
+                 key={`${product._id || idx}-${idx}`} 
+                 to={`/product/${product._id}`}
+                 className="w-64 mx-4 flex flex-col items-center bg-white/5 border border-white/10 rounded-2xl p-4 hover:bg-white/10 transition-colors duration-300"
+               >
+                  <div className="w-full h-48 rounded-xl overflow-hidden mb-4 relative">
+                     <img 
+                       src={getProductImageUrl(product.images?.[0] || product.image)} 
+                       alt={product.name} 
+                       className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-700"
+                       onError={(e) => e.target.src = '/placeholder.svg'}
+                     />
+                  </div>
+                  <h3 className="text-sm font-bold text-white text-center line-clamp-1">{product.name}</h3>
+                  <p className="text-cyan-400 font-mono text-xs mt-1">{formatPrice(product.price)}</p>
+               </Link>
+            ))}
+         </div>
       </section>
     </div>
   );
