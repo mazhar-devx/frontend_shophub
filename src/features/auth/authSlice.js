@@ -198,10 +198,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload?.message || "Profile update failed";
       })
-      .addCase(updateProfile.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload?.message || "Profile update failed";
-      })
+
       // Load User (Restore Session)
       .addCase(loadUser.pending, (state) => {
         state.loading = true;
