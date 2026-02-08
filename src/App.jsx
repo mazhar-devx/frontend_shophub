@@ -6,6 +6,7 @@ import CartSidebar from "./components/CartSidebar";
 import SearchBar from "./components/SearchBar";
 import MobileMenu from "./components/MobileMenu";
 import Modal from "./components/Modal";
+import BackToTop from "./components/BackToTop";
 import AdminLayout from "./layouts/AdminLayout";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -87,6 +88,7 @@ export default function App() {
               </Routes>
             </div>
             <Footer />
+            <BackToTop />
           </>
         } />
         
