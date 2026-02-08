@@ -31,6 +31,13 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
+    // Network error = backend not running. Run: npm run dev in backend_shophub-main/backend_shophub-main
+    if (error.code === 'ERR_NETWORK' || error.message === 'Network Error') {
+      if (!window.__shopHubApiWarned) {
+        window.__shopHubApiWarned = true;
+        console.warn('[ShopHub] Backend unreachable. Start it with: npm run dev (in backend folder).');
+      }
+    }
     // Handle common errors
     if (error.response?.status === 401) {
       // Unauthorized - redirect to login
