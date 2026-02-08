@@ -1,13 +1,16 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import { store } from "./app/store";
 import App from "./App";
 import "./index.css";
-import useAuth from "./hooks/useAuth";
+// Remove the hook import if it's not used directly here or keep it if needed. 
+// It was used in AppWithAuth, so we keep it.
+import useAuth from "./hooks/useAuth"; 
 
-// Register service worker in production only
-if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
+// Register service worker
+if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
       .then((registration) => {
@@ -25,10 +28,14 @@ const AppWithAuth = () => {
   return <App />;
 };
 
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "YOUR_GOOGLE_CLIENT_ID_HERE";
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Provider store={store}>
-      <AppWithAuth />
+      <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+         <AppWithAuth />
+      </GoogleOAuthProvider>
     </Provider>
   </React.StrictMode>
 );
