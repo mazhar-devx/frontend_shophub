@@ -28,19 +28,19 @@ export default function Login() {
   
   const handleSubmit = (e) => {
     if (e) e.preventDefault();
-    
-    alert("Attempting to login...");
-    
     dispatch(login(formData))
       .unwrap()
-      .then((user) => {
-        alert("Login Successful! Redirecting to home...");
-        navigate("/");
+      .then((payload) => {
+        const user = payload?.data?.user;
+        navigate(user?.role === "admin" ? "/admin/dashboard" : "/");
       })
       .catch((err) => {
-        const errorMessage = err.message || "Login failed unknown error";
-        alert("Login Error: " + errorMessage);
+        const errorMessage = err?.message || "Login failed";
         console.error("Login failed:", err);
+        // Error is already shown in the red box below via state.auth.error
+        if (errorMessage.includes("Cannot connect")) {
+          // Keep focus on the message in the UI; no extra popup
+        }
       });
   };
   
@@ -61,19 +61,22 @@ export default function Login() {
           <p className="mt-2 text-center text-sm text-gray-400">
             Sign in to access your account
           </p>
+          <p className="mt-1 text-center text-xs text-gray-500">
+            Admin? Use an account with role <code className="bg-white/10 px-1 rounded">admin</code> in the database.
+          </p>
         </div>
         
         <div className="mt-8 space-y-6">
           {(error || Object.keys(validationErrors).length > 0) && (
             <div className="rounded-xl bg-red-500/10 border border-red-500/20 p-4 animate-shake">
-              <div className="flex">
+              <div className="flex gap-3">
                  <div className="flex-shrink-0">
                     <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                     </svg>
                  </div>
-                 <div className="ml-3">
-                    <h3 className="text-sm font-medium text-red-400">
+                 <div className="min-w-0 flex-1">
+                    <h3 className="text-sm font-medium text-red-400 break-words">
                       {error || Object.values(validationErrors)[0]}
                     </h3>
                  </div>
