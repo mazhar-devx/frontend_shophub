@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../services/api";
 import { useUIStore } from "../../zustand/uiStore";
 
 export default function AdminMarketing() {
@@ -28,8 +28,8 @@ export default function AdminMarketing() {
     const fetchData = async () => {
         try {
             const [subRes, couRes] = await Promise.all([
-                axios.get("http://localhost:5000/api/v1/marketing/subscribers", { withCredentials: true }),
-                axios.get("http://localhost:5000/api/v1/marketing/coupons", { withCredentials: true })
+                api.get("/marketing/subscribers"),
+                api.get("/marketing/coupons")
             ]);
             
             if (subRes.data.status === 'success') setSubscribers(subRes.data.data.subscribers);
@@ -47,11 +47,11 @@ export default function AdminMarketing() {
             const expiresAt = new Date();
             expiresAt.setDate(expiresAt.getDate() + parseInt(newCoupon.expiresDays));
             
-            await axios.post("http://localhost:5000/api/v1/marketing/coupons", {
+            await api.post("/marketing/coupons", {
                 ...newCoupon,
                 discountType: newCoupon.type,
                 expiresAt
-            }, { withCredentials: true });
+            });
             
             showToast("Coupon created successfully!", "success");
             fetchData();
@@ -64,11 +64,11 @@ export default function AdminMarketing() {
     const handleSendOffer = async (e) => {
         e.preventDefault();
         try {
-            await axios.post("http://localhost:5000/api/v1/marketing/send-offer", {
+            await api.post("/marketing/send-offer", {
                 email: offerData.email,
                 type: 'percentage',
                 discountValue: offerData.discountValue
-            }, { withCredentials: true });
+            });
             
             showToast(`Offer sent to ${offerData.email}`, "success");
             fetchData(); // Refresh coupons to see the auto-generated one
