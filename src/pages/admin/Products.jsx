@@ -1,30 +1,29 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import api from "../../services/api";
+import { formatPrice } from "../../utils/currency";
 
 export default function AdminProducts() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage] = useState(10);
+  const [error, setError] = useState(null);
 
-  // Fetch products from API
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get("http://localhost:5000/api/v1/products");
-        setProducts(response.data.data.products || response.data.data);
-        setLoading(false);
-      } catch (err) {
-        setError("Failed to fetch products");
-        setLoading(false);
-        console.error("Error fetching products:", err);
+  const fetchProducts = async () => {
+    try {
+      const res = await api.get('/products');
+      if (res.data.status === 'success') {
+         setProducts(res.data.data.products);
       }
-    };
-
+      setLoading(false);
+    } catch (err) {
+      setError("Failed to fetch products");
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
     fetchProducts();
   }, []);
 
@@ -43,9 +42,7 @@ export default function AdminProducts() {
   const handleDeleteProduct = async (id) => {
     if (window.confirm("Are you sure you want to delete this product? This action cannot be undone.")) {
       try {
-        await axios.delete(`http://localhost:5000/api/v1/products/${id}`, {
-          withCredentials: true
-        });
+        await api.delete(`/products/${id}`);
         setProducts(products.filter(product => product._id !== id));
         
         // Show success message
