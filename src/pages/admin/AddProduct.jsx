@@ -197,7 +197,7 @@ export default function AddProduct() {
                        name="imageUrl" 
                        value={formData.imageUrl} 
                        onChange={handleChange}
-                       placeholder="Paste image URL here..."
+                        placeholder="Paste image URL here (Optional)..."
                        className="flex-1 bg-black/30 border border-white/10 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
                     />
                  </div>
@@ -226,10 +226,25 @@ export default function AddProduct() {
                         />
                     </div>
 
-                    {/* Previews */}
+                    {/* URL Preview */}
+                    {formData.imageUrl && (
+                        <div className="relative aspect-square rounded-xl overflow-hidden border border-white/10 group">
+                            <img src={formData.imageUrl} alt="URL Preview" className="w-full h-full object-cover" />
+                            <button 
+                                type="button"
+                                onClick={() => setFormData({...formData, imageUrl: ''})}
+                                className="absolute top-1 right-1 h-6 w-6 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-red-500 transition-colors opacity-0 group-hover:opacity-100"
+                            >
+                                ×
+                            </button>
+                            <span className="absolute bottom-1 left-1 text-[10px] bg-purple-500/80 text-white px-1.5 py-0.5 rounded">URL</span>
+                        </div>
+                    )}
+
+                    {/* File Previews */}
                     {previewImages.map((img, idx) => (
                         <div key={idx} className="relative aspect-square rounded-xl overflow-hidden border border-white/10 group">
-                            <img src={img} alt="Preview" className="w-full h-full object-cover" />
+                            <img src={img} alt="File Preview" className="w-full h-full object-cover" />
                             <button 
                                 type="button"
                                 onClick={() => removeImage(idx)}
@@ -237,6 +252,7 @@ export default function AddProduct() {
                             >
                                 ×
                             </button>
+                            <span className="absolute bottom-1 left-1 text-[10px] bg-blue-500/80 text-white px-1.5 py-0.5 rounded">FILE</span>
                         </div>
                     ))}
                  </div>
