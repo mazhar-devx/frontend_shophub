@@ -1,14 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import axios from "axios";
 import { API_URL } from "../utils/constants";
 
-// Using environment variable for Stripe key - CRITICAL for real payments
 const STRIPE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
-
-// Initialize Stripe outside component
-const stripePromise = loadStripe(STRIPE_KEY);
 
 const CheckoutForm = ({ amount, onSuccess, onValidate }) => {
   const stripe = useStripe();
@@ -139,6 +135,15 @@ const CheckoutForm = ({ amount, onSuccess, onValidate }) => {
 };
 
 export default function StripeCheckout({ amount, onSuccess, onValidate }) {
+  const [stripePromise, setStripePromise] = useState(null);
+
+  // Load Stripe only when checkout is shown (avoids HTTP warning on every page load)
+  useEffect(() => {
+    if (STRIPE_KEY) {
+      loadStripe(STRIPE_KEY).then(setStripePromise);
+    }
+  }, []);
+
   if (!STRIPE_KEY) {
     return (
       <div className="p-6 bg-red-500/10 border border-red-500/30 rounded-2xl text-center">
@@ -146,6 +151,14 @@ export default function StripeCheckout({ amount, onSuccess, onValidate }) {
         <p className="text-red-200/70 text-sm">
             Publishable key is missing. Please check your .env file.
         </p>
+      </div>
+    );
+  }
+
+  if (!stripePromise) {
+    return (
+      <div className="p-6 rounded-2xl border border-white/10 bg-white/5 text-center text-gray-400">
+        Loading payment form...
       </div>
     );
   }
