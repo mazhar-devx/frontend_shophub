@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 // We need to implement this order slice or fetching logic
 // For now we will fetch directly using axios in useEffect as a quick win
 // or use the existing orderController logic if available in Redux (not yet)
-import axios from "axios";
+import api from "../services/api";
 import { useState } from "react";
 import { formatPrice } from "../utils/currency";
 
@@ -16,9 +16,7 @@ export default function MyOrders() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/v1/orders/myorders", {
-          withCredentials: true
-        });
+        const response = await api.get("/orders/myorders");
         setOrders(response.data.data.orders);
         setLoading(false);
       } catch (err) {
