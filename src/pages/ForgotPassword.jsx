@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import api from "../services/api";
 import { useUIStore } from "../zustand/uiStore";
 
 export default function ForgotPassword() {
@@ -13,7 +13,7 @@ export default function ForgotPassword() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post("http://localhost:5000/api/v1/users/forgotPassword", { email });
+      const res = await api.post("/users/forgotPassword", { email });
       
       // Dev Mode: Auto-redirect if token is returned
       if (res.data.resetToken) {
