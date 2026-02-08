@@ -1,20 +1,20 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import { useParams, useNavigate } from "react-router-dom";
+import api from "../../services/api";
 
 export default function EditProduct() {
-  const navigate = useNavigate();
   const { id } = useParams();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     name: "",
-    description: "",
     price: "",
+    description: "",
     category: "",
     stock: "",
     brand: "",
-    imageUrl: ""
+    image: "" 
   });
-  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
@@ -25,7 +25,7 @@ export default function EditProduct() {
       try {
         setLoading(true);
         setError("");
-        const response = await axios.get(`http://localhost:5000/api/v1/products/${id}`);
+        const response = await api.get(`/products/${id}`);
         const product = response.data.data.product;
         
         setFormData({
@@ -35,7 +35,7 @@ export default function EditProduct() {
           category: product.category || "",
           stock: product.stock || "",
           brand: product.brand || "",
-          imageUrl: product.images?.[0] || ""
+          image: product.images?.[0] || ""
         });
         setLoading(false);
       } catch (err) {
@@ -74,11 +74,11 @@ export default function EditProduct() {
         ...formData,
         price: parseFloat(formData.price),
         stock: parseInt(formData.stock),
-        images: [formData.imageUrl || "https://via.placeholder.com/300x300"]
+        // Use formData.image correctly here
+        images: [formData.image || "https://via.placeholder.com/300x300"]
       };
 
-      await axios.patch(`http://localhost:5000/api/v1/products/${id}`, productData, {
-        withCredentials: true,
+      await api.patch(`/products/${id}`, productData, {
         headers: {
           "Content-Type": "application/json"
         }
@@ -107,264 +107,227 @@ export default function EditProduct() {
     );
   }
 
+  // Determine main preview image
+  const mainPreview = formData.image || null;
+
   return (
-    <div className="space-y-8">
+    <div className="max-w-7xl mx-auto animate-fade-in-up">
       {/* Header */}
-      <div className="bg-gradient-to-r from-purple-600 to-indigo-700 rounded-2xl p-6 shadow-xl">
-        <div className="flex items-center justify-between">
-          <div className="text-white">
-            <h1 className="text-3xl font-bold">Edit Product</h1>
-            <p className="mt-2 opacity-90">Update product information</p>
-          </div>
-          <button
-            onClick={() => navigate("/admin/products")}
-            className="bg-white bg-opacity-20 backdrop-blur-sm text-white px-4 py-2 rounded-lg hover:bg-opacity-30 transition-all flex items-center"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            Back to Products
-          </button>
+      <div className="flex items-center justify-between mb-8">
+        <div>
+           <h1 className="text-3xl font-bold text-white mb-2">Edit Product</h1>
+           <p className="text-gray-400">Update product information and inventory.</p>
         </div>
+        <button 
+          onClick={() => navigate("/admin/products")}
+          className="px-4 py-2 bg-white/5 hover:bg-white/10 text-white rounded-lg border border-white/10 transition-colors"
+        >
+          ← Back to Products
+        </button>
       </div>
 
-      {/* Success Message */}
-      {success && (
-        <div className="rounded-2xl bg-green-50 p-4 border border-green-200">
-          <div className="flex">
-            <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-              </svg>
-            </div>
-            <div className="ml-3">
-              <h3 className="text-sm font-medium text-green-800">Product updated successfully!</h3>
-              <div className="mt-2 text-sm text-green-700">
-                <p>Redirecting to products page...</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <div className="flex flex-col lg:flex-row gap-8">
+        {/* Form Section */}
+        <div className="lg:w-2/3">
+           <form onSubmit={handleSubmit} className="glass p-8 rounded-2xl border border-white/10 space-y-6 relative overflow-hidden">
+              {/* Background Glow */}
+              <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
 
-      {/* Error Message */}
-      {error && (
-        <div className="rounded-2xl bg-red-50 p-4 border border-red-200">
-          <div className="flex">
-            <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-              </svg>
-            </div>
-            <div className="ml-3">
-              <h3 className="text-sm font-medium text-red-800">Error</h3>
-              <div className="mt-2 text-sm text-red-700">
-                <p>{error}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Product Form */}
-      <div className="bg-white rounded-2xl shadow-sm p-6 border border-gray-100">
-        <form onSubmit={handleSubmit} className="space-y-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Left Column - Product Images */}
-            <div className="lg:col-span-1">
-              <div className="sticky top-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Product Preview</h2>
-                <div className="bg-gray-50 rounded-2xl p-6 border border-gray-200">
-                  <div className="aspect-square bg-gradient-to-br from-purple-100 to-indigo-100 rounded-xl flex items-center justify-center mb-4">
-                    {formData.imageUrl ? (
-                      <img 
-                        src={formData.imageUrl} 
-                        alt="Product preview" 
-                        className="w-full h-full object-cover rounded-xl"
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = "https://via.placeholder.com/300x300";
-                        }}
-                      />
-                    ) : (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                    )}
-                  </div>
-                  <div className="text-center">
-                    <p className="text-sm font-medium text-gray-900">{formData.name || "Product Name"}</p>
-                    <p className="text-lg font-bold text-purple-600 mt-1">
-                      ${formData.price ? parseFloat(formData.price).toFixed(2) : "0.00"}
-                    </p>
-                  </div>
+              {/* Success Message */}
+              {success && (
+                <div className="p-4 bg-green-500/20 border border-green-500/30 text-green-200 rounded-xl flex items-center animate-pulse">
+                   <span className="mr-2">✅</span> Product updated successfully! Redirecting...
                 </div>
+              )}
+
+              {/* Error Message */}
+              {error && (
+                <div className="p-4 bg-red-500/20 border border-red-500/30 text-red-200 rounded-xl flex items-center animate-shake">
+                   <span className="mr-2">⚠️</span> {error}
+                </div>
+              )}
+
+              <div className="space-y-2">
+                 <label className="text-gray-300 text-sm font-bold ml-1">Product Name</label>
+                 <input 
+                   type="text" 
+                   name="name" 
+                   value={formData.name} 
+                   onChange={handleChange}
+                   placeholder="e.g. Wireless Noise-Cancelling Headphones"
+                   className="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                 />
               </div>
-            </div>
 
-            {/* Right Column - Product Details */}
-            <div className="lg:col-span-2 space-y-6">
-              <div>
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Product Information</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="md:col-span-2">
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                      Product Name *
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={formData.name}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <div className="space-y-2">
+                    <label className="text-gray-300 text-sm font-bold ml-1">Price ($)</label>
+                    <input 
+                      type="number" 
+                      name="price" 
+                      value={formData.price} 
                       onChange={handleChange}
-                      required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                      placeholder="Enter product name"
-                    />
-                  </div>
-
-                  <div className="md:col-span-2">
-                    <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
-                      Description *
-                    </label>
-                    <textarea
-                      id="description"
-                      name="description"
-                      value={formData.description}
-                      onChange={handleChange}
-                      required
-                      rows={4}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                      placeholder="Enter product description"
-                    ></textarea>
-                  </div>
-
-                  <div>
-                    <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-2">
-                      Price ($) *
-                    </label>
-                    <input
-                      type="number"
-                      id="price"
-                      name="price"
-                      value={formData.price}
-                      onChange={handleChange}
-                      required
-                      min="0"
+                      placeholder="e.g. 299.99"
                       step="0.01"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                      placeholder="0.00"
+                      className="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
                     />
-                  </div>
-
-                  <div>
-                    <label htmlFor="stock" className="block text-sm font-medium text-gray-700 mb-2">
-                      Stock Quantity *
-                    </label>
-                    <input
-                      type="number"
-                      id="stock"
-                      name="stock"
-                      value={formData.stock}
+                 </div>
+                 <div className="space-y-2">
+                    <label className="text-gray-300 text-sm font-bold ml-1">Stock Quantity</label>
+                    <input 
+                      type="number" 
+                      name="stock" 
+                      value={formData.stock} 
                       onChange={handleChange}
-                      required
-                      min="0"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                      placeholder="Enter stock quantity"
+                      placeholder="e.g. 100"
+                      className="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
                     />
-                  </div>
+                 </div>
+              </div>
 
-                  <div>
-                    <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
-                      Category *
-                    </label>
-                    <select
-                      id="category"
-                      name="category"
-                      value={formData.category}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <div className="space-y-2">
+                    <label className="text-gray-300 text-sm font-bold ml-1">Category</label>
+                    <select 
+                      name="category" 
+                      value={formData.category} 
                       onChange={handleChange}
-                      required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                      className="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-purple-500 transition-all appearance-none cursor-pointer"
                     >
-                      <option value="">Select a category</option>
-                      <option value="electronics">Electronics</option>
-                      <option value="clothing">Clothing</option>
-                      <option value="books">Books</option>
-                      <option value="home">Home & Kitchen</option>
-                      <option value="beauty">Beauty</option>
-                      <option value="sports">Sports</option>
-                      <option value="other">Other</option>
+                       <option value="">Select a category</option>
+                       <option value="electronics">Electronics</option>
+                       <option value="clothing">Clothing</option>
+                       <option value="books">Books</option>
+                       <option value="home">Home & Kitchen</option>
+                       <option value="beauty">Beauty</option>
+                       <option value="sports">Sports</option>
+                       <option value="other">Other</option>
                     </select>
-                  </div>
-
-                  <div>
-                    <label htmlFor="brand" className="block text-sm font-medium text-gray-700 mb-2">
-                      Brand *
-                    </label>
-                    <input
-                      type="text"
-                      id="brand"
-                      name="brand"
-                      value={formData.brand}
+                 </div>
+                 <div className="space-y-2">
+                    <label className="text-gray-300 text-sm font-bold ml-1">Brand</label>
+                    <input 
+                      type="text" 
+                      name="brand" 
+                      value={formData.brand} 
                       onChange={handleChange}
-                      required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                      placeholder="Enter brand name"
+                      placeholder="e.g. Apple, Sony"
+                      className="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
                     />
-                  </div>
-
-                  <div className="md:col-span-2">
-                    <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700 mb-2">
-                      Image URL
-                    </label>
-                    <input
-                      type="text"
-                      id="imageUrl"
-                      name="imageUrl"
-                      value={formData.imageUrl}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                      placeholder="https://example.com/image.jpg"
-                    />
-                  </div>
-                </div>
+                 </div>
               </div>
 
-              {/* Action Buttons */}
-              <div className="flex justify-end space-x-4 pt-6 border-t border-gray-200">
-                <button
-                  type="button"
-                  onClick={() => navigate("/admin/products")}
-                  className="px-6 py-3 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all font-medium"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={saving}
-                  className="px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-700 text-white rounded-xl hover:from-purple-700 hover:to-indigo-800 focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:opacity-50 transition-all font-medium flex items-center shadow-lg transform hover:scale-105"
-                >
-                  {saving ? (
-                    <>
-                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Updating...
-                    </>
-                  ) : (
-                    <>
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                      </svg>
-                      Update Product
-                    </>
-                  )}
-                </button>
+              <div className="space-y-4">
+                 <label className="text-gray-300 text-sm font-bold ml-1">Image URL</label>
+                 
+                 <div className="flex gap-2">
+                    <input 
+                       type="text" 
+                       name="image" 
+                       value={formData.image} 
+                       onChange={handleChange}
+                       placeholder="https://example.com/image.jpg"
+                       className="flex-1 bg-black/30 border border-white/10 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                    />
+                 </div>
               </div>
-            </div>
-          </div>
-        </form>
+
+              <div className="space-y-2">
+                 <label className="text-gray-300 text-sm font-bold ml-1">Description</label>
+                 <textarea
+                   name="description" 
+                   value={formData.description} 
+                   onChange={handleChange}
+                   placeholder="Detailed product description..."
+                   rows="4"
+                   className="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all resize-none"
+                 ></textarea>
+              </div>
+
+              <div className="pt-4 border-t border-white/10 flex justify-end gap-4">
+                 <button 
+                   type="button"
+                   onClick={() => navigate("/admin/products")}
+                   className="px-6 py-3 text-gray-300 hover:text-white font-medium transition-colors"
+                 >
+                   Cancel
+                 </button>
+                 <button 
+                   type="submit"
+                   disabled={saving}
+                   className="px-8 py-3 bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-bold rounded-xl hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:-translate-y-1"
+                 >
+                   {saving ? (
+                     <span className="flex items-center">
+                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Updating...
+                     </span>
+                   ) : 'Update Product'}
+                 </button>
+              </div>
+           </form>
+        </div>
+
+        {/* Live Preview Section */}
+        <div className="lg:w-1/3">
+           <div className="sticky top-6">
+              <h2 className="text-xl font-bold text-gray-400 mb-4 uppercase tracking-widest text-xs">Live Preview</h2>
+              
+              <div className="glass rounded-2xl overflow-hidden border border-white/10 group relative max-w-sm mx-auto">
+                 <div className="relative h-64 w-full bg-gray-900 flex items-center justify-center overflow-hidden">
+                    {mainPreview ? (
+                        <img 
+                          src={mainPreview} 
+                          alt="Preview" 
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                          onError={(e) => {
+                             e.target.onerror = null;
+                             e.target.src = "https://via.placeholder.com/300x300";
+                          }}
+                        />
+                    ) : (
+                        <span className="text-gray-600">No Image</span>
+                    )}
+                    
+                    {mainPreview && (
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    )}
+                 </div>
+
+                 <div className="p-6">
+                    <p className="text-xs text-cyan-400 font-bold uppercase tracking-wider mb-2">{formData.category || 'CATEGORY'}</p>
+                    <h3 className="text-lg font-bold text-white mb-2 leading-tight">
+                        {formData.name || 'Product Name'}
+                    </h3>
+                    <p className="text-sm text-gray-400 mb-4 line-clamp-2">
+                        {formData.description || 'Product description will appear here...'}
+                    </p>
+                    
+                    <div className="flex items-center justify-between border-t border-white/10 pt-4">
+                       <span className="text-2xl font-bold text-white">${formData.price ? parseFloat(formData.price).toFixed(2) : '0.00'}</span>
+                       <button className="h-10 w-10 rounded-lg bg-white/10 flex items-center justify-center text-white hover:bg-purple-600 transition-colors">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                          </svg>
+                       </button>
+                    </div>
+                 </div>
+              </div>
+              
+              <div className="mt-6 p-4 rounded-xl border border-white/10 bg-white/5">
+                 <div className="flex items-center gap-3 mb-2">
+                    <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
+                    <span className="text-xs text-gray-400 font-mono">EDIT MODE</span>
+                 </div>
+                 <p className="text-sm text-gray-300">
+                    You are currently editing this product. Changes will reflect immediately after saving.
+                 </p>
+              </div>
+           </div>
+        </div>
       </div>
     </div>
   );
