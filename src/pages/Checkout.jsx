@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import StripeCheckout from "../components/StripeCheckout";
-import axios from "axios";
+import api from "../services/api";
 import { formatPrice } from "../utils/currency";
 import { API_URL, getProductImageUrl } from "../utils/constants";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
@@ -72,7 +72,7 @@ export default function Checkout() {
   useEffect(() => {
     const fetchOffers = async () => {
         try {
-            const res = await axios.get("http://localhost:5000/api/v1/marketing/my-offers", { withCredentials: true });
+            const res = await api.get("/marketing/my-offers");
             if (res.data.status === 'success') {
                 setUserOffers(res.data.data.offers);
             }
@@ -105,7 +105,7 @@ export default function Checkout() {
   const handleApplyCoupon = async (codeToUse = couponCode) => {
       if (!codeToUse) return;
       try {
-          const res = await axios.post("http://localhost:5000/api/v1/marketing/validate-coupon", { code: codeToUse }, { withCredentials: true });
+          const res = await api.post("/marketing/validate-coupon", { code: codeToUse });
           if (res.data.status === 'success') {
               setAppliedCoupon(res.data.data.coupon);
               // Calculate discount
@@ -158,9 +158,7 @@ export default function Checkout() {
       };
 
 
-      const response = await axios.post(`${API_URL}/api/v1/orders`, orderData, {
-        withCredentials: true
-      });
+      const response = await api.post("/orders", orderData);
 
       if (response.data.status === 'success') {
           // Success!
