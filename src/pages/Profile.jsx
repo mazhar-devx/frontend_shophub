@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateProfile } from '../features/auth/authSlice';
 import { useNavigate } from 'react-router-dom';
-import { IMAGE_URL } from "../utils/constants";
+import { IMAGE_URL, DEFAULT_AVATAR, getProductImageUrl } from "../utils/constants";
 
 export default function Profile() {
   const { user, loading, error } = useSelector((state) => state.auth);
@@ -12,8 +12,16 @@ export default function Profile() {
   const [name, setName] = useState(user?.name || '');
   const [photo, setPhoto] = useState(null);
 
-  const [preview, setPreview] = useState(user?.photo ? `${IMAGE_URL}${user.photo}` : null);
+  const [preview, setPreview] = useState(null);
   const [successMsg, setSuccessMsg] = useState('');
+
+  // Sync state with user data when it loads
+  useEffect(() => {
+    if (user) {
+        setName(user.name || '');
+        setPreview(user.photo ? getProductImageUrl(user.photo) : null);
+    }
+  }, [user]);
 
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
@@ -67,7 +75,7 @@ export default function Profile() {
                 {preview ? (
                   <img src={preview} alt="Profile" className="w-full h-full object-cover" />
                 ) : (
-                  <span className="text-4xl">👤</span>
+                  <img src={DEFAULT_AVATAR} alt="Default Profile" className="w-full h-full object-cover" />
                 )}
               </div>
               <label className="absolute bottom-0 right-0 bg-purple-600 hover:bg-purple-700 text-white p-2.5 rounded-full cursor-pointer shadow-lg transition-transform hover:scale-110">
