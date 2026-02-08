@@ -14,7 +14,7 @@ export const DEFAULT_AVATAR = 'default.jpg';
 /** Product images from API are often relative (e.g. /uploads/xxx). Use this so they load from the backend. */
 export function getProductImageUrl(path) {
   if (!path) return null;
-  if (path.startsWith('http://') || path.startsWith('https://')) return path;
+  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) return path;
   const base = API_URL.replace(/\/$/, '');
   return path.startsWith('/') ? `${base}${path}` : `${base}/${path}`;
 }
