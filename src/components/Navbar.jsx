@@ -88,7 +88,7 @@ export default function Navbar() {
     <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'glass border-b border-glass py-3' : 'bg-transparent py-4'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 flex justify-between items-center">
         <Link to="/" className="text-xl sm:text-2xl font-bold tracking-tighter flex items-center gap-2">
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">Hamzx Store</span>
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">HA Store</span>
         </Link>
         
         <div className="hidden md:flex space-x-8">
