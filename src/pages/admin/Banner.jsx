@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import api from "../../services/api";
 import { toast } from "react-hot-toast";
+import { getProductImageUrl } from "../../utils/constants";
 
 export default function AdminBanner() {
   const [loading, setLoading] = useState(true);
@@ -114,8 +115,8 @@ export default function AdminBanner() {
     return <div className="text-white">Loading...</div>;
   }
 
-  const currentHeroImage = heroPreview || formData.image;
-  const currentFlashSaleImage = flashSalePreview || flashSaleData.image;
+  const currentHeroImage = heroPreview || getProductImageUrl(formData.image);
+  const currentFlashSaleImage = flashSalePreview || getProductImageUrl(flashSaleData.image);
 
   return (
     <div className="max-w-7xl mx-auto space-y-8 animate-fade-in-up">
