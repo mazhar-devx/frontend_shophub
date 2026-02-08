@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../services/api";
 import { formatPrice } from "../../utils/currency";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -26,9 +26,7 @@ export default function AdminOrders() {
   // Fetch Orders
   const fetchOrders = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/v1/orders", {
-        withCredentials: true
-      });
+      const response = await api.get("/orders");
       // Currently the controller returns all orders in data.data.orders
       // (Based on my read of orderController.js: getAllOrders)
       setOrders(response.data.data.orders);
@@ -46,9 +44,8 @@ export default function AdminOrders() {
   // Update Status
   const handleUpdateStatus = async (orderId, newStatus) => {
     try {
-      await axios.patch(`http://localhost:5000/api/v1/orders/${orderId}`, 
-        { status: newStatus },
-        { withCredentials: true }
+      await api.patch(`/orders/${orderId}`, 
+        { status: newStatus }
       );
       // Refresh local state
       setOrders(orders.map(order => 
@@ -67,9 +64,7 @@ export default function AdminOrders() {
   const handleDeleteOrder = async (orderId) => {
     if (window.confirm("Are you sure you want to delete this order?")) {
       try {
-        await axios.delete(`http://localhost:5000/api/v1/orders/${orderId}`, {
-          withCredentials: true
-        });
+        await api.delete(`/orders/${orderId}`);
         setOrders(orders.filter(order => order._id !== orderId));
         if (selectedOrder && selectedOrder._id === orderId) {
            setSelectedOrder(null);
