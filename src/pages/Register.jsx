@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { signup, clearError } from "../features/auth/authSlice";
+import { GoogleLogin } from '@react-oauth/google';
+import { signup, googleLogin, clearError } from "../features/auth/authSlice";
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -38,6 +39,18 @@ export default function Register() {
       .catch((err) => {
         console.error("Signup failed:", err);
       });
+  };
+
+  const handleGoogleSuccess = (credentialResponse) => {
+      dispatch(googleLogin(credentialResponse.credential))
+        .unwrap()
+        .then((payload) => {
+            const user = payload?.data?.user;
+            navigate(user?.role === "admin" ? "/admin/dashboard" : "/");
+        })
+        .catch((err) => {
+            console.error("Google Login Failed:", err);
+        });
   };
   
   return (
@@ -152,6 +165,26 @@ export default function Register() {
               ) : null}
               {loading ? "Creating account..." : "Sign up"}
             </button>
+          </div>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-white/10"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-black text-gray-400">Or continue with</span>
+            </div>
+          </div>
+
+          <div className="flex justify-center">
+            <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => console.log('Login Failed')}
+                theme="filled_black"
+                shape="pill"
+                text="continue_with"
+                width="100%"
+            />
           </div>
         </form>
         
