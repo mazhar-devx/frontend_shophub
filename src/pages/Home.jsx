@@ -315,7 +315,7 @@ export default function Home() {
                  <div className="absolute inset-0 bg-red-500/20 blur-3xl rounded-full transform scale-75 md:scale-100"></div>
                  <div className="glass w-56 h-56 sm:w-72 sm:h-72 rounded-full flex items-center justify-center border border-white/10 relative z-10 overflow-hidden bg-white/5 mx-auto">
                     {flashSale?.image ? (
-                        <img src={flashSale.image} alt={flashSale.title} className="w-full h-full object-cover" />
+                        <img src={getProductImageUrl(flashSale.image)} alt={flashSale.title} className="w-full h-full object-cover" />
                     ) : (
                         <span className="text-gray-500 text-sm">Product Image</span>
                     )}
