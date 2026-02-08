@@ -68,6 +68,20 @@ export const login = createAsyncThunk(
       return rejectWithValue({ message });
     }
   }
+
+);
+
+export const googleLogin = createAsyncThunk(
+  "auth/googleLogin",
+  async (token, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/users/google", { token });
+      localStorage.setItem("token", response.data.token);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || { message: "Google Login failed" });
+    }
+  }
 );
 
 export const updateProfile = createAsyncThunk(
@@ -170,6 +184,20 @@ const authSlice = createSlice({
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || "Login failed";
+      })
+      // Google Login
+      .addCase(googleLogin.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(googleLogin.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload?.data?.user;
+        state.isAuthenticated = true;
+      })
+      .addCase(googleLogin.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || "Google Login failed";
       })
       // Logout
       .addCase(logout.fulfilled, (state) => {
