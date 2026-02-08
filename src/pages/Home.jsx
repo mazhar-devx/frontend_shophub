@@ -219,13 +219,13 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gray-800 animate-pulse"></div>
                 {/* Image placeholder - in real app would be an img tag */}
                 <img 
-                src={product.images?.length ? getProductImageUrl(product.images[0]) : (product.image ? getProductImageUrl(product.image) : "https://via.placeholder.com/300")} 
+                src={(Array.isArray(product.images) && product.images.length > 0) ? getProductImageUrl(product.images[0]) : (product.image ? getProductImageUrl(product.image) : "/placeholder.svg")} 
                 alt={product.name}
                 loading="lazy"
                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 onError={(e) => {
                     e.target.onerror = null;
-                    e.target.src = "https://via.placeholder.com/300?text=No+Image";
+                    e.target.src = "/placeholder.svg";
                 }}
                 />
                 <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded shadow-lg z-10">
