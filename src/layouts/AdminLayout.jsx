@@ -24,12 +24,22 @@ export default function AdminLayout() {
     setIsMobileOpen(false);
   }, [location.pathname]);
 
-  if (loading) {
+  // Check for token in localStorage to prevent premature redirect before loadUser runs
+  const token = localStorage.getItem('token');
+
+  // If loading, OR if we have a token but no user (waiting for loadUser), show loader
+  if (loading || (token && !user)) {
     return (
       <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center text-white">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
       </div>
     );
+  }
+
+  // If we reach here and have no user, it means loadUser failed or no token existed.
+  // Don't render outlet, just return null (useEffect will redirect).
+  if (!user || user.role !== 'admin') {
+      return null;
   }
 
   const handleLogout = () => {
