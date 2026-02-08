@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../services/api";
 import { useUIStore } from "../zustand/uiStore";
 
 export default function ResetPassword() {
@@ -26,7 +26,7 @@ export default function ResetPassword() {
 
     setLoading(true);
     try {
-      await axios.patch(`http://localhost:5000/api/v1/users/resetPassword/${token}`, {
+      await api.patch(`/users/resetPassword/${token}`, {
         password: formData.password,
         passwordConfirm: formData.passwordConfirm
       });
