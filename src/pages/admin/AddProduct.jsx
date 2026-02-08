@@ -62,7 +62,7 @@ export default function AddProduct() {
       data.append('price', formData.price);
       data.append('category', formData.category);
       data.append('brand', formData.brand);
-      data.append('countInStock', formData.countInStock || 0);
+      data.append('stock', formData.countInStock || 0);
       
       // Append Image URL if provided
       if (formData.imageUrl) {
@@ -75,11 +75,7 @@ export default function AddProduct() {
         data.append('images', file);
       });
 
-      const response = await api.post('/products', data, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const response = await api.post('/products', data);
       
       if (response.data.status === 'success') {
          dispatch(fetchProducts()); 
