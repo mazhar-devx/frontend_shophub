@@ -70,6 +70,28 @@ export default function ProductDetails() {
     };
     trackAndFetch();
   }, [dispatch, id]);
+
+  // Auto-rotate images every 30 seconds
+  useEffect(() => {
+      if (!product || !product.images || product.images.length <= 1) return;
+      
+      const interval = setInterval(() => {
+          setSelectedImage((prev) => (prev + 1) % product.images.length);
+      }, 30000); // 30 seconds
+
+      return () => clearInterval(interval);
+  }, [product]);
+
+  // Auto-rotate images every 30 seconds
+  useEffect(() => {
+      if (!product || !product.images || product.images.length <= 1) return;
+      
+      const interval = setInterval(() => {
+          setSelectedImage((prev) => (prev + 1) % product.images.length);
+      }, 30000); // 30 seconds
+
+      return () => clearInterval(interval);
+  }, [product]);
   
   const handleAddToCart = () => {
     if (product) {
