@@ -25,7 +25,7 @@ export default function ProductCard({ product }) {
       <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden h-full flex flex-col transition-all duration-300 group-hover:transform group-hover:-translate-y-1">
         {/* Image Container */}
         <div className="relative pt-[100%] overflow-hidden bg-black/40">
-           {product.images && product.images.length > 0 ? (
+           {Array.isArray(product.images) && product.images.length > 0 ? (
              <img 
                src={getProductImageUrl(product.images[0])} 
                alt={product.name}
