@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../../services/api";
+import { getProductImageUrl } from "../../utils/constants";
 
 export default function EditProduct() {
   const { id } = useParams();
@@ -280,7 +281,7 @@ export default function EditProduct() {
                  <div className="relative h-64 w-full bg-gray-900 flex items-center justify-center overflow-hidden">
                     {mainPreview ? (
                         <img 
-                          src={mainPreview} 
+                          src={getProductImageUrl(mainPreview)} 
                           alt="Preview" 
                           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
                           onError={(e) => {
