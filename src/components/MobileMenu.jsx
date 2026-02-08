@@ -78,7 +78,7 @@ export default function MobileMenu() {
                       Profile
                     </Link>
                     <Link 
-                      to="/orders" 
+                      to="/my-orders" 
                       className="block px-4 py-3 text-base font-medium text-gray-200 hover:bg-white/10 hover:text-cyan-400 rounded-xl transition-all"
                       onClick={toggleMenu}
                     >
