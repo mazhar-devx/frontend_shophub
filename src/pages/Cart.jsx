@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { removeFromCart, increaseQuantity, decreaseQuantity, clearCart } from "../features/cart/cartSlice";
 import { formatPrice } from "../utils/currency";
+import { getProductImageUrl } from "../utils/constants";
 
 export default function Cart() {
   const { items: cartItems, totalAmount, totalQuantity } = useSelector((state) => state.cart);
@@ -89,7 +90,13 @@ export default function Cart() {
                 <div key={item.id} className="flex flex-col sm:flex-row items-center sm:items-start border border-white/5 rounded-2xl p-4 hover:bg-white/5 transition-colors bg-black/20 group">
                   <div className="bg-black/40 rounded-xl flex items-center justify-center w-full sm:w-24 h-24 sm:h-24 mb-4 sm:mb-0 flex-shrink-0 border border-white/5 relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent opacity-50"></div>
-                     <span className="text-3xl grayscale group-hover:grayscale-0 transition-all">📦</span>
+                     {item.images && item.images.length > 0 ? (
+                        <img src={getProductImageUrl(item.images[0])} alt={item.name} className="w-full h-full object-cover" onError={(e) => e.target.src = '/placeholder.svg'} />
+                     ) : item.image ? (
+                        <img src={getProductImageUrl(item.image)} alt={item.name} className="w-full h-full object-cover" onError={(e) => e.target.src = '/placeholder.svg'} />
+                     ) : (
+                        <span className="text-3xl grayscale group-hover:grayscale-0 transition-all">📦</span>
+                     )}
                   </div>
                   
                   <div className="sm:ml-6 flex-grow w-full text-center sm:text-left">
