@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-
-import axios from "axios";
+import api from "../../services/api";
 
 export default function AdminCustomers() {
   const [customers, setCustomers] = useState([]);
@@ -12,9 +11,7 @@ export default function AdminCustomers() {
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/v1/users/customers-stats", {
-          withCredentials: true
-        });
+        const response = await api.get("/users/customers-stats");
         if (response.data.status === 'success') {
            setCustomers(response.data.data.users);
         }
@@ -45,7 +42,7 @@ export default function AdminCustomers() {
 
   const handleUpdateCustomer = async (updatedCustomer) => {
     try {
-      await axios.patch(`http://localhost:5000/api/v1/users/${updatedCustomer._id}`, updatedCustomer, { withCredentials: true });
+      await api.patch(`/users/${updatedCustomer._id}`, updatedCustomer);
       setCustomers(customers.map(c => c._id === updatedCustomer._id ? updatedCustomer : c));
       setSelectedCustomer(null);
     } catch (err) {
@@ -62,7 +59,7 @@ export default function AdminCustomers() {
   const handleDeleteCustomer = async (customerId) => {
     if (window.confirm("Are you sure you want to delete this customer?")) {
       try {
-        await axios.delete(`http://localhost:5000/api/v1/users/${customerId}`, { withCredentials: true });
+        await api.delete(`/users/${customerId}`);
         setCustomers(customers.filter(customer => customer.id !== customerId && customer._id !== customerId));
       } catch (err) {
         alert("Failed to delete customer");
