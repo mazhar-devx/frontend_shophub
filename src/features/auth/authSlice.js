@@ -103,6 +103,18 @@ const initialState = {
   validationErrors: {},
 };
 
+export const loadUser = createAsyncThunk(
+  "auth/loadUser",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await api.get("/users/me");
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || { message: "Session expired" });
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -185,6 +197,26 @@ const authSlice = createSlice({
       .addCase(updateProfile.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || "Profile update failed";
+      })
+      .addCase(updateProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || "Profile update failed";
+      })
+      // Load User (Restore Session)
+      .addCase(loadUser.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(loadUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.data.user;
+        state.isAuthenticated = true;
+      })
+      .addCase(loadUser.rejected, (state) => {
+        state.loading = false;
+        state.user = null;
+        state.isAuthenticated = false;
+        // If verify fails, token is invalid.
+        localStorage.removeItem("token");
       });
   },
 });

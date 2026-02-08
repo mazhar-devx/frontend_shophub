@@ -1,6 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../services/api";
 
+/** Safely get products array from API response (handles different shapes). */
+function getProductsFromPayload(payload) {
+  if (!payload) return [];
+  const arr = payload?.data?.products ?? payload?.data ?? payload?.products ?? payload;
+  return Array.isArray(arr) ? arr : [];
+}
+
 // Async thunks for API calls
 export const fetchProducts = createAsyncThunk(
   "products/fetchProducts",
@@ -9,7 +16,7 @@ export const fetchProducts = createAsyncThunk(
       const response = await api.get("/products", { params });
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response?.data ?? { message: error.message || "Failed to fetch products" });
     }
   }
 );
@@ -23,7 +30,7 @@ export const searchProducts = createAsyncThunk(
       });
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response?.data ?? { message: error.message || "Failed to search" });
     }
   }
 );
@@ -84,7 +91,7 @@ const productSlice = createSlice({
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.loading = false;
-        state.items = action.payload.data.products;
+        state.items = getProductsFromPayload(action.payload);
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;
@@ -97,8 +104,8 @@ const productSlice = createSlice({
       })
       .addCase(searchProducts.fulfilled, (state, action) => {
         state.loading = false;
-        state.items = action.payload.data.products;
-        state.pagination = action.payload.data.pagination;
+        state.items = getProductsFromPayload(action.payload);
+        state.pagination = action.payload?.data?.pagination ?? action.payload?.pagination ?? null;
       })
       .addCase(searchProducts.rejected, (state, action) => {
         state.loading = false;
@@ -110,7 +117,7 @@ const productSlice = createSlice({
       })
       .addCase(getSearchSuggestions.fulfilled, (state, action) => {
         state.suggestionsLoading = false;
-        state.suggestions = action.payload.data.products;
+        state.suggestions = getProductsFromPayload(action.payload);
       })
       .addCase(getSearchSuggestions.rejected, (state) => {
         state.suggestionsLoading = false;
@@ -123,7 +130,7 @@ const productSlice = createSlice({
       })
       .addCase(fetchProductById.fulfilled, (state, action) => {
         state.loading = false;
-        state.selectedProduct = action.payload.data.product;
+        state.selectedProduct = action.payload?.data?.product ?? action.payload?.product ?? action.payload;
       })
       .addCase(fetchProductById.rejected, (state, action) => {
         state.loading = false;

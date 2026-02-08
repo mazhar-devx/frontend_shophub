@@ -4,6 +4,7 @@ import { removeFromWishlist, clearWishlist } from "../features/wishlist/wishlist
 import { addToCart } from "../features/cart/cartSlice";
 import { useUIStore } from "../zustand/uiStore";
 import { formatPrice } from "../utils/currency";
+import { getProductImageUrl } from "../utils/constants";
 
 export default function Wishlist() {
   const { items: wishlistItems } = useSelector((state) => state.wishlist);
@@ -82,9 +83,9 @@ export default function Wishlist() {
                
                <Link to={`/products/${item.id}`} className="block w-full h-full">
                   {item.images && item.images.length > 0 ? (
-                    <img src={item.images[0]} alt={item.name} className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500" />
+                    <img src={getProductImageUrl(item.images[0])} alt={item.name} className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500" />
                   ) : item.image ? (
-                    <img src={item.image} alt={item.name} className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500" />
+                    <img src={getProductImageUrl(item.image)} alt={item.name} className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-4xl">📦</div>
                   )}

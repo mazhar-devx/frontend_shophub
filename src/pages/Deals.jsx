@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "../features/products/productSlice";
 import { Link } from "react-router-dom";
-import { formatPrice } from "../utils/currency"; // Assuming this utility exists
+import { formatPrice } from "../utils/currency";
+import { getProductImageUrl } from "../utils/constants";
 
 export default function Deals() {
   const dispatch = useDispatch();
@@ -91,8 +92,8 @@ export default function Deals() {
 
                     <div className="aspect-square overflow-hidden bg-black/40 relative group-hover:scale-105 transition-transform duration-500">
                         {product.images?.[0] || product.image ? (
-                             <img 
-                                src={product.images?.[0] || product.image} 
+                            <img 
+                                src={getProductImageUrl(product.images?.[0] || product.image)}
                                 alt={product.name} 
                                 className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity"
                              />

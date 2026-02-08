@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import StripeCheckout from "../components/StripeCheckout";
 import axios from "axios";
 import { formatPrice } from "../utils/currency";
-import { API_URL } from "../utils/constants";
+import { API_URL, getProductImageUrl } from "../utils/constants";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -671,9 +671,9 @@ export default function Checkout() {
                   <div key={item.id} className="flex py-3 border-b border-white/5 last:border-b-0 hover:bg-white/5 rounded-lg px-2 transition-colors">
                     <div className="bg-black/40 border border-white/10 rounded-lg flex items-center justify-center w-16 h-16 flex-shrink-0 overflow-hidden relative">
                        {item.images && item.images.length > 0 ? (
-                         <img src={item.images[0]} alt={item.name} className="w-full h-full object-cover" />
+                         <img src={getProductImageUrl(item.images[0])} alt={item.name} className="w-full h-full object-cover" />
                        ) : item.image ? (
-                          <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                          <img src={getProductImageUrl(item.image)} alt={item.name} className="w-full h-full object-cover" />
                        ) : (
                           <span className="text-xl">📦</span>
                        )}

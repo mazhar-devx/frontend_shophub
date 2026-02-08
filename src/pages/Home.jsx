@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { formatPrice } from "../utils/currency";
+import { getProductImageUrl } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "../features/products/productSlice";
 import ProductList from "../components/ProductList";
@@ -218,7 +219,7 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gray-800 animate-pulse"></div>
                 {/* Image placeholder - in real app would be an img tag */}
                 <img 
-                src={product.images && product.images.length > 0 ? product.images[0] : "https://via.placeholder.com/300"} 
+                src={product.images?.length ? getProductImageUrl(product.images[0]) : (product.image ? getProductImageUrl(product.image) : "https://via.placeholder.com/300")} 
                 alt={product.name}
                 loading="lazy"
                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"

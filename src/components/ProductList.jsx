@@ -1,6 +1,7 @@
 import React from 'react';
 import ProductCard from "./ProductCard";
 import { formatPrice } from "../utils/currency";
+import { getProductImageUrl } from "../utils/constants";
 import LoadingSpinner from "./LoadingSpinner";
 import { Link } from "react-router-dom";
 
@@ -41,11 +42,15 @@ function ProductList({ products, loading, error, view = 'grid' }) {
             className="flex flex-col sm:flex-row items-center glass border border-white/10 rounded-2xl p-6 hover:shadow-[0_0_20px_rgba(124,58,237,0.15)] transition-all group duration-300"
           >
              <div className="relative w-full sm:w-32 h-32 mb-4 sm:mb-0 sm:mr-6 shrink-0 overflow-hidden rounded-xl bg-black/40">
+                {(product.images?.length || product.image) ? (
+                  <img src={getProductImageUrl(product.images?.[0] || product.image)} alt={product.name} className="w-full h-full object-cover" />
+                ) : (
                 <div className="absolute inset-0 flex items-center justify-center text-gray-700 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-800 via-black to-black">
                    <svg className="w-12 h-12 opacity-20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                    </svg>
                 </div>
+                )}
              </div>
 
             <div className="flex-1 text-center sm:text-left w-full">

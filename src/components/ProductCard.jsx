@@ -1,5 +1,6 @@
 import { useDispatch } from "react-redux";
 import { formatPrice } from "../utils/currency";
+import { getProductImageUrl } from "../utils/constants";
 import { Link } from "react-router-dom";
 import { addToCart } from "../features/cart/cartSlice";
 import { useUIStore } from "../zustand/uiStore";
@@ -26,7 +27,7 @@ export default function ProductCard({ product }) {
         <div className="relative pt-[100%] overflow-hidden bg-black/40">
            {product.images && product.images.length > 0 ? (
              <img 
-               src={product.images[0]} 
+               src={getProductImageUrl(product.images[0])} 
                alt={product.name}
                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                onError={(e) => {
@@ -37,7 +38,7 @@ export default function ProductCard({ product }) {
              />
            ) : product.image ? (
               <img 
-               src={product.image} 
+               src={getProductImageUrl(product.image)} 
                alt={product.name}
                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                onError={(e) => {

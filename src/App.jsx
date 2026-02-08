@@ -35,6 +35,8 @@ import AdminMarketing from "./pages/admin/Marketing";
 import AdminAnalytics from "./pages/admin/Analytics";
 
 import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { loadUser } from "./features/auth/authSlice";
 import { useUIStore } from "./zustand/uiStore";
 
 export default function App() {
@@ -43,6 +45,14 @@ export default function App() {
   useEffect(() => {
     document.body.setAttribute('data-theme', theme);
   }, [theme]);
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      dispatch(loadUser());
+    }
+  }, [dispatch]);
 
   return (
     <BrowserRouter>

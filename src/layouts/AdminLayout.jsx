@@ -4,24 +4,33 @@ import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../features/auth/authSlice";
 
 export default function AdminLayout() {
-  const { user } = useSelector((state) => state.auth);
+  const { user, loading } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-  // Redirect if not admin
+  // Redirect if not admin or not authenticated
   useEffect(() => {
-    if (user && user.role !== 'admin') {
-      navigate('/');
+    if (loading) return;
+    if (!user || user.role !== 'admin') {
+      navigate('/'); 
     }
-  }, [user, navigate]);
+  }, [user, navigate, loading]);
 
   // Close mobile menu when route changes
   useEffect(() => {
     setIsMobileOpen(false);
   }, [location.pathname]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center text-white">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+      </div>
+    );
+  }
 
   const handleLogout = () => {
     dispatch(logout());

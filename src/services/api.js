@@ -40,8 +40,10 @@ api.interceptors.response.use(
     }
     // Handle common errors
     if (error.response?.status === 401) {
-      // Unauthorized - redirect to login
+      // Unauthorized - redirect to login and clear everything
+      console.warn('Unauthorized! Logging out...');
       localStorage.removeItem('token');
+      localStorage.removeItem('user'); // Just in case
       window.location.href = '/login';
     }
     return Promise.reject(error);
