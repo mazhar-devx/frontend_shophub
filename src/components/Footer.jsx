@@ -7,7 +7,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-12">
           {/* Company Info */}
           <div className="col-span-1 sm:col-span-2 md:col-span-1">
-            <h3 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">Hamzx store</h3>
+            <h3 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">HA Store</h3>
             <p className="text-gray-400 mb-6 text-sm leading-relaxed">
               Pioneering the future of digital commerce. We bring you premium products with an experience that feels like tomorrow.
             </p>
@@ -53,18 +53,18 @@ export default function Footer() {
                 </li>
                 <li className="flex items-center">
                    <span className="mr-3">📧</span>
-                   <span>support@mazharstore.com</span>
+                   <span>mazhar.devx@gmail.com</span>
                 </li>
                 <li className="flex items-center">
                    <span className="mr-3">📞</span>
-                   <span>+1 (800) 123-4567</span>
+                   <span>+92 317 0611234</span>
                 </li>
              </ul>
           </div>
         </div>
         
         <div className="border-t border-white/5 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
-          <p>© {new Date().getFullYear()} MazharStore. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} MazharDevx All rights reserved.</p>
           <div className="flex items-center space-x-6 mt-4 md:mt-0 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
              <span className="text-xs">Secure Payments</span>
              {/* Payment icons placeholders */}
