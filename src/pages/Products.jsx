@@ -5,19 +5,37 @@ import ProductList from "../components/ProductList";
 import ProductFilter from "../components/ProductFilter";
 import { useUIStore } from "../zustand/uiStore";
 
+import { useSearchParams } from "react-router-dom";
+
 export default function Products() {
   const dispatch = useDispatch();
   const { items: products, loading, error, pagination } = useSelector((state) => state.products);
   const { toggleMobileFilters } = useUIStore();
+  const [searchParams, setSearchParams] = useSearchParams();
+  
   const [filters, setFilters] = useState({
-    category: "all",
-    minPrice: "",
-    maxPrice: "",
-    sortBy: "featured",
-    rating: "all",
-    brand: "all",
-    page: 1
+    category: searchParams.get("category") || "all",
+    minPrice: searchParams.get("minPrice") || "",
+    maxPrice: searchParams.get("maxPrice") || "",
+    sortBy: searchParams.get("sortBy") || "featured",
+    rating: searchParams.get("rating") || "all",
+    brand: searchParams.get("brand") || "all",
+    page: parseInt(searchParams.get("page")) || 1
   });
+  
+  // Sync state with URL params
+  useEffect(() => {
+      setFilters(prev => ({
+          ...prev,
+          category: searchParams.get("category") || "all",
+          minPrice: searchParams.get("minPrice") || "",
+          maxPrice: searchParams.get("maxPrice") || "",
+          sortBy: searchParams.get("sortBy") || "featured",
+          rating: searchParams.get("rating") || "all",
+          brand: searchParams.get("brand") || "all",
+          page: parseInt(searchParams.get("page")) || 1
+      }));
+  }, [searchParams]);
   
   useEffect(() => {
     // Fetch products with current filters
@@ -51,21 +69,42 @@ export default function Products() {
   const [view, setView] = useState('grid'); // grid or list
   
   return (
-    <div className="p-4 md:p-6 min-h-screen">
-      <div className="mb-8 relative">
-        <div className="absolute -top-10 -left-10 w-64 h-64 bg-purple-900/20 rounded-full blur-[100px] pointer-events-none"></div>
-        <div className="relative z-10 glass border border-white/10 rounded-3xl p-8 mb-8 overflow-hidden">
-             <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-indigo-900/20 to-transparent rounded-full blur-3xl -z-10"></div>
-             <h1 className="text-4xl font-bold mb-2 text-white tracking-tight">All Products</h1>
-             <p className="text-gray-400 max-w-2xl">Discover our curated collection of premium items. Filter by category, price, or rating to find exactly what you're looking for.</p>
+    <div className="p-4 md:p-6 min-h-screen pt-20">
+      <div className="mb-12 relative">
+        <div className="absolute -top-20 -left-20 w-96 h-96 bg-purple-900/20 rounded-full blur-[120px] pointer-events-none"></div>
+        <div className="relative z-10 glass border border-white/10 rounded-[2.5rem] p-8 md:p-12 mb-8 overflow-hidden group">
+             <div className="absolute inset-0 bg-gradient-to-r from-black/0 via-white/5 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 transform -skew-x-12 translate-x-full group-hover:translate-x-[-200%]"></div>
+             <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-indigo-500/10 to-transparent rounded-full blur-3xl -z-10"></div>
+             
+             <div className="flex flex-col md:flex-row justify-between items-end gap-6">
+                <div>
+                    <h1 className="text-5xl md:text-6xl font-black mb-4 text-white tracking-tight leading-none">
+                        All <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">Products</span>
+                    </h1>
+                    <p className="text-gray-400 max-w-2xl text-lg font-light">Explore our curated collection of future-ready gear, designed for the visionaries of tomorrow.</p>
+                </div>
+                
+                <div className="flex items-center gap-3">
+                     <span className="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-bold text-gray-300 shadow-inner">
+                         {pagination ? `${pagination.totalProducts} Items` : 'Loading...'}
+                     </span>
+                </div>
+             </div>
         </div>
         
         {/* Results info and view options */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
-          <div className="text-gray-400 font-medium">
-            {pagination && (
-              <span>Showing <span className="text-white">{products.length}</span> of <span className="text-white">{pagination.totalProducts}</span> products</span>
-            )}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8 sticky top-[80px] z-30 bg-[#030014]/80 backdrop-blur-xl p-4 rounded-2xl border border-white/5 shadow-lg">
+          <div className="flex items-center space-x-4 w-full md:w-auto overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
+             {/* Quick Filters */}
+             {['all', 'electronics', 'clothing', 'home'].map(cat => (
+                 <button 
+                    key={cat}
+                    onClick={() => handleFilterChange({...filters, category: cat})}
+                    className={`px-4 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all ${filters.category === cat ? 'bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.4)]' : 'bg-white/5 text-gray-400 hover:bg-white/10 hover:text-white'}`}
+                 >
+                    {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                 </button>
+             ))}
           </div>
           
           <div className="flex items-center space-x-4">
@@ -92,13 +131,13 @@ export default function Products() {
                 <select 
                 value={filters.sortBy}
                 onChange={(e) => handleFilterChange({...filters, sortBy: e.target.value})}
-                className="appearance-none bg-black/40 glass border border-white/10 rounded-xl pl-4 pr-10 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer hover:bg-white/5 transition-colors"
+                className="appearance-none bg-black/40 glass border border-white/10 rounded-xl pl-4 pr-10 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer hover:bg-white/5 transition-colors font-medium text-sm"
                 >
-                <option value="featured">Featured</option>
-                <option value="price-low">Price: Low to High</option>
-                <option value="price-high">Price: High to Low</option>
-                <option value="rating">Top Rated</option>
-                <option value="newest">Newest Arrivals</option>
+                <option value="featured">✨ Featured</option>
+                <option value="price-low">💰 Price: Low to High</option>
+                <option value="price-high">💎 Price: High to Low</option>
+                <option value="rating">⭐ Top Rated</option>
+                <option value="newest">🆕 Newest Arrivals</option>
                 </select>
                 <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
                     <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
@@ -114,7 +153,7 @@ export default function Products() {
           <div className="md:hidden mb-4">
             <button
               type="button"
-              className="w-full inline-flex items-center justify-center px-4 py-3 border border-white/10 rounded-xl shadow-lg text-sm font-medium text-white glass hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all active:scale-95"
+              className="w-full inline-flex items-center justify-center px-4 py-4 border border-white/10 rounded-xl shadow-lg text-sm font-bold text-white bg-gradient-to-r from-purple-900/50 to-cyan-900/50 backdrop-blur-md hover:from-purple-800/50 hover:to-cyan-800/50 transition-all active:scale-95"
               onClick={toggleMobileFilters}
             >
               <svg className="-ml-1 mr-2 h-5 w-5 text-cyan-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -124,7 +163,7 @@ export default function Products() {
             </button>
           </div>
           
-          <div className="hidden md:block glass border border-white/10 rounded-3xl p-6 sticky top-24 shadow-2xl backdrop-blur-xl">
+          <div className="hidden md:block glass border border-white/10 rounded-3xl p-6 sticky top-32 shadow-2xl backdrop-blur-xl">
             <div className="flex justify-between items-center mb-6 border-b border-white/10 pb-4">
               <h2 className="text-xl font-bold text-white flex items-center gap-2">
                 <svg className="w-5 h-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
