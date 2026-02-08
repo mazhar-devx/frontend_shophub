@@ -120,7 +120,7 @@ export default function Home() {
         {settings?.image && (
              <div className="absolute inset-0 z-0">
                 <img 
-                  src={settings.image} 
+                  src={getProductImageUrl(settings.image)} 
                   alt="Hero" 
                   className="w-full h-full object-cover opacity-60" 
                   loading="eager"
