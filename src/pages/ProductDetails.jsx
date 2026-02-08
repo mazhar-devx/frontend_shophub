@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { formatPrice } from "../utils/currency";
+import { getProductImageUrl } from "../utils/constants";
+import api from "../services/api";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProductById } from "../features/products/productSlice";
@@ -10,6 +11,11 @@ import { addToWishlist, removeFromWishlist } from "../features/wishlist/wishlist
 import { useUIStore } from "../zustand/uiStore";
 import ProductReviews from "../components/ProductReviews";
 import { store } from "../app/store"; // Import store for direct access
+
+/** MongoDB ObjectIds are 24 hex characters. Dummy/placeholder IDs like "1" cause 500 from API. */
+function isValidProductId(id) {
+  return typeof id === "string" && /^[a-fA-F0-9]{24}$/.test(id);
+}
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -42,26 +48,27 @@ export default function ProductDetails() {
   const [recommendations, setRecommendations] = useState([]);
 
   useEffect(() => {
+    if (!id) return;
+    // Only call API when id is a valid MongoDB ObjectId (24 hex chars). IDs like "1" from dummy data cause 500.
+    if (!isValidProductId(id)) {
+      return;
+    }
     dispatch(fetchProductById(id));
     dispatch(fetchProductReviews(id));
 
-    // Record View and Fetch Recommendations
+    // Record view + recommendations (use api so Bearer token is sent; view requires auth)
     const trackAndFetch = async () => {
-        try {
-            // Track View
-            await axios.post(`http://localhost:5000/api/v1/products/${id}/view`, {}, { withCredentials: true });
-            
-            // Get Recommendations (pass current ID for context)
-            const res = await axios.get(`http://localhost:5000/api/v1/products/recommendations?currentId=${id}`, { withCredentials: true });
-            if (res.data.status === 'success') {
-                setRecommendations(res.data.data.products);
-            }
-        } catch (err) {
-            console.error("Failed to track view or fetch recs", err);
+      try {
+        await api.post(`/products/${id}/view`, {});
+        const res = await api.get(`/products/recommendations`, { params: { currentId: id } });
+        if (res.data?.status === "success" && res.data?.data?.products) {
+          setRecommendations(res.data.data.products);
         }
+      } catch (err) {
+        // 401 = not logged in (view requires auth); ignore or show nothing
+      }
     };
     trackAndFetch();
-
   }, [dispatch, id]);
   
   const handleAddToCart = () => {
@@ -113,6 +120,15 @@ export default function ProductDetails() {
     );
   }
   
+  if (id && !isValidProductId(id)) {
+    return (
+      <div className="p-6 text-center glass rounded-2xl border border-white/10 mt-8 mx-auto max-w-2xl">
+        <div className="text-gray-400 text-xl">Product not found</div>
+        <p className="text-gray-500 mt-2 text-sm">The link may be from a placeholder. Browse products from the home or shop.</p>
+      </div>
+    );
+  }
+
   if (!product) {
     return (
       <div className="p-6 text-center glass rounded-2xl border border-white/10 mt-8 mx-auto max-w-2xl">
@@ -148,8 +164,8 @@ export default function ProductDetails() {
              {/* Main Image */}
              <div className="w-full h-full flex items-center justify-center relative z-10 pointer-events-none">
                 {(product.images && product.images.length > 0) || product.image ? (
-                   <img 
-                      src={product.images && product.images.length > 0 ? product.images[selectedImage] : product.image} 
+                  <img 
+                      src={getProductImageUrl(product.images?.length ? product.images[selectedImage] : product.image)}
                       alt={product.name} 
                       style={{
                         transformOrigin: isHovering ? `${mousePos.x}% ${mousePos.y}%` : 'center center',
@@ -185,7 +201,7 @@ export default function ProductDetails() {
                     onClick={() => setSelectedImage(index)}
                   >
                     <div className="w-full h-20 flex items-center justify-center rounded-xl overflow-hidden bg-white/5">
-                       <img src={img} alt={`View ${index + 1}`} className="w-full h-full object-cover" />
+                       <img src={getProductImageUrl(img)} alt={`View ${index + 1}`} className="w-full h-full object-cover" />
                     </div>
                   </div>
                ))
@@ -548,9 +564,9 @@ export default function ProductDetails() {
                 <div className="relative bg-black/40 h-48 flex items-center justify-center overflow-hidden cursor-pointer" onClick={() => window.location.href = `/product/${item._id}`}>
                     <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-800 via-black to-black opacity-80"></div>
                     {item.images && item.images.length > 0 ? (
-                        <img src={item.images[0]} alt={item.name} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-transform duration-500" />
+                        <img src={getProductImageUrl(item.images[0])} alt={item.name} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-transform duration-500" />
                     ) : item.image ? (
-                        <img src={item.image} alt={item.name} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-transform duration-500" />
+                        <img src={getProductImageUrl(item.image)} alt={item.name} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-transform duration-500" />
                     ) : (
                         <span className="text-3xl relative z-10 opacity-50 grayscale group-hover:grayscale-0 transition-all transform group-hover:scale-110">📦</span>
                     )}
