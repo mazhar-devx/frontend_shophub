@@ -4,6 +4,7 @@ import { useUIStore } from "../zustand/uiStore";
 import { removeFromCart, increaseQuantity, decreaseQuantity } from "../features/cart/cartSlice";
 import { store } from "../app/store";
 import { formatPrice } from "../utils/currency";
+import { getProductImageUrl } from "../utils/constants";
 
 export default function CartSidebar() {
   const { isCartOpen, toggleCart } = useUIStore();
@@ -73,9 +74,9 @@ export default function CartSidebar() {
                         <li key={item.id} className="py-6 flex animate-fade-in-up">
                           <div className="flex-shrink-0 w-24 h-24 bg-white/5 border border-white/10 rounded-xl overflow-hidden flex items-center justify-center">
                               {item.images && item.images.length > 0 ? (
-                                <img src={item.images[0]} alt={item.name} className="w-full h-full object-cover" />
+                                <img src={getProductImageUrl(item.images[0])} alt={item.name} className="w-full h-full object-cover" onError={(e) => e.target.src = '/placeholder.svg'} />
                               ) : item.image ? (
-                                <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                <img src={getProductImageUrl(item.image)} alt={item.name} className="w-full h-full object-cover" onError={(e) => e.target.src = '/placeholder.svg'} />
                               ) : (
                                 <span className="text-xs text-gray-600">Img</span>
                               )}
