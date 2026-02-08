@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import { getProductImageUrl } from "../../utils/constants";
+import { categories } from "../../data/categories";
 
 export default function EditProduct() {
   const { id } = useParams();
@@ -73,6 +74,7 @@ export default function EditProduct() {
       // Convert price and stock to numbers
       const productData = {
         ...formData,
+        category: formData.category === 'other' ? formData.customCategory : formData.category, // Handle custom
         price: parseFloat(formData.price),
         stock: parseInt(formData.stock),
         // Use formData.image correctly here
@@ -196,14 +198,24 @@ export default function EditProduct() {
                       className="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-purple-500 transition-all appearance-none cursor-pointer"
                     >
                        <option value="">Select a category</option>
-                       <option value="electronics">Electronics</option>
-                       <option value="clothing">Clothing</option>
-                       <option value="books">Books</option>
-                       <option value="home">Home & Kitchen</option>
-                       <option value="beauty">Beauty</option>
-                       <option value="sports">Sports</option>
+                       {categories.map((cat, index) => (
+                           <option key={index} value={cat.id}>{cat.icon} {cat.name}</option>
+                       ))}
                        <option value="other">Other</option>
                     </select>
+
+                    {formData.category === 'other' && (
+                        <div className="mt-4 animate-fade-in-down">
+                           <input 
+                             type="text" 
+                             name="customCategory" 
+                             value={formData.customCategory || ''} 
+                             onChange={handleChange}
+                             placeholder="Enter custom category name..."
+                             className="w-full bg-black/30 border border-purple-500/50 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all shadow-[0_0_15px_rgba(168,85,247,0.15)]"
+                           />
+                        </div>
+                     )}
                  </div>
                  <div className="space-y-2">
                     <label className="text-gray-300 text-sm font-bold ml-1">Brand</label>
