@@ -39,7 +39,11 @@ export const signup = createAsyncThunk(
       localStorage.setItem("token", response.data.token);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data || { message: "Signup failed" });
+      const isNetworkError = error.code === "ERR_NETWORK" || error.message === "Network Error";
+      const message = isNetworkError
+        ? "Server not running. Start the backend (double-click start-backend.bat or run: cd backend_shophub-main\\backend_shophub-main && npm run dev). Then try again."
+        : (error.response?.data?.message || error.message || "Signup failed");
+      return rejectWithValue({ message });
     }
   }
 );
@@ -57,7 +61,10 @@ export const login = createAsyncThunk(
       localStorage.setItem("token", response.data.token);
       return response.data;
     } catch (error) {
-      const message = error.response?.data?.message || error.message || "Login failed";
+      const isNetworkError = error.code === "ERR_NETWORK" || error.message === "Network Error";
+      const message = isNetworkError
+        ? "Server not running. Start the backend (double-click start-backend.bat or run: cd backend_shophub-main\\backend_shophub-main && npm run dev). Then try again."
+        : (error.response?.data?.message || error.message || "Login failed");
       return rejectWithValue({ message });
     }
   }
@@ -144,8 +151,8 @@ const authSlice = createSlice({
       })
       .addCase(login.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload.data.user;
-        state.isAuthenticated = true;
+        state.user = action.payload?.data?.user ?? action.payload?.user ?? null;
+        state.isAuthenticated = !!state.user;
         state.validationErrors = {};
       })
       .addCase(login.rejected, (state, action) => {
