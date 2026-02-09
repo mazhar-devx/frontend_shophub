@@ -27,18 +27,25 @@ function LocationMarker({ position, setPosition }) {
     const map = useMapEvents({
       click(e) {
         setPosition(e.latlng);
-        map.flyTo(e.latlng, map.getZoom());
-      },
-      locationfound(e) {
-        setPosition(e.latlng);
-        map.flyTo(e.latlng, map.getZoom());
-      },
+        map.flyTo(e.latlng, 15);
+      }
     });
   
+    useEffect(() => {
+        if (position) {
+            map.flyTo(position, map.getZoom());
+        }
+    }, [position, map]);
+
     return position === null ? null : (
       <Marker position={position}></Marker>
     );
 }
+
+const PAKISTAN_BOUNDS = [
+    [23.63, 60.87], // Southwest
+    [37.08, 77.83]  // Northeast
+];
 
 export default function Checkout() {
   const { items: cartItems, totalAmount } = useSelector((state) => state.cart);
@@ -67,7 +74,52 @@ export default function Checkout() {
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [userOffers, setUserOffers] = useState([]);
   const [showOffers, setShowOffers] = useState(false);
+  const [showComingSoon, setShowComingSoon] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
   const { showToast } = useUIStore(); 
+
+  const handleLocateMe = () => {
+    if (!navigator.geolocation) {
+        showToast("Geolocation is not supported by your browser", "error");
+        return;
+    }
+    
+    showToast("Requesting location permission...", "info");
+    navigator.geolocation.getCurrentPosition(
+        (pos) => {
+            const { latitude, longitude } = pos.coords;
+            setLocation({ lat: latitude, lng: longitude });
+            showToast("Location found!", "success");
+        },
+        (err) => {
+            showToast("Unable to retrieve your location", "error");
+        }
+    );
+  };
+
+  const handleMapSearch = async (e) => {
+    if (e) e.preventDefault();
+    if (!searchQuery.trim()) return;
+
+    setIsSearching(true);
+    try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&countrycodes=pk&q=${encodeURIComponent(searchQuery)}`);
+        const data = await response.json();
+        
+        if (data && data.length > 0) {
+            const { lat, lon } = data[0];
+            setLocation({ lat: parseFloat(lat), lng: parseFloat(lon) });
+            showToast(`Found: ${data[0].display_name.split(',')[0]}`, "success");
+        } else {
+            showToast("Location not found in Pakistan", "error");
+        }
+    } catch (err) {
+        showToast("Search failed", "error");
+    } finally {
+        setIsSearching(false);
+    }
+  };
 
   useEffect(() => {
     const fetchOffers = async () => {
@@ -138,7 +190,9 @@ export default function Checkout() {
     document.body.appendChild(processingToast);
 
     // Calculate final total including discount
-    const finalTotal = totalAmount + (totalAmount > 50 ? 0 : 5.99) + (totalAmount * 0.1) - discount;
+    const finalShipping = cartItems.reduce((acc, item) => acc + (item.shippingCost || 0) * item.quantity, 0);
+    const finalTax = cartItems.reduce((acc, item) => acc + (item.price * item.quantity * ((item.taxPercentage || 0) / 100)), 0);
+    const finalTotal = totalAmount + finalShipping + finalTax - discount;
 
     try {
       // Create Order API Call
@@ -191,13 +245,54 @@ export default function Checkout() {
   };
   
   // Calculate shipping
-  const shipping = totalAmount > 50 ? 0 : 5.99;
+  const shipping = cartItems.reduce((acc, item) => acc + (item.shippingCost || 0) * item.quantity, 0);
   
   // Calculate tax
-  const tax = totalAmount * 0.1;
+  const tax = cartItems.reduce((acc, item) => acc + (item.price * item.quantity * ((item.taxPercentage || 0) / 100)), 0);
   
   // Calculate total
   const total = totalAmount + shipping + tax - discount;
+
+  // Coming Soon Modal Component
+  const ComingSoonModal = () => (
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
+        <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setShowComingSoon(false)}></div>
+        <div className="glass border border-white/10 rounded-[2.5rem] p-10 max-w-md w-full relative z-10 animate-fade-in-up shadow-2xl overflow-hidden text-center">
+            {/* Background Glow */}
+            <div className="absolute -top-24 -right-24 w-48 h-48 bg-purple-600/20 rounded-full blur-3xl"></div>
+            <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-cyan-600/20 rounded-full blur-3xl"></div>
+            
+            <div className="w-24 h-24 bg-gradient-to-br from-purple-500/20 to-cyan-500/20 rounded-full flex items-center justify-center mx-auto mb-6 border border-white/10 relative group">
+                <span className="text-5xl group-hover:scale-110 transition-transform duration-500 animate-pulse">💳</span>
+                <div className="absolute inset-0 rounded-full border border-purple-500/30 animate-ping opacity-20"></div>
+            </div>
+            
+            <h3 className="text-3xl font-black text-white mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">Coming Soon</h3>
+            <p className="text-gray-400 text-lg mb-8 leading-relaxed">
+                We're currently fine-tuning our <span className="text-purple-400 font-bold underline decoration-purple-500/30">Credit Card</span> payment gateway to ensure maximum security.
+            </p>
+            
+            <div className="bg-white/5 rounded-2xl p-6 border border-white/10 mb-8 flex items-center gap-4 text-left">
+                <div className="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center text-green-400 flex-shrink-0">
+                    <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                </div>
+                <div>
+                    <h4 className="text-white font-bold text-sm">Please Use CoD</h4>
+                    <p className="text-xs text-gray-400">Cash on Delivery is fully active and secure.</p>
+                </div>
+            </div>
+            
+            <button 
+                onClick={() => setShowComingSoon(false)}
+                className="w-full bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-bold py-4 rounded-xl shadow-[0_0_20px_rgba(124,58,237,0.3)] hover:shadow-[0_0_30px_rgba(124,58,237,0.5)] transition-all transform hover:-translate-y-1 active:scale-95"
+            >
+                Continue with CoD
+            </button>
+        </div>
+    </div>
+  );
   
   if (cartItems.length === 0) {
     return (
@@ -312,17 +407,62 @@ export default function Checkout() {
               </div>
 
               <div className="md:col-span-2 mt-4">
-                 <label className="block text-sm font-bold text-gray-400 mb-2 uppercase tracking-wider flex items-center gap-2">
-                     <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                     Pin Location on Map
+                 <label className="block text-sm font-bold text-gray-400 mb-4 uppercase tracking-wider flex items-center justify-between">
+                     <span className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                        Pin Delivery Location
+                     </span>
+                     <button 
+                        type="button"
+                        onClick={handleLocateMe}
+                        className="text-[10px] bg-white/5 border border-white/10 hover:bg-white/10 px-3 py-1 rounded-full text-cyan-400 font-bold transition-all flex items-center gap-1"
+                     >
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                        Locate Me
+                     </button>
                  </label>
-                 <div className="h-80 w-full rounded-2xl overflow-hidden border border-white/20 relative z-0 shadow-inner">
-                    <MapContainer center={[30.3753, 69.3451]} zoom={5} style={{ height: "100%", width: "100%" }}>
-                         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution='&copy; OpenStreetMap' />
+
+                 {/* Map Search Bar */}
+                 <div className="relative mb-4 group/search">
+                    <form onSubmit={handleMapSearch}>
+                        <input 
+                            type="text" 
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            placeholder="Search your city or area (e.g. Gulberg Lahore)"
+                            className="w-full bg-black/40 border border-white/10 rounded-xl px-12 py-3 text-sm text-white focus:border-cyan-500/50 outline-none transition-all placeholder-gray-600"
+                        />
+                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
+                             {isSearching ? (
+                                <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                             ) : (
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                             )}
+                        </div>
+                        <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 text-[10px] px-3 py-1.5 rounded-lg font-bold transition-all uppercase">Find</button>
+                    </form>
+                 </div>
+
+                 <div className="h-[400px] w-full rounded-2xl overflow-hidden border border-white/10 relative z-0 shadow-2xl group/map">
+                    <div className="absolute inset-0 border-[20px] border-white/5 pointer-events-none z-10 rounded-2xl opacity-50"></div>
+                    <MapContainer 
+                        center={[30.3753, 69.3451]} 
+                        zoom={5} 
+                        style={{ height: "100%", width: "100%" }}
+                        maxBounds={PAKISTAN_BOUNDS}
+                        minZoom={5}
+                    >
+                         <TileLayer 
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" 
+                            attribution='&copy; OpenStreetMap' 
+                         />
                          <LocationMarker position={location} setPosition={setLocation} />
                     </MapContainer>
                  </div>
-                 <p className="text-xs text-gray-500 mt-2 ml-1">Tip: Click on the map to set an exact delivery point for faster service.</p>
+                 <div className="flex justify-between items-center mt-3">
+                    <p className="text-[10px] text-gray-500 font-medium">✨ Click anywhere to refine delivery point</p>
+                    {location && <p className="text-[10px] text-cyan-400 font-mono">Coords: {location.lat.toFixed(4)}, {location.lng.toFixed(4)}</p>}
+                 </div>
               </div>
             </div>
 
@@ -350,17 +490,21 @@ export default function Checkout() {
             
             {/* Payment Options */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                 <label className={`relative border rounded-2xl p-6 cursor-pointer transition-all duration-300 ${paymentMethod === "credit_card" ? 'border-purple-500 bg-purple-500/10 shadow-[0_0_20px_rgba(168,85,247,0.2)]' : 'border-white/10 hover:border-white/30 bg-black/20'}`}>
-                    <input type="radio" name="payment" value="credit_card" checked={paymentMethod === "credit_card"} onChange={() => setPaymentMethod("credit_card")} className="sr-only" />
+                 <label 
+                    onClick={(e) => {
+                        e.preventDefault();
+                        setShowComingSoon(true);
+                    }}
+                    className={`relative border rounded-2xl p-6 cursor-pointer transition-all duration-300 ${paymentMethod === "credit_card" ? 'border-purple-500 bg-purple-500/10 shadow-[0_0_20px_rgba(168,85,247,0.2)]' : 'border-white/10 hover:border-white/30 bg-black/20 opacity-60 hover:opacity-100'}`}
+                 >
+                    <input type="radio" name="payment" value="credit_card" checked={paymentMethod === "credit_card"} readOnly className="sr-only" />
                     <div className="flex items-center justify-between mb-4">
                         <span className="font-bold text-white">Credit Card</span>
-                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${paymentMethod === "credit_card" ? 'border-purple-500' : 'border-gray-500'}`}>
-                            {paymentMethod === "credit_card" && <div className="w-2.5 h-2.5 rounded-full bg-purple-500"></div>}
-                        </div>
+                        <div className="text-[10px] bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded font-black tracking-widest uppercase">Coming Soon</div>
                     </div>
                     <div className="flex space-x-2 opacity-70">
-                        <div className="bg-white rounded px-2 py-1 text-xs font-bold text-black">VISA</div>
-                        <div className="bg-white rounded px-2 py-1 text-xs font-bold text-black">MC</div>
+                        <div className="bg-white rounded px-2 py-1 text-xs font-bold text-black uppercase tracking-tighter">VISA</div>
+                        <div className="bg-white rounded px-2 py-1 text-xs font-bold text-black uppercase tracking-tighter">MC</div>
                     </div>
                  </label>
 
@@ -377,8 +521,26 @@ export default function Checkout() {
             </div>
             
             {paymentMethod === "credit_card" && (
-                <div className="bg-black/30 rounded-2xl p-6 border border-white/5 animate-fade-in-down">
-                    <StripeCheckout amount={total} onSuccess={handlePaymentSuccess} onValidate={validateForm} />
+                <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-black/40 group/card animate-fade-in-down p-8">
+                    {/* Blurred Card Mockup */}
+                    <div className="space-y-6 opacity-30 grayscale filter blur-[2px]">
+                        <div className="h-12 w-full bg-white/10 rounded-xl"></div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="h-12 w-full bg-white/10 rounded-xl"></div>
+                            <div className="h-12 w-full bg-white/10 rounded-xl"></div>
+                        </div>
+                    </div>
+                    
+                    {/* Better "Coming Soon" Overlay */}
+                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 bg-purple-900/10 backdrop-blur-[4px]">
+                        <div className="w-16 h-16 bg-gradient-to-br from-purple-500/20 to-cyan-500/20 rounded-full flex items-center justify-center mb-4 border border-white/20">
+                            <span className="text-3xl">⏳</span>
+                        </div>
+                        <h4 className="text-2xl font-black text-white mb-2 uppercase tracking-tighter">Gateway in Maintenance</h4>
+                        <p className="text-sm text-gray-400 max-w-[240px]">
+                            This payment method will be available after <span className="text-purple-400 font-bold underline">security verification</span>. Please select CoD to proceed!
+                        </p>
+                    </div>
                 </div>
             )}
             
@@ -423,6 +585,14 @@ export default function Checkout() {
                         <div className="flex-1 flex flex-col justify-between">
                             <div>
                                 <h3 className="text-white font-bold line-clamp-1 text-sm mb-1">{item.name}</h3>
+                                <div className="flex flex-wrap gap-2 mb-1">
+                                    <span className="text-[10px] bg-green-500/10 text-green-400 px-2 py-0.5 rounded-full border border-green-500/20">
+                                        Shipping: {item.shippingCost > 0 ? formatPrice(item.shippingCost) : 'FREE'}
+                                    </span>
+                                    <span className="text-[10px] bg-purple-500/10 text-purple-400 px-2 py-0.5 rounded-full border border-purple-500/20">
+                                        Tax: {item.taxPercentage || 0}%
+                                    </span>
+                                </div>
                                 <p className="text-xs text-gray-400">Qty: {item.quantity}</p>
                             </div>
                             <div className="font-bold text-cyan-400">{formatPrice(item.totalPrice)}</div>
@@ -485,7 +655,7 @@ export default function Checkout() {
                      <span className="text-white font-medium">{shipping === 0 ? 'FREE' : formatPrice(shipping)}</span>
                  </div>
                  <div className="flex justify-between text-gray-400 text-sm">
-                     <span>Tax (10%)</span>
+                     <span>Tax</span>
                      <span className="text-white font-medium">{formatPrice(tax)}</span>
                  </div>
                  {discount > 0 && (
@@ -511,6 +681,7 @@ export default function Checkout() {
         </div>
         
       </div>
+      {showComingSoon && <ComingSoonModal />}
     </div>
   );
 }
