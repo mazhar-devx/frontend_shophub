@@ -100,9 +100,9 @@ export default function AIHelper() {
     };
 
     return (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[1000] flex flex-col items-center w-full px-4 pointer-events-none">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[1000] flex flex-col items-center w-auto pointer-events-none">
             {/* AI Chat Panel */}
-            <div className={`w-full max-w-[450px] mb-6 pointer-events-auto transition-all duration-700 cubic-bezier(0.16, 1, 0.3, 1) ${isOpen ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-20 opacity-0 scale-95 pointer-events-none'}`}>
+            <div className={`w-[90vw] sm:w-full max-w-[450px] mb-6 pointer-events-auto transition-all duration-700 cubic-bezier(0.16, 1, 0.3, 1) ${isOpen ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-20 opacity-0 scale-95 pointer-events-none'}`}>
                 <div className="glass border border-white/20 rounded-[3rem] shadow-[0_40px_80px_-15px_rgba(0,0,0,0.7)] backdrop-blur-3xl overflow-hidden flex flex-col max-h-[70vh] sm:max-h-[650px]">
                     {/* Header */}
                     <div className="p-5 sm:p-7 bg-gradient-to-br from-indigo-900/60 via-purple-900/40 to-cyan-900/40 border-b border-white/10 flex items-center justify-between">
