@@ -62,7 +62,7 @@ export default function Cart() {
   }
   
   return (
-    <div className="p-4 sm:p-6 max-w-7xl mx-auto min-h-screen">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto min-h-screen pb-40">
       <div className="mb-8 relative">
          <div className="absolute top-0 right-0 w-64 h-64 bg-purple-900/10 rounded-full blur-3xl -z-10"></div>
         <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">Your Cart</h1>
@@ -194,8 +194,8 @@ export default function Cart() {
           </div>
         </div>
         
-        <div className="lg:col-span-1">
-          <div className="glass border border-white/10 rounded-3xl p-6 sticky top-24 shadow-2xl">
+        <div className="lg:col-span-1 border-t border-white/10 pt-8 lg:pt-0 lg:border-t-0">
+          <div className="glass border border-white/10 rounded-3xl p-6 lg:sticky lg:top-24 shadow-2xl relative z-20">
             <h2 className="text-xl font-bold mb-6 text-white border-b border-white/10 pb-4">Order Summary</h2>
             
             <div className="space-y-4 mb-6">
