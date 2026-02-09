@@ -16,9 +16,9 @@ const WhatsAppContact = () => {
     };
 
     return (
-        <div className="fixed bottom-6 right-6 z-[999] flex flex-col items-end group/wa">
+        <div className="fixed bottom-6 right-6 z-[999] flex flex-col items-end pointer-events-none group/wa">
             {/* Modal Overlay */}
-            <div className={`mb-4 w-[280px] sm:w-[350px] transition-all duration-700 cubic-bezier(0.16, 1, 0.3, 1) transform ${isOpen ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-10 opacity-0 scale-95 pointer-events-none'}`}>
+            <div className={`mb-4 w-[280px] sm:w-[350px] pointer-events-auto transition-all duration-700 cubic-bezier(0.16, 1, 0.3, 1) transform ${isOpen ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-10 opacity-0 scale-95 pointer-events-none'}`}>
                 <div className="glass rounded-[2.5rem] border border-white/20 shadow-[0_30px_60px_-12px_rgba(0,0,0,0.5)] overflow-hidden relative backdrop-blur-3xl">
                     {/* Background Glow */}
                     <div className="absolute -top-10 -right-10 w-32 h-32 bg-green-500/20 rounded-full blur-2xl -z-10 animate-pulse"></div>
@@ -92,7 +92,7 @@ const WhatsAppContact = () => {
             {/* Floating Toggle Button */}
             <button 
                 onClick={() => setIsOpen(!isOpen)}
-                className={`relative w-16 h-16 rounded-full flex items-center justify-center transition-all duration-700 transform hover:scale-110 active:scale-95 shadow-[0_10px_30px_rgba(0,0,0,0.3)] overflow-hidden ${isOpen ? 'bg-red-500/20 backdrop-blur-md border border-white/20 rotate-[135deg]' : 'bg-gradient-to-br from-green-500 to-emerald-600'}`}
+                className={`relative w-16 h-16 pointer-events-auto rounded-full flex items-center justify-center transition-all duration-700 transform hover:scale-110 active:scale-95 shadow-[0_10px_30px_rgba(0,0,0,0.3)] overflow-hidden ${isOpen ? 'bg-red-500/20 backdrop-blur-md border border-white/20 rotate-[135deg]' : 'bg-gradient-to-br from-green-500 to-emerald-600'}`}
             >
                 {/* Background Pulse */}
                 {!isOpen && <div className="absolute inset-0 bg-green-400 animate-ping opacity-20"></div>}
