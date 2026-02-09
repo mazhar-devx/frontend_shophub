@@ -7,6 +7,8 @@ import SearchBar from "./components/SearchBar";
 import MobileMenu from "./components/MobileMenu";
 import Modal from "./components/Modal";
 import BackToTop from "./components/BackToTop";
+import WhatsAppContact from "./components/WhatsAppContact";
+import AIHelper from "./components/AIHelper";
 import AdminLayout from "./layouts/AdminLayout";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -89,6 +91,8 @@ export default function App() {
             </div>
             <Footer />
             <BackToTop />
+            <WhatsAppContact />
+            <AIHelper />
           </>
         } />
         
