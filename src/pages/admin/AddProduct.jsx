@@ -17,9 +17,13 @@ export default function AddProduct() {
     description: "",
     price: "",
     category: "electronics",
+    customCategory: "",
     brand: "",
     countInStock: "",
     imageUrl: "", // For manual URL entry
+    shippingType: "free",
+    shippingCost: "0",
+    taxPercentage: "0",
   });
 
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -69,6 +73,8 @@ export default function AddProduct() {
       
       data.append('brand', formData.brand);
       data.append('stock', formData.countInStock || 0);
+      data.append('shippingCost', formData.shippingType === 'free' ? 0 : (formData.shippingCost || 0));
+      data.append('taxPercentage', formData.taxPercentage || 0);
       
       // Append Image URL if provided
       if (formData.imageUrl) {
@@ -206,6 +212,56 @@ export default function AddProduct() {
                       placeholder="e.g. Apple, Sony"
                       className="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
                     />
+                 </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-4 border-b border-white/5">
+                 <div className="space-y-4">
+                    <label className="text-gray-300 text-sm font-bold ml-1">Shipping Type</label>
+                    <div className="flex gap-4">
+                        <button 
+                            type="button"
+                            onClick={() => setFormData({...formData, shippingType: 'free'})}
+                            className={`flex-1 py-3 rounded-xl border transition-all font-bold ${formData.shippingType === 'free' ? 'bg-green-500/20 border-green-500 text-green-400 shadow-[0_0_15px_rgba(34,197,94,0.15)]' : 'bg-black/30 border-white/10 text-gray-500 hover:border-white/20'}`}
+                        >
+                            Free
+                        </button>
+                        <button 
+                            type="button"
+                            onClick={() => setFormData({...formData, shippingType: 'paid'})}
+                            className={`flex-1 py-3 rounded-xl border transition-all font-bold ${formData.shippingType === 'paid' ? 'bg-cyan-500/20 border-cyan-500 text-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.15)]' : 'bg-black/30 border-white/10 text-gray-500 hover:border-white/20'}`}
+                        >
+                            Paid
+                        </button>
+                    </div>
+
+                    {formData.shippingType === 'paid' && (
+                        <div className="animate-fade-in-down">
+                            <input 
+                                type="number" 
+                                name="shippingCost" 
+                                value={formData.shippingCost} 
+                                onChange={handleChange}
+                                placeholder="Shipping Cost ($)"
+                                step="0.01"
+                                className="w-full bg-black/30 border border-cyan-500/50 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
+                            />
+                        </div>
+                    )}
+                 </div>
+                 <div className="space-y-4">
+                    <label className="text-gray-300 text-sm font-bold ml-1">Tax Percentage (%)</label>
+                    <div className="relative">
+                        <input 
+                            type="number" 
+                            name="taxPercentage" 
+                            value={formData.taxPercentage} 
+                            onChange={handleChange}
+                            placeholder="e.g. 10"
+                            className="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                        />
+                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold">%</span>
+                    </div>
                  </div>
               </div>
 
