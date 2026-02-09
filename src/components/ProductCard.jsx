@@ -23,13 +23,11 @@ export default function ProductCard({ product }) {
       to={`/product/${product._id}`}
       className="group relative block h-full select-none"
     >
-        {/* Glow Effect Background */}
-      <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-purple-500/0 to-cyan-500/0 rounded-[2rem] blur-xl group-hover:from-purple-600/20 group-hover:via-cyan-500/20 group-hover:to-purple-600/20 transition-all duration-700 -z-10 group-hover:scale-105"></div>
+        {/* Glow Effect Background - REMOVED for Ultra Light */}
       
-      <div className="glass border border-white/10 rounded-[2rem] overflow-hidden h-full flex flex-col transition-all duration-500 group-hover:border-white/30 group-hover:shadow-[0_0_30px_rgba(0,0,0,0.3)] bg-[#0a0a0a]/40 backdrop-blur-md relative transform group-hover:-translate-y-2">
+      <div className="bg-[#121212] border border-white/5 rounded-[2rem] overflow-hidden h-full flex flex-col transition-all duration-300 group-hover:border-white/20 relative transform group-hover:-translate-y-1">
         
-        {/* Basic Shine */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-0"></div>
+        {/* Basic Shine - REMOVED for Ultra Light */}
 
         {/* Image Container */}
         <div className="relative pt-[110%] overflow-hidden bg-gray-900/50">
