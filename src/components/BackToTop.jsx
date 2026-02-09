@@ -27,7 +27,7 @@ export default function BackToTop() {
   };
 
   return (
-    <div className={`fixed bottom-8 right-8 z-50 transition-all duration-500 transform ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10 pointer-events-none"}`}>
+    <div className={`fixed bottom-8 left-8 z-50 transition-all duration-500 transform ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10 pointer-events-none"}`}>
       <button
         onClick={scrollToTop}
         className="group relative flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-purple-600 to-cyan-500 text-white shadow-[0_0_20px_rgba(124,58,237,0.5)] hover:shadow-[0_0_30px_rgba(6,182,212,0.6)] transition-all duration-300 hover:scale-110 active:scale-95 overflow-hidden border border-white/20"
