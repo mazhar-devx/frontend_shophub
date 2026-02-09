@@ -138,14 +138,14 @@ export default function Home() {
                  <img 
                    src={getProductImageUrl(settings.image)} 
                    alt="Hero" 
-                   className="w-full h-full object-cover opacity-50 scale-105 group-hover:scale-100 transition-transform duration-[20s] ease-linear" 
+                   className="w-full h-full object-cover opacity-50" 
                    loading="eager"
                  />
              ) : (
                  <img 
                    src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80" 
                    alt="Hero" 
-                   className="w-full h-full object-cover opacity-60 scale-105 group-hover:scale-100 transition-transform duration-[20s] ease-linear" 
+                   className="w-full h-full object-cover opacity-60" 
                  />
              )}
              <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent"></div>
@@ -153,8 +153,8 @@ export default function Home() {
         </div>
 
         {/* Floating Elements */}
-        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-[60px] md:blur-[100px] animate-pulse"></div>
-        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-cyan-600/20 rounded-full blur-[60px] md:blur-[100px] animate-pulse animation-delay-2000"></div>
+        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-[60px]"></div>
+        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-cyan-600/10 rounded-full blur-[60px]"></div>
 
         <div className="relative z-10 w-full flex flex-col md:flex-row items-center justify-between text-primary px-6 sm:px-12 py-12 md:py-0 max-w-[1400px] mx-auto">
           <div className="max-w-3xl mb-12 md:mb-0 text-center md:text-left">
@@ -185,7 +185,7 @@ export default function Home() {
             </div>
           </div>
           
-          <div className="relative w-full md:w-1/2 flex justify-center animate-float">
+          <div className="relative w-full md:w-1/2 flex justify-center">
              <div className="relative w-72 h-72 md:w-[30rem] md:h-[30rem]">
                 <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/20 to-purple-500/20 rounded-full blur-[40px] md:blur-[60px]"></div>
                 <div className="w-full h-full rounded-[3rem] border border-white/10 bg-white/5 backdrop-blur-md md:backdrop-blur-xl relative overflow-hidden flex items-center justify-center shadow-2xl rotate-3 hover:rotate-0 transition-all duration-500">
