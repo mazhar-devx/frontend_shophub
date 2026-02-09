@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Home() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { items: products, loading, error } = useSelector((state) => state.products);
   const { user } = useSelector((state) => state.auth);
   const [settings, setSettings] = useState(null);
