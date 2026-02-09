@@ -13,9 +13,13 @@ export default function EditProduct() {
     price: "",
     description: "",
     category: "",
+    customCategory: "",
     stock: "",
     brand: "",
-    image: "" 
+    image: "",
+    shippingType: "free",
+    shippingCost: "0",
+    taxPercentage: "0",
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -30,14 +34,20 @@ export default function EditProduct() {
         const response = await api.get(`/products/${id}`);
         const product = response.data.data.product;
         
+        const isStandardCategory = categories.some(cat => cat.id === product.category);
+        
         setFormData({
           name: product.name || "",
           description: product.description || "",
           price: product.price || "",
-          category: product.category || "",
+          category: isStandardCategory ? (product.category || "") : "other",
+          customCategory: isStandardCategory ? "" : (product.category || ""),
           stock: product.stock || "",
           brand: product.brand || "",
-          image: product.images?.[0] || ""
+          image: product.images?.[0] || "",
+          shippingType: product.shippingCost > 0 ? "paid" : "free",
+          shippingCost: product.shippingCost || "0",
+          taxPercentage: product.taxPercentage || "0",
         });
         setLoading(false);
       } catch (err) {
@@ -77,6 +87,8 @@ export default function EditProduct() {
         category: formData.category === 'other' ? formData.customCategory : formData.category, // Handle custom
         price: parseFloat(formData.price),
         stock: parseInt(formData.stock),
+        shippingCost: formData.shippingType === 'free' ? 0 : (parseFloat(formData.shippingCost) || 0),
+        taxPercentage: parseFloat(formData.taxPercentage) || 0,
         // Use formData.image correctly here
         images: [formData.image || "https://via.placeholder.com/300x300"]
       };
@@ -185,6 +197,56 @@ export default function EditProduct() {
                       placeholder="e.g. 100"
                       className="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
                     />
+                 </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-4 border-b border-white/5">
+                 <div className="space-y-4">
+                    <label className="text-gray-300 text-sm font-bold ml-1">Shipping Type</label>
+                    <div className="flex gap-4">
+                        <button 
+                            type="button"
+                            onClick={() => setFormData({...formData, shippingType: 'free'})}
+                            className={`flex-1 py-3 rounded-xl border transition-all font-bold ${formData.shippingType === 'free' ? 'bg-green-500/20 border-green-500 text-green-400 shadow-[0_0_15px_rgba(34,197,94,0.15)]' : 'bg-black/30 border-white/10 text-gray-500 hover:border-white/20'}`}
+                        >
+                            Free
+                        </button>
+                        <button 
+                            type="button"
+                            onClick={() => setFormData({...formData, shippingType: 'paid'})}
+                            className={`flex-1 py-3 rounded-xl border transition-all font-bold ${formData.shippingType === 'paid' ? 'bg-cyan-500/20 border-cyan-500 text-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.15)]' : 'bg-black/30 border-white/10 text-gray-500 hover:border-white/20'}`}
+                        >
+                            Paid
+                        </button>
+                    </div>
+
+                    {formData.shippingType === 'paid' && (
+                        <div className="animate-fade-in-down">
+                            <input 
+                                type="number" 
+                                name="shippingCost" 
+                                value={formData.shippingCost} 
+                                onChange={handleChange}
+                                placeholder="Shipping Cost ($)"
+                                step="0.01"
+                                className="w-full bg-black/30 border border-cyan-500/50 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
+                            />
+                        </div>
+                    )}
+                 </div>
+                 <div className="space-y-4">
+                    <label className="text-gray-300 text-sm font-bold ml-1">Tax Percentage (%)</label>
+                    <div className="relative">
+                        <input 
+                            type="number" 
+                            name="taxPercentage" 
+                            value={formData.taxPercentage} 
+                            onChange={handleChange}
+                            placeholder="e.g. 10"
+                            className="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                        />
+                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold">%</span>
+                    </div>
                  </div>
               </div>
 
