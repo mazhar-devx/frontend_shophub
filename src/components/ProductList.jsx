@@ -39,7 +39,7 @@ function ProductList({ products, loading, error, view = 'grid' }) {
           <Link 
             key={product._id} 
             to={`/product/${product._id}`}
-            className="flex flex-col sm:flex-row items-center glass border border-white/10 rounded-2xl p-6 hover:shadow-[0_0_20px_rgba(124,58,237,0.15)] transition-all group duration-300"
+            className="flex flex-col sm:flex-row items-center bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 hover:shadow-lg transition-all group duration-300"
           >
              <div className="relative w-full sm:w-32 h-32 mb-4 sm:mb-0 sm:mr-6 shrink-0 overflow-hidden rounded-xl bg-black/40">
                 {(product.images?.length || product.image) ? (
