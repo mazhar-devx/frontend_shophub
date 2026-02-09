@@ -107,6 +107,18 @@ export default function Home() {
   // Trending Fallback: use fetched trending if available, else featured
   const finalTrending = (trendingProducts && trendingProducts.length > 0) ? trendingProducts : featuredProducts.slice(0, 4);
 
+  const handleFlashSaleAddToCart = () => {
+    const productToAdd = {
+      id: flashSale?._id || "flash-sale-sonic-x-pro",
+      name: flashSale?.title || "Sonic X-Pro",
+      price: flashSale?.price || 199.99,
+      image: flashSale?.image || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=60",
+      quantity: 1
+    };
+    dispatch(addToCart(productToAdd));
+    navigate('/cart');
+  };
+
   // Brands data
   const brands = [
     { id: 1, name: "Apple" },
@@ -141,8 +153,8 @@ export default function Home() {
         </div>
 
         {/* Floating Elements */}
-        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-[120px] animate-pulse"></div>
-        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-cyan-600/20 rounded-full blur-[120px] animate-pulse animation-delay-2000"></div>
+        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-[60px] md:blur-[100px] animate-pulse"></div>
+        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-cyan-600/20 rounded-full blur-[60px] md:blur-[100px] animate-pulse animation-delay-2000"></div>
 
         <div className="relative z-10 w-full flex flex-col md:flex-row items-center justify-between text-primary px-6 sm:px-12 py-12 md:py-0 max-w-[1400px] mx-auto">
           <div className="max-w-3xl mb-12 md:mb-0 text-center md:text-left">
@@ -175,8 +187,8 @@ export default function Home() {
           
           <div className="relative w-full md:w-1/2 flex justify-center animate-float">
              <div className="relative w-72 h-72 md:w-[30rem] md:h-[30rem]">
-                <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/20 to-purple-500/20 rounded-full blur-[60px]"></div>
-                <div className="w-full h-full rounded-[3rem] border border-white/10 bg-white/5 backdrop-blur-xl relative overflow-hidden flex items-center justify-center shadow-2xl rotate-3 hover:rotate-0 transition-all duration-500">
+                <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/20 to-purple-500/20 rounded-full blur-[40px] md:blur-[60px]"></div>
+                <div className="w-full h-full rounded-[3rem] border border-white/10 bg-white/5 backdrop-blur-md md:backdrop-blur-xl relative overflow-hidden flex items-center justify-center shadow-2xl rotate-3 hover:rotate-0 transition-all duration-500">
                    <div className="text-center p-12">
                       <div className="text-8xl md:text-9xl mb-4 transform hover:scale-110 transition-transform cursor-default">🛍️</div>
                       <div className="text-4xl font-black text-white mb-2">{settings?.price || "50%"}</div>
@@ -256,6 +268,7 @@ export default function Home() {
                 src={(Array.isArray(product.images) && product.images.length > 0) ? getProductImageUrl(product.images[0]) : (product.image ? getProductImageUrl(product.image) : "/placeholder.svg")} 
                 alt={product.name}
                 loading="lazy"
+                decoding="async"
                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 onError={(e) => {
                     e.target.onerror = null;
@@ -318,7 +331,7 @@ export default function Home() {
       {/* Deals of the Day - Ultra Responsive */}
       <section className="mb-12 sm:mb-20 relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl group min-h-[500px] flex items-center">
         <div className="absolute inset-0 bg-gradient-to-r from-red-900 via-black to-black z-0"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,_rgba(220,38,38,0.2),transparent_70%)] animate-pulse"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,_rgba(220,38,38,0.2),transparent_70%)] opacity-50"></div>
         
         <div className="relative z-10 p-6 sm:p-10 md:p-16 flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12 w-full">
             <div className="md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left order-2 md:order-1 w-full">
@@ -348,17 +361,17 @@ export default function Home() {
                             <span>⚡ Shop Now</span>
                         </button>
                         <button 
-                             onClick={() => navigate('/products')}
+                             onClick={handleFlashSaleAddToCart}
                             className="flex-1 bg-white/5 hover:bg-white/10 text-white font-bold py-4 px-8 rounded-xl transition-all border border-white/10 hover:border-white/30 backdrop-blur-md text-lg transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2"
                         >
-                            <span>🛒 View Collection</span>
+                            <span>🛒 Add to Cart</span>
                         </button>
                     </div>
                 </div>
             </div>
             
             <div className="md:w-1/2 flex justify-center relative order-1 md:order-2 w-full mb-8 md:mb-0">
-                 <div className="absolute inset-0 bg-red-600/30 blur-[80px] rounded-full transform scale-75 animate-pulse"></div>
+                 <div className="absolute inset-0 bg-red-600/30 blur-[40px] md:blur-[60px] rounded-full transform scale-75 animate-pulse"></div>
                  <div className="glass w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 rounded-[2rem] flex items-center justify-center border border-white/10 relative z-10 overflow-hidden bg-black/20 group-hover:scale-105 transition-transform duration-700 shadow-2xl skew-y-3 group-hover:skew-y-0">
                     {flashSale?.image ? (
                         <img src={getProductImageUrl(flashSale.image)} alt={flashSale.title} className="w-full h-full object-cover" />
@@ -432,7 +445,7 @@ export default function Home() {
             <h2 className="text-2xl font-bold text-gray-400 uppercase tracking-widest">Global Favorites</h2>
          </div>
 
-         <div className="flex w-max animate-scroll group-hover:[animation-play-state:paused]">
+         <div className="flex w-max animate-scroll group-hover:[animation-play-state:paused] will-change-transform">
             {/* Duplicated list for seamless scrolling */}
             {[...displayProducts, ...displayProducts, ...displayProducts].map((product, idx) => (
                <Link 
