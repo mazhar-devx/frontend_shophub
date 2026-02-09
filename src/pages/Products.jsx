@@ -71,10 +71,9 @@ export default function Products() {
   return (
     <div className="p-4 md:p-6 min-h-screen pt-20">
       <div className="mb-12 relative">
-        <div className="absolute -top-20 -left-20 w-96 h-96 bg-purple-900/20 rounded-full blur-[120px] pointer-events-none"></div>
-        <div className="relative z-10 glass border border-white/10 rounded-[2.5rem] p-8 md:p-12 mb-8 overflow-hidden group">
-             <div className="absolute inset-0 bg-gradient-to-r from-black/0 via-white/5 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 transform -skew-x-12 translate-x-full group-hover:translate-x-[-200%]"></div>
-             <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-indigo-500/10 to-transparent rounded-full blur-3xl -z-10"></div>
+        <div className="absolute -top-20 -left-20 w-96 h-96 bg-purple-900/10 rounded-full blur-[60px] pointer-events-none"></div>
+        <div className="relative z-10 bg-[#0a0a0a] border border-white/10 rounded-[2.5rem] p-8 md:p-12 mb-8 overflow-hidden group">
+             <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-white/5 to-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-700 transform -skew-x-12 translate-x-full group-hover:translate-x-[-200%]"></div>             <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-indigo-500/5 to-transparent rounded-full blur-3xl -z-10"></div>
              
              <div className="flex flex-col md:flex-row justify-between items-end gap-6">
                 <div>
@@ -93,7 +92,7 @@ export default function Products() {
         </div>
         
         {/* Results info and view options */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8 sticky top-[80px] z-30 bg-[#030014]/80 backdrop-blur-xl p-4 rounded-2xl border border-white/5 shadow-lg">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8 sticky top-[80px] z-30 bg-[#0a0a0a] p-4 rounded-2xl border border-white/5 shadow-lg">
           <div className="flex items-center space-x-4 w-full md:w-auto overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
              {/* Quick Filters */}
              {['all', 'electronics', 'clothing', 'home'].map(cat => (
@@ -163,7 +162,7 @@ export default function Products() {
             </button>
           </div>
           
-          <div className="hidden md:block glass border border-white/10 rounded-3xl p-6 sticky top-32 shadow-2xl backdrop-blur-xl">
+          <div className="hidden md:block bg-[#0a0a0a] border border-white/10 rounded-3xl p-6 sticky top-32 shadow-xl">
             <div className="flex justify-between items-center mb-6 border-b border-white/10 pb-4">
               <h2 className="text-xl font-bold text-white flex items-center gap-2">
                 <svg className="w-5 h-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
