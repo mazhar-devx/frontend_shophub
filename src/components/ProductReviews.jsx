@@ -56,21 +56,21 @@ export default function ProductReviews({ productId, reviews }) {
       </h3>
       
       {reviews && reviews.length > 0 ? (
-        <div className="space-y-6 mb-12">
+        <div className="space-y-4 md:space-y-6 mb-12">
           {reviews.map((review) => (
-            <div key={review._id} className="bg-black/20 border border-white/5 rounded-2xl p-6 hover:bg-black/40 transition-colors">
-              <div className="flex items-center justify-between mb-4">
+            <div key={review._id} className="bg-black/20 border border-white/5 rounded-2xl p-4 md:p-6 hover:bg-black/30 transition-colors">
+              <div className="flex items-center justify-between mb-3 md:mb-4">
                 <div className="flex items-center">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center text-white font-bold mr-4 shadow-lg">
+                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center text-white text-xs md:text-base font-bold mr-3 md:mr-4 shadow-lg">
                     {review.user?.name ? review.user.name.charAt(0).toUpperCase() : 'A'}
                   </div>
                   <div>
-                    <h4 className="font-bold text-white">{review.user?.name || 'Anonymous User'}</h4>
-                    <div className="flex text-yellow-500 text-sm mt-1">
+                    <h4 className="text-sm md:text-base font-bold text-white leading-tight">{review.user?.name || 'User'}</h4>
+                    <div className="flex text-yellow-500 text-[10px] md:text-sm mt-0.5">
                       {[...Array(5)].map((_, i) => (
                         <svg
                           key={i}
-                          className={`w-3 h-3 ${i < review.rating ? 'fill-current' : 'text-gray-700 fill-current'}`}
+                          className={`w-2.5 h-2.5 md:w-3 md:h-3 ${i < review.rating ? 'fill-current' : 'text-gray-700 fill-current'}`}
                           viewBox="0 0 20 20"
                         >
                           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -79,11 +79,31 @@ export default function ProductReviews({ productId, reviews }) {
                     </div>
                   </div>
                 </div>
-                <div className="text-xs text-gray-500 font-medium bg-white/5 py-1 px-3 rounded-full">
-                  {new Date(review.createdAt).toLocaleDateString()}
+                <div className="text-[10px] md:text-xs text-gray-500 font-medium bg-white/5 py-1 px-2 md:px-3 rounded-full">
+                  {new Date(review.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                 </div>
               </div>
-              <p className="text-gray-300 leading-relaxed pl-14">{review.review}</p>
+              <p className="text-sm md:text-base text-gray-300 leading-relaxed md:pl-14">{review.review}</p>
+              
+              {review.aiReply && (
+                <div className="mt-4 md:ml-14 p-3 md:p-4 glass border border-cyan-500/20 bg-cyan-500/5 rounded-xl md:rounded-2xl animate-fade-in relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 w-24 h-24 md:w-32 md:h-32 bg-cyan-400/5 rounded-full blur-2xl -z-10"></div>
+                  <div className="flex items-start gap-2 md:gap-3">
+                    <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-[10px] md:text-sm shadow-lg shadow-cyan-500/20 flex-shrink-0">
+                      🤖
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-1.5 md:gap-2 mb-0.5 md:mb-1">
+                        <span className="text-[10px] md:text-xs font-bold text-cyan-400 uppercase tracking-tighter">AI Support</span>
+                        <span className="w-1 h-1 rounded-full bg-cyan-400 animate-pulse"></span>
+                      </div>
+                      <p className="text-xs md:text-sm text-gray-200 italic leading-relaxed">
+                        "{review.aiReply}"
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>
