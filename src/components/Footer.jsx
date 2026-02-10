@@ -62,23 +62,50 @@ export default function Footer() {
                   </div>
                </div>
 
-               {/* Links Columns */}
-               {[
-                  { title: "Shop", links: ["All Products", "New Arrivals", "Best Sellers", "Flash Deals", "Accessories"] },
-                  { title: "Support", links: ["Help Center", "Order Status", "Shipping & Returns", "Size Guide", "Contact Us"] },
-                  { title: "Company", links: ["About Us", "Careers", "Privacy Policy", "Terms of Service", "Investors"] }
-               ].map((column) => (
-                  <div key={column.title}>
-                     <h3 className="text-white font-bold text-lg mb-6">{column.title}</h3>
-                     <ul className="space-y-4">
-                        {column.links.map(link => (
-                           <li key={link}>
-                              <Link to="#" className="text-sm text-gray-500 hover:text-cyan-400 transition-colors">{link}</Link>
-                           </li>
-                        ))}
-                     </ul>
-                  </div>
-               ))}
+                {/* Links Columns */}
+                {[
+                   { 
+                      title: "Shop", 
+                      links: [
+                        { name: "All Products", path: "/products" },
+                        { name: "New Arrivals", path: "/products?sortBy=newest" },
+                        { name: "Best Sellers", path: "/products?sortBy=rating" },
+                        { name: "Flash Deals", path: "/deals" },
+                        { name: "Accessories", path: "/products?category=accessories" }
+                      ] 
+                   },
+                   { 
+                      title: "Support", 
+                      links: [
+                        { name: "Help Center", path: "#" },
+                        { name: "Order Status", path: "/my-orders" },
+                        { name: "Shipping & Returns", path: "#" },
+                        { name: "Size Guide", path: "#" },
+                        { name: "Contact Us", path: "#" }
+                      ] 
+                   },
+                   { 
+                      title: "Company", 
+                      links: [
+                        { name: "About Us", path: "#" },
+                        { name: "Careers", path: "#" },
+                        { name: "Privacy Policy", path: "#" },
+                        { name: "Terms of Service", path: "#" },
+                        { name: "Investors", path: "#" }
+                      ] 
+                   }
+                ].map((column) => (
+                   <div key={column.title}>
+                      <h3 className="text-white font-bold text-lg mb-6">{column.title}</h3>
+                      <ul className="space-y-4">
+                         {column.links.map(link => (
+                            <li key={link.name}>
+                               <Link to={link.path} className="text-sm text-gray-500 hover:text-cyan-400 transition-colors">{link.name}</Link>
+                            </li>
+                         ))}
+                      </ul>
+                   </div>
+                ))}
             </div>
 
             <div className="mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
