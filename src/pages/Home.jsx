@@ -4,6 +4,7 @@ import { getProductImageUrl } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "../features/products/productSlice";
 import ProductList from "../components/ProductList";
+import ProductCard from "../components/ProductCard";
 import { Link } from "react-router-dom";
 import CountdownTimer from "../components/CountdownTimer";
 import api from "../services/api";
@@ -131,104 +132,143 @@ export default function Home() {
   
   return (
     <div className="p-2 sm:p-4 md:p-6 min-h-screen">
-      <div className="relative rounded-[2.5rem] overflow-hidden mb-16 sm:mb-24 min-h-[600px] md:h-[800px] flex flex-col justify-center border border-white/5 bg-gray-900 shadow-2xl group">
-        {/* Background Image - Optimized & Fixed */}
-        <div className="absolute inset-0 z-0 overflow-hidden">
-             {settings?.image ? (
-                 <img 
-                   src={getProductImageUrl(settings.image)} 
-                   alt="Hero" 
-                   className="w-full h-full object-cover opacity-50" 
-                   loading="eager"
-                 />
-             ) : (
-                 <img 
-                   src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80" 
-                   alt="Hero" 
-                   className="w-full h-full object-cover opacity-60" 
-                 />
-             )}
-             <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/50 to-transparent"></div>
-             <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
+      {/* Ultra-Light Premium Hero Section */}
+      <div className="relative mb-20 md:mb-32 flex flex-col items-center">
+        {/* Background Elements - Minimal & Performant */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[500px] -z-10">
+           {/* Soft Glow Center */}
+           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-purple-600/20 rounded-full blur-[120px] opacity-40 mix-blend-screen animate-pulse-slow"></div>
+           {/* Accent Glow Right */}
+           <div className="absolute top-20 right-0 w-[400px] h-[300px] bg-cyan-500/10 rounded-full blur-[100px] opacity-30"></div>
+           {/* Accent Glow Left */}
+           <div className="absolute bottom-0 left-0 w-[400px] h-[300px] bg-pink-500/10 rounded-full blur-[100px] opacity-30"></div>
         </div>
 
-        {/* Floating Elements */}
-        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-[60px]"></div>
-        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-cyan-600/10 rounded-full blur-[60px]"></div>
+        <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-0 md:pt-20">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-8 items-center">
+                {/* Left Content - Typography Focused */}
+                <div className="flex flex-col items-center md:items-start text-center md:text-left z-10">
+                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm mb-6 transition-transform hover:scale-105 cursor-default">
+                        <span className="relative flex h-2 w-2">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                        </span>
+                        <span className="text-[10px] md:text-xs font-medium tracking-wide text-gray-300 uppercase">New Season Live</span>
+                    </div>
 
-        <div className="relative z-10 w-full flex flex-col md:flex-row items-center justify-between text-primary px-6 sm:px-12 py-12 md:py-0 max-w-[1400px] mx-auto">
-          <div className="max-w-3xl mb-12 md:mb-0 text-center md:text-left">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8 animate-fade-in-down">
-                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                <span className="text-sm font-medium text-gray-300">New Collection Available</span>
-            </div>
-            
-            <h1 className="text-5xl sm:text-6xl md:text-8xl font-black mb-8 text-white leading-tight tracking-tight animate-fade-in-up">
-              {settings?.title?.split(' ').slice(0, -1).join(' ') || "Future"} <br/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 animate-gradient-x">{settings?.title?.split(' ').slice(-1) || "Commerce"}</span>
-            </h1>
-            
-            <p className="text-lg sm:text-xl md:text-2xl mb-10 text-gray-300 font-light max-w-2xl mx-auto md:mx-0 leading-relaxed animate-fade-in-up animation-delay-1000">
-              {settings?.subtitle || "Experience the next generation of shopping with AI-driven recommendations and ultra-fast delivery."}
-            </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center md:justify-start animate-fade-in-up animation-delay-2000">
-              <Link to={settings?.buttonLink || "/products"} className="group relative px-8 py-5 rounded-full bg-white text-black font-bold text-lg overflow-hidden transition-transform hover:scale-105 shadow-[0_0_40px_rgba(255,255,255,0.3)]">
-                <span className="relative z-10 flex items-center gap-2 group-hover:gap-4 transition-all">
-                    {settings?.buttonText || "Start Exploring"}
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-                </span>
-              </Link>
-              <Link to="/products?category=electronics" className="px-8 py-5 rounded-full bg-white/5 border border-white/10 text-white font-bold text-lg hover:bg-white/10 transition-all backdrop-blur-md hover:border-white/30 flex items-center justify-center gap-2">
-                 <span>Latest Tech</span>
-              </Link>
-            </div>
-          </div>
-          
-          <div className="relative w-full md:w-1/2 flex justify-center">
-             <div className="relative w-72 h-72 md:w-[30rem] md:h-[30rem]">
-                <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/20 to-purple-500/20 rounded-full blur-[40px] md:blur-[60px]"></div>
-                <div className="w-full h-full rounded-[3rem] border border-white/10 bg-white/5 backdrop-blur-md md:backdrop-blur-xl relative overflow-hidden flex items-center justify-center shadow-2xl rotate-3 hover:rotate-0 transition-all duration-500">
-                   <div className="text-center p-12">
-                      <div className="text-8xl md:text-9xl mb-4 transform hover:scale-110 transition-transform cursor-default">🛍️</div>
-                      <div className="text-4xl font-black text-white mb-2">{settings?.price || "50%"}</div>
-                      <div className="text-cyan-400 tracking-[0.5em] uppercase text-sm font-bold">OFF EVERYTHING</div>
-                   </div>
-                   
-                   {/* Decorative lines */}
-                   <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-                   <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+                    <h1 className="text-5xl sm:text-7xl lg:text-8xl font-black text-white leading-[0.9] tracking-tighter mb-6">
+                        {settings?.title?.split(' ').slice(0, -1).join(' ') || "Future"} <br/>
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-gray-500">
+                          {settings?.title?.split(' ').slice(-1) || "Commerce"}
+                        </span>
+                    </h1>
+
+                    <p className="text-lg md:text-xl text-gray-400 font-light max-w-lg mb-10 leading-relaxed">
+                        {settings?.subtitle || "Experience the next generation of shopping. Ultra-fast, AI-driven, and designed for you."}
+                    </p>
+
+                    <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+                        <Link 
+                           to={settings?.buttonLink || "/products"} 
+                           className="group relative px-8 py-4 bg-white text-black font-bold rounded-full overflow-hidden transition-all hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:scale-105 active:scale-95"
+                        >
+                           <span className="relative z-10 flex items-center justify-center gap-2">
+                              {settings?.buttonText || "Shop Now"}
+                              <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                           </span>
+                        </Link>
+                        <Link 
+                           to="/products?category=electronics"
+                           className="group px-8 py-4 bg-white/5 border border-white/10 text-white font-medium rounded-full hover:bg-white/10 transition-all backdrop-blur-md flex items-center justify-center gap-2 hover:border-white/20"
+                        >
+                            <span>Explore Tech</span>
+                        </Link>
+                    </div>
                 </div>
-             </div>
-          </div>
+
+                {/* Right Content - Ultra Visual */}
+                <div className="relative w-full aspect-square md:aspect-auto md:h-[600px] flex items-center justify-center">
+                    {/* Main Hero Image */}
+                    <div className="relative w-full h-[400px] md:h-full max-w-lg md:max-w-none">
+                       <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent z-10 md:hidden"></div>
+                       {settings?.image ? (
+                           <img 
+                             src={getProductImageUrl(settings.image)} 
+                             alt="Hero Product" 
+                             className="w-full h-full object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] animate-float-slow"
+                             loading="eager"
+                           />
+                       ) : (
+                           <img 
+                             src="https://images.unsplash.com/photo-1616469829718-0faf16324280?auto=format&fit=crop&q=80&w=1000" 
+                             alt="Future Tech"
+                             className="w-full h-full object-contain drop-shadow-[0_30px_60px_rgba(120,0,255,0.15)] animate-float-slow opacity-90 grayscale-[20%] hover:grayscale-0 transition-all duration-700"
+                             // Fallback if the clean placeholder doesn't exist, use a standard one but style it better
+                             onError={(e) => {
+                                 e.target.onerror = null;
+                                 e.target.src = "https://images.unsplash.com/photo-1616469829718-0faf16324280?auto=format&fit=crop&q=80&w=1000";
+                                 e.target.className = "w-full h-full object-cover rounded-[3rem] opacity-80 mask-image-gradient";
+                             }}
+                           />
+                       )}
+                    </div>
+
+                    {/* Minimal Floating Badge - Replaces Heavy Card */}
+                    <div className="absolute bottom-10 -right-4 md:right-10 md:bottom-20 z-20">
+                        <div className="glass px-6 py-4 rounded-2xl border border-white/10 flex items-center gap-4 animate-fade-in-up animation-delay-500 hover:scale-105 transition-transform cursor-default">
+                             <div className="h-12 w-12 rounded-full bg-gradient-to-tr from-cyan-400 to-purple-500 flex items-center justify-center text-xl font-bold text-white shadow-lg">
+                                %
+                             </div>
+                             <div>
+                                 <p className="text-xs text-gray-400 uppercase tracking-widest font-semibold">Special Offer</p>
+                                 <p className="text-xl font-bold text-white leading-none mt-0.5">{settings?.price || "50%"} OFF</p>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
       </div>
 
-      {/* Why Choose Us - New Section */}
-      <section className="mb-24">
-         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+      {/* Why Choose Us - Ultra Light & Professional */}
+      <section className="mb-24 w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
             {[
                 { icon: "🚀", title: "Ultra Fast Delivery", desc: "Get your orders within 24 hours with our hyper-local logistics network." },
                 { icon: "🛡️", title: "Secure Payments", desc: "Bank-grade encryption ensures your data is always protected." },
                 { icon: "🎧", title: "24/7 Expert Support", desc: "Our AI and human experts are here to help you anytime, day or night." }
             ].map((feature, i) => (
-                <div key={i} className="glass p-8 rounded-3xl border border-white/5 hover:border-purple-500/30 transition-all hover:-translate-y-2 group">
-                   <div className="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center text-4xl mb-6 group-hover:scale-110 transition-transform shadow-lg shadow-black/20 group-hover:bg-white/10">{feature.icon}</div>
-                   <h3 className="text-xl font-bold text-white mb-3">{feature.title}</h3>
-                   <p className="text-gray-400 leading-relaxed">{feature.desc}</p>
+                <div key={i} className="group relative p-8 rounded-3xl bg-white/5 border border-white/5 hover:border-white/10 transition-all duration-500 hover:-translate-y-1">
+                   {/* Clean Hover Glow */}
+                   <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl pointer-events-none"></div>
+                   
+                   <div className="relative z-10">
+                       <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-3xl mb-6 group-hover:bg-white/10 transition-colors shadow-inner border border-white/5">
+                            {feature.icon}
+                       </div>
+                       <h3 className="text-xl font-bold text-white mb-3 tracking-tight group-hover:text-cyan-400 transition-colors">{feature.title}</h3>
+                       <p className="text-gray-400 text-sm leading-relaxed font-light">{feature.desc}</p>
+                   </div>
                 </div>
             ))}
          </div>
       </section>
       
-      <section className="mb-20">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-4">
-          <h2 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-cyan-500 dark:from-white dark:to-gray-400">Featured Collection</h2>
-          <Link to="/products" className="text-cyan-400 hover:text-cyan-300 flex items-center transition-colors font-medium">
-            View All
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
-            </svg>
+      {/* Featured Collection - Minimal Header */}
+      <section className="mb-24 w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col sm:flex-row justify-between items-end mb-12 gap-4 border-b border-white/5 pb-4">
+          <div>
+              <span className="text-cyan-500 font-mono text-xs tracking-widest uppercase mb-2 block">Premium Selection</span>
+              <h2 className="text-3xl md:text-4xl font-bold text-white">Featured Collection</h2>
+          </div>
+          <Link to="/products" className="group flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-sm font-medium pb-1">
+            View All Products
+            <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/20 transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+            </div>
           </Link>
         </div>
         
@@ -250,78 +290,50 @@ export default function Home() {
         )}
       </section>
       
-      {/* Trending Products */}
-      <section className="mb-20">
-        <div className="flex items-center mb-10 gap-4 overflow-hidden">
-            <div className="h-1 flex-grow bg-gradient-to-r from-purple-600 to-transparent rounded-full opacity-50"></div>
-            <h2 className="text-2xl sm:text-3xl font-bold whitespace-nowrap">🔥 Trending Now</h2>
-            <div className="h-1 flex-grow bg-gradient-to-l from-purple-600 to-transparent rounded-full opacity-50"></div>
+      {/* Trending Products - Ultra Minimal */}
+      <section className="mb-24 w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-end justify-between mb-8 border-b border-white/5 pb-4">
+            <div>
+                 <span className="text-purple-500 font-mono text-xs tracking-widest uppercase mb-2 block">Hot Picks</span>
+                 <h2 className="text-3xl font-bold text-white">Trending Now</h2>
+            </div>
+            <div className="hidden sm:flex gap-2">
+                 <button className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white/5 transition-colors">←</button>
+                 <button className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-white hover:bg-white/5 transition-colors">→</button>
+            </div>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {finalTrending.map((product) => (
-            <div key={product._id || product.id} className="ultra-card rounded-2xl overflow-hidden group relative flex flex-col">
-            <div className="relative h-56 w-full overflow-hidden">
-                <div className="absolute inset-0 bg-gray-800 animate-pulse"></div>
-                {/* Image placeholder - in real app would be an img tag */}
-                <img 
-                src={(Array.isArray(product.images) && product.images.length > 0) ? getProductImageUrl(product.images[0]) : (product.image ? getProductImageUrl(product.image) : "/placeholder.svg")} 
-                alt={product.name}
-                loading="lazy"
-                decoding="async"
-                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = "/placeholder.svg";
-                }}
-                />
-                <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded shadow-lg z-10">
-                HOT
-                </div>
-            </div>
-            
-            
-            <div className="p-5 bg-card/90 backdrop-blur-sm flex-grow flex flex-col">
-                <h3 className="font-bold text-lg mb-1 truncate text-primary group-hover:text-cyan-400 transition-colors">{product.name}</h3>
-                <p className="text-secondary text-xs mb-3 uppercase tracking-wider">{product.category}</p>
-                
-                <div className="flex justify-between items-center mt-auto">
-                <span className="font-bold text-xl text-primary">{formatPrice(product.price)}</span>
-                <Link to={`/product/${product._id || product.id}`} className="bg-gray-100 dark:bg-white/10 hover:bg-purple-600 dark:hover:bg-purple-600 text-gray-800 dark:text-white hover:text-white p-2 rounded-lg transition-all duration-300 backdrop-blur-md border border-gray-200 dark:border-white/5 hover:border-purple-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
-                </Link>
-                </div>
-            </div>
-            </div>
+             <ProductCard key={product._id || product.id} product={product} />
         ))}
         </div>
       </section>
       
-      {/* Categories */}
-      <section className="mb-20">
-        <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-10 text-center">Shop by Category</h2>
+      {/* Categories - Modern Chips/Tiles */}
+      <section className="mb-24 w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="text-2xl font-bold mb-8 text-center text-white">Shop by Category</h2>
         
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
           {[
-            { id: 'electronics', name: 'Electronics', icon: '🔌', color: 'from-blue-500 to-cyan-500' },
-            { id: 'clothing', name: 'Clothing', icon: '👕', color: 'from-purple-500 to-pink-500' },
-            { id: 'home', name: 'Home', icon: '🏠', color: 'from-green-500 to-emerald-500' },
-            { id: 'beauty', name: 'Beauty', icon: '💄', color: 'from-red-500 to-rose-500' },
-            { id: 'sports', name: 'Sports', icon: '⚽', color: 'from-orange-500 to-yellow-500' },
-            { id: 'books', name: 'Books', icon: '📚', color: 'from-indigo-500 to-blue-500' }
+            { id: 'electronics', name: 'Electronics', icon: '🔌', color: 'bg-blue-500' },
+            { id: 'clothing', name: 'Clothing', icon: '👕', color: 'bg-purple-500' },
+            { id: 'home', name: 'Home', icon: '🏠', color: 'bg-green-500' },
+            { id: 'beauty', name: 'Beauty', icon: '💄', color: 'bg-red-500' },
+            { id: 'sports', name: 'Sports', icon: '⚽', color: 'bg-orange-500' },
+            { id: 'books', name: 'Books', icon: '📚', color: 'bg-indigo-500' }
           ].map((category) => (
             <Link 
               key={category.id} 
               to={`/products?category=${category.id}`}
-              className="group relative h-32 sm:h-40 rounded-2xl overflow-hidden glass hover:border-purple-500/50 transition-all duration-300"
+              className="group relative h-32 rounded-2xl overflow-hidden bg-[#0f0f0f] border border-white/5 hover:border-white/20 transition-all duration-300 hover:-translate-y-1"
             >
-              <div className={`absolute inset-0 bg-gradient-to-br ${category.color} opacity-0 group-hover:opacity-20 transition-opacity duration-300`}></div>
-              <div className="flex flex-col items-center justify-center h-full z-10 relative">
-                <span className="text-3xl sm:text-4xl mb-3 group-hover:scale-125 transition-transform duration-300 drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">{category.icon}</span>
-                <h3 className="text-sm font-semibold text-secondary group-hover:text-primary transition-colors">{category.name}</h3>
+              {/* Hover Glow */}
+              <div className={`absolute inset-0 ${category.color} opacity-0 group-hover:opacity-10 transition-opacity duration-300`}></div>
+              
+              <div className="flex flex-col items-center justify-center h-full relative z-10">
+                <span className="text-3xl mb-3 grayscale group-hover:grayscale-0 transition-all duration-300 transform group-hover:scale-110">{category.icon}</span>
+                <h3 className="text-sm font-medium text-gray-400 group-hover:text-white transition-colors">{category.name}</h3>
               </div>
             </Link>
           ))}
@@ -436,35 +448,55 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Infinite Product Marquee */}
-      <section className="mb-20 overflow-hidden relative group">
-         <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[var(--deep-bg)] to-transparent z-10 pointer-events-none"></div>
-         <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[var(--deep-bg)] to-transparent z-10 pointer-events-none"></div>
+      {/* Infinite Product Marquee - Global Favorites */}
+      <section className="mb-24 overflow-hidden relative py-12">
+         {/* Subtle Background Glows */}
+         <div className="absolute top-1/2 left-0 -translate-y-1/2 w-64 h-64 bg-cyan-500/5 rounded-full blur-[100px] pointer-events-none"></div>
+         <div className="absolute top-1/2 right-0 -translate-y-1/2 w-64 h-64 bg-purple-500/5 rounded-full blur-[100px] pointer-events-none"></div>
          
-         <div className="mb-8 text-center">
-            <h2 className="text-2xl font-bold text-gray-400 uppercase tracking-widest">Global Favorites</h2>
+         <div className="mb-12 text-center px-4">
+            <h2 className="text-3xl md:text-4xl font-black text-white mb-3 tracking-tighter uppercase italic">
+              Global <span className="text-cyan-400">Favorites</span>
+            </h2>
+            <div className="h-1 w-24 bg-gradient-to-r from-cyan-400 via-purple-500 to-transparent mx-auto rounded-full mb-4"></div>
+            <p className="text-gray-500 text-xs md:text-sm uppercase tracking-[0.3em] font-medium">Top Trending Products Across 50+ Countries</p>
          </div>
 
-         <div className="flex w-max animate-scroll group-hover:[animation-play-state:paused] will-change-transform">
-            {/* Duplicated list for seamless scrolling */}
-            {[...displayProducts, ...displayProducts, ...displayProducts].map((product, idx) => (
-               <Link 
-                 key={`${product._id || idx}-${idx}`} 
-                 to={`/product/${product._id}`}
-                 className="w-64 mx-4 flex flex-col items-center bg-white/5 border border-white/10 rounded-2xl p-4 hover:bg-white/10 transition-colors duration-300"
-               >
-                  <div className="w-full h-48 rounded-xl overflow-hidden mb-4 relative">
-                     <img 
-                       src={getProductImageUrl(product.images?.[0] || product.image)} 
-                       alt={product.name} 
-                       className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-700"
-                       onError={(e) => e.target.src = '/placeholder.svg'}
-                     />
-                  </div>
-                  <h3 className="text-sm font-bold text-white text-center line-clamp-1">{product.name}</h3>
-                  <p className="text-cyan-400 font-mono text-xs mt-1">{formatPrice(product.price)}</p>
-               </Link>
-            ))}
+         <div className="relative group">
+            {/* Side Masks for Seamless Fade */}
+            <div className="absolute inset-y-0 left-0 w-24 md:w-64 bg-gradient-to-r from-[#050505] to-transparent z-10 pointer-events-none"></div>
+            <div className="absolute inset-y-0 right-0 w-24 md:w-64 bg-gradient-to-l from-[#050505] to-transparent z-10 pointer-events-none"></div>
+
+            <div className="flex w-max animate-scroll group-hover:[animation-play-state:paused] will-change-transform py-4">
+                {/* Duplicated list for seamless scrolling */}
+                {[...displayProducts, ...displayProducts, ...displayProducts].map((product, idx) => (
+                <Link 
+                    key={`${product._id || idx}-${idx}`} 
+                    to={`/product/${product._id}`}
+                    className="w-48 md:w-64 mx-3 md:mx-4 flex flex-col bg-white/5 border border-white/10 rounded-2xl md:rounded-[2rem] p-3 md:p-4 hover:bg-white/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] relative group/card"
+                >
+                    <div className="w-full aspect-square md:h-48 rounded-xl md:rounded-2xl overflow-hidden mb-4 relative bg-black/20">
+                        <img 
+                          src={getProductImageUrl(product.images?.[0] || product.image)} 
+                          alt={product.name} 
+                          className="w-full h-full object-cover transform scale-100 group-hover/card:scale-110 transition-transform duration-700 opacity-80 group-hover/card:opacity-100"
+                          onError={(e) => e.target.src = '/placeholder.svg'}
+                        />
+                        {/* Status Tag */}
+                        <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md border border-white/10 px-2 py-1 rounded-lg text-[8px] font-bold text-cyan-400 uppercase tracking-widest opacity-0 group-hover/card:opacity-100 transition-opacity">
+                           Popular
+                        </div>
+                    </div>
+                    <div className="px-1">
+                        <h3 className="text-xs md:text-sm font-bold text-white line-clamp-1 group-hover/card:text-cyan-400 transition-colors uppercase tracking-tight">{product.name}</h3>
+                        <div className="flex items-center justify-between mt-2">
+                           <p className="text-cyan-400 font-black text-xs md:text-base">{formatPrice(product.price)}</p>
+                           <div className="text-[10px] text-gray-500 font-bold">★ {product.ratingsAverage || '5.0'}</div>
+                        </div>
+                    </div>
+                </Link>
+                ))}
+            </div>
          </div>
       </section>
     </div>
