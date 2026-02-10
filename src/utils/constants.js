@@ -3,11 +3,11 @@ const PROD_BACKEND = 'https://backend-shophub.onrender.com';
 const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
 export const API_URL = isLocal
-  ? (import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000')
+  ? (import.meta.env.VITE_API_URL || 'http://127.0.0.1:5005')
   : PROD_BACKEND;
 
 export const IMAGE_URL = isLocal
-  ? (import.meta.env.VITE_IMAGE_URL || 'http://127.0.0.1:5000/img/users/')
+  ? (import.meta.env.VITE_IMAGE_URL || 'http://127.0.0.1:5005/img/users/')
   : `${PROD_BACKEND}/img/users/`;
 export const DEFAULT_AVATAR = 'default.jpg';
 
@@ -15,6 +15,7 @@ export const DEFAULT_AVATAR = 'default.jpg';
 export function getProductImageUrl(path) {
   if (!path) return null;
   if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('data:')) return path;
+  if (path === 'default.jpg') return `${IMAGE_URL}${path}`;
   const base = API_URL.replace(/\/$/, '');
   return path.startsWith('/') ? `${base}${path}` : `${base}/${path}`;
 }
