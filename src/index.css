@@ -58,11 +58,18 @@
     scroll-behavior: smooth;
   }
 
+  html,
+  body {
+    overflow-x: hidden;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
   body {
     background-color: var(--deep-bg);
     color: var(--text-primary);
     font-family: 'Inter', system-ui, sans-serif;
-    overflow-x: hidden;
   }
 
   /* Restored & New Animations */
@@ -252,6 +259,7 @@
     0% {
       transform: translateX(0);
     }
+
     100% {
       transform: translateX(-50%);
     }
@@ -260,8 +268,20 @@
   .animate-scroll {
     animation: scroll 40s linear infinite;
   }
-  
+
   .animate-scroll:hover {
     animation-play-state: paused;
+  }
+
+  .animate-float-slow {
+    animation: float 10s ease-in-out infinite;
+  }
+
+  .animate-pulse-slow {
+    animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .animation-delay-500 {
+    animation-delay: 0.5s;
   }
 }
