@@ -69,7 +69,7 @@ export default function App() {
             <MobileMenu />
             <Toast />
             <Modal />
-            <div className="pt-24 min-h-screen">
+            <div className="pt-24 min-h-screen overflow-x-hidden">
               <Routes>
                 <Route index element={<Home />} />
                 <Route path="products" element={<Products />} />
