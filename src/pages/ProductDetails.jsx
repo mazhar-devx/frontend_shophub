@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { formatPrice } from "../utils/currency";
 import { getProductImageUrl } from "../utils/constants";
 import api from "../services/api";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProductById } from "../features/products/productSlice";
 import { fetchProductReviews } from "../features/reviews/reviewSlice";
@@ -10,6 +10,7 @@ import { addToCart } from "../features/cart/cartSlice";
 import { addToWishlist, removeFromWishlist } from "../features/wishlist/wishlistSlice";
 import { useUIStore } from "../zustand/uiStore";
 import ProductReviews from "../components/ProductReviews";
+import ProductAIChat from "../components/ProductAIChat";
 import { store } from "../app/store"; // Import store for direct access
 
 /** MongoDB ObjectIds are 24 hex characters. Dummy/placeholder IDs like "1" cause 500 from API. */
@@ -20,6 +21,7 @@ function isValidProductId(id) {
 export default function ProductDetails() {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { showToast } = useUIStore();
   
   const { selectedProduct: product, loading, error } = useSelector((state) => state.products);
@@ -82,16 +84,6 @@ export default function ProductDetails() {
       return () => clearInterval(interval);
   }, [product]);
 
-  // Auto-rotate images every 30 seconds
-  useEffect(() => {
-      if (!product || !product.images || product.images.length <= 1) return;
-      
-      const interval = setInterval(() => {
-          setSelectedImage((prev) => (prev + 1) % product.images.length);
-      }, 30000); // 30 seconds
-
-      return () => clearInterval(interval);
-  }, [product]);
   
   const handleAddToCart = () => {
     if (product) {
@@ -567,72 +559,107 @@ export default function ProductDetails() {
           </div>
       </div>
       
+      {/* AI Assistant Chat Section */}
+      <ProductAIChat product={product} />
+
       {/* Product Reviews */}
       <ProductReviews productId={id} reviews={reviews} />
       
       {/* Related Products / Recommendations */}
-      <section className="mt-16 mb-8">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h2 className="text-3xl font-bold text-white mb-2">You May Also Like</h2>
-            <p className="text-gray-400">Curated recommendations based on your viewing history and this product.</p>
+      <section className="mt-16 mb-20 px-4 md:px-0">
+        <div className="flex flex-col md:flex-row justify-between items-end md:items-center mb-10 gap-4">
+          <div className="w-full md:w-auto">
+            <h2 className="text-3xl md:text-4xl font-black text-white mb-3 tracking-tighter uppercase italic">
+              You May <span className="text-cyan-400">Also Like</span>
+            </h2>
+            <div className="h-1 w-20 bg-gradient-to-r from-cyan-400 to-purple-600 rounded-full mb-4"></div>
+            <p className="text-gray-400 text-sm md:text-base max-w-xl">Curated recommendations based on your viewing history and this product category.</p>
           </div>
+          <button 
+            onClick={() => navigate('/shop')}
+            className="text-xs md:text-sm font-bold text-cyan-400 uppercase tracking-widest hover:text-white transition-colors flex items-center gap-2 group"
+          >
+            Show More <span className="group-hover:translate-x-1 transition-transform">→</span>
+          </button>
         </div>
         
         {recommendations.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
             {recommendations.map((item) => (
-                <div key={item._id} className="glass border border-white/10 rounded-2xl overflow-hidden hover:shadow-[0_0_20px_rgba(124,58,237,0.15)] transition-all duration-300 group hover:-translate-y-1">
-                <div className="relative bg-black/40 h-48 flex items-center justify-center overflow-hidden cursor-pointer" onClick={() => window.location.href = `/product/${item._id}`}>
-                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-800 via-black to-black opacity-80"></div>
+                <div 
+                  key={item._id} 
+                  className="group relative flex flex-col bg-white/5 border border-white/10 rounded-2xl md:rounded-[2rem] overflow-hidden hover:bg-white/10 transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,0,0,0.3)] hover:-translate-y-2 cursor-pointer"
+                  onClick={() => {
+                     window.scrollTo({ top: 0, behavior: 'smooth' });
+                     navigate(`/product/${item._id}`);
+                  }}
+                >
+                  {/* Image Container */}
+                  <div className="relative aspect-[4/5] overflow-hidden bg-black/20">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"></div>
+                    
                     {item.images && item.images.length > 0 ? (
-                        <img src={getProductImageUrl(item.images[0])} alt={item.name} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-transform duration-500" />
-                    ) : item.image ? (
-                        <img src={getProductImageUrl(item.image)} alt={item.name} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-transform duration-500" />
+                        <img 
+                          src={getProductImageUrl(item.images[0])} 
+                          alt={item.name} 
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                        />
                     ) : (
-                        <span className="text-3xl relative z-10 opacity-50 grayscale group-hover:grayscale-0 transition-all transform group-hover:scale-110">📦</span>
+                        <div className="w-full h-full flex items-center justify-center text-4xl opacity-20">📦</div>
                     )}
-                </div>
-                <div className="p-5">
-                    <h3 className="font-bold text-lg mb-1 text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-cyan-400 group-hover:to-purple-500 transition-colors truncate">{item.name}</h3>
-                    <p className="text-gray-500 text-sm mb-3 capitalize">{item.category}</p>
-                    <div className="flex items-center mb-4">
-                    <div className="flex text-yellow-500">
-                        {[...Array(5)].map((_, i) => (
-                        <svg
-                            key={i}
-                            className={`w-4 h-4 ${i < Math.floor(item.ratingsAverage || 0) ? 'fill-current' : 'text-gray-700 fill-current'}`}
-                            viewBox="0 0 20 20"
-                        >
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
-                        ))}
+
+                    {/* Quick Labels */}
+                    <div className="absolute top-3 left-3 z-20 flex flex-col gap-2">
+                      {item.discountPercentage > 0 && (
+                        <span className="bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-lg">
+                          -{item.discountPercentage}%
+                        </span>
+                      )}
+                      {item.stock < 5 && item.stock > 0 && (
+                        <span className="bg-orange-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-lg">
+                          Low Stock
+                        </span>
+                      )}
                     </div>
+                  </div>
+
+                  {/* Info Area */}
+                  <div className="p-4 md:p-6 flex flex-col flex-1">
+                    <div className="mb-2">
+                      <span className="text-[10px] text-cyan-400 font-bold uppercase tracking-widest mb-1 block">{item.brand || 'Premium'}</span>
+                      <h3 className="font-bold text-sm md:text-lg text-white group-hover:text-cyan-400 transition-colors line-clamp-1">{item.name}</h3>
                     </div>
-                    <div className="flex justify-between items-center">
-                    <span className="font-bold text-lg text-white">{formatPrice(item.price)}</span>
-                    <button className="bg-white/10 hover:bg-white/20 text-white p-2 rounded-lg transition-colors"
+
+                    <div className="mt-auto flex items-center justify-between gap-2">
+                      <span className="font-black text-base md:text-2xl text-white">{formatPrice(item.price)}</span>
+                      <button 
+                        className="w-8 h-8 md:w-12 md:h-12 rounded-xl bg-white/10 flex items-center justify-center text-white hover:bg-cyan-500 hover:text-black transition-all duration-300 active:scale-95"
                         onClick={(e) => {
                             e.stopPropagation();
                             if (item.stock > 0) {
-                                dispatch(addToCart({ ...item, quantity: 1 }));
+                                dispatch(addToCart({ ...item, id: item._id, quantity: 1 }));
                                 showToast("Added to cart", "success");
                             }
                         }}
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      >
+                        <svg className="w-4 h-4 md:w-6 md:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                         </svg>
-                    </button>
+                      </button>
                     </div>
-                </div>
+                  </div>
                 </div>
             ))}
             </div>
         ) : (
-            <div className="text-gray-500 text-center py-10">No recommendations available yet. Explore more products!</div>
+            <div className="text-center py-20 glass rounded-[2rem] border border-white/5">
+                <div className="text-6xl mb-6 opacity-20">🔍</div>
+                <p className="text-gray-500 text-xl font-medium">Looking for more products...</p>
+            </div>
         )}
       </section>
+
     </div>
+
   );
 }
