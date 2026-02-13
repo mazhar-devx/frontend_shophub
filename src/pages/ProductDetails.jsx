@@ -12,10 +12,11 @@ import { useUIStore } from "../zustand/uiStore";
 import ProductReviews from "../components/ProductReviews";
 import ProductAIChat from "../components/ProductAIChat";
 import { store } from "../app/store"; // Import store for direct access
+import SEO from "../components/SEO";
 
-/** MongoDB ObjectIds are 24 hex characters. Dummy/placeholder IDs like "1" cause 500 from API. */
-function isValidProductId(id) {
-  return typeof id === "string" && /^[a-fA-F0-9]{24}$/.test(id);
+// Helper to check if string is a valid MongoDB ObjectId
+function isObjectId(id) {
+  return /^[0-9a-fA-F]{24}$/.test(id);
 }
 
 export default function ProductDetails() {
@@ -50,11 +51,9 @@ export default function ProductDetails() {
   const [recommendations, setRecommendations] = useState([]);
 
   useEffect(() => {
+    // We now support slugs. If id is non-empty, we try to fetch.
+    // If backend 404s, it handled the error.
     if (!id) return;
-    // Only call API when id is a valid MongoDB ObjectId (24 hex chars). IDs like "1" from dummy data cause 500.
-    if (!isValidProductId(id)) {
-      return;
-    }
     dispatch(fetchProductById(id));
     dispatch(fetchProductReviews(id));
 
@@ -134,14 +133,8 @@ export default function ProductDetails() {
     );
   }
   
-  if (id && !isValidProductId(id)) {
-    return (
-      <div className="p-6 text-center glass rounded-2xl border border-white/10 mt-8 mx-auto max-w-2xl">
-        <div className="text-gray-400 text-xl">Product not found</div>
-        <p className="text-gray-500 mt-2 text-sm">The link may be from a placeholder. Browse products from the home or shop.</p>
-      </div>
-    );
-  }
+  // We effectively support any string as ID or Slug now, handled by backend
+  // if (id && !isValidProductId(id)) { ... } - Removed validation to allow slugs
 
   if (!product) {
     return (
@@ -163,9 +156,48 @@ export default function ProductDetails() {
     ? (originalPrice - product.price).toFixed(2) 
     : 0;
   
+  const productSchema = {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": product.name,
+    "image": product.images?.map(img => getProductImageUrl(img)) || [getProductImageUrl(product.image)],
+    "description": product.description,
+    "brand": {
+      "@type": "Brand",
+      "name": product.brand || "ShopHub"
+    },
+    "sku": product._id,
+    "offers": {
+      "@type": "Offer",
+      "url": window.location.href,
+      "priceCurrency": product.currency || "PKR",
+      "price": product.discountPercentage > 0 
+        ? (product.price * (1 - product.discountPercentage / 100)).toFixed(2)
+        : product.price,
+      "availability": product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      "itemCondition": "https://schema.org/NewCondition"
+    },
+    "aggregateRating": product.ratingsQuantity > 0 ? {
+      "@type": "AggregateRating",
+      "ratingValue": product.ratingsAverage,
+      "reviewCount": product.ratingsQuantity
+    } : undefined
+  };
+
   return (
-    <div className="p-4 md:p-6 min-h-screen">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+    <>
+      <SEO 
+        title={product.name}
+        description={product.description?.substring(0, 160)}
+        image={getProductImageUrl(product.images?.[0] || product.image)}
+        type="product"
+      >
+        <script type="application/ld+json">
+          {JSON.stringify(productSchema)}
+        </script>
+      </SEO>
+      <div className="p-4 md:p-6 min-h-screen">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
         {/* Product Images */}
         <div className="space-y-4">
           <div 
@@ -310,10 +342,15 @@ export default function ProductDetails() {
               
               <div className="mb-8 p-6 bg-white/50 dark:bg-white/5 rounded-2xl border border-white/20 dark:border-white/5">
                 <div className="flex items-baseline mb-2">
-                  <div className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400">{formatPrice(product.price)}</div>
+                  <div className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400">
+                    {product.discountPercentage > 0 
+                      ? formatPrice(product.price * (1 - product.discountPercentage / 100), product.currency)
+                      : formatPrice(product.price, product.currency)
+                    }
+                  </div>
                   {product.discountPercentage > 0 && (
                     <>
-                      <span className="ml-4 text-xl text-gray-600 line-through">{formatPrice(originalPrice)}</span>
+                      <span className="ml-4 text-xl text-gray-600 line-through">{formatPrice(product.price, product.currency)}</span>
                       <span className="ml-4 bg-gradient-to-r from-red-500 to-pink-600 text-white text-sm font-bold px-3 py-1 rounded-lg shadow-lg shadow-red-500/20">
                         {product.discountPercentage}% OFF
                       </span>
@@ -501,19 +538,19 @@ export default function ProductDetails() {
                   <ul className="space-y-3">
                     <li className="flex justify-between border-b border-white/5 pb-2">
                         <span className="text-secondary">Height</span>
-                        <span className="text-primary font-medium">10cm</span>
+                        <span className="text-primary font-medium">{product.specifications?.dimensions?.height || '0'}{product.specifications?.dimensions?.unit || 'cm'}</span>
                     </li>
                     <li className="flex justify-between border-b border-white/5 pb-2">
                         <span className="text-secondary">Width</span>
-                        <span className="text-primary font-medium">15cm</span>
+                        <span className="text-primary font-medium">{product.specifications?.dimensions?.width || '0'}{product.specifications?.dimensions?.unit || 'cm'}</span>
                     </li>
                     <li className="flex justify-between border-b border-white/5 pb-2">
-                        <span className="text-secondary">Depth</span>
-                        <span className="text-primary font-medium">5cm</span>
+                        <span className="text-secondary">Length</span>
+                        <span className="text-primary font-medium">{product.specifications?.dimensions?.length || '0'}{product.specifications?.dimensions?.unit || 'cm'}</span>
                     </li>
                     <li className="flex justify-between border-b border-white/5 pb-2">
                         <span className="text-secondary">Weight</span>
-                        <span className="text-primary font-medium">500g</span>
+                        <span className="text-primary font-medium">{product.specifications?.weight?.value || 'N/A'}{product.specifications?.weight?.unit || ''}</span>
                     </li>
                   </ul>
                 </div>
@@ -658,8 +695,7 @@ export default function ProductDetails() {
             </div>
         )}
       </section>
-
     </div>
-
+    </>
   );
 }
