@@ -72,7 +72,18 @@ function ProductList({ products, loading, error, view = 'grid' }) {
                   </div>
                   <span className="text-xs text-gray-500 ml-2">({product.ratingsQuantity} reviews)</span>
                 </div>
-                <div className="text-2xl font-bold text-white">{formatPrice(product.price)}</div>
+
+                <div className="text-2xl font-bold text-white flex flex-col items-end">
+                    {product.discountPercentage > 0 && (
+                        <span className="text-sm text-red-400 line-through font-medium mb-1">
+                            {formatPrice(product.price, product.currency)}
+                        </span>
+                    )}
+                    {product.discountPercentage > 0 
+                        ? formatPrice(product.price * (1 - product.discountPercentage / 100), product.currency)
+                        : formatPrice(product.price, product.currency)
+                    }
+                </div>
               </div>
             </div>
           </Link>
