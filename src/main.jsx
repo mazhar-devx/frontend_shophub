@@ -30,12 +30,16 @@ const AppWithAuth = () => {
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "YOUR_GOOGLE_CLIENT_ID_HERE";
 
+import { HelmetProvider } from 'react-helmet-async';
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Provider store={store}>
-      <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-         <AppWithAuth />
-      </GoogleOAuthProvider>
+      <HelmetProvider>
+        <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+           <AppWithAuth />
+        </GoogleOAuthProvider>
+      </HelmetProvider>
     </Provider>
   </React.StrictMode>
 );
