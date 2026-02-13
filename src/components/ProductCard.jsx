@@ -20,7 +20,7 @@ export default function ProductCard({ product }) {
 
   return (
     <Link 
-      to={`/product/${product._id}`}
+      to={`/product/${product.slug || product._id}`}
       className="group relative block h-full select-none"
     >
         {/* Glow Effect Background - REMOVED for Ultra Light */}
@@ -131,7 +131,18 @@ export default function ProductCard({ product }) {
              <div className="flex flex-col">
                 <span className="text-xs text-gray-400 uppercase tracking-widest font-semibold mb-1">Price</span>
                 <div className="text-xl font-bold text-white group-hover:text-cyan-400 transition-colors">
-                    {formatPrice(product.price)}
+                     {product.discountPercentage > 0 ? (
+                        <div className="flex flex-col">
+                            <span className="text-xs text-red-400 line-through font-medium">
+                                {formatPrice(product.price, product.currency)}
+                            </span>
+                            <span>
+                                {formatPrice(product.price * (1 - product.discountPercentage / 100), product.currency)}
+                            </span>
+                        </div>
+                     ) : (
+                        formatPrice(product.price, product.currency)
+                     )}
                 </div>
              </div>
              
