@@ -86,9 +86,11 @@ export default function Deals() {
                 <div className="glass h-full border border-white/10 rounded-3xl overflow-hidden hover:bg-white/10 transition-all duration-300 transform group-hover:-translate-y-2 flex flex-col z-10 relative">
                     
                     {/* Discount Badge */}
-                    <div className="absolute top-4 right-4 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full z-20 shadow-lg animate-bounce-slow">
-                        -20% OFF
-                    </div>
+                    {(product.discountPercentage > 0 || true) && (
+                        <div className="absolute top-4 right-4 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full z-20 shadow-lg animate-bounce-slow">
+                            -{product.discountPercentage || 20}% OFF
+                        </div>
+                    )}
 
                     <div className="aspect-square overflow-hidden bg-black/40 relative group-hover:scale-105 transition-transform duration-500">
                         {product.images?.[0] || product.image ? (
@@ -113,10 +115,16 @@ export default function Deals() {
                         <div className="mt-auto flex items-center justify-between">
                             <div className="flex flex-col">
                                 <span className="text-xs text-gray-500 line-through decoration-red-500/50">
-                                    {formatPrice(product.price * 1.2)}
+                                    {product.discountPercentage > 0 
+                                        ? formatPrice(product.price, product.currency)
+                                        : formatPrice(product.price * 1.2, product.currency) // Fallback simulation
+                                    }
                                 </span>
                                 <span className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-green-400">
-                                    {formatPrice(product.price)}
+                                    {product.discountPercentage > 0
+                                        ? formatPrice(product.price * (1 - product.discountPercentage / 100), product.currency)
+                                        : formatPrice(product.price, product.currency)
+                                    }
                                 </span>
                             </div>
                             <button className="w-10 h-10 rounded-full bg-white/10 hover:bg-cyan-500 hover:text-black flex items-center justify-center transition-all text-white border border-white/10">
