@@ -10,37 +10,51 @@ import BackToTop from "./components/BackToTop";
 import WhatsAppContact from "./components/WhatsAppContact";
 import AIHelper from "./components/AIHelper";
 import AdminLayout from "./layouts/AdminLayout";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Cart from "./pages/Cart";
-import Categories from "./pages/Categories";
-import Deals from "./pages/Deals";
-import Checkout from "./pages/Checkout";
-import OrderSuccess from "./pages/OrderSuccess";
-import MyOrders from "./pages/MyOrders";
-import Wishlist from "./pages/Wishlist";
-import Profile from "./pages/Profile";
-import Products from "./pages/Products";
-import ProductDetails from "./pages/ProductDetails";
-import SearchResults from "./pages/SearchResults";
-import ForgotPassword from "./pages/ForgotPassword";
-import ResetPassword from "./pages/ResetPassword";
-import AdminDashboard from "./pages/admin/Dashboard";
-import AdminProducts from "./pages/admin/Products";
-import AdminOrders from "./pages/admin/Orders";
-import AdminCustomers from "./pages/admin/Customers";
-import AdminReviews from "./pages/admin/Reviews";
-import AddProduct from "./pages/admin/AddProduct";
-import EditProduct from "./pages/admin/EditProduct";
-import AdminBanner from "./pages/admin/Banner";
-import AdminMarketing from "./pages/admin/Marketing";
-import AdminAnalytics from "./pages/admin/Analytics";
-
-import { useEffect } from "react";
+import { useEffect, lazy, Suspense } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { loadUser } from "./features/auth/authSlice";
 import { useUIStore } from "./zustand/uiStore";
+
+// Lazy Load Pages
+const Home = lazy(() => import("./pages/Home"));
+const Products = lazy(() => import("./pages/Products"));
+const ProductDetails = lazy(() => import("./pages/ProductDetails"));
+const Categories = lazy(() => import("./pages/Categories"));
+const Deals = lazy(() => import("./pages/Deals"));
+const Cart = lazy(() => import("./pages/Cart"));
+const Checkout = lazy(() => import("./pages/Checkout"));
+const Login = lazy(() => import("./pages/Login"));
+const Register = lazy(() => import("./pages/Register"));
+const OrderSuccess = lazy(() => import("./pages/OrderSuccess"));
+const MyOrders = lazy(() => import("./pages/MyOrders"));
+const Wishlist = lazy(() => import("./pages/Wishlist"));
+const Profile = lazy(() => import("./pages/Profile"));
+const SearchResults = lazy(() => import("./pages/SearchResults"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+
+// Admin Pages Lazy Load
+const AdminDashboard = lazy(() => import("./pages/admin/Dashboard"));
+const AdminProducts = lazy(() => import("./pages/admin/Products"));
+const AddProduct = lazy(() => import("./pages/admin/AddProduct"));
+const EditProduct = lazy(() => import("./pages/admin/EditProduct"));
+const AdminOrders = lazy(() => import("./pages/admin/Orders"));
+const AdminCustomers = lazy(() => import("./pages/admin/Customers"));
+const AdminReviews = lazy(() => import("./pages/admin/Reviews"));
+const AdminBanner = lazy(() => import("./pages/admin/Banner"));
+const AdminMarketing = lazy(() => import("./pages/admin/Marketing"));
+const AdminAnalytics = lazy(() => import("./pages/admin/Analytics"));
+
+// Components needed instantaneously can stay static or be lazy too if large
+// Keeping Layouts/Navbar static for perceived performance
+// (Imports already at top of file)
+
+// Loading Component
+const PageLoader = () => (
+  <div className="min-h-screen flex items-center justify-center bg-black">
+    <div className="w-16 h-16 border-4 border-white/20 border-t-cyan-400 rounded-full animate-spin"></div>
+  </div>
+);
 
 export default function App() {
   const { theme } = useUIStore();
@@ -70,24 +84,26 @@ export default function App() {
             <Toast />
             <Modal />
             <div className="pt-24 min-h-screen overflow-x-hidden">
-              <Routes>
-                <Route index element={<Home />} />
-                <Route path="products" element={<Products />} />
-                <Route path="categories" element={<Categories />} />
-                <Route path="deals" element={<Deals />} />
-                <Route path="product/:id" element={<ProductDetails />} />
-                <Route path="login" element={<Login />} />
-                <Route path="register" element={<Register />} />
-                <Route path="forgot-password" element={<ForgotPassword />} />
-                <Route path="reset-password/:token" element={<ResetPassword />} />
-                <Route path="cart" element={<Cart />} />
-                <Route path="checkout" element={<Checkout />} />
-                <Route path="order-confirmation" element={<OrderSuccess />} />
-                <Route path="my-orders" element={<MyOrders />} />
-                <Route path="wishlist" element={<Wishlist />} />
-                <Route path="profile" element={<Profile />} />
-                <Route path="search" element={<SearchResults />} />
-              </Routes>
+              <Suspense fallback={<PageLoader />}>
+                <Routes>
+                  <Route index element={<Home />} />
+                  <Route path="products" element={<Products />} />
+                  <Route path="categories" element={<Categories />} />
+                  <Route path="deals" element={<Deals />} />
+                  <Route path="product/:id" element={<ProductDetails />} />
+                  <Route path="login" element={<Login />} />
+                  <Route path="register" element={<Register />} />
+                  <Route path="forgot-password" element={<ForgotPassword />} />
+                  <Route path="reset-password/:token" element={<ResetPassword />} />
+                  <Route path="cart" element={<Cart />} />
+                  <Route path="checkout" element={<Checkout />} />
+                  <Route path="order-confirmation" element={<OrderSuccess />} />
+                  <Route path="my-orders" element={<MyOrders />} />
+                  <Route path="wishlist" element={<Wishlist />} />
+                  <Route path="profile" element={<Profile />} />
+                  <Route path="search" element={<SearchResults />} />
+                </Routes>
+              </Suspense>
             </div>
             <Footer />
             <BackToTop />
@@ -97,7 +113,11 @@ export default function App() {
         } />
         
         {/* Admin routes */}
-        <Route path="/admin/*" element={<AdminLayout />}>  
+        <Route path="/admin/*" element={
+          <Suspense fallback={<PageLoader />}>
+            <AdminLayout />
+          </Suspense>
+        }>  
           <Route index element={<AdminDashboard />} />
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="products" element={<AdminProducts />} />
