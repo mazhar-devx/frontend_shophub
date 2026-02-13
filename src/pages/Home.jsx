@@ -11,6 +11,7 @@ import api from "../services/api";
 import { addToCart } from "../features/cart/cartSlice";
 import { useUIStore } from "../zustand/uiStore";
 import { useNavigate } from "react-router-dom";
+import SEO from "../components/SEO";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -109,15 +110,31 @@ export default function Home() {
   const finalTrending = (trendingProducts && trendingProducts.length > 0) ? trendingProducts : featuredProducts.slice(0, 4);
 
   const handleFlashSaleAddToCart = () => {
-    const productToAdd = {
-      id: flashSale?._id || "flash-sale-sonic-x-pro",
-      name: flashSale?.title || "Sonic X-Pro",
-      price: flashSale?.price || 199.99,
-      image: flashSale?.image || "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=60",
-      quantity: 1
-    };
-    dispatch(addToCart(productToAdd));
-    navigate('/cart');
+    // Priority: 
+    // 1. Configured Flash Sale (if ID is valid)
+    // 2. First product from "trending"
+    // 3. First product from "products" list
+    // 4. Alert user if nothing available (shouldn't happen if API works)
+
+    let productToBuy = null;
+
+    if (flashSale && flashSale._id) {
+        productToBuy = flashSale;
+    } else if (trendingProducts && trendingProducts.length > 0) {
+        productToBuy = trendingProducts[0];
+    } else if (products && products.length > 0) {
+        productToBuy = products[0];
+    }
+
+    if (productToBuy) {
+        dispatch(addToCart({ ...productToBuy, quantity: 1 }));
+        navigate('/cart');
+        // Optional: show toast
+    } else {
+        // Fallback only if absolutely no products loaded
+        alert("Flash Sale product is currently unavailable. Please browse our shop.");
+        navigate('/products');
+    }
   };
 
   // Brands data
@@ -131,7 +148,13 @@ export default function Home() {
   ];
   
   return (
-    <div className="p-2 sm:p-4 md:p-6 min-h-screen">
+    <>
+      <SEO 
+        title="Home" 
+        description="ShopHub - Premium E-Commerce for Electronics, Fashion, and More."
+        keywords="ecommerce, electronics, fashion, shopping, pakistan, online store"
+      />
+      <div className="p-2 sm:p-4 md:p-6 min-h-screen">
       {/* Ultra-Light Premium Hero Section */}
       <div className="relative mb-20 md:mb-32 flex flex-col items-center">
         {/* Background Elements - Minimal & Performant */}
@@ -386,7 +409,14 @@ export default function Home() {
                  <div className="absolute inset-0 bg-red-600/30 blur-[40px] md:blur-[60px] rounded-full transform scale-75 animate-pulse"></div>
                  <div className="glass w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 rounded-[2rem] flex items-center justify-center border border-white/10 relative z-10 overflow-hidden bg-black/20 group-hover:scale-105 transition-transform duration-700 shadow-2xl skew-y-3 group-hover:skew-y-0">
                     {flashSale?.image ? (
-                        <img src={getProductImageUrl(flashSale.image)} alt={flashSale.title} className="w-full h-full object-cover" />
+                        <img 
+                            src={getProductImageUrl(flashSale.image)} 
+                            alt={flashSale.title} 
+                            className="w-full h-full object-cover" 
+                            width="400"
+                            height="400"
+                            loading="lazy"
+                        />
                     ) : (
                         <div className="text-center">
                             <span className="text-6xl mb-4 block">🎧</span>
@@ -490,7 +520,19 @@ export default function Home() {
                     <div className="px-1">
                         <h3 className="text-xs md:text-sm font-bold text-white line-clamp-1 group-hover/card:text-cyan-400 transition-colors uppercase tracking-tight">{product.name}</h3>
                         <div className="flex items-center justify-between mt-2">
-                           <p className="text-cyan-400 font-black text-xs md:text-base">{formatPrice(product.price)}</p>
+                           <div className="flex flex-col">
+                                {product.discountPercentage > 0 && (
+                                    <span className="text-[10px] text-red-400 line-through font-medium leading-none">
+                                        {formatPrice(product.price, product.currency)}
+                                    </span>
+                                )}
+                               <p className="text-cyan-400 font-black text-xs md:text-base leading-tight">
+                                   {product.discountPercentage > 0 
+                                     ? formatPrice(product.price * (1 - product.discountPercentage / 100), product.currency)
+                                     : formatPrice(product.price, product.currency)
+                                   }
+                               </p>
+                           </div>
                            <div className="text-[10px] text-gray-500 font-bold">★ {product.ratingsAverage || '5.0'}</div>
                         </div>
                     </div>
@@ -499,6 +541,7 @@ export default function Home() {
             </div>
          </div>
       </section>
-    </div>
+      </div>
+    </>
   );
 }
