@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import { getProductImageUrl } from "../../utils/constants";
 import { categories } from "../../data/categories";
+import { formatPrice } from "../../utils/currency";
 
 export default function EditProduct() {
   const { id } = useParams();
@@ -20,6 +21,12 @@ export default function EditProduct() {
     shippingType: "free",
     shippingCost: "0",
     taxPercentage: "0",
+    currency: "PKR",
+    length: "",
+    width: "",
+    height: "",
+    dimensionUnit: "cm",
+    discountPercentage: ""
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -48,6 +55,12 @@ export default function EditProduct() {
           shippingType: product.shippingCost > 0 ? "paid" : "free",
           shippingCost: product.shippingCost || "0",
           taxPercentage: product.taxPercentage || "0",
+          discountPercentage: product.discountPercentage || "0",
+          currency: product.currency || "PKR",
+          length: product.specifications?.dimensions?.length || "",
+          width: product.specifications?.dimensions?.width || "",
+          height: product.specifications?.dimensions?.height || "",
+          dimensionUnit: product.specifications?.dimensions?.unit || "cm",
         });
         setLoading(false);
       } catch (err) {
@@ -89,6 +102,16 @@ export default function EditProduct() {
         stock: parseInt(formData.stock),
         shippingCost: formData.shippingType === 'free' ? 0 : (parseFloat(formData.shippingCost) || 0),
         taxPercentage: parseFloat(formData.taxPercentage) || 0,
+        discountPercentage: parseFloat(formData.discountPercentage) || 0,
+        currency: formData.currency,
+        specifications: {
+          dimensions: {
+            length: Number(formData.length) || 0,
+            width: Number(formData.width) || 0,
+            height: Number(formData.height) || 0,
+            unit: formData.dimensionUnit || 'cm'
+          }
+        },
         // Use formData.image correctly here
         images: [formData.image || "https://via.placeholder.com/300x300"]
       };
@@ -176,16 +199,31 @@ export default function EditProduct() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <div className="space-y-2">
-                    <label className="text-gray-300 text-sm font-bold ml-1">Price ($)</label>
-                    <input 
-                      type="number" 
-                      name="price" 
-                      value={formData.price} 
-                      onChange={handleChange}
-                      placeholder="e.g. 299.99"
-                      step="0.01"
-                      className="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
-                    />
+                    <label className="text-gray-300 text-sm font-bold ml-1">Price</label>
+                    <div className="flex gap-2">
+                        <select 
+                            name="currency" 
+                            value={formData.currency} 
+                            onChange={handleChange}
+                            className="bg-black/30 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-cyan-500 transition-all cursor-pointer"
+                        >
+                            <option value="PKR">PKR</option>
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
+                            <option value="GBP">GBP</option>
+                            <option value="INR">INR</option>
+                            <option value="AED">AED</option>
+                        </select>
+                        <input 
+                          type="number" 
+                          name="price" 
+                          value={formData.price} 
+                          onChange={handleChange}
+                          placeholder="e.g. 299.99"
+                          step="0.01"
+                          className="flex-1 bg-black/30 border border-white/10 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
+                        />
+                    </div>
                  </div>
                  <div className="space-y-2">
                     <label className="text-gray-300 text-sm font-bold ml-1">Stock Quantity</label>
@@ -235,20 +273,80 @@ export default function EditProduct() {
                     )}
                  </div>
                  <div className="space-y-4">
-                    <label className="text-gray-300 text-sm font-bold ml-1">Tax Percentage (%)</label>
-                    <div className="relative">
-                        <input 
-                            type="number" 
-                            name="taxPercentage" 
-                            value={formData.taxPercentage} 
-                            onChange={handleChange}
-                            placeholder="e.g. 10"
-                            className="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
-                        />
-                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold">%</span>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <label className="text-gray-300 text-sm font-bold ml-1">Tax (%)</label>
+                            <div className="relative">
+                                <input 
+                                    type="number" 
+                                    name="taxPercentage" 
+                                    value={formData.taxPercentage} 
+                                    onChange={handleChange}
+                                    placeholder="0"
+                                    className="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                                />
+                                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold">%</span>
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-gray-300 text-sm font-bold ml-1">Discount (%)</label>
+                            <div className="relative">
+                                <input 
+                                    type="number" 
+                                    name="discountPercentage" 
+                                    value={formData.discountPercentage} 
+                                    onChange={handleChange}
+                                    placeholder="0"
+                                    className="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all"
+                                />
+                                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold">%</span>
+                            </div>
+                        </div>
                     </div>
                  </div>
               </div>
+
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-4 border-b border-white/5">
+                 <div className="space-y-4">
+                    <label className="text-gray-300 text-sm font-bold ml-1">Dimensions (L x W x H)</label>
+                    <div className="grid grid-cols-4 gap-4">
+                       <input 
+                          type="number" 
+                          name="length" 
+                          value={formData.length} 
+                          onChange={handleChange}
+                          placeholder="Length"
+                          className="bg-black/30 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-purple-500 transition-all"
+                       />
+                       <input 
+                          type="number" 
+                          name="width" 
+                          value={formData.width} 
+                          onChange={handleChange}
+                          placeholder="Width"
+                          className="bg-black/30 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-purple-500 transition-all"
+                       />
+                       <input 
+                          type="number" 
+                          name="height" 
+                          value={formData.height} 
+                          onChange={handleChange}
+                          placeholder="Height"
+                          className="bg-black/30 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-purple-500 transition-all"
+                       />
+                       <select 
+                          name="dimensionUnit" 
+                          value={formData.dimensionUnit} 
+                          onChange={handleChange}
+                          className="bg-black/30 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-purple-500 transition-all"
+                       >
+                          <option value="cm">cm</option>
+                          <option value="in">in</option>
+                          <option value="mm">mm</option>
+                       </select>
+                    </div>
+                 </div>
+               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <div className="space-y-2">
@@ -382,7 +480,15 @@ export default function EditProduct() {
                     </p>
                     
                     <div className="flex items-center justify-between border-t border-white/10 pt-4">
-                       <span className="text-2xl font-bold text-white">${formData.price ? parseFloat(formData.price).toFixed(2) : '0.00'}</span>
+                       <span className="text-2xl font-bold text-white">
+                          {formData.currency === 'PKR' ? 'Rs.' : 
+                           formData.currency === 'USD' ? '$' : 
+                           formData.currency === 'EUR' ? '€' : 
+                           formData.currency === 'GBP' ? '£' : 
+                           formData.currency === 'INR' ? '₹' : 
+                           formData.currency === 'AED' ? 'AED ' : ''} 
+                          {formData.price ? parseFloat(formData.price).toFixed(2) : '0.00'}
+                       </span>
                        <button className="h-10 w-10 rounded-lg bg-white/10 flex items-center justify-center text-white hover:bg-purple-600 transition-colors">
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
