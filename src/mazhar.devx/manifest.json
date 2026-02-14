@@ -1,0 +1,22 @@
+{
+  "name": "mazhar.devx | Mazhar Aslam - Full-Stack Developer",
+  "short_name": "mazhar.devx",
+  "description": "Premium Portfolio of Mazhar Aslam (mazhar.devx), MERN Stack Architect.",
+  "start_url": "https://mazhar-devx.ct.ws/",
+  "display": "standalone",
+  "background_color": "#030303",
+  "theme_color": "#06b6d4",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "profile.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "profile.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
