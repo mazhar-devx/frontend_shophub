@@ -3,8 +3,9 @@ import { Helmet } from 'react-helmet-async';
 
 export default function Portfolio() {
   useEffect(() => {
-    // Scroll to top on mount
-    window.scrollTo(0, 0);
+    // Redirect to the actual portfolio HTML file
+    // This works better than iframe for standalone HTML pages
+    window.location.href = '/mazhar.devx/index.html';
   }, []);
 
   return (
@@ -34,25 +35,12 @@ export default function Portfolio() {
         <link rel="canonical" href="https://shophub.pro/mazhar.devx" />
       </Helmet>
 
-      {/* Full-screen iframe embedding the portfolio */}
-      <div className="fixed inset-0 w-full h-full bg-black">
-        <iframe 
-          src="/mazhar.devx/index.html"
-          title="mazhar.devx Portfolio"
-          className="w-full h-full border-0"
-          loading="eager"
-          style={{ 
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            border: 'none',
-            margin: 0,
-            padding: 0,
-            overflow: 'hidden'
-          }}
-        />
+      {/* Loading state while redirecting */}
+      <div className="fixed inset-0 w-full h-full bg-black flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-cyan-400/20 border-t-cyan-400 rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-cyan-400 text-lg font-bold">Loading Portfolio...</p>
+        </div>
       </div>
     </>
   );
