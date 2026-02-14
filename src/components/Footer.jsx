@@ -90,8 +90,7 @@ export default function Footer() {
                         { name: "About Us", path: "#" },
                         { name: "Careers", path: "#" },
                         { name: "Privacy Policy", path: "#" },
-                        { name: "Terms of Service", path: "#" },
-                        { name: "Investors", path: "#" }
+                        { name: "Terms of Service", path: "#" }
                       ] 
                    }
                 ].map((column) => (
@@ -106,6 +105,46 @@ export default function Footer() {
                       </ul>
                    </div>
                 ))}
+            </div>
+
+            {/* Ultra-Professional Portfolio Link Section */}
+            <div className="mt-16">
+               <Link to="/mazhar.devx" className="group block relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-purple-900/20 via-cyan-900/20 to-pink-900/20 p-8 hover:border-cyan-400/40 transition-all duration-500 hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(6,182,212,0.3)]">
+                  {/* Animated gradient background */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  
+                  {/* Pulse indicator */}
+                  <div className="absolute top-4 right-4 flex items-center gap-2">
+                     <span className="text-xs font-bold uppercase tracking-wider text-cyan-400/60 group-hover:text-cyan-400 transition-colors">New</span>
+                     <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_rgba(6,182,212,0.8)]" />
+                  </div>
+
+                  <div className="relative z-10 flex items-center gap-6">
+                     {/* Icon */}
+                     <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center shadow-lg group-hover:shadow-cyan-500/50 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6">
+                        <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                     </div>
+
+                     {/* Content */}
+                     <div className="flex-1">
+                        <h4 className="text-2xl font-black mb-2 bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent group-hover:from-cyan-300 group-hover:via-purple-300 group-hover:to-pink-300 transition-all duration-500">
+                           Developer Portfolio
+                        </h4>
+                        <p className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">
+                           Explore mazhar.devx – Full-Stack MERN developer portfolio
+                        </p>
+                     </div>
+
+                     {/* Arrow */}
+                     <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-cyan-500/20 group-hover:border-cyan-400/40 transition-all group-hover:translate-x-2">
+                        <svg className="w-5 h-5 text-gray-400 group-hover:text-cyan-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                     </div>
+                  </div>
+               </Link>
             </div>
 
             <div className="mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
