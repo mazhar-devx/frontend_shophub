@@ -32,6 +32,7 @@ const Profile = lazy(() => import("./pages/Profile"));
 const SearchResults = lazy(() => import("./pages/SearchResults"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const Portfolio = lazy(() => import("./pages/Portfolio"));
 
 // Admin Pages Lazy Load
 const AdminDashboard = lazy(() => import("./pages/admin/Dashboard"));
@@ -74,6 +75,13 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Portfolio route - Full screen, no layout */}
+        <Route path="/mazhar.devx" element={
+          <Suspense fallback={<PageLoader />}>
+            <Portfolio />
+          </Suspense>
+        } />
+
         {/* Public routes */}
         <Route path="/*" element={
           <>
