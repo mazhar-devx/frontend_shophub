@@ -37,7 +37,7 @@ export default function Portfolio() {
       {/* Full-screen iframe embedding the portfolio */}
       <div className="fixed inset-0 w-full h-full bg-black">
         <iframe 
-          src="/src/mazhar.devx/index.html"
+          src="/mazhar.devx/index.html"
           title="mazhar.devx Portfolio"
           className="w-full h-full border-0"
           loading="eager"
