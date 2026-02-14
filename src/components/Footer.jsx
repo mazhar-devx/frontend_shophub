@@ -109,7 +109,7 @@ export default function Footer() {
 
             {/* Ultra-Professional Portfolio Link Section */}
             <div className="mt-16">
-               <Link to="/mazhar.devx" className="group block relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-purple-900/20 via-cyan-900/20 to-pink-900/20 p-8 hover:border-cyan-400/40 transition-all duration-500 hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(6,182,212,0.3)]">
+               <a href="/mazhar.devx/index.html" className="group block relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-purple-900/20 via-cyan-900/20 to-pink-900/20 p-8 hover:border-cyan-400/40 transition-all duration-500 hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(6,182,212,0.3)]">
                   {/* Animated gradient background */}
                   <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   
@@ -144,7 +144,7 @@ export default function Footer() {
                         </svg>
                      </div>
                   </div>
-               </Link>
+               </a>
             </div>
 
             <div className="mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
