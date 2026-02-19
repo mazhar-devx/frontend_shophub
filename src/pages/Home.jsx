@@ -12,6 +12,7 @@ import { addToCart } from "../features/cart/cartSlice";
 import { useUIStore } from "../zustand/uiStore";
 import { useNavigate } from "react-router-dom";
 import SEO from "../components/SEO";
+import HomeSkeleton from "../components/HomeSkeleton";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -21,6 +22,7 @@ export default function Home() {
   const [settings, setSettings] = useState(null);
   const [flashSale, setFlashSale] = useState(null);
   const [trendingProducts, setTrendingProducts] = useState(null);
+  const [settingsLoading, setSettingsLoading] = useState(true);
   
   // Dummy Data for Fallback
   const dummyProducts = [
@@ -91,6 +93,8 @@ export default function Home() {
             }
         } catch (err) {
             console.error("Failed to fetch trending", err);
+        } finally {
+            setSettingsLoading(false);
         }
     };
 
@@ -147,6 +151,22 @@ export default function Home() {
     { id: 6, name: "LG" },
   ];
   
+  if ((loading || settingsLoading) && !error) {
+    return <HomeSkeleton />;
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black p-4">
+        <div className="glass p-8 rounded-3xl border border-red-500/20 text-center max-w-md">
+           <h2 className="text-2xl font-bold text-white mb-4">Connection Issue</h2>
+           <p className="text-gray-400 mb-6">We're having trouble reaching our servers. Please check your internet or try refreshing.</p>
+           <button onClick={() => window.location.reload()} className="px-8 py-3 bg-white text-black font-bold rounded-full">Refresh Page</button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <SEO 
