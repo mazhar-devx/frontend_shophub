@@ -12,8 +12,8 @@ export default function SEO({
   keywords,
   children 
 }) {
-  const siteTitle = "ShopHub - Premium E-Commerce";
-  const defaultDescription = "ShopHub is your premium destination for the latest electronics, fashion, and home essentials. Fast delivery and secure payments.";
+  const siteTitle = "HA Store - Premium E-Commerce";
+  const defaultDescription = "HA Store is your premium destination for the latest electronics, fashion, and home essentials. Fast delivery and secure payments.";
   const siteUrl = "https://www.shophub.pro"; // Replace with actual domain if different
   const defaultImage = `${siteUrl}/logo.png`;
 
