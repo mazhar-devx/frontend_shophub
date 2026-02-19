@@ -90,9 +90,9 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 flex justify-between items-center relative">
         
         {/* Logo Area */}
-        <Link to="/" className="group relative z-50 flex items-center gap-2">
+        <Link to="/" className="group relative z-50 flex items-center gap-2" aria-label="HA Store Home">
            <div className="relative w-10 h-10 sm:w-12 sm:h-12 overflow-hidden rounded-xl border border-white/10 shadow-lg group-hover:shadow-purple-500/20 transition-all duration-300">
-              <img src="/logo.png" alt="HA Store" className="w-full h-full object-cover" />
+              <img src="/logo.png" alt="HA Store Logo" className="w-full h-full object-cover" />
            </div>
            <span className="text-xl sm:text-2xl font-black tracking-tighter text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-cyan-400 group-hover:to-purple-500 transition-all duration-300 uppercase">
              HA Store
@@ -101,7 +101,7 @@ export default function Navbar() {
         
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-1 lg:space-x-2 bg-white/5 backdrop-blur-md rounded-full px-2 py-1.5 border border-white/5 shadow-inner">
-           {[
+            {[
               { path: '/', label: 'Home', icon: '🏠' },
               { path: '/products', label: 'Shop', icon: '🛍️' },
               { path: '/categories', label: 'Categories', icon: '📂' },
@@ -109,6 +109,7 @@ export default function Navbar() {
              <Link 
                key={link.path}
                to={link.path} 
+               aria-current={location.pathname === link.path ? 'page' : undefined}
                className={`relative px-4 py-2 rounded-full text-sm font-bold transition-all duration-300 flex items-center gap-2 overflow-hidden group ${location.pathname === link.path ? 'text-black bg-white shadow-[0_0_20px_rgba(255,255,255,0.3)]' : 'text-gray-300 hover:text-white hover:bg-white/10'}`}
              >
                <span className={`${location.pathname === link.path ? 'scale-100' : 'scale-0 w-0'} transition-all duration-300`}>{link.icon}</span>
@@ -137,11 +138,12 @@ export default function Navbar() {
                  value={searchQuery}
                  onChange={(e) => setSearchQuery(e.target.value)}
                  onFocus={() => setShowSuggestions(true)}
-                 placeholder="Search..."
+                 placeholder="Search products..."
+                 aria-label="Search products"
                  className="bg-transparent text-white placeholder-gray-500 focus:outline-none ml-2 w-full md:w-32 lg:w-48 text-sm transition-all md:focus:w-56"
                />
                {searchQuery && (
-                  <button type="button" onClick={() => {setSearchQuery(''); dispatch(clearSuggestions())}} className="text-gray-500 hover:text-white">
+                  <button type="button" aria-label="Clear search" onClick={() => {setSearchQuery(''); dispatch(clearSuggestions())}} className="text-gray-500 hover:text-white">
                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                      </svg>
@@ -159,6 +161,7 @@ export default function Navbar() {
           {/* Mobile Search Toggle */}
           <button 
             onClick={toggleSearch}
+            aria-label="Toggle search"
             className="md:hidden w-10 h-10 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 text-white transition-all"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -169,6 +172,7 @@ export default function Navbar() {
           {/* Cart Toggle */}
           <button 
             onClick={toggleCart}
+            aria-label={`View cart (${cartItemCount} items)`}
             className="relative w-10 h-10 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 text-white transition-all group overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-tr from-purple-600/20 to-cyan-400/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -187,13 +191,14 @@ export default function Navbar() {
             <div className="relative">
               <button 
                 onClick={toggleUserMenu}
+                aria-label="User menu"
                 className="flex items-center gap-2 pl-1 pr-1 py-1 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 transition-all hover:border-white/20"
               >
                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-purple-600 p-[1px]">
                    <div className="w-full h-full rounded-full bg-black flex items-center justify-center overflow-hidden relative">
                        <img 
                           src={getProductImageUrl(user?.photo) || DEFAULT_AVATAR} 
-                          alt="User" 
+                          alt={user?.name || "User profile"} 
                           className="w-full h-full object-cover" 
                        />
                    </div>
@@ -247,6 +252,7 @@ export default function Navbar() {
           {/* Mobile Menu Button - Hamburger with Animation */}
           <button 
             onClick={toggleMenu}
+            aria-label={isMenuOpen ? "Close mobile menu" : "Open mobile menu"}
             className="md:hidden relative w-10 h-10 rounded-full flex items-center justify-center text-white focus:outline-none"
           >
             <div className="flex flex-col justify-between w-5 h-4 transform transition-all duration-300 origin-center overflow-hidden">
