@@ -151,6 +151,16 @@ export default function Home() {
     { id: 6, name: "LG" },
   ];
   
+  useEffect(() => {
+    // Initialize AdSense - Push for each manual ad unit
+    try {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch (e) {
+      // Silent error
+    }
+  }, []);
+
   if ((loading || settingsLoading) && !error) {
     return <HomeSkeleton />;
   }
@@ -171,7 +181,7 @@ export default function Home() {
     <>
       <SEO 
         title="Home" 
-        description="ShopHub - Premium E-Commerce for Electronics, Fashion, and More."
+        description="HA Store - Premium E-Commerce for Electronics, Fashion, and More."
         keywords="ecommerce, electronics, fashion, shopping, pakistan, online store"
       />
       <div className="p-2 sm:p-4 md:p-6 min-h-screen">
@@ -237,14 +247,14 @@ export default function Home() {
                        {settings?.image ? (
                            <img 
                              src={getProductImageUrl(settings.image)} 
-                             alt="Hero Product" 
+                             alt={settings?.title || "Premium ShopHub Product"} 
                              className="w-full h-full object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] animate-float-slow"
                              loading="eager"
                            />
                        ) : (
                            <img 
                              src="https://images.unsplash.com/photo-1616469829718-0faf16324280?auto=format&fit=crop&q=80&w=1000" 
-                             alt="Future Tech"
+                             alt="Premium Digital Connectivity and Electronics"
                              className="w-full h-full object-contain drop-shadow-[0_30px_60px_rgba(120,0,255,0.15)] animate-float-slow opacity-90 grayscale-[20%] hover:grayscale-0 transition-all duration-700"
                              // Fallback if the clean placeholder doesn't exist, use a standard one but style it better
                              onError={(e) => {
@@ -276,6 +286,7 @@ export default function Home() {
 
       {/* Why Choose Us - Ultra Light & Professional */}
       <section className="mb-24 w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+         <h2 className="sr-only">Why Choose ShopHub</h2>
          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
             {[
                 { icon: "🚀", title: "Ultra Fast Delivery", desc: "Get your orders within 24 hours with our hyper-local logistics network." },
@@ -297,6 +308,17 @@ export default function Home() {
             ))}
          </div>
       </section>
+
+      {/* Manual AdSense Unit */}
+      <div className="w-full max-w-[1400px] mx-auto px-4 mb-24 min-h-[100px] flex items-center justify-center bg-white/5 rounded-3xl border border-white/10 overflow-hidden relative">
+        <ins className="adsbygoogle"
+             style={{ display: 'block', width: '100%' }}
+             data-ad-client="ca-pub-6521940579323633"
+             data-ad-slot="2705058805"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <span className="text-[10px] text-gray-700 absolute bottom-2 right-4">Advertisement</span>
+      </div>
       
       {/* Featured Collection - Minimal Header */}
       <section className="mb-24 w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
@@ -352,6 +374,17 @@ export default function Home() {
         ))}
         </div>
       </section>
+
+      {/* Second AdSense Unit - Fluid / In-Article */}
+      <div className="w-full max-w-[1400px] mx-auto px-4 mb-24 min-h-[100px] flex items-center justify-center bg-white/5 rounded-3xl border border-white/10 overflow-hidden relative">
+        <ins className="adsbygoogle"
+             style={{ display: 'block', textAlign: 'center' }}
+             data-ad-layout="in-article"
+             data-ad-format="fluid"
+             data-ad-client="ca-pub-6521940579323633"
+             data-ad-slot="8211277173"></ins>
+        <span className="text-[10px] text-gray-700 absolute bottom-2 right-4">Advertisement</span>
+      </div>
       
       {/* Categories - Modern Chips/Tiles */}
       <section className="mb-24 w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
@@ -417,6 +450,7 @@ export default function Home() {
                         </button>
                         <button 
                              onClick={handleFlashSaleAddToCart}
+                             aria-label="Add flash sale item to cart"
                             className="flex-1 bg-white/5 hover:bg-white/10 text-white font-bold py-4 px-8 rounded-xl transition-all border border-white/10 hover:border-white/30 backdrop-blur-md text-lg transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2"
                         >
                             <span>🛒 Add to Cart</span>
@@ -530,6 +564,7 @@ export default function Home() {
                           src={getProductImageUrl(product.images?.[0] || product.image)} 
                           alt={product.name} 
                           className="w-full h-full object-cover transform scale-100 group-hover/card:scale-110 transition-transform duration-700 opacity-80 group-hover/card:opacity-100"
+                          loading="lazy"
                           onError={(e) => e.target.src = '/placeholder.svg'}
                         />
                         {/* Status Tag */}
