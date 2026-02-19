@@ -24,9 +24,10 @@ export default function Footer() {
                         <input 
                            type="email" 
                            placeholder="Enter your email" 
+                           aria-label="Newsletter email"
                            className="flex-1 bg-black/50 border border-white/10 rounded-xl px-6 py-4 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition-all"
                         />
-                        <button className="bg-white text-black font-bold py-4 px-8 rounded-xl hover:bg-gray-200 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+                        <button aria-label="Subscribe to newsletter" className="bg-white text-black font-bold py-4 px-8 rounded-xl hover:bg-gray-200 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.1)]">
                            Subscribe
                         </button>
                      </form>
@@ -37,9 +38,9 @@ export default function Footer() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
                {/* Brand Column */}
                <div className="space-y-6">
-                  <Link to="/" className="flex items-center gap-2">
+                  <Link to="/" className="flex items-center gap-2" aria-label="HA Store Home">
                      <div className="w-10 h-10 rounded-xl overflow-hidden border border-white/10 shadow-lg">
-                        <img src="/logo.png" alt="HA Store" className="w-full h-full object-cover" />
+                        <img src="/logo.png" alt="HA Store Logo" className="w-full h-full object-cover" />
                      </div>
                      <span className="text-2xl font-black text-white tracking-tighter">HA STORE</span>
                   </Link>
@@ -52,7 +53,7 @@ export default function Footer() {
                         { name: 'Instagram', icon: 'M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01' },
                         { name: 'LinkedIn', icon: 'M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z' }
                      ].map((social) => (
-                        <a key={social.name} href="#" className="w-10 h-10 rounded-full bg-white/5 border border-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all hover:-translate-y-1">
+                        <a key={social.name} href="#" aria-label={`Follow us on ${social.name}`} className="w-10 h-10 rounded-full bg-white/5 border border-white/5 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all hover:-translate-y-1">
                            <svg className="h-4 w-4" fill={social.name === 'Instagram' ? 'none' : 'currentColor'} stroke={social.name === 'Instagram' ? 'currentColor' : 'none'} strokeWidth="2" viewBox="0 0 24 24">
                               <path d={social.icon} />
                               {social.name === 'Instagram' && <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />}
@@ -154,6 +155,7 @@ export default function Footer() {
                      href="https://linkedin.com/in/mazhar-devx" 
                      target="_blank" 
                      rel="noopener noreferrer"
+                     aria-label="Created by Mazhar Devx - LinkedIn Profile"
                      className="flex items-center gap-2 group transition-all"
                   >
                      <span className="text-gray-600 text-xs group-hover:text-gray-400 transition-colors">Created by</span>
