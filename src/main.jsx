@@ -17,7 +17,9 @@ if ('serviceWorker' in navigator) {
         console.log('SW registered: ', registration);
       })
       .catch((registrationError) => {
-        console.log('SW registration failed: ', registrationError);
+        if (import.meta.env.MODE === 'production') {
+          console.log('SW registration failed: ', registrationError);
+        }
       });
   });
 }
