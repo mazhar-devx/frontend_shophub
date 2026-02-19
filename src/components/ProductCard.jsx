@@ -21,6 +21,7 @@ export default function ProductCard({ product }) {
   return (
     <Link 
       to={`/product/${product.slug || product._id}`}
+      aria-label={`View details for ${product.name}`}
       className="group relative block h-full select-none"
     >
         {/* Glow Effect Background - REMOVED for Ultra Light */}
@@ -56,6 +57,7 @@ export default function ProductCard({ product }) {
              <img 
                src={getProductImageUrl(product.images[0])} 
                alt={product.name}
+               loading="lazy"
                className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 ease-out"
                onError={(e) => {
                  e.target.onerror = null;
@@ -67,6 +69,7 @@ export default function ProductCard({ product }) {
               <img 
                src={getProductImageUrl(product.image)} 
                alt={product.name}
+               loading="lazy"
                className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 ease-out"
                onError={(e) => {
                  e.target.onerror = null;
@@ -85,6 +88,7 @@ export default function ProductCard({ product }) {
            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4 backdrop-blur-[2px]">
                <button 
                   onClick={handleAddToCart}
+                  aria-label={`Add ${product.name} to cart`}
                   className="bg-white text-black p-3 rounded-full hover:bg-cyan-400 hover:text-white transition-all duration-300 transform translate-y-10 group-hover:translate-y-0 hover:scale-110 shadow-[0_0_20px_rgba(255,255,255,0.4)]"
                   title="Add to Cart"
                >
@@ -148,6 +152,7 @@ export default function ProductCard({ product }) {
              
              <button 
                onClick={handleAddToCart}
+               aria-label={`Quick add ${product.name} to cart`}
                className="text-sm font-bold text-gray-400 hover:text-white flex items-center gap-1 transition-colors group/link"
              >
                Add to Cart 
