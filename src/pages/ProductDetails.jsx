@@ -164,7 +164,7 @@ export default function ProductDetails() {
     "description": product.description,
     "brand": {
       "@type": "Brand",
-      "name": product.brand || "ShopHub"
+      "name": product.brand || "HA Store"
     },
     "sku": product._id,
     "offers": {
