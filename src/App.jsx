@@ -91,7 +91,7 @@ export default function App() {
             <MobileMenu />
             <Toast />
             <Modal />
-            <div className="pt-24 min-h-screen overflow-x-hidden">
+            <main id="main-content" className="pt-24 min-h-screen overflow-x-hidden">
               <Suspense fallback={<PageLoader />}>
                 <Routes>
                   <Route index element={<Home />} />
@@ -112,7 +112,7 @@ export default function App() {
                   <Route path="search" element={<SearchResults />} />
                 </Routes>
               </Suspense>
-            </div>
+            </main>
             <Footer />
             <BackToTop />
             <WhatsAppContact />
