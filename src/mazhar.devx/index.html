@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="mazhar.devx - Mazhar Aslam, Full-Stack MERN Developer specializing in scalable web applications, REST APIs, and modern UI/UX design. Expert in MongoDB, Express, React, Node.js, and cloud deployments.">
+    <meta name="keywords"
+        content="mazhar.devx, mazhar, Mazhar Aslam, Full-Stack Developer, MERN Stack Developer, React Developer, Node.js Developer, MongoDB Expert, Web Developer Portfolio, Mazhar Developer">
+    <meta name="author" content="Mazhar Aslam">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://mazhar-devx.ct.ws/">
+    <meta property="og:title" content="mazhar.devx | Mazhar Aslam - Full-Stack Developer">
+    <meta property="og:description"
+        content="Full-Stack MERN Developer crafting scalable web solutions with modern technologies.">
+    <meta property="og:image" content="https://mazhar-devx.ct.ws/profile.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://mazhar-devx.ct.ws/">
+    <meta property="twitter:title" content="mazhar.devx | Mazhar Aslam - Full-Stack Developer">
+    <meta property="twitter:description"
+        content="Full-Stack MERN Developer crafting scalable web solutions with modern technologies.">
+    <meta property="twitter:image" content="https://mazhar-devx.ct.ws/profile.jpg">
+
+    <title>mazhar.devx | Mazhar Aslam - Full-Stack Developer Portfolio</title>
+    <!-- Tailwind Play CDN (Universal Development Mode) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#030303">
+    <!-- Modern Mobile Meta (Replaces Deprecated apple-mobile-web-app-capable) -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#0a0a0a',
+                        primary: '#06b6d4', // cyan-500
+                        secondary: '#6366f1', // indigo-500
+                    },
+                    fontFamily: {
+                        outfit: ['Outfit', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
+
+    <!-- Structured Data for Google Knowledge Graph -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Mazhar Aslam",
+      "alternateName": "mazhar.devx",
+      "url": "https://yourdomain.com",
+      "image": "https://mazhar-devx.ct.ws/profile.jpg",
+      "jobTitle": "Full-Stack Developer",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Freelance"
+      },
+      "description": "Full-Stack MERN Developer specializing in scalable web applications, REST APIs, and modern UI/UX design.",
+      "knowsAbout": ["MongoDB", "Express.js", "React", "Node.js", "JavaScript", "Web Development", "REST APIs", "Cloud Deployments"],
+      "sameAs": [
+        "https://github.com/mazhar-devx",
+        "https://mazhar-devx.ct.ws"
+      ]
+    }
+    </script>
+</head>
+
+<body class="font-outfit overflow-x-hidden">
+    <!-- Custom Cursor -->
+    <div id="cursor"></div>
+    <div id="cursor-follower"></div>
+
+    <!-- Scroll Progress -->
+    <div id="scroll-progress"></div>
+
+    <!-- Ultra-Professional Background -->
+    <div class="mesh-container">
+        <div class="mesh-gradient"></div>
+    </div>
+    <div class="noise-overlay"></div>
+
+    <!-- Header / Navbar -->
+    <header class="fixed top-0 left-0 w-full z-50 transition-all duration-300" id="navbar">
+        <nav class="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
+            <a href="#" class="text-3xl font-black tracking-tighter text-white group outline-none">
+                mazhar<span class="text-primary group-hover:text-secondary transition-colors italic">.devx</span>
+            </a>
+
+            <!-- Desktop Nav -->
+            <ul class="hidden md:flex items-center space-x-10">
+                <li><a href="#about" class="nav-link text-xs font-black uppercase tracking-[0.2em]">About</a></li>
+                <li><a href="#skills" class="nav-link text-xs font-black uppercase tracking-[0.2em]">Skills</a></li>
+                <li><a href="#projects" class="nav-link text-xs font-black uppercase tracking-[0.2em]">Projects</a></li>
+                <li><a href="#experience" class="nav-link text-xs font-black uppercase tracking-[0.2em]">Experience</a>
+                </li>
+                <li>
+                    <div class="theme-toggle-btn" id="theme-toggle">
+                        <div class="toggle-orb">
+                            <i class="fas fa-moon sun-icon hidden"></i>
+                            <i class="fas fa-sun moon-icon"></i>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <a href="#contact"
+                        class="px-8 py-3 bg-white text-black font-black uppercase text-[10px] tracking-[0.2em] rounded-full hover:bg-primary hover:text-white transition-all duration-500 shadow-2xl shadow-primary/20">
+                        Connect
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Mobile Actions -->
+            <div class="flex items-center gap-6 md:hidden relative z-50">
+                <div class="theme-toggle-btn scale-90" id="theme-toggle-mobile">
+                    <div class="toggle-orb">
+                        <i class="fas fa-moon sun-icon hidden"></i>
+                        <i class="fas fa-sun moon-icon"></i>
+                    </div>
+                </div>
+                <button class="group p-2 outline-none" id="mobile-menu-toggle">
+                    <div class="w-8 h-6 flex flex-col justify-between items-end">
+                        <span
+                            class="w-full h-0.5 bg-white transition-all duration-300 burger-line-1 rounded-full"></span>
+                        <span
+                            class="w-2/3 h-0.5 bg-white transition-all duration-300 burger-line-2 rounded-full"></span>
+                        <span
+                            class="w-full h-0.5 bg-white transition-all duration-300 burger-line-3 rounded-full"></span>
+                    </div>
+                </button>
+            </div>
+        </nav>
+
+    </header>
+
+    <!-- Mobile Menu Overlay (Moved to Root for Perfect Positioning) -->
+    <div id="mobile-menu"
+        class="fixed inset-0 z-[100] translate-x-full transition-transform duration-700 flex flex-col items-center justify-center pointer-events-none">
+        <div class="mobile-menu-content pointer-events-auto">
+            <div class="flex flex-col items-start space-y-6">
+                <a href="#about" class="mobile-nav-link" style="transition-delay: 0.1s;"><span>01</span>About</a>
+                <a href="#skills" class="mobile-nav-link" style="transition-delay: 0.2s;"><span>02</span>Skills</a>
+                <a href="#projects" class="mobile-nav-link" style="transition-delay: 0.3s;"><span>03</span>Projects</a>
+                <a href="#experience" class="mobile-nav-link"
+                    style="transition-delay: 0.4s;"><span>04</span>Expreience</a>
+                <a href="#contact" class="mobile-nav-link text-primary"
+                    style="transition-delay: 0.5s;"><span>05</span>Contact</a>
+            </div>
+
+            <div class="mobile-footer-pill">
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-6 border-b border-white/5 pb-4">
+                    Social Network</p>
+                <div class="flex gap-6">
+                    <a href="https://github.com/mazhar-devx" target="_blank"
+                        class="text-white/40 hover:text-white text-2xl transition-all hover:scale-125"><i
+                            class="fab fa-github"></i></a>
+                    <a href="https://www.linkedin.com/in/mazhar-devx/" target="_blank"
+                        class="text-white/40 hover:text-white text-2xl transition-all hover:scale-125"><i
+                            class="fab fa-linkedin"></i></a>
+                    <a href="https://wa.me/923299185064" target="_blank"
+                        class="text-white/40 hover:text-white text-2xl transition-all hover:scale-125"><i
+                            class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main>
+        <section class="min-h-screen flex flex-col items-center justify-center relative px-6 py-20 overflow-hidden"
+            id="home">
+            <div class="bento-bg-grid opacity-20"></div>
+
+            <div class="max-w-5xl mx-auto text-center relative z-20 mt-16">
+                <!-- Hero Pill Badge -->
+                <div
+                    class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-12 reveal">
+                    <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                    <span class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Full Stack Web
+                        Developer</span>
+                </div>
+
+                <!-- High-Impact Headline -->
+                <h1 class="text-6xl md:text-8xl font-bold tracking-tighter mb-8 reveal leading-[1.05]">
+                    Crafting digital <span
+                        class="bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent italic">experiences</span><br>
+                    that make an <span
+                        class="bg-gradient-to-r from-secondary to-pink-500 bg-clip-text text-transparent">impact</span>
+                </h1>
+
+                <!-- Professional Core Sub-headline -->
+                <p class="text-slate-400 text-xl md:text-2xl max-w-3xl mx-auto leading-relaxed mb-16 reveal font-light">
+                    I build modern, responsive, and performant web applications using
+                    cutting-edge technologies. Let's turn your ideas into reality.
+                </p>
+
+                <!-- Ultra-Professional Terminal -->
+                <div class="terminal-window max-w-2xl mx-auto reveal text-left shadow-2xl">
+                    <div class="terminal-header flex items-center justify-between px-4 py-3 bg-white/90 rounded-t-xl">
+                        <div class="flex gap-2">
+                            <span class="w-3 h-3 rounded-full bg-[#ff5f56]"></span>
+                            <span class="w-3 h-3 rounded-full bg-[#ffbd2e]"></span>
+                            <span class="w-3 h-3 rounded-full bg-[#27c93f]"></span>
+                        </div>
+                        <div class="text-[10px] font-bold text-slate-500 tracking-wider">mazharaslam.dev</div>
+                        <div class="w-12"></div>
+                    </div>
+                    <div
+                        class="terminal-body p-8 bg-[#0a0a0b] rounded-b-xl border-x border-b border-white/5 font-mono text-sm leading-6">
+                        <div class="terminal-line">
+                            <span class="text-green-400">mazharaslam:</span><span class="text-secondary">~ $</span>
+                            <span class="text-white">npm init</span>
+                        </div>
+                        <div class="terminal-line text-slate-400">creating a cool package.json file just for you</div>
+                        <div class="terminal-line text-slate-400">package name: <span
+                                class="text-primary font-bold">welcome-to-my-website</span></div>
+                        <div class="terminal-line text-slate-400">version: 1.0.0</div>
+                        <div class="terminal-line text-slate-400">entry point: index.js</div>
+                        <div class="terminal-line text-slate-400">author: <span class="text-white font-bold">Mazhar
+                                Aslam</span></div>
+                        <div class="terminal-line mt-4">
+                            <span class="text-green-400">mazharaslam:</span><span class="text-secondary">~ $</span>
+                            <span class="text-white">npm install mazharaslam</span>
+                        </div>
+                        <div class="terminal-line text-slate-400">added 1 package, and audited in 2s</div>
+                        <div class="terminal-line text-slate-400">found <span class="text-green-400 font-bold">0</span>
+                            vulnerabilities</div>
+                        <div class="terminal-line mt-4">
+                            <span class="text-green-400">mazharaslam:</span><span class="text-secondary">~ $</span>
+                            <span class="text-white">npm run dev</span><span class="cursor-blink">|</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About & Experience Section -->
+        <section class="py-32 px-6 relative" id="about">
+            <div class="max-w-7xl mx-auto">
+                <div class="mb-20 reveal">
+                    <h2 class="text-5xl md:text-7xl font-bold mb-6 italic tracking-tight">About <span
+                            class="text-primary">Me</span></h2>
+                    <p class="text-slate-400 text-xl max-w-2xl leading-relaxed">A fusion of technical mastery and
+                        artistic precision. Building the next generation of digital products.</p>
+                </div>
+
+
+                <!-- Expansive Senior Profile Section -->
+                <div class="flex flex-col lg:flex-row items-start gap-20 relative z-20">
+                    <!-- Profile Asset Column -->
+                    <div class="w-full lg:w-[400px] lg:sticky lg:top-32">
+                        <div
+                            class="profile-img-container aspect-[4/5] relative glass-card border-primary/20 overflow-hidden group/profile shadow-2xl">
+                            <img loading="lazy" src="profile.jpg" alt="Mazhar Aslam"
+                                class="w-full h-full object-cover grayscale group-hover/profile:grayscale-0 transition-all duration-700 scale-105 group-hover/profile:scale-100">
+                            <div
+                                class="absolute inset-x-0 bottom-0 p-8 bg-gradient-to-t from-black via-black/40 to-transparent">
+                                <h3 class="text-3xl font-black text-white tracking-tighter mb-1">Mazhar Aslam</h3>
+                                <p class="text-primary font-bold uppercase tracking-[0.2em] text-xs">MERN Stack
+                                    Architect</p>
+                            </div>
+                        </div>
+
+                        <!-- Quick Senior Stats Under Photo -->
+                        <div class="grid grid-cols-2 gap-4 mt-8">
+                            <div class="p-6 glass-card bg-white/5 border-white/5 text-center">
+                                <div class="text-3xl font-black text-white">4+</div>
+                                <div class="text-[9px] text-primary font-bold uppercase tracking-widest mt-1">Years Exp.
+                                </div>
+                            </div>
+                            <div class="p-6 glass-card bg-white/5 border-white/5 text-center">
+                                <div class="text-3xl font-black text-white">25+</div>
+                                <div class="text-[9px] text-secondary font-bold uppercase tracking-widest mt-1">Projects
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Deep Narrative Column -->
+                    <div class="flex-1 space-y-12">
+                        <div class="reveal">
+                            <p class="text-primary font-black text-xs mb-6 uppercase tracking-[0.5em]">Engineering
+                                Identity</p>
+                            <h3
+                                class="text-5xl md:text-7xl font-bold tracking-tighter mb-8 leading-[0.9] will-change-transform">
+                                MERN Stack <span class="text-primary italic">Expert</span><br>
+                                & Technical <span class="text-secondary">Leader</span>
+                            </h3>
+
+                            <!-- RESTORED AUTO-TYPING -->
+                            <div
+                                class="text-2xl md:text-3xl font-light text-slate-400 h-10 flex items-center gap-3 mb-10">
+                                <span class="text-white font-medium">I am a</span>
+                                <span id="typing-text" class="text-primary font-bold italic tracking-tight"></span>
+                            </div>
+
+                            <div class="space-y-8 text-slate-400 text-xl leading-relaxed font-light">
+                                <p>
+                                    I am an <span
+                                        class="text-white font-bold underline decoration-primary decoration-2 underline-offset-8">Elite
+                                        Full-Stack Developer</span> specializing in the MERN stack, with a proven track
+                                    record of architecting scalable, production-grade digital ecosystems. My journey is
+                                    defined by a deep-rooted passion for technical surgical precision and artistic
+                                    design excellence.
+                                </p>
+                                <div class="pt-8">
+                                    <a href="Mazhar_Aslam_FullStack_Developer_CV.pdf" download="Mazhar_Aslam_CV.pdf"
+                                        class="inline-flex items-center gap-4 px-10 py-5 bg-primary text-white font-black uppercase text-xs tracking-[0.3em] rounded-full hover:bg-secondary hover:scale-105 transition-all duration-500 shadow-2xl shadow-primary/20 group/cv">
+                                        <i class="fas fa-file-download text-lg group-hover/cv:animate-bounce"></i>
+                                        Download CV
+                                    </a>
+                                </div>
+                                <p>
+                                    My expertise evolved from mastering foundational HTML, CSS, and JavaScript into
+                                    advanced <span class="text-white">React.js</span> development and complex backend
+                                    engineering using <span class="text-white">Node.js, Express, and MongoDB</span>. I
+                                    don't just write code; I design systems that solve real-world problems through
+                                    performant architecture and intuitive user experiences.
+                                </p>
+                                <p>
+                                    I have successfully architected and deployed multiple full-stack applications,
+                                    ranging from high-security authentication systems and real-time dashboards to
+                                    complex interactive web platforms. My focus is always on <span
+                                        class="text-primary font-bold">scalability, security, and surgical-level UI/UX
+                                        precision.</span>
+                                </p>
+                                <p>
+                                    Currently, I am diving deeper into cloud-native architectures, system performance
+                                    optimization, and industrial-level distributed systems, while continuously growing
+                                    as a world-class professional software engineer.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Signature Features -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 pt-10 reveal">
+                            <div class="space-y-4">
+                                <h4 class="text-white font-bold text-lg flex items-center gap-3">
+                                    <span
+                                        class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">⚙️</span>
+                                    Surgical Engineering
+                                </h4>
+                                <p class="text-sm text-slate-500 leading-relaxed">Implementing pixel-perfect UI with
+                                    robust, type-safe backend architectures that scale seamlessly under heavy load.</p>
+                            </div>
+                            <div class="space-y-4">
+                                <h4 class="text-white font-bold text-lg flex items-center gap-3">
+                                    <span
+                                        class="w-8 h-8 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary">🎨</span>
+                                    Visionary Design
+                                    </p>
+                                    <p class="text-sm text-slate-500 leading-relaxed">Fusing industrial engineering
+                                        principles with modern design aesthetics to create memorable, high-conversion
+                                        web experiences.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section class="py-32 px-6 relative bg-dark/30" id="skills">
+            <div class="bento-bg-grid opacity-20 pointer-events-none"></div>
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-32 reveal">
+                    <p class="text-primary font-black text-xs mb-6 uppercase tracking-[0.6em]">Engineered Arsenal</p>
+                    <h2 class="text-6xl md:text-[5.5rem] font-bold tracking-tighter mb-10 leading-[0.85]">
+                        Mastered <span class="text-primary italic">Technologies</span><br>
+                        & Infrastructure <span class="text-secondary">Stack</span>
+                    </h2>
+                    <p class="text-slate-400 text-xl md:text-2xl font-light max-w-3xl mx-auto leading-relaxed">
+                        Hover to reveal the architectural precision behind the code. Fusing elite engineering with
+                        visionary design.
+                    </p>
+                </div>
+
+                <div class="relative z-20">
+
+                    <div
+                        class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-10 gap-x-8 gap-y-12 justify-items-center reveal">
+                        <!-- Icons will be styled as square boxes -->
+                        <div class="skill-icon-box" data-name="JavaScript">
+                            <i class="devicon-javascript-plain colored"></i>
+                        </div>
+                        <div class="skill-icon-box" data-name="TypeScript">
+                            <i class="devicon-typescript-plain colored"></i>
+                        </div>
+                        <div class="skill-icon-box" data-name="React">
+                            <i class="devicon-react-original colored"></i>
+                        </div>
+                        <div class="skill-icon-box" data-name="Next.js">
+                            <i class="devicon-nextjs-original-wordmark"></i>
+                        </div>
+                        <div class="skill-icon-box" data-name="Node.js">
+                            <i class="devicon-nodejs-plain colored"></i>
+                        </div>
+                        <div class="skill-icon-box" data-name="Express">
+                            <i class="devicon-express-original"></i>
+                        </div>
+                        <div class="skill-icon-box" data-name="MongoDB">
+                            <i class="devicon-mongodb-plain colored"></i>
+                        </div>
+                        <div class="skill-icon-box" data-name="Tailwind CSS">
+                            <i class="devicon-tailwindcss-original colored"></i>
+                        </div>
+                        <div class="skill-icon-box" data-name="Sass">
+                            <i class="devicon-sass-original colored"></i>
+                        </div>
+                        <div class="skill-icon-box" data-name="Redux">
+                            <i class="devicon-redux-original colored"></i>
+                        </div>
+                        <div class="skill-icon-box" data-name="HTML5">
+                            <i class="devicon-html5-plain colored"></i>
+                        </div>
+                        <div class="skill-icon-box" data-name="CSS3">
+                            <i class="devicon-css3-plain colored"></i>
+                        </div>
+                        <div class="skill-icon-box" data-name="Python">
+                            <i class="devicon-python-plain colored"></i>
+                        </div>
+                        <div class="skill-icon-box" data-name="C++">
+                            <i class="devicon-cplusplus-plain colored"></i>
+                        </div>
+                        <div class="skill-icon-box" data-name="C">
+                            <i class="devicon-c-plain colored"></i>
+                        </div>
+                        <div class="skill-icon-box" data-name="Git">
+                            <i class="devicon-git-plain colored"></i>
+                        </div>
+                        <div class="skill-icon-box" data-name="GitHub">
+                            <i class="devicon-github-original"></i>
+                        </div>
+                        <div class="skill-icon-box" data-name="Figma">
+                            <i class="devicon-figma-plain colored"></i>
+                        </div>
+                        <div class="skill-icon-box" data-name="Postman">
+                            <i class="devicon-postman-plain colored"></i>
+                        </div>
+                        <div class="skill-icon-box" data-name="VS Code">
+                            <i class="devicon-vscode-plain colored"></i>
+                        </div>
+                        <div class="skill-icon-box" data-name="NPM">
+                            <i class="devicon-npm-original-wordmark colored"></i>
+                        </div>
+                        <div class="skill-icon-box" data-name="JWT">
+                            <span class="font-black text-[10px] text-primary">JWT</span>
+                        </div>
+                        <div class="skill-icon-box" data-name="REST API">
+                            <span class="font-black text-[10px] text-primary italic">API</span>
+                        </div>
+                        <div class="skill-icon-box" data-name="Authentication">
+                            <i class="devicon-google-plain colored"></i>
+                        </div>
+                        <div class="skill-icon-box" data-name="Scalable Architecture">
+                            <i class="devicon-amazonwebservices-original colored"></i>
+                        </div>
+                        <div class="skill-icon-box" data-name="Docker">
+                            <i class="devicon-docker-plain colored"></i>
+                        </div>
+                        <div class="skill-icon-box" data-name="Cloud Integration">
+                            <i class="devicon-googlecloud-plain colored"></i>
+                        </div>
+                        <div class="skill-icon-box" data-name="Agile & Trello">
+                            <i class="devicon-trello-plain colored"></i>
+                        </div>
+                        <!-- Concepts & Patterns -->
+                        <div class="skill-icon-box" data-name="Redux Toolkit">
+                            <i class="devicon-redux-original colored"></i>
+                        </div>
+                        <div class="skill-icon-box" data-name="Responsive Design">
+                            <span class="text-xl">📱</span>
+                        </div>
+                        <div class="skill-icon-box" data-name="Security & JWT">
+                            <span class="text-xl">🔒</span>
+                        </div>
+                        <div class="skill-icon-box" data-name="API Orchestration">
+                            <span class="text-xl">⚙️</span>
+                        </div>
+                        <div class="skill-icon-box" data-name="Performance Opt.">
+                            <span class="text-xl">🚀</span>
+                        </div>
+                        <div class="skill-icon-box" data-name="Clean Code">
+                            <span class="text-xl">🧼</span>
+                        </div>
+                        <div class="skill-icon-box" data-name="Problem Solving">
+                            <span class="text-xl">🧩</span>
+                        </div>
+                        <div class="skill-icon-box" data-name="Project Structure">
+                            <span class="text-xl">📁</span>
+                        </div>
+                        <div class="skill-icon-box" data-name="React Hooks">
+                            <i class="devicon-react-original"></i>
+                        </div>
+                        <div class="skill-icon-box" data-name="RTK Query">
+                            <i class="devicon-redux-original"></i>
+                        </div>
+                        <div class="skill-icon-box" data-name="Mongoose ODM">
+                            <i class="devicon-mongodb-plain"></i>
+                        </div>
+                        <div class="skill-icon-box" data-name="MVC Design">
+                            <span class="text-xl text-primary font-bold">MVC</span>
+                        </div>
+                        <div class="skill-icon-box" data-name="Chrome DevTools">
+                            <i class="devicon-chrome-plain colored"></i>
+                        </div>
+                        <div class="skill-icon-box" data-name="Code Optimization">
+                            <span class="text-xl">⚡</span>
+                        </div>
+                        <div class="skill-icon-box" data-name="Soft Skills">
+                            <span class="text-xl">🤝</span>
+                        </div>
+                        <div class="skill-icon-box" data-name="English Mastery">
+                            <span class="text-xl">🇬🇧</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GitHub Developer Pulse - Expansive Section -->
+            <div class="mt-40 relative z-20 reveal">
+                <div class="flex flex-col lg:flex-row items-start justify-between gap-16 mb-20">
+                    <div class="w-full lg:w-1/3">
+                        <p class="text-primary font-black text-xs mb-6 uppercase tracking-[0.6em]">System Architecture
+                        </p>
+                        <h4 class="text-5xl md:text-6xl font-black mb-8 tracking-tighter leading-none">
+                            Developer <span class="text-primary italic">Pulse</span>
+                        </h4>
+                        <p class="text-slate-400 text-xl font-light leading-relaxed">
+                            Live architectural evolution and commit frequency. My open-source activity reflects
+                            consistency and a deep passion for <span
+                                class="text-white font-bold underline decoration-primary/50 underline-offset-8">high-performance
+                                engineering</span>.
+                        </p>
+                    </div>
+
+                    <div
+                        class="flex-1 w-full bg-black/40 rounded-[2rem] p-8 border border-white/5 shadow-2xl backdrop-blur-xl group/pulse transition-all duration-700 hover:border-primary/20">
+                        <!-- GitHub Contribution Graph Embed -->
+                        <div class="mb-4 flex items-center justify-between">
+                            <span class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Active
+                                Contribution Node</span>
+                            <div class="flex gap-2">
+                                <div class="w-2 h-2 rounded-full bg-green-500/50 animate-pulse"></div>
+                                <div class="w-2 h-2 rounded-full bg-primary/50 animate-pulse delay-75"></div>
+                            </div>
+                        </div>
+                        <img loading="lazy" src="https://ghchart.rshah.org/06b6d4/mazhar-devx"
+                            alt="GitHub Contribution Graph"
+                            class="w-full h-auto opacity-80 group-hover/pulse:opacity-100 transition-opacity duration-700">
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section class="py-32 px-6 relative bg-[#020617]" id="projects">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-24 reveal">
+                    <h2 class="text-7xl md:text-8xl font-black text-white tracking-tighter mb-6 uppercase italic">
+                        Digital <span class="text-primary not-italic">Showcase</span></h2>
+                    <p class="text-slate-400 text-2xl font-light">A surgical display of high-performance engineering</p>
+                </div>
+
+                <div class="project-slider-wrapper relative overflow-hidden">
+                    <div id="project-slider" class="project-slider flex transition-transform duration-700 ease-in-out">
+                        <!-- Slide 1: ShopHub & QA -->
+                        <div class="project-slide w-full flex-shrink-0">
+                            <div class="projects-showcase-grid">
+                                <!-- Featured: ShopHub -->
+                                <div class="project-card-featured group">
+                                    <div class="project-image-container relative overflow-hidden">
+                                        <img loading="lazy" src="shophub.pro.png" alt="ShopHub.pro"
+                                            class="w-full h-full object-cover">
+                                        <div class="absolute inset-0 bg-gradient-to-t from-[#0d1117] to-transparent">
+                                        </div>
+                                    </div>
+                                    <div class="project-info-side">
+                                        <h3 class="text-5xl font-black text-white mb-6 tracking-tighter italic">
+                                            ShopHub<span class="text-primary not-italic">.pro</span></h3>
+                                        <p class="text-slate-400 text-xl font-light leading-relaxed mb-8">
+                                            Full-stack MERN ecommerce platform with secure authentication, protected
+                                            routes,
+                                            user management, and dynamic product handling.
+                                        </p>
+                                        <a href="https://www.shophub.pro/" target="_blank" class="view-live-btn w-fit">
+                                            <i class="fas fa-external-link-alt"></i>
+                                            View System
+                                        </a>
+                                    </div>
+                                </div>
+                                <!-- Stacked -->
+                                <div class="flex flex-col gap-8">
+                                    <div class="project-card-stacked group">
+                                        <div class="project-image-mini overflow-hidden">
+                                            <img loading="lazy" src="testing-websites.great-site.net.png"
+                                                alt="QA Orchestrator" class="w-full h-full object-cover">
+                                        </div>
+                                        <h4 class="text-2xl font-bold text-white mb-2 uppercase tracking-tighter">QA
+                                            <span class="text-secondary italic">Orchestrator</span>
+                                        </h4>
+                                        <p class="text-slate-400 font-light leading-relaxed mb-4">Automated testing
+                                            environment for validating web reliability.</p>
+                                        <a href="https://testing-websites.great-site.net/" target="_blank"
+                                            class="text-primary font-bold hover:underline flex items-center gap-2">View
+                                            Demo <i class="fas fa-arrow-right text-xs"></i></a>
+                                    </div>
+                                    <div class="project-card-stacked group">
+                                        <div class="project-image-mini overflow-hidden">
+                                            <img loading="lazy" src="skills-career.netlify.app.png" alt="Career Hub"
+                                                class="w-full h-full object-cover">
+                                        </div>
+                                        <h4 class="text-2xl font-bold text-white mb-2 uppercase tracking-tighter">Career
+                                            <span class="text-primary italic">Hub</span>
+                                        </h4>
+                                        <p class="text-slate-400 font-light leading-relaxed mb-4">Interactive platform
+                                            for skills and career development.</p>
+                                        <a href="https://skills-career.netlify.app/" target="_blank"
+                                            class="text-primary font-bold hover:underline flex items-center gap-2">View
+                                            Demo <i class="fas fa-arrow-right text-xs"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Slide 2: Trace & MERN -->
+                        <div class="project-slide w-full flex-shrink-0">
+                            <div class="projects-showcase-grid">
+                                <!-- Featured: Trace -->
+                                <div class="project-card-featured group">
+                                    <div class="project-image-container relative overflow-hidden">
+                                        <img loading="lazy" src="trace.ct.ws.png" alt="Trace Core"
+                                            class="w-full h-full object-cover">
+                                        <div class="absolute inset-0 bg-gradient-to-t from-[#0d1117] to-transparent">
+                                        </div>
+                                    </div>
+                                    <div class="project-info-side">
+                                        <h3
+                                            class="text-5xl font-black text-white mb-6 tracking-tighter italic uppercase">
+                                            Trace <span class="text-primary not-italic">Core</span></h3>
+                                        <p class="text-slate-400 text-xl font-light leading-relaxed mb-8">
+                                            AI-powered memory sanctuary and document management system for deep
+                                            self-discovery
+                                            and data preservation.
+                                        </p>
+                                        <a href="https://trace.ct.ws" target="_blank" class="view-live-btn w-fit">
+                                            <i class="fas fa-external-link-alt"></i>
+                                            Enter Vault
+                                        </a>
+                                    </div>
+                                </div>
+                                <!-- Stacked -->
+                                <div class="flex flex-col gap-8">
+                                    <div class="project-card-stacked group">
+                                        <div class="project-image-mini overflow-hidden">
+                                            <img loading="lazy" src="mazhar.lovestoblog.com.png" alt="TestMaker.pk"
+                                                class="w-full h-full object-cover">
+                                        </div>
+                                        <h4 class="text-2xl font-bold text-white mb-2 uppercase tracking-tighter">Test
+                                            <span class="text-primary italic">Maker</span>
+                                        </h4>
+                                        <p class="text-slate-400 font-light leading-relaxed mb-4">Advanced assessment
+                                            engine for institutional testing and grading.</p>
+                                        <a href="http://mazhar.lovestoblog.com" target="_blank"
+                                            class="text-primary font-bold hover:underline flex items-center gap-2">View
+                                            System <i class="fas fa-arrow-right text-xs"></i></a>
+                                    </div>
+                                    <div class="project-card-stacked group">
+                                        <div
+                                            class="project-image-mini overflow-hidden bg-slate-900 flex items-center justify-center">
+                                            <i class="fas fa-tasks text-6xl text-primary/20"></i>
+                                        </div>
+                                        <h4 class="text-2xl font-bold text-white mb-2 uppercase tracking-tighter">MERN
+                                            <span class="text-secondary italic">Task Manager</span>
+                                        </h4>
+                                        <p class="text-slate-400 font-light leading-relaxed mb-4">Full-stack
+                                            authentication and task management system with JWT.</p>
+                                        <a href="https://github.com/mazhar-devx" target="_blank"
+                                            class="text-primary font-bold hover:underline flex items-center gap-2">View
+                                            Code <i class="fas fa-arrow-right text-xs"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 3: Special Showcase -->
+                    <div class="project-slide w-full flex-shrink-0">
+                        <div class="projects-showcase-grid">
+                            <!-- Featured: Toyota GT Motors -->
+                            <div class="project-card-featured group">
+                                <div
+                                    class="project-image-container relative overflow-hidden bg-slate-900 flex items-center justify-center">
+                                    <i class="fas fa-car text-8xl text-primary/10"></i>
+                                    <div class="absolute inset-0 bg-gradient-to-t from-[#0d1117] to-transparent"></div>
+                                </div>
+                                <div class="project-info-side">
+                                    <h3 class="text-5xl font-black text-white mb-6 tracking-tighter italic uppercase">
+                                        Toyota <span class="text-primary not-italic">GT Motors</span></h3>
+                                    <p class="text-slate-400 text-xl font-light leading-relaxed mb-8">
+                                        A premium automotive dealership platform showcasing high-performance vehicles
+                                        with integrated booking and specification modules.
+                                    </p>
+                                    <a href="#" class="view-live-btn w-fit">
+                                        <i class="fas fa-external-link-alt"></i>
+                                        Launch System
+                                    </a>
+                                </div>
+                            </div>
+                            <!-- Stacked -->
+                            <div class="flex flex-col gap-8">
+                                <div class="project-card-stacked group">
+                                    <div
+                                        class="project-image-mini overflow-hidden bg-slate-900 flex items-center justify-center">
+                                        <i class="fas fa-tooth text-6xl text-primary/20"></i>
+                                    </div>
+                                    <h4 class="text-2xl font-bold text-white mb-2 uppercase tracking-tighter">Vendental
+                                        <span class="text-primary italic">Clinic</span>
+                                    </h4>
+                                    <p class="text-slate-400 font-light leading-relaxed mb-4">Spanish-based dental
+                                        consultation and booking management system.</p>
+                                    <a href="#"
+                                        class="text-primary font-bold hover:underline flex items-center gap-2">View Case
+                                        <i class="fas fa-arrow-right text-xs"></i></a>
+                                </div>
+                                <div class="project-card-stacked group">
+                                    <div
+                                        class="project-image-mini overflow-hidden bg-slate-900 flex items-center justify-center">
+                                        <i class="fas fa-file-contract text-6xl text-secondary/20"></i>
+                                    </div>
+                                    <h4 class="text-2xl font-bold text-white mb-2 uppercase tracking-tighter">Kubic<span
+                                            class="text-secondary italic">Docs</span></h4>
+                                    <p class="text-slate-400 font-light leading-relaxed mb-4">Blockchain-enabled
+                                        paperless filing and auditable document system.</p>
+                                    <a href="#"
+                                        class="text-primary font-bold hover:underline flex items-center gap-2">Explore
+                                        <i class="fas fa-arrow-right text-xs"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Carousel Controls -->
+                <button id="prev-project" class="carousel-control prev" aria-label="Previous Project">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button id="next-project" class="carousel-control next" aria-label="Next Project">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+
+            <!-- Carousel Indicators -->
+            <div class="pagination-dots">
+                <div class="dot active" data-slide="0"></div>
+                <div class="dot" data-slide="1"></div>
+                <div class="dot" data-slide="2"></div>
+            </div>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section class="py-32 px-6 relative bg-[#020617]" id="experience">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-32 reveal">
+                    <h2 class="text-7xl md:text-[6.5rem] font-black text-white tracking-tighter mb-6">Experience</h2>
+                    <p class="text-slate-400 text-2xl font-light">My professional journey and career milestones</p>
+                </div>
+
+                <div class="timeline-container reveal">
+                    <div class="timeline-line">
+                        <div id="timeline-progress-line" class="timeline-progress-line"></div>
+                    </div>
+
+                    <!-- Experience Item 1: Nifty Code -->
+                    <div class="experience-item">
+                        <div class="timeline-node node-green">
+                            <span class="text-emerald-400 text-xl">⚡</span>
+                        </div>
+                        <div class="experience-card group">
+                            <div class="inner-grid"></div>
+                            <div class="relative z-10">
+                                <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
+                                    <div class="flex-1">
+                                        <div class="flex items-center gap-4 mb-3">
+                                            <h3 class="role-title text-white">Lead Full Stack Engineer</h3>
+                                            <span class="exp-badge-current">Current</span>
+                                        </div>
+                                        <a href="#" class="company-link text-green inline-flex items-center gap-2">
+                                            Nifty Code <i class="fas fa-external-link-alt text-xs"></i>
+                                        </a>
+                                    </div>
+                                    <div
+                                        class="text-slate-500 font-medium text-lg flex items-center gap-3 bg-white/5 px-4 py-2 rounded-lg">
+                                        <i class="far fa-calendar-alt text-primary"></i>
+                                        Aug 2024 — Present
+                                    </div>
+                                </div>
+                                <ul class="space-y-4">
+                                    <li>Lead a team in the development of multiple SaaS projects.</li>
+                                    <li>Developed multi-role based CRM solutions for businesses, focused on converting,
+                                        tracking and engaging leads.</li>
+                                    <li>Developed highly optimized dynamic website's using Next.js.</li>
+                                    <li>Completed more than 20 projects so far ranging from web pages to complex
+                                        dashboards and tools.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Experience Item 2: QuantumHub -->
+                    <div class="experience-item">
+                        <div class="timeline-node">
+                            <span class="text-indigo-400 text-xl">&lt;/&gt;</span>
+                        </div>
+                        <div class="experience-card group">
+                            <div class="inner-grid"></div>
+                            <div class="relative z-10">
+                                <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
+                                    <div class="flex-1">
+                                        <h3 class="role-title text-white mb-3">Full Stack Engineer</h3>
+                                        <a href="#" class="company-link text-indigo inline-flex items-center gap-2">
+                                            QuantumHub <i class="fas fa-external-link-alt text-xs"></i>
+                                        </a>
+                                    </div>
+                                    <div
+                                        class="text-slate-500 font-medium text-lg flex items-center gap-3 bg-white/5 px-4 py-2 rounded-lg">
+                                        <i class="far fa-calendar-alt text-primary"></i>
+                                        May 2024 — Nov 2024
+                                    </div>
+                                </div>
+                                <ul class="space-y-4">
+                                    <li>Worked on an audit management platform for hospitals including a rich user
+                                        management system for more than 10 user types and access controls.</li>
+                                    <li>Developed front end schema validation processes for complex data to improve form
+                                        response collection.</li>
+                                    <li>Made responsive layouts along with complex charts for multi-type data
+                                        operations.</li>
+                                    <li>Developed and incorporated algorithms to calculate compliance values and ranges
+                                        as per health care standards.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Experience Item 3: Sparkleo Technologies -->
+                    <div class="experience-item">
+                        <div class="timeline-node">
+                            <span class="text-indigo-400 text-xl">&lt;/&gt;</span>
+                        </div>
+                        <div class="experience-card group">
+                            <div class="inner-grid"></div>
+                            <div class="relative z-10">
+                                <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
+                                    <div class="flex-1">
+                                        <h3 class="role-title text-white mb-3">Full Stack Web Developer</h3>
+                                        <a href="#" class="company-link text-indigo inline-flex items-center gap-2">
+                                            Sparkleo Technologies <i class="fas fa-external-link-alt text-xs"></i>
+                                        </a>
+                                    </div>
+                                    <div
+                                        class="text-slate-500 font-medium text-lg flex items-center gap-3 bg-white/5 px-4 py-2 rounded-lg">
+                                        <i class="far fa-calendar-alt text-primary"></i>
+                                        Sept 2023 — April 2024
+                                    </div>
+                                </div>
+                                <ul class="space-y-4">
+                                    <li>Incorporated 10+ new features following agile development methodologies.</li>
+                                    <li>Developed a fully featured business and blog website with user privileges and
+                                        incorporated optimization measures to achieve a 90+ website performance score.
+                                    </li>
+                                    <li>Utilized Server Side Rending (SSR) to reduce latency and page loading times
+                                        effectively reducing LCP and data rendering times by 60%.</li>
+                                    <li>Implemented full stack dashboards facilitating seamless data management for
+                                        administrators.</li>
+                                    <li>Made 15+ interactive web layouts suitable for multiple themes with completely
+                                        responsive designs.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Experience Item 4: Takhleeq -->
+                    <div class="experience-item">
+                        <div class="timeline-node">
+                            <span class="text-indigo-400 text-xl">&lt;/&gt;</span>
+                        </div>
+                        <div class="experience-card group">
+                            <div class="inner-grid"></div>
+                            <div class="relative z-10">
+                                <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
+                                    <div class="flex-1">
+                                        <h3 class="role-title text-white mb-3">MERN and CMS Developer</h3>
+                                        <a href="#" class="company-link text-indigo inline-flex items-center gap-2">
+                                            Takhleeq <i class="fas fa-external-link-alt text-xs"></i>
+                                        </a>
+                                    </div>
+                                    <div
+                                        class="text-slate-500 font-medium text-lg flex items-center gap-3 bg-white/5 px-4 py-2 rounded-lg">
+                                        <i class="far fa-calendar-alt text-primary"></i>
+                                        Jan 2023 — Jan 2024
+                                    </div>
+                                </div>
+                                <ul class="space-y-4">
+                                    <li>Created websites for startups based in National Science and Technology Park
+                                        (NSTP), utilizing CI/CD practices to ensure efficient delivery of products.</li>
+                                    <li>Redeveloped and optimized websites for enhanced performance achieving page speed
+                                        loading scores of 95+ on both mobile and desktop.</li>
+                                    <li>Enhanced on-page website performance and successfully increased the Page Speed
+                                        Insights SEO score to 99.</li>
+                                    <li>Coordinated with branding agency to improve website front ends for better lead
+                                        generations eventually resulting in a 3x increase in user retainability.</li>
+                                    <li>Redeveloped a CMS website for an ed-tech ecommerce company with local online
+                                        payment features, eventually achieving a 5x increase in overall online sales.
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Experience Item 5: Kubix Solutions -->
+                    <div class="experience-item">
+                        <div class="timeline-node">
+                            <span class="text-indigo-400 text-xl"><i class="fas fa-laptop-code"></i></span>
+                        </div>
+                        <div class="experience-card group">
+                            <div class="inner-grid"></div>
+                            <div class="relative z-10">
+                                <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
+                                    <div class="flex-1">
+                                        <h3 class="role-title text-white mb-3">Front End Developer</h3>
+                                        <div class="company-link text-indigo inline-flex items-center gap-2">
+                                            Kubix Solutions
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="text-slate-500 font-medium text-lg flex items-center gap-3 bg-white/5 px-4 py-2 rounded-lg">
+                                        <i class="far fa-calendar-alt text-primary"></i>
+                                        Aug 2022 — Jan 2023
+                                    </div>
+                                </div>
+                                <ul class="space-y-4">
+                                    <li>Embedded 3D models in 4 websites using Three.js to boost user interactivity and
+                                        enhance overall website visitor engagement.</li>
+                                    <li>Made 15+ websites on WordPress and React Js ranging from blogs to e-commerce
+                                        websites for foreign and local clients.</li>
+                                    <li>Implemented spam resolution techniques by integrating Cloudflare CDN and web
+                                        security to optimize previously developed websites, effectively slashing
+                                        bot-generated spam by 80%.</li>
+                                    <li>Coordinated with UI designers to make 10+ interactive and responsive designs for
+                                        websites.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Experience Item 6: Shadiyana -->
+                    <div class="experience-item">
+                        <div class="timeline-node">
+                            <span class="text-indigo-400 text-xl"><i class="fas fa-graduation-cap"></i></span>
+                        </div>
+                        <div class="experience-card group">
+                            <div class="inner-grid"></div>
+                            <div class="relative z-10">
+                                <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
+                                    <div class="flex-1">
+                                        <h3 class="role-title text-white mb-3">Web Developer Internee</h3>
+                                        <div class="company-link text-indigo inline-flex items-center gap-2">
+                                            Shadiyana
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="text-slate-500 font-medium text-lg flex items-center gap-3 bg-white/5 px-4 py-2 rounded-lg">
+                                        <i class="far fa-calendar-alt text-primary"></i>
+                                        June 2022 — Aug 2022
+                                    </div>
+                                </div>
+                                <ul class="space-y-4">
+                                    <li>Worked to improve front end designs and implementing UI libraries.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Education Section -->
+        <section class="py-32 px-6 relative" id="education">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-24 reveal">
+                    <h2 class="text-7xl md:text-[6.5rem] font-black text-white tracking-tighter mb-6 uppercase italic">
+                        Education <span class="text-primary not-italic">& Mastery</span></h2>
+                    <p class="text-slate-400 text-2xl font-light">Academic foundation and professional certifications
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                    <!-- Education 1: Matric -->
+                    <div class="education-milestone reveal group" style="transition-delay: 100ms;">
+                        <div class="milestone-badge ring-emerald-500/20">
+                            <i class="fas fa-graduation-cap text-3xl text-emerald-400"></i>
+                            <div class="badge-glow bg-emerald-500/10"></div>
+                        </div>
+                        <div class="mt-8 text-center">
+                            <h3 class="text-2xl font-bold text-white mb-2">Matriculation (10th)</h3>
+                            <p class="text-emerald-400 font-bold mb-4 uppercase tracking-widest text-xs">Computer
+                                Science</p>
+                            <p class="text-slate-400 font-light leading-relaxed">
+                                Foundation in engineering and computing principles, providing a strong base for
+                                advanced software development.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Education 2: Full Stack -->
+                    <div class="education-milestone reveal group" style="transition-delay: 200ms;">
+                        <div class="milestone-badge ring-primary/20">
+                            <i class="fas fa-layer-group text-3xl text-primary"></i>
+                            <div class="badge-glow bg-primary/10"></div>
+                        </div>
+                        <div class="mt-8 text-center">
+                            <h3 class="text-2xl font-bold text-white mb-2">Full Stack Developer</h3>
+                            <p class="text-primary font-bold mb-4 uppercase tracking-widest text-xs">Professional
+                                Certification</p>
+                            <p class="text-slate-400 font-light leading-relaxed">
+                                Comprehensive mastery of end-to-end web architecture, from responsive front-ends to
+                                scalable backend systems.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Education 3: MERN Stack -->
+                    <div class="education-milestone reveal group" style="transition-delay: 300ms;">
+                        <div class="milestone-badge ring-secondary/20">
+                            <i class="fab fa-react text-3xl text-secondary"></i>
+                            <div class="badge-glow bg-secondary/10"></div>
+                        </div>
+                        <div class="mt-8 text-center">
+                            <h3 class="text-2xl font-bold text-white mb-2">MERN Stack Specialist</h3>
+                            <p class="text-secondary font-bold mb-4 uppercase tracking-widest text-xs">Advanced
+                                Engineering</p>
+                            <p class="text-slate-400 font-light leading-relaxed">
+                                Specialized expertise in MongoDB, Express, React, and Node.js for building
+                                performance-driven, high-concurrency applications.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="py-32 px-6 relative overflow-hidden" id="contact">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-24 reveal">
+                    <h2 class="text-7xl md:text-[6.5rem] font-black text-white tracking-tighter mb-6 uppercase italic">
+                        Ready to <span class="text-primary not-italic">Collaborate?</span></h2>
+                    <p class="text-slate-400 text-2xl font-light">Let's build something extraordinary together.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
+                    <!-- Contact Info Side -->
+                    <div class="lg:col-span-4 space-y-8 reveal">
+                        <p class="text-slate-400 text-xl font-light leading-relaxed mb-12">
+                            I'm currently looking for new opportunities to grow and make an impact. Whether you have a
+                            question or just want to say hi, my inbox is always open!
+                        </p>
+
+                        <div class="contact-info-card group">
+                            <div class="flex items-center gap-6">
+                                <div
+                                    class="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary group-hover:scale-110 transition-transform duration-500">
+                                    <i class="fas fa-envelope text-2xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-500 uppercase tracking-[0.2em] mb-1">Email Me
+                                    </p>
+                                    <a href="mailto:mazhar.devx@gmail.com"
+                                        class="text-xl font-bold text-white hover:text-primary transition-colors">mazhar.devx@gmail.com</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="contact-info-card group">
+                            <div class="flex items-center gap-6">
+                                <div
+                                    class="w-14 h-14 bg-secondary/10 rounded-2xl flex items-center justify-center text-secondary group-hover:scale-110 transition-transform duration-500">
+                                    <i class="fas fa-phone-alt text-2xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-500 uppercase tracking-[0.2em] mb-1">Call Me
+                                    </p>
+                                    <a href="tel:923299185064"
+                                        class="text-xl font-bold text-white hover:text-primary transition-colors">+92
+                                        329 9185064</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Form Side -->
+                    <div class="lg:col-span-8 reveal" style="transition-delay: 200ms;">
+                        <form action="https://formsubmit.co/mazhar.devx@gmail.com" method="POST" class="space-y-6">
+                            <!-- Anti-Spam & Success Redirect -->
+                            <input type="hidden" name="_captcha" value="false">
+                            <input type="hidden" name="_template" value="table">
+                            <input type="hidden" name="_subject" value="New Portfolio Inquiry!">
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="group">
+                                    <label
+                                        class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-3 ml-1">Name</label>
+                                    <input type="text" name="name" placeholder="John Doe" class="form-input" required>
+                                </div>
+                                <div class="group">
+                                    <label
+                                        class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-3 ml-1">Email</label>
+                                    <input type="email" name="email" placeholder="john@example.com" class="form-input"
+                                        required>
+                                </div>
+                            </div>
+
+                            <div class="group">
+                                <label
+                                    class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-3 ml-1">Subject</label>
+                                <input type="text" name="subject" placeholder="Project Discussion" class="form-input"
+                                    required>
+                            </div>
+
+                            <div class="group">
+                                <label
+                                    class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-3 ml-1">Message</label>
+                                <textarea name="message" rows="6" placeholder="Tell me about your vision..."
+                                    class="form-input resize-none" required></textarea>
+                            </div>
+
+                            <button type="submit" class="contact-button w-full">
+                                <span class="relative z-10 flex items-center justify-center gap-3">
+                                    Send Message <i class="fas fa-paper-plane"></i>
+                                </span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- footer: Surgical Precision -->
+    <footer class="footer-elite pt-32 pb-16 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-16 mb-24">
+                <!-- Branding Column -->
+                <div class="md:col-span-5">
+                    <a href="#" class="footer-logo mb-8 inline-block">
+                        mazhar<span class="italic font-light">.devx</span>
+                    </a>
+                    <p class="text-slate-500 text-lg leading-relaxed max-w-sm mb-10">
+                        Building the next generation of digital experiences with surgical precision and industrial
+                        strength.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="https://github.com/mazhar-devx" target="_blank" class="social-glow-btn">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/mazhar-devx/" target="_blank" class="social-glow-btn">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="https://wa.me/923299185064" target="_blank" class="social-glow-btn">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Links Columns -->
+                <div class="md:col-span-7 grid grid-cols-2 md:grid-cols-3 gap-12">
+                    <div class="space-y-6">
+                        <h4 class="text-white font-bold uppercase tracking-widest text-xs">Explore</h4>
+                        <ul class="space-y-4">
+                            <li><a href="#home" class="footer-link text-sm block">Home</a></li>
+                            <li><a href="#about" class="footer-link text-sm block">About</a></li>
+                            <li><a href="#projects" class="footer-link text-sm block">Projects</a></li>
+                        </ul>
+                    </div>
+                    <div class="space-y-6">
+                        <h4 class="text-white font-bold uppercase tracking-widest text-xs">Growth</h4>
+                        <ul class="space-y-4">
+                            <li><a href="#experience" class="footer-link text-sm block">Journey</a></li>
+                            <li><a href="#skills" class="footer-link text-sm block">Tools</a></li>
+                            <li><a href="#education" class="footer-link text-sm block">Mastery</a></li>
+                        </ul>
+                    </div>
+                    <div class="space-y-6">
+                        <h4 class="text-white font-bold uppercase tracking-widest text-xs">Support</h4>
+                        <ul class="space-y-4">
+                            <li><a href="#contact" class="footer-link text-sm block">Contact</a></li>
+                            <li><a href="mailto:mazhar.devx@gmail.com" class="footer-link text-sm block">Get in
+                                    Touch</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="pt-12 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6 px-2">
+                <p class="copyright-text text-center md:text-left italic">
+                    "Crafting code that makes an impact."
+                </p>
+                <p class="copyright-text">
+                    © 2024 mazhar.devx — Built with surgical precision.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp Widget -->
+    <a href="https://wa.me/923299185064" target="_blank" class="whatsapp-widget" aria-label="Chat on WhatsApp">
+        <div class="whatsapp-avatar-wrapper">
+            <img src="WhatsApp Image 2026-01-29 at 8.09.16 PM.jpeg" alt="Chat with Mazhar" class="whatsapp-avatar">
+            <div class="whatsapp-badge"></div>
+        </div>
+        <div class="whatsapp-message text-center">
+            <p class="text-[10px] text-primary font-bold uppercase tracking-widest mb-1">Online Now</p>
+            <p class="text-xs">Let's chat about your project!</p>
+        </div>
+    </a>
+
+    <button id="back-to-top" aria-label="Back to Top">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="m18 15-6-6-6 6" />
+        </svg>
+    </button>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

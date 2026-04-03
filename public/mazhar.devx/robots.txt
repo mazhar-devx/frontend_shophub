@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mazhar-devx.ct.ws/sitemap.xml
