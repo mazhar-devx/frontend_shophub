@@ -58,7 +58,9 @@ export default function ProductDetails() {
     dispatch(fetchProductReviews(id));
 
     // Record view + recommendations (use api so Bearer token is sent; view requires auth)
+    // Only call if id is a valid MongoDB ObjectId (not a slug like 'pakistan')
     const trackAndFetch = async () => {
+      if (!isObjectId(id)) return; // skip for slugs — backend returns 400
       try {
         await api.post(`/products/${id}/view`, {});
         const res = await api.get(`/products/recommendations`, { params: { currentId: id } });

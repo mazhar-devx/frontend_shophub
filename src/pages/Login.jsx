@@ -190,7 +190,7 @@ export default function Login() {
                 theme={document.documentElement.getAttribute('data-theme') === 'light' ? 'outline' : 'filled_black'}
                 shape="pill"
                 text="continue_with"
-                width="100%"
+                width={400}
              />
           </div>
         </div>
