@@ -13,6 +13,7 @@ import { useUIStore } from "../zustand/uiStore";
 import { useNavigate } from "react-router-dom";
 import SEO from "../components/SEO";
 import HomeSkeleton from "../components/HomeSkeleton";
+import ReviewMarquee from "../components/ReviewMarquee";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -496,6 +497,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+      
+      {/* Review Marquee Section */}
+      <ReviewMarquee />
       
       {/* Newsletter & Features Integration */}
       <section className="relative rounded-3xl overflow-hidden p-10 md:p-20 text-center glass shadow-2xl mb-12">
