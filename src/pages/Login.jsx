@@ -130,6 +130,27 @@ export default function Login() {
                 placeholder="••••••••"
               />
             </div>
+            {(formData.email.toLowerCase() === 'admin@example.com' || formData.email.toLowerCase() === 'admin@shophub.pro') && (
+              <div className="animate-fade-in-down">
+                <label htmlFor="vendorName" className="block text-sm font-medium text-cyan-400 mb-1 flex items-center gap-2">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                  Admin Identity Name
+                </label>
+                <input
+                  id="vendorName"
+                  name="vendorName"
+                  type="text"
+                  required
+                  value={formData.vendorName || ""}
+                  onChange={handleChange}
+                  className={`appearance-none block w-full px-4 py-3 bg-cyan-500/10 border border-cyan-500/30 rounded-xl placeholder-cyan-500/50 text-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all`}
+                  placeholder="e.g. Ultra Store or mazhar.devx"
+                />
+                <p className="text-xs text-cyan-500/70 mt-2">
+                  Enter your unique admin name to access your isolated store. Use <strong>mazhar.devx</strong> for Master access.
+                </p>
+              </div>
+            )}
           </div>
 
           <div className="flex items-center justify-between">
