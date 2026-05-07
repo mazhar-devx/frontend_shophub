@@ -2,17 +2,16 @@ import { useEffect } from "react";
 
 const GoogleAd = ({ 
   slot, 
-  layout = "", 
-  format = "auto", 
+  layout, 
+  format, 
   responsive = "true",
-  style = { display: "block", textAlign: "center" },
-  className = "ad-container my-12 w-full flex justify-center overflow-hidden rounded-3xl border border-black/[0.03] dark:border-white/[0.03] bg-black/[0.01] dark:bg-white/[0.01] p-4"
+  className = "ad-container my-8 w-full flex justify-center overflow-hidden rounded-2xl border border-white/5 bg-white/5 p-4"
 }) => {
   useEffect(() => {
     try {
       (window.adsbygoogle = window.adsbygoogle || []).push({});
     } catch (e) {
-      // Silently catch AdSense errors (e.g. ad-blocker)
+      // Silently catch AdSense errors
     }
   }, []);
 
@@ -20,9 +19,9 @@ const GoogleAd = ({
     <div className={className}>
       <ins
         className="adsbygoogle"
-        style={style}
-        data-ad-layout={layout || undefined}
-        data-ad-format={format}
+        style={{ display: "block", textAlign: "center", minWidth: "250px", minHeight: "90px", width: "100%" }}
+        {...(layout ? { "data-ad-layout": layout } : {})}
+        data-ad-format={format || "fluid"}
         data-ad-client="ca-pub-6521940579323633"
         data-ad-slot={slot}
         data-full-width-responsive={responsive}

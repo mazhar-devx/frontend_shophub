@@ -530,7 +530,7 @@ export default function ProductDetails() {
             {activeTab === 'description' && (
               <div className="animate-fade-in">
                   <p className="text-lg leading-relaxed">{product.description}</p>
-                  <GoogleAd slot="8211277173" />
+                  <GoogleAd slot="8211277173" layout="in-article" format="fluid" />
                   <p className="mt-4 text-gray-400">Experience the quality and innovation that defines our {product.category} collection. Designed for the modern lifestyle, this product combines functionality with aesthetic appeal.</p>
               </div>
             )}
