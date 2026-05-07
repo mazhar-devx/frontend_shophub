@@ -8,10 +8,30 @@ export default function AdminReviews() {
   const [reviewsPerPage] = useState(10);
   const [filterRating, setFilterRating] = useState("all");
   const [loading, setLoading] = useState(true);
+  
+  // AI Generation States
+  const [isAIModalOpen, setIsAIModalOpen] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [selectedProductId, setSelectedProductId] = useState("");
+  const [reviewCount, setReviewCount] = useState(5);
+  const [aiPrompt, setAiPrompt] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
     fetchReviews();
+    fetchProducts();
   }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await api.get("/products");
+      if (response.data.status === 'success') {
+        setProducts(response.data.data.products);
+      }
+    } catch (err) {
+      console.error("Failed to fetch products", err);
+    }
+  };
 
   const fetchReviews = async () => {
     try {
@@ -29,7 +49,7 @@ export default function AdminReviews() {
   // Filter reviews based on search term and rating
   const filteredReviews = reviews.filter(review => {
     const productName = review.product?.name || "Deleted Product";
-    const customerName = review.user?.name || "Deleted User";
+    const customerName = review.isDummy ? (review.dummyName || "Anonymous") : (review.user?.name || "Deleted User");
     const comment = review.review || "";
     
     const matchesSearch = productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -93,23 +113,55 @@ export default function AdminReviews() {
     );
   };
 
+  const handleGenerateAIReviews = async (e) => {
+    e.preventDefault();
+    if (!selectedProductId) return alert("Please select a product");
+    
+    setIsGenerating(true);
+    try {
+      const response = await api.post("/ai/generate-bulk-reviews", {
+        productId: selectedProductId,
+        count: reviewCount,
+        prompt: aiPrompt
+      });
+      
+      if (response.data.status === 'success') {
+        alert(response.data.message);
+        setIsAIModalOpen(false);
+        fetchReviews(); // Refresh reviews list
+      }
+    } catch (err) {
+      alert(err.response?.data?.message || "Failed to generate reviews");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   if (loading) return <div className="p-8 text-white">Loading reviews...</div>;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 relative">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-white">Reviews</h1>
           <p className="mt-1 text-gray-400">Manage customer reviews</p>
         </div>
-        <div className="flex space-x-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <button 
+            onClick={() => setIsAIModalOpen(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-lg transition-all shadow-lg shadow-purple-500/20 font-bold text-sm"
+          >
+            <span className="text-lg">🤖</span>
+            AI Review Hub
+          </button>
+          
           <div className="relative">
             <input
               type="text"
               placeholder="Search reviews..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 bg-black/40 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white placeholder-gray-500"
+              className="pl-10 pr-4 py-2 bg-black/40 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white placeholder-gray-500 text-sm"
             />
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -120,7 +172,7 @@ export default function AdminReviews() {
           <select
             value={filterRating}
             onChange={(e) => setFilterRating(e.target.value)}
-            className="bg-black/40 border border-white/10 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="bg-black/40 border border-white/10 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
           >
             <option value="all" className="bg-gray-900">All Ratings</option>
             <option value="5" className="bg-gray-900">5 Stars</option>
@@ -157,7 +209,16 @@ export default function AdminReviews() {
                             {review.product?.name || 'Unknown Product'}
                         </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">{review.user?.name || 'Unknown User'}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                      <div className="flex items-center gap-2">
+                        <img 
+                          src={review.isDummy ? review.dummyPhoto : (review.user?.photo || '/default-avatar.png')} 
+                          className="w-8 h-8 rounded-full object-cover border border-white/10" 
+                          alt="" 
+                        />
+                        <span>{review.isDummy ? (review.dummyName || "Anonymous") : (review.user?.name || 'Unknown User')}</span>
+                      </div>
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         {renderStars(review.rating)}
@@ -276,6 +337,93 @@ export default function AdminReviews() {
           </div>
         )}
       </div>
+      {/* AI Review Hub Modal */}
+      {isAIModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => !isGenerating && setIsAIModalOpen(false)}></div>
+          <div className="relative w-full max-w-xl glass border border-white/10 rounded-3xl overflow-hidden shadow-2xl animate-in zoom-in duration-300">
+            <div className="bg-gradient-to-r from-indigo-900/40 to-purple-900/40 p-6 border-b border-white/10">
+              <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                <span>🤖</span> AI Review Generation Hub
+              </h2>
+              <p className="text-xs text-gray-400 mt-1">Our neural system will generate ultra-realistic reviews for your products.</p>
+            </div>
+            
+            <form onSubmit={handleGenerateAIReviews} className="p-6 space-y-5">
+              <div>
+                <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Select Product</label>
+                <select 
+                  required
+                  value={selectedProductId}
+                  onChange={(e) => setSelectedProductId(e.target.value)}
+                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 transition-all text-sm"
+                >
+                  <option value="" className="bg-gray-900">Choose a product...</option>
+                  {products.map(p => (
+                    <option key={p._id} value={p._id} className="bg-gray-900">{p.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Count ({reviewCount})</label>
+                  <input 
+                    type="range"
+                    min="1"
+                    max="20"
+                    value={reviewCount}
+                    onChange={(e) => setReviewCount(parseInt(e.target.value))}
+                    className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-purple-500"
+                  />
+                </div>
+                <div className="flex items-center justify-center">
+                   <div className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-white font-bold text-lg">
+                      {reviewCount} <span className="text-[10px] text-gray-500 uppercase">Reviews</span>
+                   </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Custom Prompt (Optional)</label>
+                <textarea 
+                  value={aiPrompt}
+                  onChange={(e) => setAiPrompt(e.target.value)}
+                  placeholder="e.g. Make them sound like happy customers from Lahore, using some Roman Urdu and emojis..."
+                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 transition-all text-sm h-24 resize-none"
+                />
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <button 
+                  type="button"
+                  onClick={() => setIsAIModalOpen(false)}
+                  disabled={isGenerating}
+                  className="flex-1 px-4 py-3 bg-white/5 hover:bg-white/10 text-white rounded-xl transition-all font-bold text-sm disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit"
+                  disabled={isGenerating || !selectedProductId}
+                  className="flex-[2] px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-xl transition-all font-bold text-sm shadow-lg shadow-purple-500/20 flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  {isGenerating ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                      Generating Neural Feedback...
+                    </>
+                  ) : (
+                    <>
+                      <span>✨</span> Launch Neural Generation
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

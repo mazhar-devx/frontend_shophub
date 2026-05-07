@@ -96,6 +96,18 @@ export const updateProfile = createAsyncThunk(
   }
 );
 
+export const updateVendorName = createAsyncThunk(
+  "auth/updateVendorName",
+  async (vendorName, { rejectWithValue }) => {
+    try {
+      const response = await api.patch("/users/updateVendorName", { vendorName });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || { message: "Vendor name update failed" });
+    }
+  }
+);
+
 export const logout = createAsyncThunk(
   "auth/logout",
   async (_, { rejectWithValue }) => {
@@ -225,6 +237,21 @@ const authSlice = createSlice({
       .addCase(updateProfile.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || "Profile update failed";
+      })
+
+      // Update Vendor Name
+      .addCase(updateVendorName.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateVendorName.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.data.user;
+        state.error = null;
+      })
+      .addCase(updateVendorName.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || "Vendor name update failed";
       })
 
       // Load User (Restore Session)

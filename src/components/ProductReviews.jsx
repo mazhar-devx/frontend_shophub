@@ -61,11 +61,22 @@ export default function ProductReviews({ productId, reviews }) {
             <div key={review._id} className="bg-black/20 border border-white/5 rounded-2xl p-4 md:p-6 hover:bg-black/30 transition-colors">
               <div className="flex items-center justify-between mb-3 md:mb-4">
                 <div className="flex items-center">
-                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center text-white text-xs md:text-base font-bold mr-3 md:mr-4 shadow-lg">
-                    {review.user?.name ? review.user.name.charAt(0).toUpperCase() : 'A'}
+                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full overflow-hidden border border-white/10 mr-3 md:mr-4 shadow-lg">
+                    {review.isDummy ? (
+                      <img src={review.dummyPhoto} className="w-full h-full object-cover" alt={review.dummyName} />
+                    ) : review.user?.photo && review.user.photo !== 'default.jpg' ? (
+                      <img src={review.user.photo} className="w-full h-full object-cover" alt={review.user.name} />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center text-white text-xs md:text-base font-bold">
+                        {review.user?.name ? review.user.name.charAt(0).toUpperCase() : 'A'}
+                      </div>
+                    )}
                   </div>
                   <div>
-                    <h4 className="text-sm md:text-base font-bold text-white leading-tight">{review.user?.name || 'User'}</h4>
+                    <h4 className="text-sm md:text-base font-bold text-white leading-tight flex items-center">
+                      {review.isDummy ? review.dummyName : (review.user?.name || 'User')}
+                      {review.isDummy && <span className="ml-2 text-[8px] bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 px-1.5 py-0.5 rounded-full uppercase tracking-tighter">Verified Buyer</span>}
+                    </h4>
                     <div className="flex text-yellow-500 text-[10px] md:text-sm mt-0.5">
                       {[...Array(5)].map((_, i) => (
                         <svg

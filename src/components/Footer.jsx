@@ -1,6 +1,19 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 export default function Footer() {
+  const [showInfoModal, setShowInfoModal] = useState(false);
+  const [modalContent, setModalContent] = useState({ title: '', body: '' });
+
+  const handleLinkClick = (e, linkName) => {
+    e.preventDefault();
+    setModalContent({
+      title: linkName,
+      body: `Welcome to the ${linkName} page for HA Store. We are committed to providing the best experience, premium products, and top-tier support. For specific inquiries, please contact our support team.`
+    });
+    setShowInfoModal(true);
+  };
+
   return (
       <footer className="relative mt-20 border-t border-black/5 dark:border-white/10 bg-white dark:bg-[#050505] overflow-hidden transition-colors duration-500">
          {/* Ambient Lighting */}
@@ -109,13 +122,13 @@ export default function Footer() {
                       <ul className="space-y-4">
                          {column.links.map(link => (
                             <li key={link.name}>
-                               <Link 
-                                 to={link.path} 
-                                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                                 className="text-sm text-secondary dark:text-gray-400 hover:text-cyan-500 transition-colors"
+                                <a 
+                                 href={link.path}
+                                 onClick={(e) => link.path === "/" ? handleLinkClick(e, link.name) : window.scrollTo({ top: 0, behavior: 'smooth' })}
+                                 className="text-sm text-secondary dark:text-gray-400 hover:text-cyan-500 transition-colors cursor-pointer"
                                >
                                  {link.name}
-                               </Link>
+                               </a>
                             </li>
                          ))}
                       </ul>
@@ -124,42 +137,20 @@ export default function Footer() {
             </div>
 
             {/* Ultra-Professional Portfolio Link Section */}
-            <div className="mt-16">
-               <a href="/mazhar.devx/index.html" className="group block relative overflow-hidden rounded-2xl border border-black/10 dark:border-white/10 bg-gradient-to-br from-purple-600/5 via-cyan-600/5 to-pink-600/5 dark:from-purple-900/20 dark:via-cyan-900/20 dark:to-pink-900/20 p-8 hover:border-cyan-400/40 transition-all duration-500 hover:scale-[1.02] hover:shadow-[0_0_40px_rgba(6,182,212,0.15)]">
-                  {/* Animated gradient background */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  
-                  {/* Pulse indicator */}
-                  <div className="absolute top-4 right-4 flex items-center gap-2">
-                     <span className="text-xs font-bold uppercase tracking-wider text-cyan-400/60 group-hover:text-cyan-400 transition-colors">New</span>
-                     <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_rgba(6,182,212,0.8)]" />
+            <div className="mt-16 flex justify-center md:justify-start">
+               <a href="/mazhar.devx/index.html" className="group flex items-center gap-4 bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 border border-black/10 dark:border-white/10 rounded-full px-6 py-3 transition-all duration-300 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)] hover:border-cyan-500/30">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                     <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                     </svg>
                   </div>
-
-                  <div className="relative z-10 flex items-center gap-6">
-                     {/* Icon */}
-                     <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center shadow-lg group-hover:shadow-cyan-500/50 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6">
-                        <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                        </svg>
-                     </div>
-
-                     {/* Content */}
-                      <div className="flex-1">
-                        <h4 className="text-2xl font-black mb-2 bg-gradient-to-r from-cyan-600 via-purple-600 to-pink-600 dark:from-cyan-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent group-hover:from-cyan-500 group-hover:via-purple-500 group-hover:to-pink-500 transition-all duration-500">
-                           Developer Portfolio
-                        </h4>
-                        <p className="text-sm text-secondary dark:text-gray-400 group-hover:text-primary dark:group-hover:text-gray-300 transition-colors">
-                           Explore mazhar.devx – Full-Stack MERN developer portfolio
-                        </p>
-                      </div>
-
-                     {/* Arrow */}
-                     <div className="w-10 h-10 rounded-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 flex items-center justify-center group-hover:bg-cyan-500/20 group-hover:border-cyan-400/40 transition-all group-hover:translate-x-2">
-                        <svg className="w-5 h-5 text-secondary dark:text-gray-400 group-hover:text-cyan-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                        </svg>
-                     </div>
+                  <div className="flex flex-col">
+                     <span className="text-xs text-secondary dark:text-gray-500 font-medium uppercase tracking-wider">Explore Developer</span>
+                     <span className="text-sm font-bold bg-gradient-to-r from-cyan-600 to-purple-600 dark:from-cyan-400 dark:to-purple-400 bg-clip-text text-transparent">mazhar.devx Portfolio</span>
                   </div>
+                  <svg className="w-4 h-4 ml-2 text-gray-400 group-hover:text-cyan-400 transition-colors group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
                </a>
             </div>
 
@@ -193,6 +184,40 @@ export default function Footer() {
                </div>
             </div>
          </div>
+
+         {/* Information Modal */}
+         {showInfoModal && (
+            <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+               <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-fade-in-down" onClick={() => setShowInfoModal(false)}></div>
+               <div className="relative w-full max-w-lg bg-white dark:bg-[#0a0a0a] rounded-3xl shadow-2xl border border-black/10 dark:border-white/10 overflow-hidden animate-fade-scale">
+                  <div className="p-8">
+                     <div className="flex items-center justify-between mb-6">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center shadow-lg">
+                           <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                           </svg>
+                        </div>
+                        <button onClick={() => setShowInfoModal(false)} className="w-8 h-8 rounded-full bg-black/5 dark:bg-white/5 flex items-center justify-center text-primary dark:text-white hover:bg-black/10 dark:hover:bg-white/10 transition-colors">
+                           ✕
+                        </button>
+                     </div>
+                     
+                     <h2 className="text-2xl font-black text-primary dark:text-white mb-4 tracking-tight">{modalContent.title}</h2>
+                     <div className="w-12 h-1 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full mb-6"></div>
+                     
+                     <p className="text-secondary dark:text-gray-300 leading-relaxed text-base">
+                        {modalContent.body}
+                     </p>
+                     
+                     <div className="mt-8 pt-6 border-t border-black/5 dark:border-white/5 flex justify-end">
+                        <button onClick={() => setShowInfoModal(false)} className="px-6 py-2 bg-gradient-to-r from-cyan-600 to-purple-600 text-white font-bold rounded-xl hover:shadow-lg transition-all hover:-translate-y-0.5">
+                           Close
+                        </button>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         )}
       </footer>
   );
 }

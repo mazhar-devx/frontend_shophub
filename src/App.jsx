@@ -11,6 +11,7 @@ import WhatsAppContact from "./components/WhatsAppContact";
 import AIHelper from "./components/AIHelper";
 import MobileBottomNav from "./components/MobileBottomNav";
 import AdminLayout from "./layouts/AdminLayout";
+import VendorNamePrompt from "./components/VendorNamePrompt";
 import { useEffect, lazy, Suspense } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { loadUser } from "./features/auth/authSlice";
@@ -89,6 +90,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
+      <VendorNamePrompt />
       <Routes>
         {/* Portfolio route - Full screen, no layout */}
         <Route path="/mazhar.devx" element={

@@ -13,6 +13,7 @@ import ProductReviews from "../components/ProductReviews";
 import ProductAIChat from "../components/ProductAIChat";
 import { store } from "../app/store"; // Import store for direct access
 import SEO from "../components/SEO";
+import GoogleAd from "../components/GoogleAd";
 
 // Helper to check if string is a valid MongoDB ObjectId
 function isObjectId(id) {
@@ -526,6 +527,7 @@ export default function ProductDetails() {
             {activeTab === 'description' && (
               <div className="animate-fade-in">
                   <p className="text-lg leading-relaxed">{product.description}</p>
+                  <GoogleAd slot="8211277173" />
                   <p className="mt-4 text-gray-400">Experience the quality and innovation that defines our {product.category} collection. Designed for the modern lifestyle, this product combines functionality with aesthetic appeal.</p>
               </div>
             )}

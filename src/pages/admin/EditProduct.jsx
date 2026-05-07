@@ -34,6 +34,8 @@ export default function EditProduct() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [aiReviewCount, setAiReviewCount] = useState(10);
+  const [generatingReviews, setGeneratingReviews] = useState(false);
 
   // Fetch product data when component mounts
   useEffect(() => {
@@ -160,6 +162,23 @@ export default function EditProduct() {
       console.error("Error updating product:", err);
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleGenerateReviews = async () => {
+    try {
+      setGeneratingReviews(true);
+      setError("");
+      const response = await api.post(`/reviews/generate-bulk`, {
+        productId: id,
+        count: Number(aiReviewCount)
+      });
+      alert(response.data.message || "Reviews generated successfully!");
+    } catch (err) {
+      setError(err.response?.data?.message || err.message || "Failed to generate reviews");
+      console.error("Error generating reviews:", err);
+    } finally {
+      setGeneratingReviews(false);
     }
   };
 
@@ -576,6 +595,54 @@ export default function EditProduct() {
                  <p className="text-sm text-gray-300">
                     You are currently editing this product. Changes will reflect immediately after saving.
                  </p>
+              </div>
+
+              {/* AI Review Generator Box */}
+              <div className="mt-6 p-6 rounded-2xl border border-purple-500/30 bg-gradient-to-br from-purple-900/20 to-black/40 backdrop-blur-sm relative overflow-hidden group">
+                 <div className="absolute -right-10 -top-10 w-32 h-32 bg-purple-500/20 rounded-full blur-[40px] pointer-events-none"></div>
+                 
+                 <div className="flex items-center gap-2 mb-4">
+                    <span className="text-2xl animate-pulse">✨</span>
+                    <h3 className="text-lg font-black text-white">AI Review Generator</h3>
+                 </div>
+                 
+                 <p className="text-xs text-gray-400 mb-4">
+                    Deep Brain AI will automatically read your product's name and description, "think" about its features, and write realistic customer reviews.
+                 </p>
+                 
+                 <div className="flex flex-col gap-3">
+                    <div className="flex items-center gap-2">
+                       <label className="text-sm font-bold text-gray-300 flex-1">Number of Reviews:</label>
+                       <input 
+                         type="number" 
+                         min="1" 
+                         max="20" 
+                         value={aiReviewCount}
+                         onChange={(e) => setAiReviewCount(e.target.value)}
+                         className="w-20 bg-black/50 border border-white/10 rounded-lg p-2 text-white text-center focus:outline-none focus:border-cyan-500"
+                       />
+                    </div>
+                    
+                    <button 
+                      onClick={handleGenerateReviews}
+                      disabled={generatingReviews || !id}
+                      className="w-full py-3 mt-2 bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-500 hover:to-cyan-500 text-white font-bold rounded-xl shadow-[0_0_15px_rgba(168,85,247,0.4)] disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+                    >
+                       {generatingReviews ? (
+                         <>
+                           <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                           </svg>
+                           Generating...
+                         </>
+                       ) : (
+                         <>
+                           Generate Fake Reviews
+                         </>
+                       )}
+                    </button>
+                 </div>
               </div>
            </div>
         </div>
