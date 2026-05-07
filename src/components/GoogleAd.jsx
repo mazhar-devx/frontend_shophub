@@ -12,8 +12,7 @@ const GoogleAd = ({
     try {
       (window.adsbygoogle = window.adsbygoogle || []).push({});
     } catch (e) {
-      // AdSense error usually means ad-blocker or script not loaded
-      console.log("AdSense note: Script not initialized yet or ad-blocker detected.");
+      // Silently catch AdSense errors (e.g. ad-blocker)
     }
   }, []);
 
