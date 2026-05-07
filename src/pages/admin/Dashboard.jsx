@@ -104,22 +104,6 @@ export default function AdminDashboard() {
         <div>
           <h1 className="text-3xl font-bold text-white bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">Dashboard Overview</h1>
           <p className="mt-1 text-gray-400">Welcome back, Admin</p>
-          
-          {/* Secret Super Admin Bypass */}
-          <div className="mt-2 flex items-center gap-2">
-            <input 
-              type="password"
-              placeholder="..."
-              autoComplete="off"
-              className="bg-transparent border-none p-0 text-[10px] text-gray-700 focus:text-purple-500 focus:outline-none w-12 transition-all opacity-10 hover:opacity-100"
-              onChange={(e) => {
-                if (e.target.value === 'mazhar.devx') {
-                  localStorage.setItem('vendorIdentifier', 'mazhar.devx');
-                  window.location.reload();
-                }
-              }}
-            />
-          </div>
         </div>
         <Link 
             to="/admin/products/new"
@@ -279,28 +263,6 @@ export default function AdminDashboard() {
               </tbody>
             </table>
           </div>
-        </div>
-      </div>
-    </div>
-      
-      {/* ── Super Admin Access ── */}
-      <div className="mt-12 flex justify-end px-2">
-        <div className="flex flex-col items-end gap-2 group">
-          <label className="text-[10px] uppercase tracking-[0.2em] font-black text-gray-600 group-hover:text-purple-500 transition-colors">
-            Master Node Access
-          </label>
-          <input 
-            type="password"
-            placeholder="••••••••"
-            autoComplete="off"
-            className="bg-black/20 border border-white/5 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-purple-500/40 w-48 transition-all shadow-2xl backdrop-blur-md"
-            onChange={(e) => {
-              if (e.target.value === 'mazhar.devx') {
-                localStorage.setItem('vendorIdentifier', 'mazhar.devx');
-                window.location.reload();
-              }
-            }}
-          />
         </div>
       </div>
     </div>

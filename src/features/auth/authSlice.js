@@ -101,6 +101,9 @@ export const updateVendorName = createAsyncThunk(
   async (vendorName, { rejectWithValue }) => {
     try {
       const response = await api.patch("/users/updateVendorName", { vendorName });
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+      }
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || { message: "Vendor name update failed" });

@@ -13,19 +13,14 @@ const api = axios.create({
 // Request interceptor
 api.interceptors.request.use(
   (config) => {
-    // 1. Add authorization header if token exists
+    // Add authorization header if token exists
     const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      // console.log(`[API] Attaching token to ${config.url}`);
+    } else {
+      // console.log(`[API] No token found for ${config.url}`);
     }
-
-    // 2. [VENDOR ISOLATION] Add custom vendor identifier if it exists
-    // This allows multiple admins sharing one account to isolate their data
-    const vendorIdentifier = localStorage.getItem('vendorIdentifier');
-    if (vendorIdentifier) {
-      config.headers['X-Vendor-Identifier'] = vendorIdentifier;
-    }
-
     return config;
   },
   (error) => {
@@ -39,7 +34,7 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
-    // Network error = backend not running
+    // Network error = backend not running. Run: npm run dev in backend_shophub-main/backend_shophub-main
     if (error.code === 'ERR_NETWORK' || error.message === 'Network Error') {
       if (!window.__shopHubApiWarned) {
         window.__shopHubApiWarned = true;
@@ -48,7 +43,16 @@ api.interceptors.response.use(
     }
     // Handle common errors
     if (error.response?.status === 401) {
-      console.warn('Unauthorized!', error.config.url);
+      // Unauthorized - redirect to login and clear everything
+      console.warn('Unauthorized! Logging out...', error.config.url);
+
+      // Don't auto-logout if we're just checking session (e.g. loadUser)
+      // This prevents a loop if the token is invalid on load
+      if (!error.config.url.includes('/users/me')) {
+        // localStorage.removeItem('token');
+        // localStorage.removeItem('user'); 
+        // window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }

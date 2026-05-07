@@ -12,28 +12,27 @@ export default function VendorNamePrompt() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    // Show prompt if user is admin and hasn't chosen a session vendor name
-    const storedIdentifier = localStorage.getItem("vendorIdentifier");
-    if (user && user.role === "admin" && !storedIdentifier) {
+    // Show prompt if user is admin and hasn't set a vendor name
+    if (user && user.role === "admin" && !user.vendorName) {
       setShow(true);
     } else {
       setShow(false);
     }
   }, [user]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!vendorName.trim()) {
-      setError("Please enter a unique name or number");
+      setError("Please enter a professional vendor name");
       return;
     }
 
-    // Save to localStorage so it's sent in the X-Vendor-Identifier header
-    localStorage.setItem("vendorIdentifier", vendorName.trim());
-    
-    // Success - Hide prompt and reload to fetch isolated data
-    setShow(false);
-    window.location.reload(); 
+    const result = await dispatch(updateVendorName(vendorName));
+    if (updateVendorName.rejected.match(result)) {
+      setError(result.payload?.message || "Failed to update vendor name");
+    } else {
+      setShow(false);
+    }
   };
 
   if (!show) return null;
