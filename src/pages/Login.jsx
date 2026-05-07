@@ -144,10 +144,10 @@ export default function Login() {
                   value={formData.vendorName || ""}
                   onChange={handleChange}
                   className={`appearance-none block w-full px-4 py-3 bg-cyan-500/10 border border-cyan-500/30 rounded-xl placeholder-cyan-500/50 text-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all`}
-                  placeholder="e.g. Ultra Store or mazhar.devx"
+                  placeholder="e.g. Ultra Store"
                 />
                 <p className="text-xs text-cyan-500/70 mt-2">
-                  Enter your unique admin name to access your isolated store. Use <strong>mazhar.devx</strong> for Master access.
+                  Enter your unique admin name to access your isolated store.
                 </p>
               </div>
             )}
