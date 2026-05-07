@@ -123,7 +123,6 @@ export default function EditProduct() {
             unit: formData.dimensionUnit || 'cm'
           }
         },
-        },
         // Use formData.image correctly here
         images: [formData.image || "https://via.placeholder.com/300x300"],
         posterType: formData.posterType
