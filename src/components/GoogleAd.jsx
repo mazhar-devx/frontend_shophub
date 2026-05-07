@@ -1,23 +1,32 @@
 import { useEffect } from "react";
 
-const GoogleAd = ({ slot, layout = "in-article", format = "fluid" }) => {
+const GoogleAd = ({ 
+  slot, 
+  layout = "", 
+  format = "auto", 
+  responsive = "true",
+  style = { display: "block", textAlign: "center" },
+  className = "ad-container my-12 w-full flex justify-center overflow-hidden rounded-3xl border border-black/[0.03] dark:border-white/[0.03] bg-black/[0.01] dark:bg-white/[0.01] p-4"
+}) => {
   useEffect(() => {
     try {
       (window.adsbygoogle = window.adsbygoogle || []).push({});
     } catch (e) {
-      console.error("AdSense error:", e);
+      // AdSense error usually means ad-blocker or script not loaded
+      console.log("AdSense note: Script not initialized yet or ad-blocker detected.");
     }
   }, []);
 
   return (
-    <div className="ad-container my-8 w-full flex justify-center overflow-hidden rounded-2xl border border-white/5 bg-white/5 p-4">
+    <div className={className}>
       <ins
         className="adsbygoogle"
-        style={{ display: "block", textAlign: "center", minWidth: "250px", minHeight: "90px" }}
-        data-ad-layout={layout}
+        style={style}
+        data-ad-layout={layout || undefined}
         data-ad-format={format}
         data-ad-client="ca-pub-6521940579323633"
         data-ad-slot={slot}
+        data-full-width-responsive={responsive}
       />
     </div>
   );

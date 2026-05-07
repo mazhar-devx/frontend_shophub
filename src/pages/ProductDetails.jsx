@@ -522,6 +522,9 @@ export default function ProductDetails() {
               )}
             </button>
           </div>
+
+          {/* ── Banner Ad ── */}
+          <GoogleAd slot="5177022241" format="auto" responsive="true" />
           
           <div className="prose prose-invert max-w-none text-secondary">
             {activeTab === 'description' && (

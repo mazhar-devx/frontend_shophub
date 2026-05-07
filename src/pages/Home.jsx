@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import SEO from "../components/SEO";
 import HomeSkeleton from "../components/HomeSkeleton";
 import ReviewMarquee from "../components/ReviewMarquee";
+import GoogleAd from "../components/GoogleAd";
 
 /* ═══════════════════════════════════════════════
    PERFORMANCE HOOKS — Zero Dependencies
@@ -547,6 +548,11 @@ export default function Home() {
             </div>
           </div>
         </Reveal>
+
+        {/* ── Banner Ad ── */}
+        <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 mb-20 md:mb-28">
+          <GoogleAd slot="5177022241" format="auto" responsive="true" />
+        </div>
 
         {/* ═══════════ FEATURED ═══════════ */}
         <Reveal className="mb-24 w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
