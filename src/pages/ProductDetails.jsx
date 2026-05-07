@@ -58,9 +58,7 @@ export default function ProductDetails() {
     dispatch(fetchProductReviews(id));
 
     // Record view + recommendations (use api so Bearer token is sent; view requires auth)
-    // Only call if id is a valid MongoDB ObjectId (not a slug like 'pakistan')
     const trackAndFetch = async () => {
-      if (!isObjectId(id)) return; // skip for slugs — backend returns 400
       try {
         await api.post(`/products/${id}/view`, {});
         const res = await api.get(`/products/recommendations`, { params: { currentId: id } });
@@ -209,9 +207,16 @@ export default function ProductDetails() {
           >
              <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/5 to-transparent pointer-events-none z-0"></div>
              
-             {/* Main Image */}
+             {/* Main Image or Video */}
              <div className="w-full h-full flex items-center justify-center relative z-10 pointer-events-none">
-                {(product.images && product.images.length > 0) || product.image ? (
+                {product.video && selectedImage === 'video' ? (
+                  <video 
+                      src={product.video}
+                      controls
+                      autoPlay
+                      className={`w-full h-full object-contain pointer-events-auto transition-transform ${isHovering ? 'duration-0 ease-linear' : 'duration-500 ease-out'}`}
+                   />
+                ) : (product.images && product.images.length > 0) || product.image ? (
                   <img 
                       src={getProductImageUrl(product.images?.length ? product.images[selectedImage] : product.image)}
                       alt={product.name} 
@@ -241,6 +246,20 @@ export default function ProductDetails() {
           </div>
           
           <div className="grid grid-cols-4 gap-4">
+            {/* Video Thumbnail */}
+            {product.video && (
+               <div 
+                 className={`rounded-2xl p-2 flex items-center justify-center cursor-pointer transition-all ${selectedImage === 'video' ? 'ring-2 ring-cyan-500 bg-white/10' : 'bg-black/20 hover:bg-white/5 border border-white/5'}`}
+                 onClick={() => setSelectedImage('video')}
+               >
+                 <div className="w-full h-20 flex items-center justify-center rounded-xl overflow-hidden bg-black/50 relative">
+                    <svg className="w-8 h-8 text-white z-10 opacity-80" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                    </svg>
+                 </div>
+               </div>
+            )}
+
             {product.images && product.images.length > 0 ? (
                product.images.map((img, index) => (
                   <div 
@@ -253,7 +272,7 @@ export default function ProductDetails() {
                     </div>
                   </div>
                ))
-            ) : (
+            ) : !product.video ? (
                [...Array(4)].map((_, index) => (
                   <div 
                     key={index}
@@ -267,7 +286,7 @@ export default function ProductDetails() {
                     </div>
                   </div>
                ))
-            )}
+            ) : null}
           </div>
           
           {/* Social sharing */}

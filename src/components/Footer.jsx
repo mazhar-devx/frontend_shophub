@@ -53,7 +53,16 @@ export default function Footer() {
                         { name: 'Instagram', icon: 'M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01' },
                         { name: 'LinkedIn', icon: 'M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z' }
                      ].map((social) => (
-                        <a key={social.name} href="#" aria-label={`Follow us on ${social.name}`} className="w-10 h-10 rounded-full bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 flex items-center justify-center text-secondary dark:text-gray-400 hover:text-primary dark:hover:text-white hover:bg-black/10 dark:hover:bg-white/10 hover:border-black/10 dark:hover:border-white/20 transition-all hover:-translate-y-1">
+                        <a 
+                          key={social.name} 
+                          href="#" 
+                          onClick={(e) => {
+                             e.preventDefault();
+                             window.scrollTo({ top: 0, behavior: 'smooth' });
+                          }}
+                          aria-label={`Follow us on ${social.name}`} 
+                          className="w-10 h-10 rounded-full bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 flex items-center justify-center text-secondary dark:text-gray-400 hover:text-primary dark:hover:text-white hover:bg-black/10 dark:hover:bg-white/10 hover:border-black/10 dark:hover:border-white/20 transition-all hover:-translate-y-1"
+                        >
                            <svg className="h-4 w-4" fill={social.name === 'Instagram' ? 'none' : 'currentColor'} stroke={social.name === 'Instagram' ? 'currentColor' : 'none'} strokeWidth="2" viewBox="0 0 24 24">
                               <path d={social.icon} />
                               {social.name === 'Instagram' && <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />}
@@ -78,20 +87,20 @@ export default function Footer() {
                    { 
                       title: "Support", 
                       links: [
-                        { name: "Help Center", path: "#" },
+                        { name: "Help Center", path: "/" },
                         { name: "Order Status", path: "/my-orders" },
-                        { name: "Shipping & Returns", path: "#" },
-                        { name: "Size Guide", path: "#" },
-                        { name: "Contact Us", path: "#" }
+                        { name: "Shipping & Returns", path: "/" },
+                        { name: "Size Guide", path: "/" },
+                        { name: "Contact Us", path: "/" }
                       ] 
                    },
                    { 
                       title: "Company", 
                       links: [
-                        { name: "About Us", path: "#" },
-                        { name: "Careers", path: "#" },
-                        { name: "Privacy Policy", path: "#" },
-                        { name: "Terms of Service", path: "#" }
+                        { name: "About Us", path: "/" },
+                        { name: "Careers", path: "/" },
+                        { name: "Privacy Policy", path: "/" },
+                        { name: "Terms of Service", path: "/" }
                       ] 
                    }
                 ].map((column) => (
@@ -100,7 +109,13 @@ export default function Footer() {
                       <ul className="space-y-4">
                          {column.links.map(link => (
                             <li key={link.name}>
-                               <Link to={link.path} className="text-sm text-secondary dark:text-gray-400 hover:text-cyan-500 transition-colors">{link.name}</Link>
+                               <Link 
+                                 to={link.path} 
+                                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                                 className="text-sm text-secondary dark:text-gray-400 hover:text-cyan-500 transition-colors"
+                               >
+                                 {link.name}
+                               </Link>
                             </li>
                          ))}
                       </ul>

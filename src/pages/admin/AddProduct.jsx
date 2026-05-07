@@ -29,10 +29,13 @@ export default function AddProduct() {
     width: "",
     height: "",
     dimensionUnit: "cm",
-    discountPercentage: ""
+    discountPercentage: "",
+    videoUrl: "",
+    posterType: "image"
   });
 
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [selectedVideo, setSelectedVideo] = useState(null);
   const [previewImages, setPreviewImages] = useState([]);
 
   const handleChange = (e) => {
@@ -47,6 +50,12 @@ export default function AddProduct() {
       // Create preview URLs
       const newPreviews = filesArray.map((file) => URL.createObjectURL(file));
       setPreviewImages((prev) => [...prev, ...newPreviews]);
+    }
+  };
+
+  const handleVideoChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedVideo(e.target.files[0]);
     }
   };
 
@@ -104,6 +113,15 @@ export default function AddProduct() {
       selectedFiles.forEach((file) => {
         data.append('images', file);
       });
+
+      // Append Video
+      if (formData.videoUrl) {
+        data.append('videoUrl', formData.videoUrl);
+      }
+      if (selectedVideo) {
+        data.append('videoFile', selectedVideo);
+      }
+      data.append('posterType', formData.posterType);
 
       // IMPORTANT: Set Content-Type to undefined to let browser set boundary
       const response = await api.post('/products', data, {
@@ -424,6 +442,50 @@ export default function AddProduct() {
                             <span className="absolute bottom-1 left-1 text-[10px] bg-blue-500/80 text-white px-1.5 py-0.5 rounded">FILE</span>
                         </div>
                     ))}
+                 </div>
+              </div>
+
+              {/* Product Video Section */}
+              <div className="space-y-4 pt-4 border-t border-white/5">
+                 <label className="text-gray-300 text-sm font-bold ml-1">Product Video (Optional)</label>
+                 
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                       <label className="text-gray-400 text-xs ml-1">Video URL</label>
+                       <input 
+                          type="text" 
+                          name="videoUrl" 
+                          value={formData.videoUrl} 
+                          onChange={handleChange}
+                          placeholder="https://example.com/video.mp4"
+                          className="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition-all"
+                       />
+                    </div>
+                    <div className="space-y-2">
+                       <label className="text-gray-400 text-xs ml-1">Or Upload Video</label>
+                       <input 
+                          type="file" 
+                          accept="video/*"
+                          onChange={handleVideoChange}
+                          className="w-full bg-black/30 border border-white/10 rounded-xl p-3.5 text-white focus:outline-none focus:border-purple-500 transition-all"
+                       />
+                       {selectedVideo && <p className="text-xs text-green-400 ml-1">Selected: {selectedVideo.name}</p>}
+                    </div>
+                 </div>
+
+                 <div className="space-y-2 mt-4">
+                    <label className="text-gray-400 text-xs ml-1">Set as Poster?</label>
+                    <select 
+                       name="posterType" 
+                       value={formData.posterType} 
+                       onChange={handleChange}
+                       className="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-purple-500 transition-all"
+                    >
+                       <option value="image">Show Image as Poster</option>
+                       <option value="video">Show Video as Poster</option>
+                       <option value="none">Show None (Fallback)</option>
+                    </select>
+                    <p className="text-xs text-gray-500 ml-1">This determines what shows on the product cards.</p>
                  </div>
               </div>
 

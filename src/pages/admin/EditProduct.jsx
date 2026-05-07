@@ -26,8 +26,11 @@ export default function EditProduct() {
     width: "",
     height: "",
     dimensionUnit: "cm",
-    discountPercentage: ""
+    discountPercentage: "",
+    videoUrl: "",
+    posterType: "image"
   });
+  const [selectedVideo, setSelectedVideo] = useState(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
@@ -61,6 +64,8 @@ export default function EditProduct() {
           width: product.specifications?.dimensions?.width || "",
           height: product.specifications?.dimensions?.height || "",
           dimensionUnit: product.specifications?.dimensions?.unit || "cm",
+          videoUrl: product.video || "",
+          posterType: product.posterType || "image"
         });
         setLoading(false);
       } catch (err) {
@@ -80,6 +85,12 @@ export default function EditProduct() {
       ...formData,
       [e.target.name]: e.target.value
     });
+  };
+
+  const handleVideoChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedVideo(e.target.files[0]);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -112,13 +123,29 @@ export default function EditProduct() {
             unit: formData.dimensionUnit || 'cm'
           }
         },
+        },
         // Use formData.image correctly here
-        images: [formData.image || "https://via.placeholder.com/300x300"]
+        images: [formData.image || "https://via.placeholder.com/300x300"],
+        posterType: formData.posterType
       };
 
-      await api.patch(`/products/${id}`, productData, {
+      // Since we might be uploading a video file, we need to use FormData instead of JSON
+      // But wait, the current update logic uses JSON: await api.patch(..., productData)
+      // To support file uploads, we need to convert it to FormData.
+      const data = new FormData();
+      Object.keys(productData).forEach(key => {
+        if (key === 'specifications' || key === 'images') {
+          data.append(key, JSON.stringify(productData[key]));
+        } else {
+          data.append(key, productData[key]);
+        }
+      });
+      if (formData.videoUrl) data.append('videoUrl', formData.videoUrl);
+      if (selectedVideo) data.append('videoFile', selectedVideo);
+
+      await api.patch(`/products/${id}`, data, {
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": undefined
         }
       });
 
@@ -402,6 +429,50 @@ export default function EditProduct() {
                        placeholder="https://example.com/image.jpg"
                        className="flex-1 bg-black/30 border border-white/10 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
                     />
+                 </div>
+              </div>
+
+              {/* Product Video Section */}
+              <div className="space-y-4 pt-4 border-t border-white/5">
+                 <label className="text-gray-300 text-sm font-bold ml-1">Product Video (Optional)</label>
+                 
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                       <label className="text-gray-400 text-xs ml-1">Video URL</label>
+                       <input 
+                          type="text" 
+                          name="videoUrl" 
+                          value={formData.videoUrl} 
+                          onChange={handleChange}
+                          placeholder="https://example.com/video.mp4"
+                          className="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition-all"
+                       />
+                    </div>
+                    <div className="space-y-2">
+                       <label className="text-gray-400 text-xs ml-1">Or Upload Video</label>
+                       <input 
+                          type="file" 
+                          accept="video/*"
+                          onChange={handleVideoChange}
+                          className="w-full bg-black/30 border border-white/10 rounded-xl p-3.5 text-white focus:outline-none focus:border-purple-500 transition-all"
+                       />
+                       {selectedVideo && <p className="text-xs text-green-400 ml-1">Selected: {selectedVideo.name}</p>}
+                    </div>
+                 </div>
+
+                 <div className="space-y-2 mt-4">
+                    <label className="text-gray-400 text-xs ml-1">Set as Poster?</label>
+                    <select 
+                       name="posterType" 
+                       value={formData.posterType} 
+                       onChange={handleChange}
+                       className="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-purple-500 transition-all"
+                    >
+                       <option value="image">Show Image as Poster</option>
+                       <option value="video">Show Video as Poster</option>
+                       <option value="none">Show None (Fallback)</option>
+                    </select>
+                    <p className="text-xs text-gray-500 ml-1">This determines what shows on the product cards.</p>
                  </div>
               </div>
 
