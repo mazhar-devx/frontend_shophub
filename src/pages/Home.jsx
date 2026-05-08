@@ -301,13 +301,6 @@ export default function Home() {
     if (e.target.src !== FALLBACK_IMG) e.target.src = FALLBACK_IMG;
   }, []);
 
-  /* ── AdSense (silent) ── */
-  useEffect(() => {
-    try {
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch {}
-  }, []);
-
   /* ── Hero stagger helper ── */
   const hs = useCallback(
     (d) => ({

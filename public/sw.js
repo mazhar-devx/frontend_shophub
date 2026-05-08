@@ -1,18 +1,8 @@
-const CACHE_NAME = 'shophub-v1';
-const urlsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/logo.png'
-];
+// Service Worker Kill-Switch
+// This file is designed to immediately clear all caches and unregister itself.
+// This solves the issue where users see a blank page or old version after updates.
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        return cache.addAll(urlsToCache);
-      })
-  );
   self.skipWaiting();
 });
 
@@ -21,24 +11,25 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
+          console.log('[SW] Deleting cache:', cacheName);
+          return caches.delete(cacheName);
         })
       );
+    }).then(() => {
+      return self.registration.unregister();
+    }).then(() => {
+      return self.clients.matchAll();
+    }).then((clients) => {
+      clients.forEach(client => {
+        if (client.url && 'navigate' in client) {
+          client.navigate(client.url);
+        }
+      });
     })
   );
-  self.clients.claim();
 });
 
+// Force network-only for everything while we are in this state
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        if (response) {
-          return response;
-        }
-        return fetch(event.request);
-      })
-  );
+  event.respondWith(fetch(event.request));
 });

@@ -13,6 +13,27 @@
     content="HA Store - Your ultimate destination for premium fashion. Shop the latest trends in men's, women's, and kid's clothing. Fast delivery across Pakistan with secure checkout and easy returns.">
   <meta name="keywords"
     content="HA Store, ShopHub, online shopping Pakistan, men fashion, women clothing, kids wear, electronics Pakistan, ecommerce store">
+  
+  <!-- Cache Control to prevent stale content -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
+  <script>
+    // Force unregister stale service workers that cause blank pages
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function(registrations) {
+        for(let registration of registrations) {
+          registration.unregister().then(function(boolean) {
+            if(boolean) {
+              console.log('[ShopHub] Stale ServiceWorker unregistered. Reloading to get latest version...');
+              window.location.reload();
+            }
+          });
+        }
+      });
+    }
+  </script>
 
   <!-- Open Graph / Social Media -->
   <meta property="og:type" content="website">

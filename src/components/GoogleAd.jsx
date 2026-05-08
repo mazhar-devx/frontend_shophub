@@ -8,11 +8,22 @@ const GoogleAd = ({
   className = "ad-container my-8 w-full flex justify-center overflow-hidden rounded-2xl border border-white/5 bg-white/5 p-4"
 }) => {
   useEffect(() => {
-    try {
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (e) {
-      // Silently catch AdSense errors
-    }
+    // Add a small delay to ensure the DOM element is fully rendered
+    const timer = setTimeout(() => {
+      try {
+        // Ensure we only push if the ad hasn't been initialized yet
+        if (typeof window !== 'undefined' && window.adsbygoogle) {
+          const ads = document.querySelectorAll('.adsbygoogle:not([data-adsbygoogle-status="done"])');
+          if (ads.length > 0) {
+            (window.adsbygoogle = window.adsbygoogle || []).push({});
+          }
+        }
+      } catch (e) {
+        console.warn('[ShopHub Ads] AdSense push error:', e.message);
+      }
+    }, 200);
+
+    return () => clearTimeout(timer);
   }, []);
 
   return (
