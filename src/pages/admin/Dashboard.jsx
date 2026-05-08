@@ -68,9 +68,10 @@ export default function AdminDashboard() {
   const handleGoogleSync = async () => {
     try {
       setSyncing(true);
-      const { data } = await api.post("/marketing/google-merchant/sync");
+      // We send forceAll: true to ensure everything is refreshed in the new Content API setup
+      const { data } = await api.post("/marketing/google-merchant/sync", { forceAll: true });
       if (data.status === "success") {
-        alert(data.message);
+        alert(`${data.message}\n\nGoogle is now processing your inventory. It may take up to 2 hours for all products to appear in the Merchant Center.`);
       }
     } catch (err) {
       alert(err.response?.data?.message || "Sync failed. Check backend logs.");
