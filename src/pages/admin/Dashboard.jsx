@@ -64,6 +64,21 @@ export default function AdminDashboard() {
     fetchData();
   }, []);
 
+  const [syncing, setSyncing] = useState(false);
+  const handleGoogleSync = async () => {
+    try {
+      setSyncing(true);
+      const { data } = await api.post("/marketing/google-merchant/sync");
+      if (data.status === "success") {
+        alert(data.message);
+      }
+    } catch (err) {
+      alert(err.response?.data?.message || "Sync failed. Check backend logs.");
+    } finally {
+      setSyncing(false);
+    }
+  };
+
   const statusColors = {
     Completed: "bg-green-500/20 text-green-400 border-green-500/30",
     Processing: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
@@ -105,13 +120,23 @@ export default function AdminDashboard() {
           <h1 className="text-3xl font-bold text-white bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">Dashboard Overview</h1>
           <p className="mt-1 text-gray-400">Welcome back, Admin</p>
         </div>
-        <Link 
-            to="/admin/products/new"
-            className="flex items-center px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-xl shadow-[0_0_20px_rgba(124,58,237,0.4)] transition-all transform hover:-translate-y-1 font-bold group"
-        >
-            <span className="mr-2 text-xl group-hover:rotate-90 transition-transform duration-300">+</span>
-            Add New Product
-        </Link>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <button
+            onClick={handleGoogleSync}
+            disabled={syncing}
+            className={`flex items-center px-6 py-3 border border-white/10 rounded-xl transition-all transform hover:-translate-y-1 font-bold group ${syncing ? 'opacity-50 cursor-not-allowed' : 'bg-white/5 hover:bg-white/10'}`}
+          >
+            <span className={`mr-2 ${syncing ? 'animate-spin' : ''}`}>{syncing ? '⏳' : '🔄'}</span>
+            {syncing ? 'Syncing...' : 'Sync to Google'}
+          </button>
+          <Link 
+              to="/admin/products/new"
+              className="flex items-center px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-xl shadow-[0_0_20px_rgba(124,58,237,0.4)] transition-all transform hover:-translate-y-1 font-bold group"
+          >
+              <span className="mr-2 text-xl group-hover:rotate-90 transition-transform duration-300">+</span>
+              Add New Product
+          </Link>
+        </div>
       </div>
 
       {/* Stats Grid */}
