@@ -51,18 +51,18 @@ const GoogleAd = ({
 
   return (
     <div 
-      className={`${className} transition-all duration-500`}
+      className={`${className} transition-all duration-700 ease-in-out`}
       style={{ 
-        // We use visibility: hidden instead of display: none during loading 
-        // so AdSense can calculate availableWidth correctly.
         visibility: isVisible ? 'visible' : 'hidden',
-        height: isVisible ? 'auto' : '1px',
+        height: isVisible ? 'auto' : '0px',
         opacity: isVisible ? 1 : 0,
+        margin: isVisible ? '2rem 0' : '0px',
         pointerEvents: isVisible ? 'auto' : 'none',
-        display: 'flex'
+        display: isVisible ? 'flex' : 'block', // Use block when 0 height to avoid flex gaps
+        overflow: 'hidden'
       }}
     >
-      <div className="w-full rounded-2xl border border-white/5 bg-white/5 p-4 shadow-xl">
+      <div className={`w-full rounded-2xl border border-white/5 bg-white/5 shadow-2xl ${isVisible ? 'p-4' : 'p-0'}`}>
         <ins
           ref={adRef}
           className="adsbygoogle"

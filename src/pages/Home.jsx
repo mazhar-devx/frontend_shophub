@@ -732,23 +732,25 @@ export default function Home() {
           </section>
         </Reveal>
 
-        {/* ═══════════ BRANDS ═══════════ */}
-        <Reveal className="mb-20">
-          <div className="bg-white/50 dark:bg-white/[0.015] border border-black/[0.035] dark:border-white/[0.035] rounded-3xl p-8 md:p-10 backdrop-blur-sm">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-6 md:gap-8">
-              {BRANDS.map((b) => (
+        {/* ═══════════ PREMIUM BRANDS MARQUEE ═══════════ */}
+        <div className="mb-24 overflow-hidden relative py-10">
+           <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-gray-50 dark:from-black to-transparent z-10 pointer-events-none"></div>
+           <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-gray-50 dark:from-black to-transparent z-10 pointer-events-none"></div>
+           
+           <div className="flex animate-marquee whitespace-nowrap gap-8 hover:pause">
+              {[...BRANDS, ...BRANDS, ...BRANDS].map((b, i) => (
                 <div
-                  key={b.id}
-                  className="flex items-center justify-center p-4 grayscale hover:grayscale-0 opacity-25 hover:opacity-100 transition-all duration-700 cursor-pointer hover:scale-105"
+                  key={`${b.id}-${i}`}
+                  className="inline-flex items-center justify-center px-10 py-6 rounded-[2rem] bg-white/40 dark:bg-white/[0.02] border border-black/[0.05] dark:border-white/[0.05] backdrop-blur-xl hover:border-cyan-500/30 transition-all duration-500 group cursor-pointer shadow-sm hover:shadow-xl hover:-translate-y-1 min-w-[200px]"
                 >
-                  <span className="text-lg md:text-xl font-black text-black dark:text-white tracking-[0.08em] uppercase">
+                  <span className="text-xl md:text-2xl font-black text-secondary dark:text-gray-500 group-hover:text-primary dark:group-hover:text-white transition-all duration-500 tracking-[0.1em] uppercase italic">
                     {b.name}
                   </span>
+                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-1 bg-gradient-to-r from-cyan-500 to-purple-500 group-hover:w-1/2 transition-all duration-500 rounded-full"></div>
                 </div>
               ))}
-            </div>
-          </div>
-        </Reveal>
+           </div>
+        </div>
 
         {/* ═══════════ REVIEWS ═══════════ */}
         <ReviewMarquee />
