@@ -30,10 +30,11 @@ export default function AIHelper() {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const { data } = await api.get('/products?limit=100');
-                if (data.status === 'success') {
-                    setAllProducts(data.data.data);
-                }
+        const { data } = await api.get('/products?limit=100');
+        if (data.status === 'success') {
+            // Products are in data.data.products, not data.data.data
+            setAllProducts(data.data.products || []);
+        }
             } catch (err) {
                 console.warn("AI Helper product fetch failed:", err);
             }
