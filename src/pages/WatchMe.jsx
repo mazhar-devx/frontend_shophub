@@ -2,7 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { Link, useSearchParams, useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, MessageCircle, Share2, Bookmark, Plus, X, Music2, Bell, ChevronLeft, Send, Volume2, VolumeX, Download, Play, ShoppingCart, Search, MoreVertical, Edit2, Trash2, RefreshCw, Image as ImageIcon, MoreHorizontal } from "lucide-react";
+import { Heart, MessageCircle, Share2, Bookmark, Plus, X, Music2, Bell, ChevronLeft, Send, Volume2, VolumeX, Download, Play, ShoppingCart, Search, MoreVertical, Edit2, Trash2, Image as ImageIcon, MoreHorizontal } from "lucide-react";
+import SEO from "../components/SEO";
 import NotificationsModal from "../components/NotificationsModal";
 import api from "../services/api";
 import { getProductImageUrl } from "../utils/constants";
@@ -781,6 +782,40 @@ export default function WatchMe() {
 
   return (
     <div className="fixed inset-0 w-full h-[100dvh] bg-black flex items-center justify-center overflow-hidden">
+      {videos[activeIndex] && (
+        <SEO 
+          title={videos[activeIndex].name}
+          description={videos[activeIndex].description || `Watch @${videos[activeIndex].user?.vendorName || videos[activeIndex].user?.name}'s video on ShopHub.`}
+          image={getProductImageUrl(videos[activeIndex].thumbnailUrl || videos[activeIndex].videoUrl)}
+          type="video.other"
+          url={`/watch-me?v=${videos[activeIndex]._id}`}
+          keywords={videos[activeIndex].tags?.join(', ')}
+        >
+          <script type="application/ld+json">
+            {JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "VideoObject",
+              "name": videos[activeIndex].name,
+              "description": videos[activeIndex].description || "Short video on ShopHub",
+              "thumbnailUrl": [getProductImageUrl(videos[activeIndex].thumbnailUrl || videos[activeIndex].videoUrl)],
+              "uploadDate": videos[activeIndex].createdAt,
+              "contentUrl": getProductImageUrl(videos[activeIndex].videoUrl),
+              "embedUrl": `${window.location.origin}/watch-me?v=${videos[activeIndex]._id}`,
+              "interactionStatistic": {
+                "@type": "InteractionCounter",
+                "interactionType": "https://schema.org/LikeAction",
+                "userInteractionCount": videos[activeIndex].likes?.length || 0
+              },
+              "author": {
+                "@type": "Person",
+                "name": videos[activeIndex].user?.vendorName || videos[activeIndex].user?.name,
+                "url": `${window.location.origin}/creator/${videos[activeIndex].user?._id}`
+              }
+            })}
+          </script>
+        </SEO>
+      )}
+
       {/* Feed Container */}
       <div 
         ref={containerRef}
