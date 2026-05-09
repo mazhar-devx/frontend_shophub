@@ -713,7 +713,7 @@ export default function WatchMe() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [feedType, setFeedType] = useState("foryou"); // "foryou" or "following"
   const [selectedTag, setSelectedTag] = useState(routeTag || null);
-  const [isGlobalMuted, setIsGlobalMuted] = useState(true);
+  const [isGlobalMuted, setIsGlobalMuted] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState({ videos: [], users: [] });
