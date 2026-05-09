@@ -692,7 +692,7 @@ export default function WatchMe() {
     }
   };
 
-  const syncNewVideos = async () => {
+  const syncNewVideos = async (silent = false) => {
      try {
         let url = "/videos";
         if (feedType === "foryou") {
@@ -711,17 +711,24 @@ export default function WatchMe() {
         const addedVids = newVids.filter(v => !currentIds.has(v._id));
         
         if (addedVids.length > 0) {
-           setVideos([...addedVids, ...videos]);
-           setActiveIndex(0);
-           containerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
-           alert(`${addedVids.length} new videos found!`);
-        } else {
-           alert("No new videos found yet.");
+           setVideos(prev => [...addedVids, ...prev]);
+           if (!silent) {
+              setActiveIndex(0);
+              containerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+           }
         }
      } catch (err) {
         console.error(err);
      }
   };
+
+  // Auto-sync every 30 seconds
+  useEffect(() => {
+     const interval = setInterval(() => {
+        syncNewVideos(true);
+     }, 30000);
+     return () => clearInterval(interval);
+  }, [videos, feedType, selectedTag]);
 
   const handleSearchChange = (e) => {
      const q = e.target.value;
@@ -839,16 +846,6 @@ export default function WatchMe() {
            >
              {isGlobalMuted ? <VolumeX className="w-4 h-4 md:w-6 md:h-6" /> : <Volume2 className="w-4 h-4 md:w-6 md:h-6" />}
            </button>
-         </div>
-
-         {/* Top Refresh - Sync Data */}
-         <div className="absolute left-1/2 -translate-x-1/2 top-20 pointer-events-auto">
-            <button 
-               onClick={syncNewVideos}
-               className="p-3 bg-pink-500/80 backdrop-blur-md rounded-full text-white shadow-2xl hover:scale-110 active:scale-95 transition-all border border-white/20 group"
-            >
-               <RefreshCw className={`w-5 h-5 group-hover:rotate-180 transition-transform duration-500`} />
-            </button>
          </div>
 
          {/* Top Center: Tabs */}

@@ -109,9 +109,9 @@ function AppContent() {
                 <Navbar />
                 <SearchBar />
                 <CartSidebar />
-                <MobileMenu />
               </>
             )}
+            <MobileMenu />
             <Toast />
             <Modal />
             <main id="main-content" className={`${isImmersivePage ? 'pt-0 pb-0' : 'pt-24 pb-20 md:pb-0'} min-h-screen overflow-x-hidden`}>
