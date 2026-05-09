@@ -6,6 +6,8 @@ import { getProductImageUrl } from "../../utils/constants";
 export default function AdminBanner() {
   const [loading, setLoading] = useState(true);
   const heroFileRef = useRef(null);
+  const heroImagesRef = useRef(null);
+  const heroVideoRef = useRef(null);
   const flashSaleFileRef = useRef(null);
 
   const [formData, setFormData] = useState({
@@ -13,8 +15,11 @@ export default function AdminBanner() {
     subtitle: '',
     price: '',
     image: '',
+    images: [],
+    video: '',
     buttonText: '',
-    buttonLink: ''
+    buttonLink: '',
+    productUrl: ''
   });
   const [flashSaleData, setFlashSaleData] = useState({
     title: '',
@@ -22,12 +27,17 @@ export default function AdminBanner() {
     price: '',
     originalPrice: '',
     image: '',
+    productUrl: '',
     endTime: ''
   });
 
   const [heroFile, setHeroFile] = useState(null);
+  const [heroImages, setHeroImages] = useState([]);
+  const [heroVideo, setHeroVideo] = useState(null);
   const [flashSaleFile, setFlashSaleFile] = useState(null);
   const [heroPreview, setHeroPreview] = useState(null);
+  const [heroImagesPreviews, setHeroImagesPreviews] = useState([]);
+  const [heroVideoPreview, setHeroVideoPreview] = useState(null);
   const [flashSalePreview, setFlashSalePreview] = useState(null);
 
   useEffect(() => {
@@ -68,12 +78,23 @@ export default function AdminBanner() {
 
   const handleFileChange = (e, type) => {
     if (e.target.files && e.target.files[0]) {
+      if (type === 'heroImages') {
+        const files = Array.from(e.target.files);
+        setHeroImages(files);
+        const previews = files.map(file => URL.createObjectURL(file));
+        setHeroImagesPreviews(previews);
+        return;
+      }
+
       const file = e.target.files[0];
       const preview = URL.createObjectURL(file);
       
       if (type === 'hero') {
         setHeroFile(file);
         setHeroPreview(preview);
+      } else if (type === 'heroVideo') {
+        setHeroVideo(file);
+        setHeroVideoPreview(preview);
       } else {
         setFlashSaleFile(file);
         setFlashSalePreview(preview);
@@ -93,6 +114,12 @@ export default function AdminBanner() {
       // Append files
       if (heroFile) {
         data.append('heroImage', heroFile);
+      }
+      if (heroImages && heroImages.length > 0) {
+        heroImages.forEach(img => data.append('heroImages', img));
+      }
+      if (heroVideo) {
+        data.append('heroVideo', heroVideo);
       }
       if (flashSaleFile) {
         data.append('flashSaleImage', flashSaleFile);
@@ -196,6 +223,18 @@ export default function AdminBanner() {
                     </div>
 
                     <div className="space-y-2">
+                        <label className="text-gray-400 text-sm font-bold ml-1">Product URL (Direct Shop)</label>
+                        <input 
+                            type="text" 
+                            name="productUrl"
+                            value={formData.productUrl || ''} 
+                            onChange={handleChange}
+                            placeholder="e.g. /product/645..."
+                            className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 transition-all"
+                        />
+                    </div>
+
+                    <div className="space-y-2">
                         <label className="text-gray-400 text-sm font-bold ml-1">Background Image</label>
                         <div className="flex gap-2">
                             <input 
@@ -222,11 +261,69 @@ export default function AdminBanner() {
                             />
                         </div>
                     </div>
+
+                    <div className="space-y-2">
+                        <label className="text-gray-400 text-sm font-bold ml-1">Hero Slideshow (Multiple Images)</label>
+                        <div className="flex gap-2">
+                            <div className="flex-1 text-gray-500 text-xs py-3 px-4 bg-black/20 rounded-xl border border-white/5">
+                                {heroImages.length > 0 ? `${heroImages.length} files selected` : (formData.images?.length || 0) + ' existing images'}
+                            </div>
+                            <button 
+                                type="button" 
+                                onClick={() => heroImagesRef.current?.click()}
+                                className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl border border-white/10 transition-colors"
+                            >
+                                📂 Select
+                            </button>
+                            <input 
+                                type="file" 
+                                ref={heroImagesRef} 
+                                className="hidden" 
+                                onChange={(e) => handleFileChange(e, 'heroImages')} 
+                                accept="image/*"
+                                multiple
+                            />
+                        </div>
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-gray-400 text-sm font-bold ml-1">Hero Video (Optional)</label>
+                        <div className="flex gap-2">
+                             <input 
+                                type="text" 
+                                name="video"
+                                value={formData.video || ''} 
+                                onChange={handleChange}
+                                placeholder="Video URL..."
+                                className="flex-1 bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 transition-all"
+                            />
+                            <button 
+                                type="button" 
+                                onClick={() => heroVideoRef.current?.click()}
+                                className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl border border-white/10 transition-colors"
+                            >
+                                🎥 Upload
+                            </button>
+                            <input 
+                                type="file" 
+                                ref={heroVideoRef} 
+                                className="hidden" 
+                                onChange={(e) => handleFileChange(e, 'heroVideo')} 
+                                accept="video/*"
+                            />
+                        </div>
+                    </div>
                 </div>
 
                 {/* Preview */}
-                <div className="relative rounded-2xl overflow-hidden h-80 border border-white/10 flex items-center justify-center bg-black group">
-                    {currentHeroImage ? (
+                <div className="relative rounded-2xl overflow-hidden h-96 border border-white/10 flex items-center justify-center bg-black group">
+                    {heroVideoPreview || formData.video ? (
+                        <video 
+                            src={heroVideoPreview || getProductImageUrl(formData.video)} 
+                            className="absolute inset-0 w-full h-full object-cover opacity-60"
+                            autoPlay muted loop
+                        />
+                    ) : currentHeroImage ? (
                         <img src={currentHeroImage} className="absolute inset-0 w-full h-full object-cover opacity-50 transition-transform group-hover:scale-105 duration-700" alt="Preview"/>
                     ) : (
                         <div className="absolute inset-0 bg-gradient-to-br from-purple-900 to-black opacity-50"></div>
@@ -235,6 +332,13 @@ export default function AdminBanner() {
                     <div className="relative z-10 text-center p-6 w-full">
                         <h2 className="text-3xl font-black text-white mb-2 leading-tight">{formData.title || "Title"}</h2>
                         <p className="text-gray-300 mb-4 text-sm">{formData.subtitle || "Subtitle"}</p>
+                        {heroImagesPreviews.length > 0 && (
+                            <div className="flex justify-center gap-1 mb-4">
+                                {heroImagesPreviews.map((p, i) => (
+                                    <div key={i} className="w-2 h-2 rounded-full bg-white/40"></div>
+                                ))}
+                            </div>
+                        )}
                         <div className="inline-block px-6 py-2 rounded-full border border-white/30 bg-white/10 backdrop-blur-md text-white font-bold mb-4">
                             {formData.price || "Price"}
                         </div>
@@ -278,6 +382,18 @@ export default function AdminBanner() {
                             name="subtitle"
                             value={flashSaleData.subtitle} 
                             onChange={handleFlashSaleChange}
+                            className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500 transition-all"
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-gray-400 text-sm font-bold ml-1">Product URL (Direct Shop/Cart)</label>
+                        <input 
+                            type="text" 
+                            name="productUrl"
+                            value={flashSaleData.productUrl || ''} 
+                            onChange={handleFlashSaleChange}
+                            placeholder="e.g. /product/645..."
                             className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500 transition-all"
                         />
                     </div>

@@ -223,7 +223,18 @@ export default function Home() {
   const [trending, setTrending] = useState(null);
   const [setLoad, setSetLoad] = useState(true);
   const [heroReady, setHeroReady] = useState(false);
+  const [heroIndex, setHeroIndex] = useState(0);
   const progress = useProgress();
+
+  /* ── Hero Slideshow Logic ── */
+  useEffect(() => {
+    if (settings?.images?.length > 1) {
+      const interval = setInterval(() => {
+        setHeroIndex((prev) => (prev + 1) % settings.images.length);
+      }, 10000);
+      return () => clearInterval(interval);
+    }
+  }, [settings?.images]);
 
   /* ── Data Fetch (parallel) ── */
   useEffect(() => {
@@ -275,11 +286,23 @@ export default function Home() {
   const finalTrend = useMemo(() => (trending?.length > 0 ? trending : featured.slice(0, 4)), [trending, featured]);
 
   /* ── Handlers (stable refs) ── */
+  const handleShopNow = useCallback((url) => {
+    if (url) {
+      if (url.startsWith('http')) {
+        window.location.href = url;
+      } else {
+        navigate(url);
+      }
+    } else {
+      navigate("/products");
+    }
+  }, [navigate]);
+
   const handleFlash = useCallback(() => {
     const pick = flashSale?._id ? flashSale : trending?.[0] || products?.[0];
     if (pick) {
       dispatch(addToCart({ ...pick, quantity: 1 }));
-      navigate("/cart");
+      // navigate("/cart"); // Removed auto-navigate to allow user to keep shopping
     } else {
       navigate("/products");
     }
@@ -332,10 +355,15 @@ export default function Home() {
     );
   }
 
-  /* ══════════ RENDER ══════════ */
-  const heroImg = settings?.image
-    ? getProductImageUrl(settings.image)
-    : "https://images.unsplash.com/photo-1616469829718-0faf16324280?auto=format&fit=crop&q=80&w=1000";
+  /* ── RENDER ── */
+  const heroImg = useMemo(() => {
+    if (settings?.images?.length > 0) {
+      return getProductImageUrl(settings.images[heroIndex]);
+    }
+    return settings?.image
+      ? getProductImageUrl(settings.image)
+      : "https://images.unsplash.com/photo-1616469829718-0faf16324280?auto=format&fit=crop&q=80&w=1000";
+  }, [settings, heroIndex]);
 
   const flashImg = flashSale?.image ? getProductImageUrl(flashSale.image) : null;
 
@@ -411,8 +439,8 @@ export default function Home() {
 
                 {/* CTA Buttons */}
                 <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto mb-10" style={hs(460)}>
-                  <Link
-                    to={settings?.buttonLink || "/products"}
+                  <button
+                    onClick={() => handleShopNow(settings?.productUrl || settings?.buttonLink)}
                     className="group relative px-8 py-4 bg-black dark:bg-white text-white dark:text-black font-bold rounded-full overflow-hidden transition-all duration-300 hover:scale-[1.03] active:scale-[0.97] shadow-[0_4px_30px_rgba(0,0,0,0.1)] dark:shadow-[0_4px_30px_rgba(255,255,255,0.06)]"
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-cyan-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -422,7 +450,7 @@ export default function Home() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                       </svg>
                     </span>
-                  </Link>
+                  </button>
                   <Link
                     to="/categories"
                     className="group px-8 py-4 bg-black/[0.025] dark:bg-white/[0.025] border border-black/[0.07] dark:border-white/[0.07] text-primary dark:text-white font-bold rounded-full hover:bg-black/[0.05] dark:hover:bg-white/[0.05] hover:border-black/[0.12] dark:hover:border-white/[0.12] transition-all duration-300 flex items-center justify-center gap-2"
@@ -474,15 +502,26 @@ export default function Home() {
               >
                 <div className="relative w-full h-[400px] md:h-[600px] max-w-lg md:max-w-none flex items-center justify-center mt-12 md:mt-0">
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] md:w-[480px] md:h-[480px] bg-gradient-to-tr from-cyan-200/40 to-purple-200/40 dark:from-cyan-900/25 dark:to-purple-900/25 rounded-full blur-[90px]" />
-                  <img
-                    src={heroImg}
-                    alt="Premium product"
-                    className="w-[85%] h-[85%] object-contain relative z-10 transition-transform duration-1000 ease-out hover:scale-[1.05]"
-                    loading="eager"
-                    fetchpriority="high"
-                    decoding="sync"
-                    onError={handleImgError}
-                  />
+                  
+                  {settings?.video ? (
+                    <video
+                      src={getProductImageUrl(settings.video)}
+                      className="w-[95%] h-[95%] object-cover relative z-10 rounded-3xl shadow-2xl"
+                      autoPlay muted loop playsInline
+                      onError={handleImgError}
+                    />
+                  ) : (
+                    <img
+                      key={heroImg}
+                      src={heroImg}
+                      alt="Premium product"
+                      className="w-[85%] h-[85%] object-contain relative z-10 transition-all duration-1000 ease-out hover:scale-[1.05] animate-fade-in"
+                      loading="eager"
+                      fetchpriority="high"
+                      decoding="sync"
+                      onError={handleImgError}
+                    />
+                  )}
                 </div>
 
                 {/* Floating Badge */}
@@ -686,7 +725,7 @@ export default function Home() {
                   </div>
                   <div className="flex flex-col sm:flex-row gap-3 w-full">
                     <button
-                      onClick={() => navigate("/products")}
+                      onClick={() => handleShopNow(flashSale?.productUrl)}
                       className="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 shadow-[0_4px_20px_rgba(220,38,38,0.18)] dark:shadow-[0_4px_30px_rgba(220,38,38,0.25)] hover:shadow-[0_8px_30px_rgba(220,38,38,0.3)] text-base transform hover:-translate-y-0.5 active:scale-[0.98] flex items-center justify-center gap-2"
                     >
                       ⚡ Shop Now
