@@ -208,53 +208,8 @@ const FEATS = [
   { icon: "🎧", t: "24/7 Expert Support", d: "AI and human experts always here" },
 ];
 
-/* Curated Grid Data */
-const CURATED_GRIDS = [
-  {
-    title: "Tech for Your Home",
-    exploreText: "See all smart devices",
-    exploreLink: "/products?category=electronics",
-    categories: [
-      { name: "Smart Home", image: "https://images.unsplash.com/photo-1558002038-1055907df827?w=400&q=80", link: "/products?category=electronics" },
-      { name: "Laptops", image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&q=80", link: "/products?category=electronics" },
-      { name: "Audio", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80", link: "/products?category=electronics" },
-      { name: "Cameras", image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=400&q=80", link: "/products?category=electronics" },
-    ]
-  },
-  {
-    title: "Gaming & Lifestyle",
-    exploreText: "View setup essentials",
-    exploreLink: "/products?category=electronics",
-    categories: [
-      { name: "Chairs", image: "https://images.unsplash.com/photo-1592078615290-033ee584e267?w=400&q=80", link: "/products?category=home" },
-      { name: "Monitors", image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&q=80", link: "/products?category=electronics" },
-      { name: "Keyboards", image: "https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?w=400&q=80", link: "/products?category=electronics" },
-      { name: "Mice", image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400&q=80", link: "/products?category=electronics" },
-    ]
-  },
-  {
-    title: "Kitchen Masterclass",
-    exploreText: "Explore kitchen tools",
-    exploreLink: "/products?category=home",
-    categories: [
-      { name: "Cookers", image: "https://images.unsplash.com/photo-1544233726-9f1d2b27be8b?w=400&q=80", link: "/products?category=home" },
-      { name: "Coffee", image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&q=80", link: "/products?category=home" },
-      { name: "Pans", image: "https://images.unsplash.com/photo-1584990344321-27682ad0f144?w=400&q=80", link: "/products?category=home" },
-      { name: "Kettles", image: "https://images.unsplash.com/photo-1594212699903-ec8a3ecc50f1?w=400&q=80", link: "/products?category=home" },
-    ]
-  },
-  {
-    title: "Fashion Forward",
-    exploreText: "Shop new trends",
-    exploreLink: "/products?category=clothing",
-    categories: [
-      { name: "Dresses", image: "https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=400&q=80", link: "/products?category=clothing" },
-      { name: "Shoes", image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80", link: "/products?category=clothing" },
-      { name: "Jewelry", image: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&q=80", link: "/products?category=clothing" },
-      { name: "Bags", image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=80", link: "/products?category=clothing" },
-    ]
-  }
-];
+/* Curated Grid Data - Will be populated dynamically */
+let CURATED_GRIDS = [];
 
 /* Fallback image to prevent broken UI */
 const FALLBACK_IMG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' fill='%23111'%3E%3Crect width='400' height='400' rx='24'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23333' font-family='sans-serif' font-size='14'%3ENo Image%3C/text%3E%3C/svg%3E";
@@ -272,6 +227,7 @@ export default function Home() {
   const [settings, setSettings] = useState(null);
   const [flashSale, setFlashSale] = useState(null);
   const [trending, setTrending] = useState(null);
+  const [catStats, setCatStats] = useState([]);
   const [setLoad, setSetLoad] = useState(true);
   const [heroReady, setHeroReady] = useState(false);
   const [heroIndex, setHeroIndex] = useState(0);
@@ -319,6 +275,15 @@ export default function Home() {
       }
     })();
 
+    (async () => {
+      try {
+        const { data } = await api.get("/products/categories", { signal: ctrl1.signal });
+        if (data.status === "success") startTransition(() => setCatStats(data.data.stats));
+      } catch (e) {
+        if (e.name !== "CanceledError") console.warn("Categories fetch failed", e.message);
+      }
+    })();
+
     return () => { ctrl1.abort(); ctrl2.abort(); };
   }, [dispatch]);
 
@@ -332,9 +297,38 @@ export default function Home() {
 
   /* ── Derived Data (memoized) ── */
   const real = useMemo(() => (products?.length > 0 ? products : []), [products]);
-  const display = useDeferredValue(useMemo(() => (real.length > 0 ? real : DUMMY), [real]));
-  const featured = useMemo(() => [...display].sort((a, b) => (b.ratingsAverage || 0) - (a.ratingsAverage || 0)).slice(0, 8), [display]);
-  const finalTrend = useMemo(() => (trending?.length > 0 ? trending : featured.slice(0, 4)), [trending, featured]);
+  const display = useDeferredValue(useMemo(() => (real.length > 0 ? real : []), [real]));
+  const featured = useMemo(() => [...display].sort((a, b) => (b.ratingsAverage || 0) - (a.ratingsAverage || 0)).slice(0, 12), [display]);
+  const finalTrend = useMemo(() => (trending?.length > 0 ? trending : featured.slice(0, 8)), [trending, featured]);
+
+  /* ── Dynamic Category Grids ── */
+  const dynamicGrids = useMemo(() => {
+    if (!catStats?.length || !real?.length) return [];
+
+    // Group products by category
+    const byCat = real.reduce((acc, p) => {
+      if (!acc[p.category]) acc[p.category] = [];
+      acc[p.category].push(p);
+      return acc;
+    }, {});
+
+    // Create grids for top 4 categories
+    return catStats.slice(0, 4).map(stat => {
+      const catName = stat._id;
+      const catProducts = byCat[catName] || [];
+      
+      return {
+        title: `Popular in ${catName}`,
+        exploreText: `Shop all ${catName}`,
+        exploreLink: `/products?category=${catName}`,
+        categories: catProducts.slice(0, 4).map(p => ({
+          name: p.name,
+          image: getProductImageUrl(p.images?.[0] || p.image),
+          link: `/product/${p._id}`
+        }))
+      };
+    }).filter(grid => grid.categories.length > 0);
+  }, [catStats, real]);
 
   /* ── Handlers (stable refs) ── */
   const handleShopNow = useCallback((url) => {
@@ -639,20 +633,22 @@ export default function Home() {
         </div>
 
         {/* ═══════════ CURATED GRIDS ═══════════ */}
-        <section className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 mb-20 md:mb-32">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {CURATED_GRIDS.map((grid, idx) => (
-              <Reveal key={idx} delay={idx * 100}>
-                <CategoryGrid 
-                  title={grid.title}
-                  categories={grid.categories}
-                  exploreText={grid.exploreText}
-                  exploreLink={grid.exploreLink}
-                />
-              </Reveal>
-            ))}
-          </div>
-        </section>
+        {dynamicGrids.length > 0 && (
+          <section className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 mb-20 md:mb-32">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {dynamicGrids.map((grid, idx) => (
+                <Reveal key={idx} delay={idx * 100}>
+                  <CategoryGrid 
+                    title={grid.title}
+                    categories={grid.categories}
+                    exploreText={grid.exploreText}
+                    exploreLink={grid.exploreLink}
+                  />
+                </Reveal>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* ═══════════ FEATURED ═══════════ */}
         <Reveal className="mb-24 w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
