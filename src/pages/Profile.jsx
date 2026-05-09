@@ -64,7 +64,7 @@ export default function Profile() {
 
         {error && (
             <div className="bg-red-500/20 border border-red-500/50 text-red-200 p-4 rounded-xl mb-6 backdrop-blur-sm">
-                {error}
+                {typeof error === 'string' ? error : error.message || 'Something went wrong. Please check your inputs.'}
             </div>
         )}
         
