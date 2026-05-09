@@ -31,7 +31,8 @@ export default function ProductCard({ product }) {
         {/* Basic Shine - REMOVED for Ultra Light */}
 
         {/* Image Container */}
-        <div className="relative pt-[110%] overflow-hidden bg-black/5 dark:bg-gray-900/40">
+        {/* Image Container */}
+        <div className="relative pt-[110%] overflow-hidden bg-gray-50 dark:bg-gray-900/40">
            {/* Badges */}
            <div className="absolute top-4 left-4 z-20 flex flex-col gap-2">
                {isNew && (
@@ -47,71 +48,70 @@ export default function ProductCard({ product }) {
            </div>
 
            <div className="absolute top-4 right-4 z-20">
-                <span className="bg-black/60 border border-white/10 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                <span className="bg-black/60 border border-white/10 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">
                     {product.category}
                 </span>
            </div>
 
            {/* Image or Video */}
-           {product.posterType === 'none' ? (
-             <div className="absolute inset-0 flex items-center justify-center text-gray-700 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-800 via-black to-black">
-                <svg className="w-16 h-16 opacity-20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-             </div>
-           ) : product.posterType === 'video' && product.video ? (
-             <video 
-               src={product.video} 
-               autoPlay
-               loop
-               muted
-               playsInline
-               className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 ease-out"
-             />
-           ) : Array.isArray(product.images) && product.images.length > 0 ? (
-             <>
-               <img 
-                 src={getProductImageUrl(product.images[0])} 
-                 alt={product.name}
-                 loading="lazy"
-                 className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ease-out ${product.images.length > 1 ? 'group-hover:opacity-0 group-hover:scale-110' : 'group-hover:scale-110'}`}
-                 onError={(e) => {
-                   e.target.onerror = null;
-                   e.target.style.display = 'none';
-                   e.target.parentElement.classList.add('fallback-pattern');
-                 }}
+           <div className="absolute inset-0">
+             {product.posterType === 'video' && product.video ? (
+               <video 
+                 src={product.video} 
+                 autoPlay loop muted playsInline
+                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 ease-out"
                />
-               {product.images.length > 1 && (
+             ) : Array.isArray(product.images) && product.images.length > 0 ? (
+               <>
                  <img 
-                   src={getProductImageUrl(product.images[1])} 
-                   alt={`${product.name} - alternate`}
+                   src={getProductImageUrl(product.images[0])} 
+                   alt={product.name}
                    loading="lazy"
-                   className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-all duration-1000 scale-110 group-hover:scale-100 ease-out"
-                   onError={(e) => { e.target.style.display = 'none'; }}
+                   className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 ease-out"
+                   onError={(e) => {
+                     e.target.style.opacity = '0';
+                     e.target.parentElement.classList.add('fallback-pattern');
+                   }}
                  />
-               )}
-             </>
-           ) : product.image ? (
-              <img 
-               src={getProductImageUrl(product.image)} 
-               alt={product.name}
-               loading="lazy"
-               className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 ease-out"
-               onError={(e) => {
-                 e.target.onerror = null;
-                 e.target.style.display = 'none';
-               }}
-             />
-           ) : (
-             <div className="absolute inset-0 flex items-center justify-center text-gray-700 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gray-800 via-black to-black">
-                <svg className="w-16 h-16 opacity-20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-             </div>
-           )}
+                 {product.images.length > 1 && (
+                   <img 
+                     src={getProductImageUrl(product.images[1])} 
+                     alt={`${product.name} - alt`}
+                     loading="lazy"
+                     className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-all duration-700 ease-out group-hover:scale-110 z-10"
+                     onError={(e) => { e.target.style.opacity = '0'; }}
+                   />
+                 )}
+               </>
+             ) : (
+               <div className="w-full h-full flex items-center justify-center text-gray-400 bg-gray-100 dark:bg-gray-800 fallback-pattern">
+                  <svg className="w-12 h-12 opacity-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+               </div>
+             )}
+           </div>
            
            {/* Overlay Actions */}
-           <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
+           <div className="absolute inset-0 bg-black/40 dark:bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4 z-20">
+               <button 
+                  onClick={handleAddToCart}
+                  className="bg-white text-black p-3 rounded-full hover:bg-cyan-500 hover:text-white transition-all duration-300 transform translate-y-4 group-hover:translate-y-0 hover:scale-110 shadow-lg"
+               >
+                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                   </svg>
+               </button>
+                <div 
+                  className="bg-white/10 backdrop-blur-md text-white p-3 rounded-full hover:bg-white hover:text-black transition-all duration-300 transform translate-y-4 group-hover:translate-y-0 hover:scale-110 border border-white/30"
+               >
+                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                   </svg>
+               </div>
+           </div>
+        </div>
                <button 
                   onClick={handleAddToCart}
                   aria-label={`Add ${product.name} to cart`}

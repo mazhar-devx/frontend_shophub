@@ -72,17 +72,13 @@
   }
 
   /* Force "black" and dark backgrounds to adapt, but avoid breaking overlays */
-  [data-theme='light'] .bg-black:not(.absolute),
+  [data-theme='light'] .bg-black:not(.absolute):not([class*='opacity-']),
   [data-theme='light'] .bg-gray-900:not(.absolute),
   [data-theme='light'] .bg-\[\#121212\],
   [data-theme='light'] .bg-\[\#030014\],
   [data-theme='light'] .bg-\[\#0f0f0f\],
   [data-theme='light'] .bg-\[\#0a0a0a\],
-  [data-theme='light'] .bg-\[\#050505\],
-  [data-theme='light'] .bg-black\/30,
-  [data-theme='light'] .bg-black\/40,
-  [data-theme='light'] .bg-black\/50,
-  [data-theme='light'] .bg-black\/60 {
+  [data-theme='light'] .bg-\[\#050505\] {
     background-color: #FFFFFF !important;
     color: var(--text-primary) !important;
   }
@@ -92,10 +88,8 @@
   [data-theme='light'] .bg-white\/10,
   [data-theme='light'] .bg-white\/20,
   [data-theme='light'] .bg-white\/50 {
-    background-color: #FFFFFF !important;
+    background-color: rgba(255, 255, 255, 0.8) !important;
     border: 1px solid #D5D9D9 !important;
-    backdrop-filter: none !important;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
   }
 
   /* Keep glass effects intact but adjust for light mode */
@@ -321,6 +315,17 @@
 
   ::-webkit-scrollbar-thumb:hover {
     background: #555;
+  }
+
+  .fallback-pattern {
+    background-color: #f3f3f3;
+    background-image: radial-gradient(#d1d5db 0.5px, transparent 0.5px), radial-gradient(#d1d5db 0.5px, #f3f3f3 0.5px);
+    background-size: 20px 20px;
+    background-position: 0 0, 10px 10px;
+  }
+  [data-theme='dark'] .fallback-pattern {
+    background-color: #0a0a0a;
+    background-image: radial-gradient(#222 0.5px, transparent 0.5px), radial-gradient(#222 0.5px, #0a0a0a 0.5px);
   }
 }
 
