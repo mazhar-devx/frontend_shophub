@@ -13,12 +13,19 @@ export default function CreatorProfile() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("videos");
 
-  const { user: authUser, isAuthenticated } = useSelector((state) => state.auth);
+   const { user: authUser, isAuthenticated } = useSelector((state) => state.auth);
   const isOwnProfile = isAuthenticated && authUser?._id === id;
+  const [isFollowing, setIsFollowing] = useState(false);
 
   useEffect(() => {
     fetchCreatorData();
   }, [id]);
+
+  useEffect(() => {
+     if (creator && authUser) {
+        setIsFollowing(creator.followers?.some(f => (f._id || f) === authUser._id));
+     }
+  }, [creator, authUser]);
 
   const fetchCreatorData = async () => {
     try {
@@ -32,6 +39,19 @@ export default function CreatorProfile() {
       console.error(err);
       setLoading(false);
     }
+  };
+
+  const handleFollow = async () => {
+     if (!isAuthenticated) return alert("Please login to follow!");
+     try {
+        const endpoint = isFollowing ? 'unfollow' : 'follow';
+        await api.post(`/users/${id}/${endpoint}`);
+        setIsFollowing(!isFollowing);
+        // Refresh data to update counts
+        fetchCreatorData();
+     } catch (err) {
+        console.error(err);
+     }
   };
 
   const totalLikes = videos.reduce((acc, video) => acc + video.likes.length, 0);
@@ -78,33 +98,40 @@ export default function CreatorProfile() {
                   <div className="flex flex-col md:flex-row items-center gap-4 mb-4">
                      <h1 className="text-3xl font-black text-primary dark:text-white tracking-tighter uppercase">{creator.vendorName || creator.name}</h1>
                      <div className="flex gap-2">
-                        {isOwnProfile ? (
-                           <Link to="/upload-video" className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold rounded-full hover:scale-105 transition-all shadow-lg shadow-pink-500/20">
-                              Upload Video
-                           </Link>
-                        ) : (
-                           <button className="px-6 py-2 bg-pink-500 text-white font-bold rounded-full hover:bg-pink-600 transition-all shadow-lg shadow-pink-500/20">
-                              Follow
-                           </button>
-                        )}
-                        <button className="p-2 border border-black/10 dark:border-white/10 rounded-full dark:text-white hover:bg-black/5 dark:hover:bg-white/5"><Share2 className="w-5 h-5" /></button>
-                     </div>
-                  </div>
-
-                  <div className="flex gap-8 mb-6">
-                     <div className="flex flex-col items-center md:items-start">
-                        <span className="text-xl font-black dark:text-white">1.2K</span>
-                        <span className="text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1"><Users className="w-3 h-3" /> Followers</span>
-                     </div>
-                     <div className="flex flex-col items-center md:items-start">
-                        <span className="text-xl font-black dark:text-white">{totalLikes}</span>
-                        <span className="text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1"><Heart className="w-3 h-3" /> Likes</span>
-                     </div>
-                     <div className="flex flex-col items-center md:items-start">
-                        <span className="text-xl font-black dark:text-white">{videos.length}</span>
-                        <span className="text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1"><Play className="w-3 h-3" /> Videos</span>
-                     </div>
-                  </div>
+                         {isOwnProfile ? (
+                            <Link to="/upload-video" className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold rounded-full hover:scale-105 transition-all shadow-lg shadow-pink-500/20">
+                               Upload Video
+                            </Link>
+                         ) : (
+                            <button 
+                              onClick={handleFollow}
+                              className={`px-6 py-2 font-bold rounded-full transition-all shadow-lg ${isFollowing ? 'bg-white text-black border border-black/10' : 'bg-pink-500 text-white shadow-pink-500/20'}`}
+                            >
+                               {isFollowing ? 'Unfollow' : 'Follow'}
+                            </button>
+                         )}
+                         <button className="p-2 border border-black/10 dark:border-white/10 rounded-full dark:text-white hover:bg-black/5 dark:hover:bg-white/5"><Share2 className="w-5 h-5" /></button>
+                      </div>
+                   </div>
+ 
+                   <div className="flex gap-8 mb-6">
+                      <div className="flex flex-col items-center md:items-start">
+                         <span className="text-xl font-black dark:text-white">{creator.followers?.length || 0}</span>
+                         <span className="text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1"><Users className="w-3 h-3" /> Followers</span>
+                      </div>
+                      <div className="flex flex-col items-center md:items-start">
+                         <span className="text-xl font-black dark:text-white">{creator.following?.length || 0}</span>
+                         <span className="text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1"><Users className="w-3 h-3" /> Following</span>
+                      </div>
+                      <div className="flex flex-col items-center md:items-start">
+                         <span className="text-xl font-black dark:text-white">{totalLikes}</span>
+                         <span className="text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1"><Heart className="w-3 h-3" /> Likes</span>
+                      </div>
+                      <div className="flex flex-col items-center md:items-start">
+                         <span className="text-xl font-black dark:text-white">{videos.length}</span>
+                         <span className="text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1"><Play className="w-3 h-3" /> Videos</span>
+                      </div>
+                   </div>
 
                   <p className="text-sm text-gray-600 dark:text-gray-400 font-medium max-w-lg leading-relaxed">
                      {creator.description || "Passionate creator sharing moments and insights. Join me on my journey through tech, fashion, and lifestyle. 🚀"}

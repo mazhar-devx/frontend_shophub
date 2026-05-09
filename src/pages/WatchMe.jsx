@@ -9,9 +9,18 @@ import { getProductImageUrl } from "../utils/constants";
 const VideoCard = ({ video, isActive }) => {
   const videoRef = useRef(null);
   const [isLiked, setIsLiked] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
   const [likes, setLikes] = useState(video.likes.length);
   const [showComments, setShowComments] = useState(false);
   const { user, isAuthenticated } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (isAuthenticated && user) {
+       setIsLiked(video.likes.includes(user._id));
+       setIsFollowing(video.user?.followers?.includes(user._id));
+    }
+  }, [isAuthenticated, user, video.likes, video.user]);
 
   useEffect(() => {
     if (isActive && video.videoUrl) {
@@ -31,6 +40,32 @@ const VideoCard = ({ video, isActive }) => {
     } catch (err) {
       console.error(err);
     }
+  };
+
+  const handleFollow = async () => {
+    if (!isAuthenticated) return alert("Please login to follow!");
+    try {
+      const endpoint = isFollowing ? 'unfollow' : 'follow';
+      await api.post(`/users/${video.user._id}/${endpoint}`);
+      setIsFollowing(!isFollowing);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleSave = async () => {
+    if (!isAuthenticated) return alert("Please login to save!");
+    try {
+      const res = await api.post(`/videos/${video._id}/save`);
+      setIsSaved(res.data.data.isSaved);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleShare = () => {
+    navigator.clipboard.writeText(`${window.location.origin}/watch-me?v=${video._id}`);
+    alert("Link copied to clipboard!");
   };
 
   return (
@@ -56,15 +91,22 @@ const VideoCard = ({ video, isActive }) => {
       <div className="absolute right-4 bottom-24 flex flex-col items-center gap-6 z-20">
         {/* Creator DP */}
         <div className="relative mb-4">
-           <motion.div 
-             whileHover={{ scale: 1.1 }}
-             className="w-12 h-12 rounded-full border-2 border-white overflow-hidden shadow-lg"
-           >
-              <img src={video.user?.photo ? getProductImageUrl(video.user.photo) : "/default-avatar.png"} alt="Creator" className="w-full h-full object-cover" />
-           </motion.div>
-           <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-5 h-5 bg-pink-500 rounded-full flex items-center justify-center border-2 border-black">
-              <Plus className="w-3 h-3 text-white" />
-           </div>
+           <Link to={`/creator/${video.user?._id}`}>
+              <motion.div 
+                whileHover={{ scale: 1.1 }}
+                className="w-12 h-12 rounded-full border-2 border-white overflow-hidden shadow-lg"
+              >
+                 <img src={video.user?.photo ? getProductImageUrl(video.user.photo) : "/default-avatar.png"} alt="Creator" className="w-full h-full object-cover" />
+              </motion.div>
+           </Link>
+           {user?._id !== video.user?._id && (
+             <button 
+               onClick={handleFollow}
+               className={`absolute -bottom-2 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full flex items-center justify-center border-2 border-black transition-all ${isFollowing ? 'bg-white text-black' : 'bg-pink-500 text-white'}`}
+             >
+                {isFollowing ? <X className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
+             </button>
+           )}
         </div>
 
         {/* Like */}
@@ -84,15 +126,15 @@ const VideoCard = ({ video, isActive }) => {
         </button>
 
         {/* Save */}
-        <button className="flex flex-col items-center gap-1 group">
-           <div className="p-3 rounded-full bg-black/20 backdrop-blur-md text-white group-hover:scale-110 transition-all">
-              <Bookmark className="w-7 h-7" />
+        <button onClick={handleSave} className="flex flex-col items-center gap-1 group">
+           <div className={`p-3 rounded-full bg-black/20 backdrop-blur-md transition-all ${isSaved ? 'text-yellow-500 scale-110' : 'text-white group-hover:scale-110'}`}>
+              <Bookmark className={`w-7 h-7 ${isSaved ? 'fill-current' : ''}`} />
            </div>
-           <span className="text-white text-xs font-bold shadow-sm">Save</span>
+           <span className="text-white text-xs font-bold shadow-sm">{isSaved ? 'Saved' : 'Save'}</span>
         </button>
 
         {/* Share */}
-        <button className="flex flex-col items-center gap-1 group">
+        <button onClick={handleShare} className="flex flex-col items-center gap-1 group">
            <div className="p-3 rounded-full bg-black/20 backdrop-blur-md text-white group-hover:scale-110 transition-all">
               <Share2 className="w-7 h-7" />
            </div>
@@ -172,16 +214,24 @@ export default function WatchMe() {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [feedType, setFeedType] = useState("foryou"); // "foryou" or "following"
   const containerRef = useRef(null);
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
   useEffect(() => {
     fetchVideos();
-  }, []);
+  }, [feedType]);
 
   const fetchVideos = async () => {
+    setLoading(true);
     try {
-      const res = await api.get(`/videos`);
+      let url = "/videos";
+      if (feedType === "foryou") {
+        url += "?sort=likes";
+      } else if (feedType === "following") {
+        url += "?feed=following";
+      }
+      const res = await api.get(url);
       setVideos(res.data.data.videos);
       setLoading(false);
     } catch (err) {
@@ -199,7 +249,7 @@ export default function WatchMe() {
     }
   };
 
-  if (loading) {
+  if (loading && videos.length === 0) {
     return (
       <div className="h-screen w-full flex items-center justify-center bg-black">
          <motion.div 
@@ -227,17 +277,17 @@ export default function WatchMe() {
            />
          ))}
 
-         {videos.length === 0 && (
+         {videos.length === 0 && !loading && (
             <div className="h-full flex flex-col items-center justify-center text-white p-8 text-center">
                <div className="w-24 h-24 bg-white/10 rounded-full flex items-center justify-center mb-6">
                   <Music2 className="w-12 h-12 opacity-50" />
                </div>
-               <h2 className="text-2xl font-black mb-2 uppercase tracking-tighter">No Videos Yet</h2>
-               <p className="text-gray-500 mb-8 font-medium">Be the first to share a moment!</p>
-               {isAuthenticated && (
-                  <button className="px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full font-black uppercase tracking-widest text-sm shadow-xl hover:scale-105 transition-transform">
+               <h2 className="text-2xl font-black mb-2 uppercase tracking-tighter">No Videos Found</h2>
+               <p className="text-gray-500 mb-8 font-medium">{feedType === 'following' ? "You aren't following anyone yet or they haven't posted." : "Be the first to share a moment!"}</p>
+               {isAuthenticated && feedType === 'foryou' && (
+                  <Link to="/upload-video" className="px-8 py-4 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full font-black uppercase tracking-widest text-sm shadow-xl hover:scale-105 transition-transform">
                      Upload Video
-                  </button>
+                  </Link>
                )}
             </div>
          )}
@@ -256,9 +306,22 @@ export default function WatchMe() {
 
          {/* Top Center: Tabs */}
          <div className="flex items-center gap-4 pointer-events-auto bg-black/20 backdrop-blur-md px-6 py-3 rounded-full border border-white/5">
-            <span className={`text-sm font-black transition-all ${activeIndex === 0 ? 'text-white' : 'text-white/50 hover:text-white'} cursor-pointer uppercase tracking-tighter`}>Following</span>
+            <button 
+              onClick={() => {
+                if (!isAuthenticated) return alert("Please login to see Following feed");
+                setFeedType("following");
+              }}
+              className={`text-sm font-black transition-all ${feedType === "following" ? 'text-white' : 'text-white/50 hover:text-white'} uppercase tracking-tighter`}
+            >
+              Following
+            </button>
             <span className="w-1 h-1 rounded-full bg-white/30" />
-            <span className={`text-sm font-black transition-all ${activeIndex !== 0 ? 'text-white' : 'text-white/50 hover:text-white'} cursor-pointer uppercase tracking-tighter`}>For You</span>
+            <button 
+              onClick={() => setFeedType("foryou")}
+              className={`text-sm font-black transition-all ${feedType === "foryou" ? 'text-white' : 'text-white/50 hover:text-white'} uppercase tracking-tighter`}
+            >
+              For You
+            </button>
          </div>
 
          {/* Top Right: Profile */}
