@@ -742,19 +742,10 @@ export default function WatchMe() {
                    setFeedType("foryou");
                  }}
                  className={`text-sm font-black transition-all ${feedType === "foryou" ? 'text-white' : 'text-white/50 hover:text-white'} uppercase tracking-tighter`}
-               >
-import { Search } from 'lucide-react';
-
-// ... existing code ...
-
-  const [showSearch, setShowSearch] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState({ videos: [], users: [] });
-
-// ... existing code ...
-
+                 For You
+               </button>
+            </div>
          )}
-
            {/* Top Right: Profile & Notifications */}
            <div className="flex flex-col items-end gap-3 pointer-events-auto">
               <div className="flex items-center gap-3">
