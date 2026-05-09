@@ -72,6 +72,9 @@ export default function VideoUpload() {
     if (!videoFile && !videoUrl) {
       return setStatus({ type: "error", message: "Please provide a video file or URL" });
     }
+    if (!thumbnailFile) {
+      return setStatus({ type: "error", message: "A Video Poster is required for better discoverability!" });
+    }
 
     setLoading(true);
     setStatus({ type: "info", message: "Uploading your masterpiece..." });
@@ -158,7 +161,9 @@ export default function VideoUpload() {
 
                 {/* Thumbnail Upload */}
                 <div className="space-y-2">
-                   <label className="text-xs font-black text-gray-500 uppercase tracking-widest ml-2">Video Poster (Optional)</label>
+                   <label className="text-xs font-black text-pink-500 uppercase tracking-widest ml-2 flex items-center gap-2">
+                      <AlertCircle className="w-3 h-3" /> Video Poster (Required)
+                   </label>
                    <div className="relative group">
                       <input 
                         type="file" 

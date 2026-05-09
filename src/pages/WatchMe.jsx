@@ -18,6 +18,7 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
   const [showVideoMenu, setShowVideoMenu] = useState(false);
   const [isEditingVideo, setIsEditingVideo] = useState(false);
   const [editForm, setEditForm] = useState({ name: video.name, description: video.description, tags: video.tags?.join(', '), productLink: video.productLink });
+  const [isActionLoading, setIsActionLoading] = useState({ like: false, save: false, follow: false, comment: false });
   const { user, isAuthenticated } = useSelector((state) => state.auth);
 
   useEffect(() => {
@@ -93,6 +94,7 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
     if (!commentText.trim() && !commentMedia) return;
 
     try {
+      setIsActionLoading(prev => ({ ...prev, comment: true }));
       if (replyingTo) {
          const formData = new FormData();
          if (commentText.trim()) formData.append("text", commentText);
@@ -118,7 +120,10 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
       setCommentMedia(null);
     } catch (err) {
       console.error(err);
+    } finally {
+      setIsActionLoading(prev => ({ ...prev, comment: false }));
     }
+  };
   };
 
   const handleLikeComment = async (commentId) => {
@@ -137,35 +142,51 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
      }
   };
 
-  const handleLike = async () => {
-    if (!isAuthenticated) return alert("Please login to like!");
+    // Optimistic Update
+    const oldLiked = isLiked;
+    const oldLikes = likes;
+    setIsLiked(!isLiked);
+    setLikes(prev => isLiked ? prev - 1 : prev + 1);
+
     try {
+      setIsActionLoading(prev => ({ ...prev, like: true }));
       const res = await api.post(`/videos/${video._id}/like`);
       setIsLiked(res.data.data.isLiked);
       setLikes(res.data.data.likeCount);
     } catch (err) {
       console.error(err);
+      setIsLiked(oldLiked);
+      setLikes(oldLikes);
+    } finally {
+      setIsActionLoading(prev => ({ ...prev, like: false }));
     }
   };
 
-  const handleFollow = async () => {
-    if (!isAuthenticated) return alert("Please login to follow!");
     try {
+      setIsActionLoading(prev => ({ ...prev, follow: true }));
       const endpoint = isFollowing ? 'unfollow' : 'follow';
       await api.post(`/users/${video.user._id}/${endpoint}`);
       setIsFollowing(!isFollowing);
     } catch (err) {
       console.error(err);
+    } finally {
+      setIsActionLoading(prev => ({ ...prev, follow: false }));
     }
   };
 
-  const handleSave = async () => {
-    if (!isAuthenticated) return alert("Please login to save!");
+    // Optimistic
+    const oldSaved = isSaved;
+    setIsSaved(!isSaved);
+
     try {
+      setIsActionLoading(prev => ({ ...prev, save: true }));
       const res = await api.post(`/videos/${video._id}/save`);
       setIsSaved(res.data.data.isSaved);
     } catch (err) {
       console.error(err);
+      setIsSaved(oldSaved);
+    } finally {
+      setIsActionLoading(prev => ({ ...prev, save: false }));
     }
   };
 
@@ -313,17 +334,28 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
            {user?._id !== video.user?._id && (
              <button 
                onClick={handleFollow}
+               disabled={isActionLoading.follow}
                className={`absolute -bottom-2 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full flex items-center justify-center border-2 border-black transition-all pointer-events-auto ${isFollowing ? 'bg-white text-black' : 'bg-pink-500 text-white hover:scale-110'}`}
              >
-                {isFollowing ? <X className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
+                {isActionLoading.follow ? (
+                   <div className="w-3 h-3 border border-current border-t-transparent rounded-full animate-spin" />
+                ) : isFollowing ? <X className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
              </button>
            )}
         </div>
 
         {/* Like */}
-        <button onClick={handleLike} className="flex flex-col items-center gap-1 group">
+        <button 
+          onClick={handleLike} 
+          disabled={isActionLoading.like}
+          className="flex flex-col items-center gap-1 group"
+        >
            <div className={`p-3 rounded-full bg-black/20 backdrop-blur-md transition-all ${isLiked ? 'text-pink-500 scale-110' : 'text-white group-hover:scale-110'}`}>
-              <Heart className={`w-7 h-7 ${isLiked ? 'fill-current' : ''}`} />
+              {isActionLoading.like ? (
+                 <div className="w-7 h-7 border-2 border-pink-500 border-t-transparent rounded-full animate-spin" />
+              ) : (
+                 <Heart className={`w-7 h-7 ${isLiked ? 'fill-current' : ''}`} />
+              )}
            </div>
            <span className="text-white text-xs font-bold shadow-sm">{likes}</span>
         </button>
@@ -337,9 +369,17 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
         </button>
 
         {/* Save */}
-        <button onClick={handleSave} className="flex flex-col items-center gap-1 group">
+        <button 
+          onClick={handleSave} 
+          disabled={isActionLoading.save}
+          className="flex flex-col items-center gap-1 group"
+        >
            <div className={`p-3 rounded-full bg-black/20 backdrop-blur-md transition-all ${isSaved ? 'text-yellow-500 scale-110' : 'text-white group-hover:scale-110'}`}>
-              <Bookmark className={`w-7 h-7 ${isSaved ? 'fill-current' : ''}`} />
+              {isActionLoading.save ? (
+                 <div className="w-7 h-7 border-2 border-yellow-500 border-t-transparent rounded-full animate-spin" />
+              ) : (
+                 <Bookmark className={`w-7 h-7 ${isSaved ? 'fill-current' : ''}`} />
+              )}
            </div>
            <span className="text-white text-xs font-bold shadow-sm">{isSaved ? 'Saved' : 'Save'}</span>
         </button>
@@ -614,12 +654,16 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
                      />
                   </div>
                  <button 
-                   onClick={handleComment}
-                   className="p-4 bg-pink-500 rounded-full text-white shadow-xl hover:scale-110 active:scale-95 transition-transform disabled:opacity-50"
-                   disabled={!commentText.trim() && !commentMedia}
-                 >
-                    <Send className="w-5 h-5" />
-                 </button>
+                    onClick={handleComment}
+                    className="p-4 bg-pink-500 rounded-full text-white shadow-xl hover:scale-110 active:scale-95 transition-transform disabled:opacity-50 flex items-center justify-center"
+                    disabled={(!commentText.trim() && !commentMedia) || isActionLoading.comment}
+                  >
+                     {isActionLoading.comment ? (
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                     ) : (
+                        <Send className="w-5 h-5" />
+                     )}
+                  </button>
               </div>
             </motion.div>
           </>

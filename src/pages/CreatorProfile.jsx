@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Play, Users, MessageCircle, ChevronLeft, Share2, Grid, Bookmark } from "lucide-react";
+import { Heart, Play, Users, MessageCircle, ChevronLeft, Share2, Grid, Bookmark, Music2 } from "lucide-react";
 import api from "../services/api";
 import { getProductImageUrl, DEFAULT_AVATAR } from "../utils/constants";
 import SEO from "../components/SEO";
@@ -15,6 +15,7 @@ export default function CreatorProfile() {
   const [savedVideos, setSavedVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("videos");
+  const [savedSounds, setSavedSounds] = useState([]);
   const [showSocialModal, setShowSocialModal] = useState(false);
   const [socialType, setSocialType] = useState('followers'); // 'followers' or 'following'
 
@@ -37,6 +38,11 @@ export default function CreatorProfile() {
         const res = await api.get(`/videos?feed=${activeTab}&userId=${id}`);
         if (activeTab === 'liked') setLikedVideos(res.data.data.videos);
         if (activeTab === 'saved') setSavedVideos(res.data.data.videos);
+        if (activeTab === 'sounds') {
+           // For sounds, we fetch the original videos that represent the sounds
+           const soundsRes = await api.get(`/users/${id}/saved-sounds`);
+           setSavedSounds(soundsRes.data.data.sounds || []);
+        }
      } catch (err) {
         console.error(err);
      }
@@ -201,6 +207,13 @@ export default function CreatorProfile() {
                   <Bookmark className="w-4 h-4" /> Saved
                   {activeTab === "saved" && <motion.div layoutId="tab-underline" className="absolute bottom-0 left-0 right-0 h-1 bg-pink-500 rounded-full" />}
                </button>
+               <button 
+                  onClick={() => setActiveTab("sounds")}
+                  className={`flex items-center gap-2 px-8 py-4 text-sm font-black uppercase tracking-widest transition-all relative ${activeTab === "sounds" ? "text-pink-500" : "text-gray-500 hover:text-primary dark:hover:text-white"}`}
+                >
+                   <Music2 className="w-4 h-4" /> Sounds
+                   {activeTab === "sounds" && <motion.div layoutId="tab-underline" className="absolute bottom-0 left-0 right-0 h-1 bg-pink-500 rounded-full" />}
+                </button>
             </div>
 
             {/* Content Grid */}
@@ -245,7 +258,7 @@ export default function CreatorProfile() {
                         <span>{video.likesCount || video.likes.length}</span>
                      </div>
                   </motion.div>
-               )) : savedVideos.map((video, idx) => (
+               )) : activeTab === "saved" ? savedVideos.map((video, idx) => (
                   <motion.div 
                     key={video._id}
                     initial={{ opacity: 0, y: 20 }}
@@ -265,8 +278,32 @@ export default function CreatorProfile() {
                         <span>{video.likesCount || video.likes.length}</span>
                      </div>
                   </motion.div>
-               ))}
-               {(activeTab === "videos" && videos.length === 0) || (activeTab === "liked" && likedVideos.length === 0) || (activeTab === "saved" && savedVideos.length === 0) ? (
+               )) : activeTab === 'sounds' ? savedSounds.map((sound, idx) => (
+                  <motion.div 
+                    key={sound._id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.1 }}
+                    onClick={() => window.location.href = `/sounds/${sound._id}`}
+                    className="group relative h-24 bg-white dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-2xl overflow-hidden cursor-pointer flex items-center p-4 hover:scale-[1.02] transition-transform"
+                  >
+                     <div className="w-16 h-16 rounded-xl overflow-hidden bg-black flex-shrink-0 relative">
+                        <img src={sound.thumbnailUrl ? getProductImageUrl(sound.thumbnailUrl) : DEFAULT_AVATAR} className="w-full h-full object-cover opacity-60" />
+                        <Play className="absolute inset-0 m-auto w-6 h-6 text-white fill-white" />
+                     </div>
+                     <div className="ml-4 flex-1 min-w-0">
+                        <h4 className="font-black dark:text-white uppercase tracking-tighter truncate">Original Sound - {sound.name}</h4>
+                        <p className="text-xs font-bold text-gray-500">@{sound.user?.name || 'Creator'}</p>
+                     </div>
+                     <div className="ml-4 px-3 py-1 bg-black/5 dark:bg-white/10 rounded-lg text-[10px] font-black dark:text-white uppercase">
+                        {sound.useCount || 0} vids
+                     </div>
+                  </motion.div>
+               )) : null}
+                {((activeTab === "videos" && videos.length === 0) || 
+                   (activeTab === "liked" && likedVideos.length === 0) || 
+                   (activeTab === "saved" && savedVideos.length === 0) ||
+                   (activeTab === "sounds" && savedSounds.length === 0)) ? (
                   <div className="col-span-full py-20 flex flex-col items-center justify-center text-gray-500 opacity-50">
                      <Play className="w-12 h-12 mb-4" />
                      <p className="font-bold uppercase tracking-widest text-xs">No {activeTab} videos yet</p>
