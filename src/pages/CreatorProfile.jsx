@@ -201,7 +201,7 @@ export default function CreatorProfile() {
                     onClick={() => window.location.href = `/watch-me?v=${video._id}`}
                     className="group relative aspect-[9/16] bg-black rounded-3xl overflow-hidden cursor-pointer"
                   >
-                     <video src={video.videoUrl} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" />
+                     <video src={getProductImageUrl(video.videoUrl)} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" />
                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                      <div className="absolute bottom-4 left-4 flex items-center gap-2 text-white font-bold text-xs">
                         <Play className="w-3 h-3 fill-current" />
@@ -221,7 +221,7 @@ export default function CreatorProfile() {
                     onClick={() => window.location.href = `/watch-me?v=${video._id}`}
                     className="group relative aspect-[9/16] bg-black rounded-3xl overflow-hidden cursor-pointer"
                   >
-                     <video src={video.videoUrl} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" />
+                     <video src={getProductImageUrl(video.videoUrl)} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" />
                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                      <div className="absolute bottom-4 left-4 flex items-center gap-2 text-white font-bold text-xs">
                         <Play className="w-3 h-3 fill-current" />
@@ -241,7 +241,7 @@ export default function CreatorProfile() {
                     onClick={() => window.location.href = `/watch-me?v=${video._id}`}
                     className="group relative aspect-[9/16] bg-black rounded-3xl overflow-hidden cursor-pointer"
                   >
-                     <video src={video.videoUrl} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" />
+                     <video src={getProductImageUrl(video.videoUrl)} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" />
                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                      <div className="absolute bottom-4 left-4 flex items-center gap-2 text-white font-bold text-xs">
                         <Play className="w-3 h-3 fill-current" />
