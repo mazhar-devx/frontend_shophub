@@ -38,6 +38,7 @@ export default function Register() {
       })
       .catch((err) => {
         console.error("Signup failed:", err);
+        if (err.errors) console.table(err.errors);
       });
   };
 

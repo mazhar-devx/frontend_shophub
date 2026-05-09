@@ -50,6 +50,7 @@ export default function Profile() {
       setSuccessMsg('Profile updated successfully!');
     } else {
        console.error("Profile update failed:", result.payload);
+       if (result.payload?.errors) console.table(result.payload.errors);
     }
   };
 
