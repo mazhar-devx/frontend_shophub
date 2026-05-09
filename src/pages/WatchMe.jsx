@@ -128,7 +128,6 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
       setIsActionLoading(prev => ({ ...prev, comment: false }));
     }
   };
-  };
 
   const handleLikeComment = async (commentId) => {
      if (!isAuthenticated) return alert("Please login to like!");
@@ -146,7 +145,8 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
      }
   };
 
-    // Optimistic Update
+  const handleLike = async () => {
+    if (!isAuthenticated) return alert("Please login to like!");
     const oldLiked = isLiked;
     const oldLikes = likes;
     setIsLiked(!isLiked);
@@ -165,7 +165,8 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
       setIsActionLoading(prev => ({ ...prev, like: false }));
     }
   };
-
+  const handleFollow = async () => {
+    if (!isAuthenticated) return alert("Please login to follow!");
     try {
       setIsActionLoading(prev => ({ ...prev, follow: true }));
       const endpoint = isFollowing ? 'unfollow' : 'follow';
@@ -177,7 +178,8 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
       setIsActionLoading(prev => ({ ...prev, follow: false }));
     }
   };
-
+  const handleSave = async () => {
+    if (!isAuthenticated) return alert("Please login to save!");
     // Optimistic
     const oldSaved = isSaved;
     setIsSaved(!isSaved);
