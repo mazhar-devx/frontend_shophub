@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { Link, useSearchParams, useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, MessageCircle, Share2, Bookmark, Plus, X, Music2, Bell, ChevronLeft, Send, Volume2, VolumeX, Download, Play, ShoppingCart } from "lucide-react";
+import { Heart, MessageCircle, Share2, Bookmark, Plus, X, Music2, Bell, ChevronLeft, Send, Volume2, VolumeX, Download, Play, ShoppingCart, Search } from "lucide-react";
 import NotificationsModal from "../components/NotificationsModal";
 import api from "../services/api";
 import { getProductImageUrl } from "../utils/constants";
@@ -80,17 +80,57 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
 
   const [showShare, setShowShare] = useState(false);
   const [commentText, setCommentText] = useState("");
+  const [commentMedia, setCommentMedia] = useState(null);
+  const [replyingTo, setReplyingTo] = useState(null); // { commentId, username }
+  const [localComments, setLocalComments] = useState(video.comments || []);
 
   const handleComment = async () => {
     if (!isAuthenticated) return alert("Please login to comment!");
-    if (!commentText.trim()) return;
+    if (!commentText.trim() && !commentMedia) return;
+
     try {
-      const res = await api.post(`/videos/${video._id}/comment`, { text: commentText });
-      video.comments = res.data.data.comments;
+      if (replyingTo) {
+         const formData = new FormData();
+         if (commentText.trim()) formData.append("text", commentText);
+         if (commentMedia) formData.append("media", commentMedia);
+         
+         const res = await api.post(`/videos/${video._id}/comment/${replyingTo.commentId}/reply`, formData, {
+            headers: { "Content-Type": "multipart/form-data" }
+         });
+         const updatedReplies = res.data.data.replies;
+         setLocalComments(localComments.map(c => c._id === replyingTo.commentId ? { ...c, replies: updatedReplies } : c));
+         setReplyingTo(null);
+      } else {
+         const formData = new FormData();
+         if (commentText.trim()) formData.append("text", commentText);
+         if (commentMedia) formData.append("media", commentMedia);
+
+         const res = await api.post(`/videos/${video._id}/comment`, formData, {
+            headers: { "Content-Type": "multipart/form-data" }
+         });
+         setLocalComments(res.data.data.comments);
+      }
       setCommentText("");
+      setCommentMedia(null);
     } catch (err) {
       console.error(err);
     }
+  };
+
+  const handleLikeComment = async (commentId) => {
+     if (!isAuthenticated) return alert("Please login to like!");
+     try {
+        const res = await api.post(`/videos/${video._id}/comment/${commentId}/like`);
+        setLocalComments(localComments.map(c => {
+           if (c._id === commentId) {
+              const newLikes = res.data.data.isLiked ? [...c.likes, user._id] : c.likes.filter(id => id !== user._id);
+              return { ...c, likes: newLikes };
+           }
+           return c;
+        }));
+     } catch (err) {
+        console.error(err);
+     }
   };
 
   const handleLike = async () => {
@@ -125,11 +165,20 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
     }
   };
 
-  const shareLinks = [
-    { name: "WhatsApp", icon: "🟢", link: `https://wa.me/?text=Check out this video on ShopHub: ${window.location.origin}/watch-me?v=${video._id}` },
-    { name: "Facebook", icon: "🔵", link: `https://www.facebook.com/sharer/sharer.php?u=${window.location.origin}/watch-me?v=${video._id}` },
-    { name: "Twitter", icon: "𝕏", link: `https://twitter.com/intent/tweet?text=Check out this video on ShopHub!&url=${window.location.origin}/watch-me?v=${video._id}` },
-    { name: "Download", icon: <Download className="w-6 h-6 text-pink-500" />, action: async () => {
+  const shareApps = [
+    { name: "WhatsApp", icon: "whatsapp.png", color: "bg-green-500", link: `https://wa.me/?text=Check out this video on ShopHub: ${window.location.origin}/watch-me?v=${video._id}` },
+    { name: "Facebook", icon: "facebook.png", color: "bg-blue-600", link: `https://www.facebook.com/sharer/sharer.php?u=${window.location.origin}/watch-me?v=${video._id}` },
+    { name: "Twitter", icon: "twitter.png", color: "bg-black", link: `https://twitter.com/intent/tweet?text=Check out this video on ShopHub!&url=${window.location.origin}/watch-me?v=${video._id}` },
+    { name: "Copy Link", icon: "link.png", color: "bg-gray-500", action: () => {
+        navigator.clipboard.writeText(`${window.location.origin}/watch-me?v=${video._id}`);
+        alert("Link copied!");
+    }}
+  ];
+
+  const shareActions = [
+    { name: "Report", icon: "🚩" },
+    { name: "Not Interested", icon: "💔" },
+    { name: "Save Video", icon: "💾", action: async () => {
         try {
            const response = await fetch(getProductImageUrl(video.videoUrl));
            const blob = await response.blob();
@@ -145,10 +194,7 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
            alert("Download failed. Please try again.");
         }
     }},
-    { name: "Copy Link", icon: "🔗", action: () => {
-        navigator.clipboard.writeText(`${window.location.origin}/watch-me?v=${video._id}`);
-        alert("Link copied!");
-    }}
+    { name: "Duet", icon: "👥" }
   ];
 
   return (
@@ -320,20 +366,28 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
                  <h3 className="text-xl font-black dark:text-white uppercase tracking-tighter">Share to</h3>
                  <button onClick={() => setShowShare(false)} className="p-2 dark:text-white hover:bg-black/5 rounded-full"><X className="w-5 h-5" /></button>
               </div>
-              <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4">
-                 {shareLinks.map(link => (
-                    link.action ? (
-                      <button key={link.name} onClick={link.action} className="flex-shrink-0 flex flex-col items-center gap-2 p-4 w-20 rounded-3xl bg-black/5 dark:bg-white/5 hover:bg-pink-500 hover:text-white transition-all dark:text-white group">
-                         <span className="text-2xl group-hover:scale-110 transition-transform">{link.icon}</span>
-                         <span className="text-[10px] font-black uppercase tracking-widest">{link.name}</span>
-                      </button>
-                    ) : (
-                      <a key={link.name} href={link.link} target="_blank" rel="noreferrer" className="flex-shrink-0 flex flex-col items-center gap-2 p-4 w-20 rounded-3xl bg-black/5 dark:bg-white/5 hover:bg-pink-500 hover:text-white transition-all dark:text-white group">
-                         <span className="text-2xl group-hover:scale-110 transition-transform">{link.icon}</span>
-                         <span className="text-[10px] font-black uppercase tracking-widest">{link.name}</span>
-                      </a>
-                    )
-                 ))}
+              <div className="flex flex-col gap-6">
+                 <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2">
+                    {shareApps.map(link => (
+                       <a key={link.name} href={link.link || '#'} onClick={link.action ? (e) => { e.preventDefault(); link.action(); } : undefined} target="_blank" rel="noreferrer" className="flex-shrink-0 flex flex-col items-center gap-2 group">
+                          <div className={`w-14 h-14 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform ${link.color}`}>
+                             <span className="text-2xl text-white font-black drop-shadow-md">{link.icon === 'whatsapp.png' ? 'W' : link.icon === 'facebook.png' ? 'f' : link.icon === 'twitter.png' ? 'X' : link.icon === 'link.png' ? '🔗' : link.icon}</span>
+                          </div>
+                          <span className="text-[10px] font-black uppercase tracking-widest dark:text-gray-300 text-gray-700">{link.name}</span>
+                       </a>
+                    ))}
+                 </div>
+                 <div className="w-full h-[1px] bg-black/5 dark:bg-white/10" />
+                 <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4">
+                    {shareActions.map(action => (
+                       <button key={action.name} onClick={action.action} className="flex-shrink-0 flex flex-col items-center gap-2 group">
+                          <div className="w-14 h-14 rounded-full bg-black/5 dark:bg-white/10 flex items-center justify-center shadow-inner group-hover:scale-110 group-hover:bg-black/10 dark:group-hover:bg-white/20 transition-all">
+                             <span className="text-2xl">{action.icon}</span>
+                          </div>
+                          <span className="text-[10px] font-black uppercase tracking-widest dark:text-gray-300 text-gray-700">{action.name}</span>
+                       </button>
+                    ))}
+                 </div>
               </div>
             </motion.div>
           </>
@@ -365,46 +419,101 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
               </div>
 
               <div className="flex-1 overflow-y-auto no-scrollbar space-y-6 pr-2">
-                {video.comments.length === 0 ? (
+                {localComments.length === 0 ? (
                   <p className="text-center text-gray-500 mt-10 font-bold">Be the first to comment!</p>
                 ) : (
-                  video.comments.map((comment, i) => (
-                    <div key={i} className="flex gap-3 items-start group">
-                       <div className="w-8 h-8 rounded-full overflow-hidden border border-black/10 flex-shrink-0">
-                          <img src={comment.user?.photo ? getProductImageUrl(comment.user.photo) : "/default-avatar.png"} className="w-full h-full object-cover" />
-                       </div>
-                       <div className="flex-1">
-                          <span className="font-bold text-xs dark:text-gray-300 text-gray-600">@{comment.user?.name || "User"}</span>
-                          <p className="dark:text-white text-sm font-medium mt-0.5">{comment.text}</p>
-                          <div className="flex gap-4 mt-2 text-[10px] text-gray-400 font-bold">
-                             <button className="hover:text-pink-500 transition-colors">Reply</button>
-                             <span>{new Date(comment.createdAt).toLocaleDateString()}</span>
-                          </div>
-                       </div>
-                       <button className="p-2 text-gray-400 hover:text-pink-500 transition-colors flex flex-col items-center gap-1">
-                          <Heart className="w-4 h-4" />
-                       </button>
+                  localComments.map((comment) => (
+                    <div key={comment._id} className="flex flex-col gap-3 group">
+                      <div className="flex gap-3 items-start">
+                         <div className="w-10 h-10 rounded-full overflow-hidden border border-black/10 flex-shrink-0">
+                            <img src={comment.user?.photo ? getProductImageUrl(comment.user.photo) : "/default-avatar.png"} className="w-full h-full object-cover" />
+                         </div>
+                         <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                               <span className="font-bold text-xs dark:text-gray-300 text-gray-600">@{comment.user?.name || "User"}</span>
+                               {comment.user?._id === video.user?._id && (
+                                  <span className="bg-pink-500 text-white text-[9px] px-1.5 py-0.5 rounded uppercase font-black tracking-widest">Creator</span>
+                               )}
+                            </div>
+                            <p className="dark:text-white text-sm font-medium mt-1">{comment.text}</p>
+                            {comment.mediaUrl && (
+                               <img src={getProductImageUrl(comment.mediaUrl)} className="w-32 h-auto rounded-xl mt-2 border border-black/10 dark:border-white/10" />
+                            )}
+                            <div className="flex gap-4 mt-2 text-[10px] text-gray-400 font-bold">
+                               <button onClick={() => setReplyingTo({ commentId: comment._id, username: comment.user?.name })} className="hover:text-pink-500 transition-colors">Reply</button>
+                               <span>{new Date(comment.createdAt).toLocaleDateString()}</span>
+                            </div>
+                         </div>
+                         <button onClick={() => handleLikeComment(comment._id)} className="p-2 text-gray-400 hover:text-pink-500 transition-colors flex flex-col items-center gap-1 group/btn">
+                            <Heart className={`w-4 h-4 ${comment.likes?.includes(user?._id) ? 'fill-pink-500 text-pink-500' : 'group-hover/btn:scale-110'}`} />
+                            <span className="text-[10px]">{comment.likes?.length || 0}</span>
+                         </button>
+                      </div>
+
+                      {/* Replies */}
+                      {comment.replies && comment.replies.length > 0 && (
+                         <div className="pl-12 space-y-4 mt-2">
+                            {comment.replies.map(reply => (
+                               <div key={reply._id} className="flex gap-3 items-start">
+                                  <div className="w-7 h-7 rounded-full overflow-hidden border border-black/10 flex-shrink-0">
+                                     <img src={reply.user?.photo ? getProductImageUrl(reply.user.photo) : "/default-avatar.png"} className="w-full h-full object-cover" />
+                                  </div>
+                                  <div className="flex-1">
+                                     <div className="flex items-center gap-2">
+                                        <span className="font-bold text-xs dark:text-gray-400 text-gray-500">@{reply.user?.name || "User"}</span>
+                                        {reply.user?._id === video.user?._id && (
+                                           <span className="bg-pink-500 text-white text-[8px] px-1.5 py-0.5 rounded uppercase font-black tracking-widest">Creator</span>
+                                        )}
+                                     </div>
+                                     <p className="dark:text-white/90 text-sm font-medium mt-0.5">{reply.text}</p>
+                                     {reply.mediaUrl && (
+                                        <img src={getProductImageUrl(reply.mediaUrl)} className="w-24 h-auto rounded-lg mt-2 border border-black/10 dark:border-white/10" />
+                                     )}
+                                  </div>
+                               </div>
+                            ))}
+                         </div>
+                      )}
                     </div>
                   ))
                 )}
               </div>
 
-              <div className="flex items-center gap-3 pt-4 border-t dark:border-white/5 pointer-events-auto flex-shrink-0 mt-4">
-                 <div className="w-8 h-8 rounded-full overflow-hidden border border-black/10 flex-shrink-0">
-                    <img src={user?.photo ? getProductImageUrl(user.photo) : "/default-avatar.png"} className="w-full h-full object-cover" />
+              {replyingTo && (
+                 <div className="flex items-center justify-between bg-black/5 dark:bg-white/5 px-4 py-2 rounded-xl mb-2 text-xs font-bold dark:text-gray-300">
+                    <span>Replying to @{replyingTo.username}</span>
+                    <button onClick={() => setReplyingTo(null)} className="hover:text-red-500"><X className="w-4 h-4" /></button>
                  </div>
-                 <input 
-                   type="text" 
-                   placeholder="Add a premium comment..." 
-                   value={commentText}
-                   onChange={(e) => setCommentText(e.target.value)}
-                   onKeyPress={(e) => e.key === 'Enter' && handleComment()}
-                   className="flex-1 bg-black/5 dark:bg-white/5 border-none rounded-full px-6 py-3 text-sm dark:text-white focus:ring-2 focus:ring-pink-500"
-                 />
+              )}
+
+              <div className="flex items-center gap-3 pt-4 border-t dark:border-white/5 pointer-events-auto flex-shrink-0 mt-2">
+                 <div className="w-10 h-10 rounded-full overflow-hidden border border-black/10 flex-shrink-0 relative group">
+                    <img src={user?.photo ? getProductImageUrl(user.photo) : "/default-avatar.png"} className="w-full h-full object-cover" />
+                    <label className="absolute inset-0 bg-black/40 hidden group-hover:flex items-center justify-center cursor-pointer">
+                       <Plus className="w-4 h-4 text-white" />
+                       <input type="file" accept="image/*,video/mp4" className="hidden" onChange={(e) => setCommentMedia(e.target.files[0])} />
+                    </label>
+                 </div>
+                 
+                 <div className="flex-1 flex items-center bg-black/5 dark:bg-white/5 border-none rounded-3xl pr-2 focus-within:ring-2 focus-within:ring-pink-500 transition-all">
+                    <input 
+                      type="text" 
+                      placeholder={commentMedia ? "Media attached..." : "Add a premium comment..."}
+                      value={commentText}
+                      onChange={(e) => setCommentText(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && handleComment()}
+                      className="w-full bg-transparent px-6 py-4 text-sm dark:text-white focus:outline-none"
+                    />
+                    {commentMedia && (
+                       <button onClick={() => setCommentMedia(null)} className="p-2 text-red-500 hover:bg-red-500/10 rounded-full transition-colors mr-1">
+                          <X className="w-4 h-4" />
+                       </button>
+                    )}
+                 </div>
                  <button 
                    onClick={handleComment}
-                   className="p-3 bg-pink-500 rounded-full text-white shadow-lg hover:scale-105 transition-transform disabled:opacity-50"
-                   disabled={!commentText.trim()}
+                   className="p-4 bg-pink-500 rounded-full text-white shadow-xl hover:scale-110 active:scale-95 transition-transform disabled:opacity-50"
+                   disabled={!commentText.trim() && !commentMedia}
                  >
                     <Send className="w-5 h-5" />
                  </button>
@@ -425,7 +534,10 @@ export default function WatchMe() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [feedType, setFeedType] = useState("foryou"); // "foryou" or "following"
   const [selectedTag, setSelectedTag] = useState(routeTag || null);
-  const [isGlobalMuted, setIsGlobalMuted] = useState(true); // Default muted for autoplay policies
+  const [isGlobalMuted, setIsGlobalMuted] = useState(true);
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState({ videos: [], users: [] });
   const containerRef = useRef(null);
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -485,6 +597,34 @@ export default function WatchMe() {
       console.error(err);
       setLoading(false);
     }
+  };
+
+  const handleSearchChange = (e) => {
+     const q = e.target.value;
+     setSearchQuery(q);
+     if (!q.trim()) {
+        setSearchResults({ videos: [], users: [] });
+        return;
+     }
+
+     const query = q.toLowerCase();
+     
+     // Filter videos
+     const vids = videos.filter(v => 
+        v.name.toLowerCase().includes(query) || 
+        v.description?.toLowerCase().includes(query) || 
+        v.tags?.some(t => t.toLowerCase().includes(query))
+     );
+
+     // Extract unique users that match query
+     const usersMap = new Map();
+     videos.forEach(v => {
+        if (v.user && (v.user.name?.toLowerCase().includes(query) || v.user.vendorName?.toLowerCase().includes(query))) {
+           usersMap.set(v.user._id, v.user);
+        }
+     });
+
+     setSearchResults({ videos: vids, users: Array.from(usersMap.values()) });
   };
 
   const handleScroll = (e) => {
@@ -603,15 +743,29 @@ export default function WatchMe() {
                  }}
                  className={`text-sm font-black transition-all ${feedType === "foryou" ? 'text-white' : 'text-white/50 hover:text-white'} uppercase tracking-tighter`}
                >
-                 For You
-               </button>
-            </div>
+import { Search } from 'lucide-react';
+
+// ... existing code ...
+
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState({ videos: [], users: [] });
+
+// ... existing code ...
+
          )}
 
-          {/* Top Right: Profile & Notifications */}
-          <div className="flex flex-col items-end gap-3 pointer-events-auto">
-             {isAuthenticated ? (
-                <div className="flex flex-col items-end gap-3">
+           {/* Top Right: Profile & Notifications */}
+           <div className="flex flex-col items-end gap-3 pointer-events-auto">
+              <div className="flex items-center gap-3">
+                 <button 
+                   onClick={() => setShowSearch(true)}
+                   className="p-3 bg-black/40 backdrop-blur-xl rounded-2xl text-white hover:bg-black/60 transition-all border border-white/10 shadow-2xl"
+                 >
+                    <Search className="w-6 h-6" />
+                 </button>
+                 
+                 {isAuthenticated && (
                    <button 
                      onClick={() => setShowNotifications(true)}
                      className="relative p-3 bg-black/40 backdrop-blur-xl rounded-2xl text-white hover:bg-black/60 transition-all border border-white/10 shadow-2xl"
@@ -619,8 +773,11 @@ export default function WatchMe() {
                       <Bell className="w-6 h-6" />
                       {hasUnread && <span className="absolute top-2 right-2 w-3 h-3 bg-pink-500 rounded-full border-2 border-black" />}
                    </button>
+                 )}
+              </div>
 
-                   <Link to={`/creator/${user._id}`} className="group flex items-center gap-3 bg-black/40 backdrop-blur-xl p-1 pr-4 rounded-full border border-white/10 hover:bg-black/60 transition-all shadow-2xl">
+              {isAuthenticated ? (
+                 <Link to={`/creator/${user._id}`} className="group flex items-center gap-3 bg-black/40 backdrop-blur-xl p-1 pr-4 rounded-full border border-white/10 hover:bg-black/60 transition-all shadow-2xl">
                       <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-pink-500 shadow-lg">
                          <img src={user.photo ? getProductImageUrl(user.photo) : "/default-avatar.png"} className="w-full h-full object-cover" />
                       </div>
@@ -629,7 +786,6 @@ export default function WatchMe() {
                          <span className="text-[9px] text-white/50 font-medium truncate w-24">{user.email}</span>
                       </div>
                    </Link>
-                </div>
              ) : (
                 <Link to="/login" className="px-6 py-3 bg-pink-500 text-white text-xs font-black uppercase tracking-widest rounded-full shadow-xl hover:scale-105 active:scale-95 transition-all shadow-pink-500/20">
                    Login
@@ -642,6 +798,77 @@ export default function WatchMe() {
          isOpen={showNotifications} 
          onClose={() => { setShowNotifications(false); setHasUnread(false); }} 
        />
+
+       {/* Search Overlay */}
+       <AnimatePresence>
+          {showSearch && (
+             <motion.div 
+               initial={{ opacity: 0, y: -50 }}
+               animate={{ opacity: 1, y: 0 }}
+               exit={{ opacity: 0, y: -50 }}
+               className="absolute inset-0 z-[200] bg-[#030014]/95 backdrop-blur-2xl flex flex-col"
+             >
+                <div className="p-6 flex items-center gap-4 border-b border-white/10 flex-shrink-0">
+                   <button onClick={() => setShowSearch(false)} className="p-3 bg-white/5 rounded-2xl text-white hover:bg-white/10">
+                      <ChevronLeft className="w-6 h-6" />
+                   </button>
+                   <div className="flex-1 relative">
+                      <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <input 
+                        type="text"
+                        autoFocus
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                        placeholder="Search videos, tags, or creators..."
+                        className="w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-6 py-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-pink-500"
+                      />
+                   </div>
+                </div>
+
+                <div className="flex-1 overflow-y-auto p-6 space-y-8">
+                   {searchQuery && searchResults.users.length > 0 && (
+                      <div>
+                         <h3 className="text-xs font-black uppercase tracking-widest text-gray-500 mb-4">Creators</h3>
+                         <div className="flex gap-4 overflow-x-auto no-scrollbar">
+                            {searchResults.users.map(u => (
+                               <Link key={u._id} to={`/creator/${u._id}`} onClick={() => setShowSearch(false)} className="flex-shrink-0 flex flex-col items-center gap-2 group">
+                                  <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-white/10 group-hover:border-pink-500 transition-colors">
+                                     <img src={u.photo ? getProductImageUrl(u.photo) : "/default-avatar.png"} className="w-full h-full object-cover" />
+                                  </div>
+                                  <span className="text-xs font-bold text-white group-hover:text-pink-500">@{u.vendorName || u.name}</span>
+                               </Link>
+                            ))}
+                         </div>
+                      </div>
+                   )}
+
+                   {searchQuery && searchResults.videos.length > 0 && (
+                      <div>
+                         <h3 className="text-xs font-black uppercase tracking-widest text-gray-500 mb-4">Videos</h3>
+                         <div className="grid grid-cols-2 gap-4">
+                            {searchResults.videos.map(v => (
+                               <div key={v._id} onClick={() => { setShowSearch(false); navigate(`/watch-me?v=${v._id}`); }} className="relative aspect-[9/16] bg-black rounded-2xl overflow-hidden cursor-pointer group">
+                                  <img src={getProductImageUrl(v.thumbnailUrl || v.videoUrl)} className="w-full h-full object-cover opacity-70 group-hover:scale-110 transition-transform" />
+                                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-3">
+                                     <span className="text-white font-bold text-xs line-clamp-1">{v.name}</span>
+                                     <span className="text-pink-500 text-[10px] font-black uppercase">@{v.user?.name}</span>
+                                  </div>
+                               </div>
+                            ))}
+                         </div>
+                      </div>
+                   )}
+
+                   {searchQuery && searchResults.videos.length === 0 && searchResults.users.length === 0 && (
+                      <div className="text-center text-gray-500 mt-20">
+                         <Search className="w-12 h-12 mx-auto mb-4 opacity-20" />
+                         <p className="font-bold">No results found for "{searchQuery}"</p>
+                      </div>
+                   )}
+                </div>
+             </motion.div>
+          )}
+       </AnimatePresence>
     </div>
   );
 }
