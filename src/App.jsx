@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Toast from "./components/Toast";
@@ -51,10 +51,6 @@ const AdminBanner = lazy(() => import("./pages/admin/Banner"));
 const AdminMarketing = lazy(() => import("./pages/admin/Marketing"));
 const AdminAnalytics = lazy(() => import("./pages/admin/Analytics"));
 
-// Components needed instantaneously can stay static or be lazy too if large
-// Keeping Layouts/Navbar static for perceived performance
-// (Imports already at top of file)
-
 // Loading Component
 const PageLoader = () => (
   <div className="min-h-screen flex items-center justify-center bg-black">
@@ -62,9 +58,7 @@ const PageLoader = () => (
   </div>
 );
 
-import { useLocation } from "react-router-dom";
-
-export default function App() {
+function AppContent() {
   const { theme } = useUIStore();
   const location = useLocation();
   const isWatchMePage = location.pathname === '/watch-me';
@@ -75,11 +69,7 @@ export default function App() {
       const applySystemTheme = (e) => {
         document.body.setAttribute('data-theme', e.matches ? 'dark' : 'light');
       };
-      
-      // Initial check
       applySystemTheme(darkQuery);
-      
-      // Listen for changes
       darkQuery.addEventListener('change', applySystemTheme);
       return () => darkQuery.removeEventListener('change', applySystemTheme);
     } else {
@@ -96,7 +86,7 @@ export default function App() {
   }, [dispatch]);
 
   return (
-    <BrowserRouter>
+    <>
       <VendorNamePrompt />
       <Routes>
         {/* Portfolio route - Full screen, no layout */}
@@ -175,6 +165,14 @@ export default function App() {
           <Route path="analytics" element={<AdminAnalytics />} />
         </Route>
       </Routes>
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
     </BrowserRouter>
   );
 }
