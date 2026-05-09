@@ -76,7 +76,11 @@ export default function VideoUpload() {
       formData.append("description", description);
       formData.append("tags", tags);
 
-      await api.post(`/videos`, formData);
+      await api.post(`/videos`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       setStatus({ type: "success", message: "Video uploaded successfully! Redirecting..." });
       setTimeout(() => navigate("/watch-me"), 2000);
