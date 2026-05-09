@@ -23,6 +23,7 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
   const [editForm, setEditForm] = useState({ name: video.name, description: video.description, tags: video.tags?.join(', '), productLink: video.productLink });
   const [isActionLoading, setIsActionLoading] = useState({ like: false, save: false, follow: false, comment: false });
   const [showFullDescription, setShowFullDescription] = useState(false);
+  const [isAutoplayBlocked, setIsAutoplayBlocked] = useState(false);
   const { user, isAuthenticated } = useSelector((state) => state.auth);
 
   useEffect(() => {
@@ -80,10 +81,16 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
 
   useEffect(() => {
     if (isActive && video.videoUrl) {
-      videoRef.current?.play().catch(e => console.log("Autoplay blocked:", e.message));
+      videoRef.current?.play()
+        .then(() => setIsAutoplayBlocked(false))
+        .catch(e => {
+          console.log("Autoplay blocked:", e.message);
+          setIsAutoplayBlocked(true);
+        });
     } else {
       videoRef.current?.pause();
       if (videoRef.current) videoRef.current.currentTime = 0;
+      setIsAutoplayBlocked(false);
     }
   }, [isActive, video.videoUrl]);
 
@@ -270,6 +277,15 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
 
   return (
     <div className="relative w-full h-full snap-start bg-black flex items-center justify-center overflow-hidden">
+      {/* Autoplay Block Overlay */}
+      {isAutoplayBlocked && (
+         <div className="absolute inset-0 flex items-center justify-center bg-black/10 z-[30] pointer-events-none">
+            <div className="w-20 h-20 bg-white/10 backdrop-blur-xl rounded-full flex items-center justify-center shadow-2xl border border-white/20 animate-pulse">
+               <Play className="w-10 h-10 text-white fill-white ml-1" />
+            </div>
+         </div>
+      )}
+
       {/* Video element */}
       <video
         ref={videoRef}
