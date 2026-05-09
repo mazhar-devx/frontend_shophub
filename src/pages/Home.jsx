@@ -14,6 +14,9 @@ import SEO from "../components/SEO";
 import HomeSkeleton from "../components/HomeSkeleton";
 import ReviewMarquee from "../components/ReviewMarquee";
 import GoogleAd from "../components/GoogleAd";
+import CategoryGrid from "../components/CategoryGrid";
+import ProductSlider from "../components/ProductSlider";
+import { toast } from "react-hot-toast";
 
 /* ═══════════════════════════════════════════════
    PERFORMANCE HOOKS — Zero Dependencies
@@ -205,6 +208,54 @@ const FEATS = [
   { icon: "🎧", t: "24/7 Expert Support", d: "AI and human experts always here" },
 ];
 
+/* Curated Grid Data */
+const CURATED_GRIDS = [
+  {
+    title: "Tech for Your Home",
+    exploreText: "See all smart devices",
+    exploreLink: "/products?category=electronics",
+    categories: [
+      { name: "Smart Home", image: "https://images.unsplash.com/photo-1558002038-1055907df827?w=400&q=80", link: "/products?category=electronics" },
+      { name: "Laptops", image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&q=80", link: "/products?category=electronics" },
+      { name: "Audio", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80", link: "/products?category=electronics" },
+      { name: "Cameras", image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=400&q=80", link: "/products?category=electronics" },
+    ]
+  },
+  {
+    title: "Gaming & Lifestyle",
+    exploreText: "View setup essentials",
+    exploreLink: "/products?category=electronics",
+    categories: [
+      { name: "Chairs", image: "https://images.unsplash.com/photo-1592078615290-033ee584e267?w=400&q=80", link: "/products?category=home" },
+      { name: "Monitors", image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400&q=80", link: "/products?category=electronics" },
+      { name: "Keyboards", image: "https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?w=400&q=80", link: "/products?category=electronics" },
+      { name: "Mice", image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=400&q=80", link: "/products?category=electronics" },
+    ]
+  },
+  {
+    title: "Kitchen Masterclass",
+    exploreText: "Explore kitchen tools",
+    exploreLink: "/products?category=home",
+    categories: [
+      { name: "Cookers", image: "https://images.unsplash.com/photo-1544233726-9f1d2b27be8b?w=400&q=80", link: "/products?category=home" },
+      { name: "Coffee", image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&q=80", link: "/products?category=home" },
+      { name: "Pans", image: "https://images.unsplash.com/photo-1584990344321-27682ad0f144?w=400&q=80", link: "/products?category=home" },
+      { name: "Kettles", image: "https://images.unsplash.com/photo-1594212699903-ec8a3ecc50f1?w=400&q=80", link: "/products?category=home" },
+    ]
+  },
+  {
+    title: "Fashion Forward",
+    exploreText: "Shop new trends",
+    exploreLink: "/products?category=clothing",
+    categories: [
+      { name: "Dresses", image: "https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=400&q=80", link: "/products?category=clothing" },
+      { name: "Shoes", image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80", link: "/products?category=clothing" },
+      { name: "Jewelry", image: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400&q=80", link: "/products?category=clothing" },
+      { name: "Bags", image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400&q=80", link: "/products?category=clothing" },
+    ]
+  }
+];
+
 /* Fallback image to prevent broken UI */
 const FALLBACK_IMG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' fill='%23111'%3E%3Crect width='400' height='400' rx='24'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23333' font-family='sans-serif' font-size='14'%3ENo Image%3C/text%3E%3C/svg%3E";
 
@@ -335,6 +386,16 @@ export default function Home() {
     [heroReady]
   );
 
+  /* ── RENDER DATA ── */
+  const heroImg = useMemo(() => {
+    if (settings?.images?.length > 0) {
+      return getProductImageUrl(settings.images[heroIndex]);
+    }
+    return settings?.image
+      ? getProductImageUrl(settings.image)
+      : "https://images.unsplash.com/photo-1616469829718-0faf16324280?auto=format&fit=crop&q=80&w=1000";
+  }, [settings, heroIndex]);
+
   /* ══════════ LOADING / ERROR ══════════ */
   if ((loading || setLoad) && !error) return <HomeSkeleton />;
 
@@ -356,15 +417,6 @@ export default function Home() {
   }
 
   /* ── RENDER ── */
-  const heroImg = useMemo(() => {
-    if (settings?.images?.length > 0) {
-      return getProductImageUrl(settings.images[heroIndex]);
-    }
-    return settings?.image
-      ? getProductImageUrl(settings.image)
-      : "https://images.unsplash.com/photo-1616469829718-0faf16324280?auto=format&fit=crop&q=80&w=1000";
-  }, [settings, heroIndex]);
-
   const flashImg = flashSale?.image ? getProductImageUrl(flashSale.image) : null;
 
   return (
@@ -586,6 +638,22 @@ export default function Home() {
           <GoogleAd slot="5177022241" format="auto" responsive="true" />
         </div>
 
+        {/* ═══════════ CURATED GRIDS ═══════════ */}
+        <section className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 mb-20 md:mb-32">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {CURATED_GRIDS.map((grid, idx) => (
+              <Reveal key={idx} delay={idx * 100}>
+                <CategoryGrid 
+                  title={grid.title}
+                  categories={grid.categories}
+                  exploreText={grid.exploreText}
+                  exploreLink={grid.exploreLink}
+                />
+              </Reveal>
+            ))}
+          </div>
+        </section>
+
         {/* ═══════════ FEATURED ═══════════ */}
         <Reveal className="mb-24 w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row justify-between items-end mb-12 gap-4 border-b border-black/[0.035] dark:border-white/[0.035] pb-4">
@@ -622,6 +690,15 @@ export default function Home() {
               </Link>
             </div>
           )}
+        </Reveal>
+
+        {/* ═══════════ BEST SELLERS SLIDER ═══════════ */}
+        <Reveal className="mb-20 md:mb-32">
+           <ProductSlider 
+              title="Best Sellers in Technology & Fashion"
+              products={featured}
+              loading={loading}
+           />
         </Reveal>
 
         {/* ═══════════ TRENDING ═══════════ */}

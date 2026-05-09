@@ -69,17 +69,28 @@ export default function ProductCard({ product }) {
                className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 ease-out"
              />
            ) : Array.isArray(product.images) && product.images.length > 0 ? (
-             <img 
-               src={getProductImageUrl(product.images[0])} 
-               alt={product.name}
-               loading="lazy"
-               className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 ease-out"
-               onError={(e) => {
-                 e.target.onerror = null;
-                 e.target.style.display = 'none';
-                 e.target.parentElement.classList.add('fallback-pattern');
-               }}
-             />
+             <>
+               <img 
+                 src={getProductImageUrl(product.images[0])} 
+                 alt={product.name}
+                 loading="lazy"
+                 className={`absolute inset-0 w-full h-full object-cover transition-all duration-1000 ease-out ${product.images.length > 1 ? 'group-hover:opacity-0 group-hover:scale-110' : 'group-hover:scale-110'}`}
+                 onError={(e) => {
+                   e.target.onerror = null;
+                   e.target.style.display = 'none';
+                   e.target.parentElement.classList.add('fallback-pattern');
+                 }}
+               />
+               {product.images.length > 1 && (
+                 <img 
+                   src={getProductImageUrl(product.images[1])} 
+                   alt={`${product.name} - alternate`}
+                   loading="lazy"
+                   className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-all duration-1000 scale-110 group-hover:scale-100 ease-out"
+                   onError={(e) => { e.target.style.display = 'none'; }}
+                 />
+               )}
+             </>
            ) : product.image ? (
               <img 
                src={getProductImageUrl(product.image)} 
