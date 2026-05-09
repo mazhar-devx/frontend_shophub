@@ -10,8 +10,12 @@ export default function CreatorProfile() {
   const { id } = useParams();
   const [creator, setCreator] = useState(null);
   const [videos, setVideos] = useState([]);
+  const [likedVideos, setLikedVideos] = useState([]);
+  const [savedVideos, setSavedVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("videos");
+  const [showSocialModal, setShowSocialModal] = useState(false);
+  const [socialType, setSocialType] = useState('followers'); // 'followers' or 'following'
 
    const { user: authUser, isAuthenticated } = useSelector((state) => state.auth);
   const isOwnProfile = isAuthenticated && authUser?._id === id;
@@ -20,6 +24,22 @@ export default function CreatorProfile() {
   useEffect(() => {
     fetchCreatorData();
   }, [id]);
+
+  useEffect(() => {
+     if (activeTab !== 'videos') {
+        fetchTabData();
+     }
+  }, [activeTab]);
+
+  const fetchTabData = async () => {
+     try {
+        const res = await api.get(`/videos?feed=${activeTab}&userId=${id}`);
+        if (activeTab === 'liked') setLikedVideos(res.data.data.videos);
+        if (activeTab === 'saved') setSavedVideos(res.data.data.videos);
+     } catch (err) {
+        console.error(err);
+     }
+  };
 
   useEffect(() => {
      if (creator && authUser) {
@@ -115,14 +135,20 @@ export default function CreatorProfile() {
                    </div>
  
                    <div className="flex gap-8 mb-6">
-                      <div className="flex flex-col items-center md:items-start">
+                      <button 
+                        onClick={() => { setSocialType('followers'); setShowSocialModal(true); }}
+                        className="flex flex-col items-center md:items-start hover:scale-105 transition-transform"
+                      >
                          <span className="text-xl font-black dark:text-white">{creator.followers?.length || 0}</span>
                          <span className="text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1"><Users className="w-3 h-3" /> Followers</span>
-                      </div>
-                      <div className="flex flex-col items-center md:items-start">
+                      </button>
+                      <button 
+                        onClick={() => { setSocialType('following'); setShowSocialModal(true); }}
+                        className="flex flex-col items-center md:items-start hover:scale-105 transition-transform"
+                      >
                          <span className="text-xl font-black dark:text-white">{creator.following?.length || 0}</span>
                          <span className="text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1"><Users className="w-3 h-3" /> Following</span>
-                      </div>
+                      </button>
                       <div className="flex flex-col items-center md:items-start">
                          <span className="text-xl font-black dark:text-white">{totalLikes}</span>
                          <span className="text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-1"><Heart className="w-3 h-3" /> Likes</span>
@@ -167,11 +193,12 @@ export default function CreatorProfile() {
             {/* Content Grid */}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-8">
                {activeTab === "videos" ? videos.map((video, idx) => (
-                  <motion.div 
+                   <motion.div 
                     key={video._id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.1 }}
+                    onClick={() => window.location.href = `/watch-me?v=${video._id}`}
                     className="group relative aspect-[9/16] bg-black rounded-3xl overflow-hidden cursor-pointer"
                   >
                      <video src={video.videoUrl} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" />
@@ -182,18 +209,102 @@ export default function CreatorProfile() {
                      </div>
                      <div className="absolute bottom-4 right-4 flex items-center gap-2 text-white font-bold text-xs">
                         <Heart className="w-3 h-3" />
-                        <span>{video.likes.length}</span>
+                        <span>{video.likesCount || video.likes.length}</span>
                      </div>
                   </motion.div>
-               )) : (
+               )) : activeTab === "liked" ? likedVideos.map((video, idx) => (
+                  <motion.div 
+                    key={video._id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.1 }}
+                    onClick={() => window.location.href = `/watch-me?v=${video._id}`}
+                    className="group relative aspect-[9/16] bg-black rounded-3xl overflow-hidden cursor-pointer"
+                  >
+                     <video src={video.videoUrl} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" />
+                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                     <div className="absolute bottom-4 left-4 flex items-center gap-2 text-white font-bold text-xs">
+                        <Play className="w-3 h-3 fill-current" />
+                        <span>{video.views || 0}</span>
+                     </div>
+                     <div className="absolute bottom-4 right-4 flex items-center gap-2 text-white font-bold text-xs">
+                        <Heart className="w-3 h-3" />
+                        <span>{video.likesCount || video.likes.length}</span>
+                     </div>
+                  </motion.div>
+               )) : savedVideos.map((video, idx) => (
+                  <motion.div 
+                    key={video._id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.1 }}
+                    onClick={() => window.location.href = `/watch-me?v=${video._id}`}
+                    className="group relative aspect-[9/16] bg-black rounded-3xl overflow-hidden cursor-pointer"
+                  >
+                     <video src={video.videoUrl} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" />
+                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                     <div className="absolute bottom-4 left-4 flex items-center gap-2 text-white font-bold text-xs">
+                        <Play className="w-3 h-3 fill-current" />
+                        <span>{video.views || 0}</span>
+                     </div>
+                     <div className="absolute bottom-4 right-4 flex items-center gap-2 text-white font-bold text-xs">
+                        <Heart className="w-3 h-3" />
+                        <span>{video.likesCount || video.likes.length}</span>
+                     </div>
+                  </motion.div>
+               ))}
+               {(activeTab === "videos" && videos.length === 0) || (activeTab === "liked" && likedVideos.length === 0) || (activeTab === "saved" && savedVideos.length === 0) ? (
                   <div className="col-span-full py-20 flex flex-col items-center justify-center text-gray-500 opacity-50">
                      <Play className="w-12 h-12 mb-4" />
                      <p className="font-bold uppercase tracking-widest text-xs">No {activeTab} videos yet</p>
                   </div>
-               )}
+               ) : null}
             </div>
          </div>
       </div>
+
+      {/* Social Modal (Followers/Following) */}
+      <AnimatePresence>
+        {showSocialModal && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          >
+             <motion.div 
+               initial={{ scale: 0.9, y: 20 }}
+               animate={{ scale: 1, y: 0 }}
+               exit={{ scale: 0.9, y: 20 }}
+               className="bg-white dark:bg-[#1a1a1a] rounded-[2.5rem] w-full max-w-sm shadow-2xl overflow-hidden flex flex-col max-h-[70vh]"
+             >
+                <div className="p-6 border-b border-black/5 dark:border-white/5 flex items-center justify-between">
+                   <h3 className="text-xl font-black dark:text-white uppercase tracking-tighter">{socialType}</h3>
+                   <button onClick={() => setShowSocialModal(false)} className="p-2 dark:text-white hover:bg-black/5 rounded-full"><ChevronLeft className="w-5 h-5 rotate-90 md:rotate-0" /></button>
+                </div>
+                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                   {(socialType === 'followers' ? creator.followers : creator.following)?.map(u => (
+                      <Link 
+                        key={u._id} 
+                        to={`/creator/${u._id}`}
+                        onClick={() => setShowSocialModal(false)}
+                        className="flex items-center gap-4 p-3 rounded-2xl hover:bg-black/5 dark:hover:bg-white/5 transition-all"
+                      >
+                         <img src={u.photo ? getProductImageUrl(u.photo) : DEFAULT_AVATAR} className="w-12 h-12 rounded-full object-cover" />
+                         <div className="flex-1 min-w-0">
+                            <h4 className="font-bold dark:text-white truncate">{u.name}</h4>
+                            <p className="text-xs text-gray-500 truncate">@{u.vendorName || 'user'}</p>
+                         </div>
+                      </Link>
+                   ))}
+                   {(socialType === 'followers' ? creator.followers : creator.following)?.length === 0 && (
+                      <div className="py-20 text-center text-gray-500 opacity-50 font-bold uppercase tracking-widest text-xs">No {socialType} yet</div>
+                   )}
+                </div>
+             </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, MessageCircle, Share2, Bookmark, Plus, X, Send, Music2, User, ChevronLeft } from "lucide-react";
+import { Heart, MessageCircle, Share2, Bookmark, Plus, X, Music2, Bell } from "lucide-react";
+import NotificationsModal from "../components/NotificationsModal";
 import api from "../services/api";
 import { getProductImageUrl } from "../utils/constants";
 
@@ -32,6 +33,19 @@ const VideoCard = ({ video, isActive }) => {
   }, [isActive, video.videoUrl]);
 
   const [showShare, setShowShare] = useState(false);
+  const [commentText, setCommentText] = useState("");
+
+  const handleComment = async () => {
+    if (!isAuthenticated) return alert("Please login to comment!");
+    if (!commentText.trim()) return;
+    try {
+      const res = await api.post(`/videos/${video._id}/comment`, { text: commentText });
+      video.comments = res.data.data.comments;
+      setCommentText("");
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const handleLike = async () => {
     if (!isAuthenticated) return alert("Please login to like!");
@@ -234,13 +248,19 @@ const VideoCard = ({ video, isActive }) => {
                 )}
              </div>
 
-             <div className="flex items-center gap-3 pt-4 border-t dark:border-white/5">
+             <div className="flex items-center gap-3 pt-4 border-t dark:border-white/5 pointer-events-auto">
                 <input 
                   type="text" 
                   placeholder="Add a comment..." 
+                  value={commentText}
+                  onChange={(e) => setCommentText(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleComment()}
                   className="flex-1 bg-black/5 dark:bg-white/5 border-none rounded-full px-6 py-3 text-sm dark:text-white focus:ring-2 focus:ring-pink-500"
                 />
-                <button className="p-3 bg-pink-500 rounded-full text-white shadow-lg hover:scale-105 transition-transform">
+                <button 
+                  onClick={handleComment}
+                  className="p-3 bg-pink-500 rounded-full text-white shadow-lg hover:scale-105 transition-transform"
+                >
                    <Send className="w-5 h-5" />
                 </button>
              </div>
@@ -258,6 +278,39 @@ export default function WatchMe() {
   const [feedType, setFeedType] = useState("foryou"); // "foryou" or "following"
   const containerRef = useRef(null);
   const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [hasUnread, setHasUnread] = useState(false);
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const videoId = searchParams.get('v');
+    if (videoId && videos.length > 0) {
+       const index = videos.findIndex(v => v._id === videoId);
+       if (index !== -1) {
+          setActiveIndex(index);
+          // Scroll to that video
+          const container = containerRef.current;
+          if (container) {
+             container.scrollTo({ top: index * container.clientHeight, behavior: 'smooth' });
+          }
+       }
+    }
+  }, [videos]);
+
+  useEffect(() => {
+     if (isAuthenticated) {
+        checkUnread();
+     }
+  }, [isAuthenticated]);
+
+  const checkUnread = async () => {
+     try {
+        const res = await api.get('/notifications');
+        setHasUnread(res.data.data.notifications.some(n => !n.read));
+     } catch (err) {
+        console.error(err);
+     }
+  };
 
   useEffect(() => {
     fetchVideos();
@@ -365,25 +418,40 @@ export default function WatchMe() {
             </button>
          </div>
 
-         {/* Top Right: Profile */}
-         <div className="flex flex-col items-end gap-2 pointer-events-auto">
-            {isAuthenticated ? (
-               <Link to={`/creator/${user._id}`} className="group flex items-center gap-3 bg-black/40 backdrop-blur-xl p-1 pr-4 rounded-full border border-white/10 hover:bg-black/60 transition-all shadow-2xl">
-                  <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-pink-500 shadow-lg">
-                     <img src={user.photo ? getProductImageUrl(user.photo) : "/default-avatar.png"} className="w-full h-full object-cover" />
-                  </div>
-                  <div className="hidden md:flex flex-col">
-                     <span className="text-xs font-black text-white uppercase tracking-tighter leading-none">{user.name}</span>
-                     <span className="text-[9px] text-white/50 font-medium truncate w-24">{user.email}</span>
-                  </div>
-               </Link>
-            ) : (
-               <Link to="/login" className="px-6 py-3 bg-pink-500 text-white text-xs font-black uppercase tracking-widest rounded-full shadow-xl hover:scale-105 active:scale-95 transition-all shadow-pink-500/20">
-                  Login
-               </Link>
-            )}
-         </div>
-      </div>
+          {/* Top Right: Profile & Notifications */}
+          <div className="flex flex-col items-end gap-3 pointer-events-auto">
+             {isAuthenticated ? (
+                <div className="flex flex-col items-end gap-3">
+                   <button 
+                     onClick={() => setShowNotifications(true)}
+                     className="relative p-3 bg-black/40 backdrop-blur-xl rounded-2xl text-white hover:bg-black/60 transition-all border border-white/10 shadow-2xl"
+                   >
+                      <Bell className="w-6 h-6" />
+                      {hasUnread && <span className="absolute top-2 right-2 w-3 h-3 bg-pink-500 rounded-full border-2 border-black" />}
+                   </button>
+
+                   <Link to={`/creator/${user._id}`} className="group flex items-center gap-3 bg-black/40 backdrop-blur-xl p-1 pr-4 rounded-full border border-white/10 hover:bg-black/60 transition-all shadow-2xl">
+                      <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-pink-500 shadow-lg">
+                         <img src={user.photo ? getProductImageUrl(user.photo) : "/default-avatar.png"} className="w-full h-full object-cover" />
+                      </div>
+                      <div className="hidden md:flex flex-col text-left">
+                         <span className="text-xs font-black text-white uppercase tracking-tighter leading-none">{user.name}</span>
+                         <span className="text-[9px] text-white/50 font-medium truncate w-24">{user.email}</span>
+                      </div>
+                   </Link>
+                </div>
+             ) : (
+                <Link to="/login" className="px-6 py-3 bg-pink-500 text-white text-xs font-black uppercase tracking-widest rounded-full shadow-xl hover:scale-105 active:scale-95 transition-all shadow-pink-500/20">
+                   Login
+                </Link>
+             )}
+          </div>
+       </div>
+
+       <NotificationsModal 
+         isOpen={showNotifications} 
+         onClose={() => { setShowNotifications(false); setHasUnread(false); }} 
+       />
     </div>
   );
 }

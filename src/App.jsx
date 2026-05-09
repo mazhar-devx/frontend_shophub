@@ -61,7 +61,9 @@ const PageLoader = () => (
 function AppContent() {
   const { theme } = useUIStore();
   const location = useLocation();
-  const isWatchMePage = location.pathname === '/watch-me';
+  const isImmersivePage = location.pathname === '/watch-me' || 
+                          location.pathname.startsWith('/creator/') || 
+                          location.pathname === '/upload-video';
 
   useEffect(() => {
     if (theme === 'system') {
@@ -99,7 +101,7 @@ function AppContent() {
         {/* Public routes */}
         <Route path="/*" element={
           <>
-            {!isWatchMePage && (
+            {!isImmersivePage && (
               <>
                 <Navbar />
                 <SearchBar />
@@ -109,7 +111,7 @@ function AppContent() {
             )}
             <Toast />
             <Modal />
-            <main id="main-content" className={`${isWatchMePage ? 'pt-0' : 'pt-24'} pb-20 md:pb-0 min-h-screen overflow-x-hidden`}>
+            <main id="main-content" className={`${isImmersivePage ? 'pt-0' : 'pt-24'} pb-20 md:pb-0 min-h-screen overflow-x-hidden`}>
               <Suspense fallback={<PageLoader />}>
                 <Routes>
                   <Route index element={<Home />} />
@@ -134,7 +136,7 @@ function AppContent() {
                 </Routes>
               </Suspense>
             </main>
-            {!isWatchMePage && (
+            {!isImmersivePage && (
               <>
                 <Footer />
                 <MobileBottomNav />
