@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
-import { Play, ChevronLeft, Share2, Bookmark, Plus, Music2 } from "lucide-react";
+import { Play, Pause, ChevronLeft, Share2, Bookmark, Plus, Music2 } from "lucide-react";
 import api from "../services/api";
 import { getProductImageUrl } from "../utils/constants";
 
@@ -13,6 +13,8 @@ export default function SoundPage() {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isSaved, setIsSaved] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = React.useRef(null);
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
   useEffect(() => {
@@ -52,6 +54,16 @@ export default function SoundPage() {
      }
   };
 
+  const togglePlay = () => {
+     if (!audioRef.current) return;
+     if (isPlaying) {
+        audioRef.current.pause();
+     } else {
+        audioRef.current.play().catch(e => console.log(e));
+     }
+     setIsPlaying(!isPlaying);
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#030014]">
@@ -78,10 +90,14 @@ export default function SoundPage() {
       <div className="max-w-4xl mx-auto px-4 mt-8">
          {/* Sound Info Card */}
          <div className="flex gap-6 items-center mb-8">
-            <div className="w-32 h-32 rounded-2xl overflow-hidden bg-black relative shadow-xl flex-shrink-0">
-               <img src={originalVideo?.thumbnailUrl ? getProductImageUrl(originalVideo.thumbnailUrl) : "/default-avatar.png"} className="w-full h-full object-cover opacity-60" />
+            <div className="w-32 h-32 rounded-2xl overflow-hidden bg-black relative shadow-xl flex-shrink-0 cursor-pointer group" onClick={togglePlay}>
+               <img src={originalVideo?.thumbnailUrl ? getProductImageUrl(originalVideo.thumbnailUrl) : "/default-avatar.png"} className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform" />
                <div className="absolute inset-0 flex items-center justify-center">
-                  <Play className="w-10 h-10 text-white fill-white" />
+                  {isPlaying ? (
+                     <Pause className="w-10 h-10 text-white fill-white" />
+                  ) : (
+                     <Play className="w-10 h-10 text-white fill-white" />
+                  )}
                </div>
             </div>
             <div className="flex-1">
@@ -128,6 +144,11 @@ export default function SoundPage() {
             ))}
          </div>
       </div>
+      <audio 
+         ref={audioRef} 
+         src={originalVideo?.videoUrl ? getProductImageUrl(originalVideo.videoUrl) : ""} 
+         onEnded={() => setIsPlaying(false)} 
+      />
     </div>
   );
 }

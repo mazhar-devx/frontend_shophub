@@ -30,8 +30,19 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
   }, [isGlobalMuted]);
 
   const lastTap = useRef(0);
+  const pressTimer = useRef(null);
   const [showHeartAnim, setShowHeartAnim] = useState(false);
   const [playPauseAnim, setPlayPauseAnim] = useState(null);
+
+  const handlePointerDown = () => {
+    pressTimer.current = setTimeout(() => {
+      setShowShare(true);
+    }, 500);
+  };
+
+  const handlePointerUp = () => {
+    if (pressTimer.current) clearTimeout(pressTimer.current);
+  };
 
   const handleTap = (e) => {
     const now = Date.now();
@@ -157,6 +168,9 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
       <div 
         className="absolute inset-0 z-10" 
         onClick={handleTap} 
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+        onPointerLeave={handlePointerUp}
       />
 
       {/* Double Tap Heart Animation */}
@@ -564,41 +578,35 @@ export default function WatchMe() {
          </div>
 
          {/* Top Center: Tabs */}
-         <div className="flex items-center gap-4 pointer-events-auto bg-black/20 backdrop-blur-md px-6 py-3 rounded-full border border-white/5">
-            <button 
-              onClick={() => {
-                if (!isAuthenticated) return alert("Please login to see Following feed");
-                setFeedType("following");
-              }}
-              className={`text-sm font-black transition-all ${feedType === "following" ? 'text-white' : 'text-white/50 hover:text-white'} uppercase tracking-tighter`}
-            >
-              Following
-            </button>
-            <span className="w-1 h-1 rounded-full bg-white/30" />
-            <button 
-              onClick={() => {
-                setFeedType("foryou");
-                setSelectedTag(null);
-              }}
-              className={`text-sm font-black transition-all ${feedType === "foryou" && !selectedTag ? 'text-white' : 'text-white/50 hover:text-white'} uppercase tracking-tighter`}
-            >
-              For You
-            </button>
-            {selectedTag && (
-              <>
-                <span className="w-1 h-1 rounded-full bg-white/30" />
-                <button 
-                  onClick={() => {
-                    setSelectedTag(null);
-                    if (routeTag) navigate('/watch-me');
-                  }}
-                  className="text-sm font-black text-pink-500 uppercase tracking-tighter flex items-center gap-1"
-                >
-                  #{selectedTag} <X className="w-3 h-3" />
-                </button>
-              </>
-            )}
-         </div>
+         {routeTag ? (
+            <div className="flex items-center gap-4 pointer-events-auto bg-black/20 backdrop-blur-md px-6 py-3 rounded-full border border-white/5">
+               <button onClick={() => navigate('/watch-me')} className="text-white hover:text-pink-500 transition-colors">
+                 <ChevronLeft className="w-5 h-5" />
+               </button>
+               <span className="text-sm font-black text-white uppercase tracking-tighter">#{routeTag}</span>
+            </div>
+         ) : (
+            <div className="flex items-center gap-4 pointer-events-auto bg-black/20 backdrop-blur-md px-6 py-3 rounded-full border border-white/5">
+               <button 
+                 onClick={() => {
+                   if (!isAuthenticated) return alert("Please login to see Following feed");
+                   setFeedType("following");
+                 }}
+                 className={`text-sm font-black transition-all ${feedType === "following" ? 'text-white' : 'text-white/50 hover:text-white'} uppercase tracking-tighter`}
+               >
+                 Following
+               </button>
+               <span className="w-1 h-1 rounded-full bg-white/30" />
+               <button 
+                 onClick={() => {
+                   setFeedType("foryou");
+                 }}
+                 className={`text-sm font-black transition-all ${feedType === "foryou" ? 'text-white' : 'text-white/50 hover:text-white'} uppercase tracking-tighter`}
+               >
+                 For You
+               </button>
+            </div>
+         )}
 
           {/* Top Right: Profile & Notifications */}
           <div className="flex flex-col items-end gap-3 pointer-events-auto">
