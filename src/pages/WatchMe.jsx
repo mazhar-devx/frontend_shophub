@@ -22,6 +22,7 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
   const [isEditingVideo, setIsEditingVideo] = useState(false);
   const [editForm, setEditForm] = useState({ name: video.name, description: video.description, tags: video.tags?.join(', '), productLink: video.productLink });
   const [isActionLoading, setIsActionLoading] = useState({ like: false, save: false, follow: false, comment: false });
+  const [showFullDescription, setShowFullDescription] = useState(false);
   const { user, isAuthenticated } = useSelector((state) => state.auth);
 
   useEffect(() => {
@@ -470,7 +471,15 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
          <Link to={`/creator/${video.user?._id}`} className="pointer-events-auto">
             <h3 className="text-white font-bold text-lg mb-2 hover:underline inline-block">@{video.user?.vendorName || video.user?.name}</h3>
          </Link>
-         <p className="text-white/90 text-sm mb-3 line-clamp-2">{video.description}</p>
+          <p 
+            onClick={() => setShowFullDescription(!showFullDescription)}
+            className={`text-white/90 text-sm mb-3 cursor-pointer pointer-events-auto transition-all ${showFullDescription ? '' : 'line-clamp-2'}`}
+          >
+            {video.description}
+            {!showFullDescription && video.description?.length > 100 && (
+               <span className="text-white/50 font-bold ml-1 hover:text-white transition-colors underline">more</span>
+            )}
+          </p>
          
          {/* Beautiful URL Badges from Description */}
          <div className="flex flex-wrap gap-2 mb-3">
