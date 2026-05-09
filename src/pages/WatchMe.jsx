@@ -524,22 +524,22 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
               </button>
             ))}
          </div>
-          <Link to={`/sound/${video.soundId || video._id}`} className="flex items-center gap-2 text-white/80 pointer-events-auto hover:text-white group max-w-[150px] overflow-hidden">
+          <Link to={`/sound/${video.soundId || video._id}`} className="flex items-center gap-2 text-white/80 pointer-events-auto hover:text-white group w-full overflow-hidden">
             <Music2 className="w-4 h-4 group-hover:text-pink-500 shrink-0" />
-            <div className="flex whitespace-nowrap">
+            <div className="flex whitespace-nowrap overflow-hidden relative h-5 flex-1">
               <motion.div 
-                animate={{ x: [0, -100] }}
-                transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                className="text-xs font-bold uppercase tracking-tighter pr-4"
+                animate={{ x: [0, "-100%"] }}
+                transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                className="text-[10px] md:text-xs font-black uppercase tracking-widest pr-12 flex-shrink-0"
               >
-                Original Sound - {video.user?.vendorName || video.user?.name}
+                {video.user?.vendorName || video.user?.name} • Original Sound - {video.name}
               </motion.div>
               <motion.div 
-                animate={{ x: [0, -100] }}
-                transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                className="text-xs font-bold uppercase tracking-tighter pr-4"
+                animate={{ x: [0, "-100%"] }}
+                transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                className="text-[10px] md:text-xs font-black uppercase tracking-widest pr-12 flex-shrink-0"
               >
-                Original Sound - {video.user?.vendorName || video.user?.name}
+                {video.user?.vendorName || video.user?.name} • Original Sound - {video.name}
               </motion.div>
             </div>
           </Link>
@@ -808,9 +808,12 @@ export default function WatchMe() {
      }
   };
 
+  const userIdParam = new URLSearchParams(window.location.search).get('userId');
+  const soundIdParam = new URLSearchParams(window.location.search).get('soundId');
+
   useEffect(() => {
     fetchVideos();
-  }, [feedType, selectedTag]);
+  }, [feedType, selectedTag, userIdParam, soundIdParam]);
 
   const fetchVideos = async () => {
     setLoading(true);
