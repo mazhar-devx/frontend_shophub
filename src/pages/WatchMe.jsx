@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { Link, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, MessageCircle, Share2, Bookmark, Plus, X, Music2, Bell, ChevronLeft, Send, Volume2, VolumeX, Download } from "lucide-react";
+import { Heart, MessageCircle, Share2, Bookmark, Plus, X, Music2, Bell, ChevronLeft, Send, Volume2, VolumeX, Download, Play } from "lucide-react";
 import NotificationsModal from "../components/NotificationsModal";
 import api from "../services/api";
 import { getProductImageUrl } from "../utils/constants";
@@ -22,6 +22,41 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
        setIsFollowing(video.user?.followers?.includes(user._id));
     }
   }, [isAuthenticated, user, video.likes, video.user]);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.muted = isGlobalMuted;
+    }
+  }, [isGlobalMuted]);
+
+  const lastTap = useRef(0);
+  const [showHeartAnim, setShowHeartAnim] = useState(false);
+  const [playPauseAnim, setPlayPauseAnim] = useState(null);
+
+  const handleTap = (e) => {
+    const now = Date.now();
+    const DOUBLE_PRESS_DELAY = 300;
+    if (now - lastTap.current < DOUBLE_PRESS_DELAY) {
+      // Double tap
+      lastTap.current = 0;
+      if (!isLiked) handleLike();
+      setShowHeartAnim(true);
+      setTimeout(() => setShowHeartAnim(false), 800);
+    } else {
+      // Single tap
+      lastTap.current = now;
+      if (!video.videoUrl) return;
+      if (videoRef.current?.paused) {
+        videoRef.current.play().catch(err => console.log(err));
+        setPlayPauseAnim('play');
+      } else {
+        videoRef.current.pause();
+        setPlayPauseAnim('pause');
+      }
+      setTimeout(() => setPlayPauseAnim(null), 500);
+    }
+  };
+
 
   useEffect(() => {
     if (isActive && video.videoUrl) {
@@ -116,19 +151,45 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
         muted={isGlobalMuted}
         playsInline
         className="w-full h-full object-cover"
-        onClick={() => {
-           if (!video.videoUrl) return;
-           videoRef.current?.paused ? videoRef.current.play().catch(e => console.log(e)) : videoRef.current.pause();
-        }}
       />
 
-      {/* Mute Toggle Overlay */}
-      <button 
-        onClick={(e) => { e.stopPropagation(); setIsGlobalMuted(!isGlobalMuted); }} 
-        className="absolute bottom-32 right-4 p-3 rounded-full bg-black/20 backdrop-blur-md text-white hover:scale-110 transition-all z-20 group"
-      >
-        {isGlobalMuted ? <VolumeX className="w-6 h-6" /> : <Volume2 className="w-6 h-6" />}
-      </button>
+      {/* Tap Overlay (handles clicks/taps instead of video element) */}
+      <div 
+        className="absolute inset-0 z-10" 
+        onClick={handleTap} 
+      />
+
+      {/* Double Tap Heart Animation */}
+      <AnimatePresence>
+        {showHeartAnim && (
+          <motion.div 
+            initial={{ scale: 0.5, opacity: 0, rotate: -20 }}
+            animate={{ scale: 1.5, opacity: 1, rotate: 0 }}
+            exit={{ scale: 2, opacity: 0 }}
+            transition={{ duration: 0.4 }}
+            className="absolute z-50 pointer-events-none"
+          >
+            <Heart className="w-32 h-32 fill-pink-500 text-pink-500 drop-shadow-2xl" />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Play/Pause Animation */}
+      <AnimatePresence>
+        {playPauseAnim && (
+          <motion.div 
+            initial={{ scale: 1.5, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.5, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="absolute z-50 pointer-events-none bg-black/40 rounded-full p-6 backdrop-blur-sm"
+          >
+            {playPauseAnim === 'play' ? <Play className="w-16 h-16 text-white fill-white" /> : <div className="w-16 h-16 flex justify-center gap-3"><div className="w-4 h-16 bg-white rounded-full"></div><div className="w-4 h-16 bg-white rounded-full"></div></div>}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+
 
       {/* Overlay Content */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60 pointer-events-none" />
@@ -397,17 +458,29 @@ export default function WatchMe() {
       <div 
         ref={containerRef}
         onScroll={handleScroll}
-        className="w-full h-full max-w-lg relative bg-black snap-y snap-mandatory overflow-y-scroll no-scrollbar"
+        className="w-full h-full max-w-lg relative bg-black snap-y snap-mandatory overflow-y-scroll no-scrollbar [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
       >
          {videos.map((video, idx) => (
-           <VideoCard 
-             key={video._id} 
-             video={video} 
-             isActive={idx === activeIndex} 
-             isGlobalMuted={isGlobalMuted}
-             setIsGlobalMuted={setIsGlobalMuted}
-             onTagClick={(tag) => setSelectedTag(tag)}
-           />
+           <motion.div 
+             key={video._id}
+             drag="x"
+             dragConstraints={{ left: 0, right: 0 }}
+             dragElastic={0.2}
+             onDragEnd={(e, { offset }) => {
+               if (offset.x < -100) {
+                 window.location.href = `/creator/${video.user._id}`;
+               }
+             }}
+             className="w-full h-full snap-start"
+           >
+             <VideoCard 
+               video={video} 
+               isActive={idx === activeIndex} 
+               isGlobalMuted={isGlobalMuted}
+               setIsGlobalMuted={setIsGlobalMuted}
+               onTagClick={(tag) => setSelectedTag(tag)}
+             />
+           </motion.div>
          ))}
 
          {videos.length === 0 && !loading && (
@@ -428,14 +501,22 @@ export default function WatchMe() {
 
       {/* Floating Header */}
       <div className="absolute top-0 left-0 right-0 p-6 flex items-start justify-between z-[100] pointer-events-none">
-         {/* Top Left: Back to Home */}
-         <Link 
-           to="/" 
-           className="p-3 bg-black/40 backdrop-blur-xl rounded-2xl text-white hover:bg-black/60 transition-all pointer-events-auto flex items-center gap-2 group shadow-2xl border border-white/10"
-         >
-            <ChevronLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
-            <span className="text-xs font-black uppercase tracking-widest hidden md:inline">Store</span>
-         </Link>
+         {/* Top Left: Back to Home & Mute */}
+         <div className="flex gap-2 pointer-events-auto">
+           <Link 
+             to="/" 
+             className="p-3 bg-black/40 backdrop-blur-xl rounded-2xl text-white hover:bg-black/60 transition-all flex items-center gap-2 group shadow-2xl border border-white/10"
+           >
+              <ChevronLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
+              <span className="text-xs font-black uppercase tracking-widest hidden md:inline">Store</span>
+           </Link>
+           <button 
+             onClick={() => setIsGlobalMuted(!isGlobalMuted)} 
+             className="p-3 bg-black/40 backdrop-blur-xl rounded-2xl text-white hover:bg-black/60 transition-all flex items-center justify-center shadow-2xl border border-white/10"
+           >
+             {isGlobalMuted ? <VolumeX className="w-6 h-6" /> : <Volume2 className="w-6 h-6" />}
+           </button>
+         </div>
 
          {/* Top Center: Tabs */}
          <div className="flex items-center gap-4 pointer-events-auto bg-black/20 backdrop-blur-md px-6 py-3 rounded-full border border-white/5">
