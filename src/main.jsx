@@ -9,6 +9,19 @@ import "./index.css";
 // It was used in AppWithAuth, so we keep it.
 import useAuth from "./hooks/useAuth"; 
 
+// Handle Chunk Load Errors (Auto-refresh on update)
+window.addEventListener('error', (e) => {
+  const chunkErrors = [
+    'Failed to fetch dynamically imported module',
+    'Importing a module script failed',
+    'Expected a JavaScript-or-Wasm module script'
+  ];
+  if (chunkErrors.some(msg => e.message?.includes(msg) || e.target?.src?.includes('.js'))) {
+    console.log('Chunk load error detected. Reloading...');
+    window.location.reload();
+  }
+}, true);
+
 // Register service worker
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {

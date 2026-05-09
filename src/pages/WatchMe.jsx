@@ -1027,14 +1027,14 @@ export default function WatchMe() {
                    </button>
                 </div>
 
-                {/* Horizontal Product Feed */}
+                {/* Horizontal Product Feed - Ultra Small & Responsive */}
                 {videos.some(v => v.productLink) && (
                    <motion.div 
-                     initial={{ opacity: 0, y: -20 }}
+                     initial={{ opacity: 0, y: -10 }}
                      animate={{ opacity: 1, y: 0 }}
-                     className="flex gap-3 overflow-x-auto no-scrollbar max-w-[80vw] md:max-w-md px-2 pointer-events-auto"
+                     className="flex gap-2 overflow-x-auto no-scrollbar max-w-[90vw] px-2 pointer-events-auto justify-center"
                    >
-                      {videos.filter(v => v.productLink).slice(0, 10).map((v, i) => (
+                      {videos.filter(v => v.productLink).slice(0, 4).map((v, i) => (
                          <button 
                            key={v._id} 
                            onClick={() => {
@@ -1044,14 +1044,11 @@ export default function WatchMe() {
                                containerRef.current?.scrollTo({ top: index * containerRef.current.clientHeight, behavior: 'smooth' });
                              }
                            }}
-                           className={`flex-shrink-0 w-12 h-12 md:w-16 md:h-16 rounded-2xl overflow-hidden border-2 transition-all ${videos[activeIndex]?._id === v._id ? 'border-pink-500 scale-110 shadow-lg shadow-pink-500/20' : 'border-white/10 hover:border-white/30 opacity-60'}`}
+                           className={`flex-shrink-0 w-8 h-8 md:w-10 md:h-10 rounded-lg md:rounded-xl overflow-hidden border-2 transition-all ${videos[activeIndex]?._id === v._id ? 'border-pink-500 scale-110 shadow-lg shadow-pink-500/20' : 'border-white/20 hover:border-white/50 opacity-60'}`}
                          >
                             <img src={getProductImageUrl(v.thumbnailUrl || v.videoUrl)} className="w-full h-full object-cover" alt="Product" />
                          </button>
                       ))}
-                      <Link to="/search" className="flex-shrink-0 w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
-                         <Plus className="w-6 h-6 text-white/50" />
-                      </Link>
                    </motion.div>
                 )}
              </div>
