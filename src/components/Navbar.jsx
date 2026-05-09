@@ -24,7 +24,8 @@ import {
   Heart, 
   Settings,
   ArrowRight,
-  Download
+  Download,
+  Play
 } from "lucide-react";
 
 export default function Navbar() {
@@ -557,6 +558,7 @@ export default function Navbar() {
                     { path: '/', label: 'Home', icon: <LayoutGrid className="w-6 h-6" /> },
                     { path: '/products', label: 'Browse Shop', icon: <ShoppingCart className="w-6 h-6" /> },
                     { path: '/categories', label: 'Categories', icon: <Package className="w-6 h-6" /> },
+                    { path: '/watch-me', label: 'Watch Me', icon: <Play className="w-6 h-6" />, watch: true },
                     { path: '/deals', label: 'Flash Deals', icon: <Flame className="w-6 h-6" />, special: true },
                  ].map((item, idx) => (
                     <motion.div
@@ -568,9 +570,15 @@ export default function Navbar() {
                       <Link 
                         to={item.path} 
                         onClick={toggleMenu}
-                        className={`flex items-center gap-5 p-5 rounded-3xl ${item.special ? 'bg-gradient-to-r from-red-500/20 to-purple-500/20 border border-red-500/30 text-white' : 'hover:bg-white/5 text-gray-300'} transition-all`}
+                        className={`flex items-center gap-5 p-5 rounded-3xl ${
+                          item.special 
+                            ? 'bg-gradient-to-r from-red-500/20 to-purple-500/20 border border-red-500/30 text-white' 
+                            : item.watch
+                            ? 'bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 text-white'
+                            : 'hover:bg-white/5 text-gray-300'
+                        } transition-all`}
                       >
-                         <span className={item.special ? 'text-red-500' : 'text-cyan-500'}>{item.icon}</span>
+                         <span className={item.special ? 'text-red-500' : item.watch ? 'text-purple-500' : 'text-cyan-500'}>{item.icon}</span>
                          <span className="font-bold text-lg">{item.label}</span>
                          <ArrowRight className="ml-auto w-4 h-4 opacity-30" />
                       </Link>
