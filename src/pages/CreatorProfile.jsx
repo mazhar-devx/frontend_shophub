@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
 import { Heart, Play, Users, MessageCircle, ChevronLeft, Share2, Grid, Bookmark } from "lucide-react";
 import api from "../services/api";
@@ -12,14 +13,15 @@ export default function CreatorProfile() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("videos");
 
+  const { user: authUser, isAuthenticated } = useSelector((state) => state.auth);
+  const isOwnProfile = isAuthenticated && authUser?._id === id;
+
   useEffect(() => {
     fetchCreatorData();
   }, [id]);
 
   const fetchCreatorData = async () => {
     try {
-      // For now, we get creator info from the first video or a specific user endpoint
-      // Assuming we have a GET /api/v1/users/:id endpoint
       const userRes = await api.get(`/users/${id}`);
       setCreator(userRes.data.data.user);
 
@@ -76,7 +78,15 @@ export default function CreatorProfile() {
                   <div className="flex flex-col md:flex-row items-center gap-4 mb-4">
                      <h1 className="text-3xl font-black text-primary dark:text-white tracking-tighter uppercase">{creator.vendorName || creator.name}</h1>
                      <div className="flex gap-2">
-                        <button className="px-6 py-2 bg-pink-500 text-white font-bold rounded-full hover:bg-pink-600 transition-all shadow-lg shadow-pink-500/20">Follow</button>
+                        {isOwnProfile ? (
+                           <Link to="/upload-video" className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold rounded-full hover:scale-105 transition-all shadow-lg shadow-pink-500/20">
+                              Upload Video
+                           </Link>
+                        ) : (
+                           <button className="px-6 py-2 bg-pink-500 text-white font-bold rounded-full hover:bg-pink-600 transition-all shadow-lg shadow-pink-500/20">
+                              Follow
+                           </button>
+                        )}
                         <button className="p-2 border border-black/10 dark:border-white/10 rounded-full dark:text-white hover:bg-black/5 dark:hover:bg-white/5"><Share2 className="w-5 h-5" /></button>
                      </div>
                   </div>

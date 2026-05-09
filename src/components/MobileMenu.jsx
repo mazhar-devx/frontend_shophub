@@ -48,6 +48,14 @@ export default function MobileMenu() {
                     {item}
                   </Link>
                 ))}
+
+                <Link 
+                  to="/watch-me"
+                  className="block px-4 py-3 text-base font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500 hover:bg-white/10 rounded-xl transition-all"
+                  onClick={toggleMenu}
+                >
+                  Watch Me
+                </Link>
                 
                 <div className="border-t border-white/10 my-4 pt-4"></div>
                 

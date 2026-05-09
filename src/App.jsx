@@ -62,8 +62,12 @@ const PageLoader = () => (
   </div>
 );
 
+import { useLocation } from "react-router-dom";
+
 export default function App() {
   const { theme } = useUIStore();
+  const location = useLocation();
+  const isWatchMePage = location.pathname === '/watch-me';
 
   useEffect(() => {
     if (theme === 'system') {
@@ -105,13 +109,17 @@ export default function App() {
         {/* Public routes */}
         <Route path="/*" element={
           <>
-            <Navbar />
-            <SearchBar />
-            <CartSidebar />
-            <MobileMenu />
+            {!isWatchMePage && (
+              <>
+                <Navbar />
+                <SearchBar />
+                <CartSidebar />
+                <MobileMenu />
+              </>
+            )}
             <Toast />
             <Modal />
-            <main id="main-content" className="pt-24 pb-20 md:pb-0 min-h-screen overflow-x-hidden">
+            <main id="main-content" className={`${isWatchMePage ? 'pt-0' : 'pt-24'} pb-20 md:pb-0 min-h-screen overflow-x-hidden`}>
               <Suspense fallback={<PageLoader />}>
                 <Routes>
                   <Route index element={<Home />} />
@@ -136,11 +144,15 @@ export default function App() {
                 </Routes>
               </Suspense>
             </main>
-            <Footer />
-            <MobileBottomNav />
-            <BackToTop />
-            <WhatsAppContact />
-            <AIHelper />
+            {!isWatchMePage && (
+              <>
+                <Footer />
+                <MobileBottomNav />
+                <BackToTop />
+                <WhatsAppContact />
+                <AIHelper />
+              </>
+            )}
           </>
         } />
         

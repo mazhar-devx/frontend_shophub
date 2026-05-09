@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, MessageCircle, Share2, Bookmark, Plus, X, Send, Music2, User } from "lucide-react";
+import { Heart, MessageCircle, Share2, Bookmark, Plus, X, Send, Music2, User, ChevronLeft } from "lucide-react";
 import api from "../services/api";
 import { getProductImageUrl } from "../utils/constants";
 
@@ -238,14 +239,40 @@ export default function WatchMe() {
       </div>
 
       {/* Floating Header */}
-      <div className="absolute top-0 left-0 right-0 p-6 flex items-center justify-between z-50 pointer-events-none">
-         <div className="flex items-center gap-4 pointer-events-auto">
-            <span className={`text-lg font-black transition-all ${activeIndex === 0 ? 'text-white' : 'text-white/50 hover:text-white'} cursor-pointer uppercase tracking-tighter`}>Following</span>
+      <div className="absolute top-0 left-0 right-0 p-6 flex items-start justify-between z-[100] pointer-events-none">
+         {/* Top Left: Back to Home */}
+         <Link 
+           to="/" 
+           className="p-3 bg-black/40 backdrop-blur-xl rounded-2xl text-white hover:bg-black/60 transition-all pointer-events-auto flex items-center gap-2 group shadow-2xl border border-white/10"
+         >
+            <ChevronLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
+            <span className="text-xs font-black uppercase tracking-widest hidden md:inline">Store</span>
+         </Link>
+
+         {/* Top Center: Tabs */}
+         <div className="flex items-center gap-4 pointer-events-auto bg-black/20 backdrop-blur-md px-6 py-3 rounded-full border border-white/5">
+            <span className={`text-sm font-black transition-all ${activeIndex === 0 ? 'text-white' : 'text-white/50 hover:text-white'} cursor-pointer uppercase tracking-tighter`}>Following</span>
             <span className="w-1 h-1 rounded-full bg-white/30" />
-            <span className={`text-lg font-black transition-all ${activeIndex !== 0 ? 'text-white' : 'text-white/50 hover:text-white'} cursor-pointer uppercase tracking-tighter border-b-2 border-white pb-1`}>For You</span>
+            <span className={`text-sm font-black transition-all ${activeIndex !== 0 ? 'text-white' : 'text-white/50 hover:text-white'} cursor-pointer uppercase tracking-tighter`}>For You</span>
          </div>
-         <div className="w-10 h-10 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center pointer-events-auto cursor-pointer text-white hover:bg-black/60">
-            <User className="w-5 h-5" />
+
+         {/* Top Right: Profile */}
+         <div className="flex flex-col items-end gap-2 pointer-events-auto">
+            {isAuthenticated ? (
+               <Link to={`/creator/${user._id}`} className="group flex items-center gap-3 bg-black/40 backdrop-blur-xl p-1 pr-4 rounded-full border border-white/10 hover:bg-black/60 transition-all shadow-2xl">
+                  <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-pink-500 shadow-lg">
+                     <img src={user.photo ? getProductImageUrl(user.photo) : "/default-avatar.png"} className="w-full h-full object-cover" />
+                  </div>
+                  <div className="hidden md:flex flex-col">
+                     <span className="text-xs font-black text-white uppercase tracking-tighter leading-none">{user.name}</span>
+                     <span className="text-[9px] text-white/50 font-medium truncate w-24">{user.email}</span>
+                  </div>
+               </Link>
+            ) : (
+               <Link to="/login" className="px-6 py-3 bg-pink-500 text-white text-xs font-black uppercase tracking-widest rounded-full shadow-xl hover:scale-105 active:scale-95 transition-all shadow-pink-500/20">
+                  Login
+               </Link>
+            )}
          </div>
       </div>
     </div>
