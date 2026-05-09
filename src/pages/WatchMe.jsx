@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { Link, useSearchParams, useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, MessageCircle, Share2, Bookmark, Plus, X, Music2, Bell, ChevronLeft, Send, Volume2, VolumeX, Download, Play, ShoppingCart, Search } from "lucide-react";
+import { Heart, MessageCircle, Share2, Bookmark, Plus, X, Music2, Bell, ChevronLeft, Send, Volume2, VolumeX, Download, Play, ShoppingCart, Search, MoreVertical, Edit2, Trash2, RefreshCw, Image as ImageIcon, MoreHorizontal } from "lucide-react";
 import NotificationsModal from "../components/NotificationsModal";
 import api from "../services/api";
 import { getProductImageUrl } from "../utils/constants";
@@ -14,6 +14,9 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
   const [isFollowing, setIsFollowing] = useState(false);
   const [likes, setLikes] = useState(video.likes.length);
   const [showComments, setShowComments] = useState(false);
+  const [showVideoMenu, setShowVideoMenu] = useState(false);
+  const [isEditingVideo, setIsEditingVideo] = useState(false);
+  const [editForm, setEditForm] = useState({ name: video.name, description: video.description, tags: video.tags?.join(', '), productLink: video.productLink });
   const { user, isAuthenticated } = useSelector((state) => state.auth);
 
   useEffect(() => {
@@ -165,6 +168,46 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
     }
   };
 
+  const handleDeleteVideo = async () => {
+    if (!window.confirm("Are you sure you want to delete this video?")) return;
+    try {
+       await api.delete(`/videos/${video._id}`);
+       window.location.reload(); // Refresh to remove deleted video
+    } catch (err) {
+       alert(err.response?.data?.message || "Failed to delete video");
+    }
+  };
+
+  const handleUpdateVideo = async () => {
+     try {
+        await api.patch(`/videos/${video._id}`, editForm);
+        setIsEditingVideo(false);
+        alert("Video updated successfully!");
+        window.location.reload();
+     } catch (err) {
+        alert(err.response?.data?.message || "Failed to update video");
+     }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+     if (!window.confirm("Delete this comment?")) return;
+     try {
+        await api.delete(`/videos/${video._id}/comment/${commentId}`);
+        setLocalComments(localComments.filter(c => c._id !== commentId));
+     } catch (err) {
+        alert("Failed to delete comment");
+     }
+  };
+
+  const handleUpdateComment = async (commentId, newText) => {
+     try {
+        await api.patch(`/videos/${video._id}/comment/${commentId}`, { text: newText });
+        setLocalComments(localComments.map(c => c._id === commentId ? { ...c, text: newText } : c));
+     } catch (err) {
+        alert("Failed to update comment");
+     }
+  };
+
   const shareApps = [
     { name: "WhatsApp", icon: "whatsapp.png", color: "bg-green-500", link: `https://wa.me/?text=Check out this video on ShopHub: ${window.location.origin}/watch-me?v=${video._id}` },
     { name: "Facebook", icon: "facebook.png", color: "bg-blue-600", link: `https://www.facebook.com/sharer/sharer.php?u=${window.location.origin}/watch-me?v=${video._id}` },
@@ -307,6 +350,41 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
            </div>
            <span className="text-white text-xs font-bold shadow-sm">Share</span>
         </button>
+
+        {/* More Menu (for owner) */}
+        {isAuthenticated && user?._id === video.user?._id && (
+          <div className="relative">
+             <button 
+               onClick={() => setShowVideoMenu(!showVideoMenu)} 
+               className="p-3 rounded-full bg-black/20 backdrop-blur-md text-white hover:bg-black/40 transition-all pointer-events-auto"
+             >
+                <MoreVertical className="w-7 h-7" />
+             </button>
+             <AnimatePresence>
+                {showVideoMenu && (
+                   <motion.div 
+                     initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                     animate={{ opacity: 1, scale: 1, y: 0 }}
+                     exit={{ opacity: 0, scale: 0.9, y: 10 }}
+                     className="absolute bottom-full right-0 mb-2 w-40 bg-white dark:bg-[#1a1a1a] rounded-2xl shadow-2xl overflow-hidden border border-black/10 dark:border-white/10 pointer-events-auto"
+                   >
+                      <button 
+                        onClick={() => { setIsEditingVideo(true); setShowVideoMenu(false); }}
+                        className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 transition-colors border-b border-black/5 dark:border-white/5"
+                      >
+                         <Edit2 className="w-4 h-4" /> Edit
+                      </button>
+                      <button 
+                        onClick={handleDeleteVideo}
+                        className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
+                      >
+                         <Trash2 className="w-4 h-4" /> Delete
+                      </button>
+                   </motion.div>
+                )}
+             </AnimatePresence>
+          </div>
+        )}
       </div>
 
       {/* Bottom Info */}
@@ -409,8 +487,8 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="absolute bottom-0 left-0 right-0 z-[110] bg-white dark:bg-[#1a1a1a] rounded-t-[2.5rem] p-6 pb-8 shadow-2xl h-[70vh] flex flex-col pointer-events-auto"
+               transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="absolute bottom-0 left-0 right-0 z-[110] bg-white dark:bg-[#1a1a1a] rounded-t-[2.5rem] p-6 pb-8 shadow-2xl h-[80vh] flex flex-col pointer-events-auto"
             >
               <div className="w-12 h-1.5 bg-gray-300 dark:bg-white/20 rounded-full mx-auto mb-6 flex-shrink-0" />
               <div className="flex justify-between items-center mb-6 flex-shrink-0">
@@ -435,20 +513,31 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
                                   <span className="bg-pink-500 text-white text-[9px] px-1.5 py-0.5 rounded uppercase font-black tracking-widest">Creator</span>
                                )}
                             </div>
-                            <p className="dark:text-white text-sm font-medium mt-1">{comment.text}</p>
-                            {comment.mediaUrl && (
-                               <img src={getProductImageUrl(comment.mediaUrl)} className="w-32 h-auto rounded-xl mt-2 border border-black/10 dark:border-white/10" />
-                            )}
-                            <div className="flex gap-4 mt-2 text-[10px] text-gray-400 font-bold">
-                               <button onClick={() => setReplyingTo({ commentId: comment._id, username: comment.user?.name })} className="hover:text-pink-500 transition-colors">Reply</button>
-                               <span>{new Date(comment.createdAt).toLocaleDateString()}</span>
-                            </div>
-                         </div>
-                         <button onClick={() => handleLikeComment(comment._id)} className="p-2 text-gray-400 hover:text-pink-500 transition-colors flex flex-col items-center gap-1 group/btn">
-                            <Heart className={`w-4 h-4 ${comment.likes?.includes(user?._id) ? 'fill-pink-500 text-pink-500' : 'group-hover/btn:scale-110'}`} />
-                            <span className="text-[10px]">{comment.likes?.length || 0}</span>
-                         </button>
-                      </div>
+                                                 <p className="dark:text-white text-sm font-medium mt-1">{comment.text}</p>
+                             {comment.mediaUrl && (
+                                <img src={getProductImageUrl(comment.mediaUrl)} className="w-32 h-auto rounded-xl mt-2 border border-black/10 dark:border-white/10" />
+                             )}
+                             <div className="flex gap-4 mt-2 text-[10px] text-gray-400 font-bold items-center">
+                                <button onClick={() => setReplyingTo({ commentId: comment._id, username: comment.user?.name })} className="hover:text-pink-500 transition-colors">Reply</button>
+                                <span>{new Date(comment.createdAt).toLocaleDateString()}</span>
+                                {isAuthenticated && (user?._id === comment.user?._id || user?._id === video.user?._id) && (
+                                   <div className="flex gap-3 ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
+                                      {user?._id === comment.user?._id && (
+                                         <button onClick={() => {
+                                            const newText = prompt("Edit comment:", comment.text);
+                                            if (newText && newText !== comment.text) handleUpdateComment(comment._id, newText);
+                                         }} className="text-gray-400 hover:text-white"><Edit2 className="w-3 h-3" /></button>
+                                      )}
+                                      <button onClick={() => handleDeleteComment(comment._id)} className="text-gray-400 hover:text-red-500"><Trash2 className="w-3 h-3" /></button>
+                                   </div>
+                                )}
+                             </div>
+                          </div>
+                          <button onClick={() => handleLikeComment(comment._id)} className="p-2 text-gray-400 hover:text-pink-500 transition-colors flex flex-col items-center gap-1 group/btn shrink-0">
+                             <Heart className={`w-4 h-4 ${comment.likes?.includes(user?._id) ? 'fill-pink-500 text-pink-500' : 'group-hover/btn:scale-110'}`} />
+                             <span className="text-[10px]">{comment.likes?.length || 0}</span>
+                          </button>
+                       </div>
 
                       {/* Replies */}
                       {comment.replies && comment.replies.length > 0 && (
@@ -479,37 +568,41 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
                 )}
               </div>
 
-              {replyingTo && (
-                 <div className="flex items-center justify-between bg-black/5 dark:bg-white/5 px-4 py-2 rounded-xl mb-2 text-xs font-bold dark:text-gray-300">
-                    <span>Replying to @{replyingTo.username}</span>
-                    <button onClick={() => setReplyingTo(null)} className="hover:text-red-500"><X className="w-4 h-4" /></button>
-                 </div>
-              )}
+                      {commentMedia && (
+                  <div className="mx-6 mb-2 relative w-20 h-20 rounded-2xl overflow-hidden border-2 border-pink-500 group">
+                     <img src={URL.createObjectURL(commentMedia)} className="w-full h-full object-cover" />
+                     <button onClick={() => setCommentMedia(null)} className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                        <X className="w-3 h-3" />
+                     </button>
+                  </div>
+               )}
 
-              <div className="flex items-center gap-3 pt-4 border-t dark:border-white/5 pointer-events-auto flex-shrink-0 mt-2">
-                 <div className="w-10 h-10 rounded-full overflow-hidden border border-black/10 flex-shrink-0 relative group">
-                    <img src={user?.photo ? getProductImageUrl(user.photo) : "/default-avatar.png"} className="w-full h-full object-cover" />
-                    <label className="absolute inset-0 bg-black/40 hidden group-hover:flex items-center justify-center cursor-pointer">
-                       <Plus className="w-4 h-4 text-white" />
-                       <input type="file" accept="image/*,video/mp4" className="hidden" onChange={(e) => setCommentMedia(e.target.files[0])} />
-                    </label>
-                 </div>
-                 
-                 <div className="flex-1 flex items-center bg-black/5 dark:bg-white/5 border-none rounded-3xl pr-2 focus-within:ring-2 focus-within:ring-pink-500 transition-all">
-                    <input 
-                      type="text" 
-                      placeholder={commentMedia ? "Media attached..." : "Add a premium comment..."}
-                      value={commentText}
-                      onChange={(e) => setCommentText(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && handleComment()}
-                      className="w-full bg-transparent px-6 py-4 text-sm dark:text-white focus:outline-none"
-                    />
-                    {commentMedia && (
-                       <button onClick={() => setCommentMedia(null)} className="p-2 text-red-500 hover:bg-red-500/10 rounded-full transition-colors mr-1">
-                          <X className="w-4 h-4" />
-                       </button>
-                    )}
-                 </div>
+               {replyingTo && (
+                  <div className="flex items-center justify-between bg-black/5 dark:bg-white/5 px-4 py-2 rounded-xl mb-2 text-xs font-bold dark:text-gray-300 mx-6">
+                     <span>Replying to @{replyingTo.username}</span>
+                     <button onClick={() => setReplyingTo(null)} className="hover:text-red-500"><X className="w-4 h-4" /></button>
+                  </div>
+               )}
+
+               <div className="flex items-center gap-3 pt-4 border-t dark:border-white/5 pointer-events-auto flex-shrink-0 mt-2 px-4">
+                  <div className="w-10 h-10 rounded-full overflow-hidden border border-black/10 flex-shrink-0 relative group">
+                     <img src={user?.photo ? getProductImageUrl(user.photo) : "/default-avatar.png"} className="w-full h-full object-cover" />
+                     <label className="absolute inset-0 bg-black/40 flex items-center justify-center cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity">
+                        <ImageIcon className="w-4 h-4 text-white" />
+                        <input type="file" accept="image/*" className="hidden" onChange={(e) => setCommentMedia(e.target.files[0])} />
+                     </label>
+                  </div>
+                  
+                  <div className="flex-1 flex items-center bg-black/5 dark:bg-white/5 border-none rounded-3xl pr-2 focus-within:ring-2 focus-within:ring-pink-500 transition-all">
+                     <input 
+                       type="text" 
+                       placeholder={commentMedia ? "Add caption..." : "Add comment..."}
+                       value={commentText}
+                       onChange={(e) => setCommentText(e.target.value)}
+                       onKeyPress={(e) => e.key === 'Enter' && handleComment()}
+                       className="w-full bg-transparent px-6 py-4 text-sm dark:text-white focus:outline-none"
+                     />
+                  </div>
                  <button 
                    onClick={handleComment}
                    className="p-4 bg-pink-500 rounded-full text-white shadow-xl hover:scale-110 active:scale-95 transition-transform disabled:opacity-50"
@@ -597,6 +690,37 @@ export default function WatchMe() {
       console.error(err);
       setLoading(false);
     }
+  };
+
+  const syncNewVideos = async () => {
+     try {
+        let url = "/videos";
+        if (feedType === "foryou") {
+          url += `?sort=likes&userId=${user?._id || ''}`;
+        } else if (feedType === "following") {
+          url += `?feed=following&userId=${user?._id}`;
+        }
+        if (selectedTag) {
+          url += `${url.includes('?') ? '&' : '?'}tag=${encodeURIComponent(selectedTag)}`;
+        }
+        const res = await api.get(url);
+        const newVids = res.data.data.videos;
+        
+        // Find videos that aren't in current list
+        const currentIds = new Set(videos.map(v => v._id));
+        const addedVids = newVids.filter(v => !currentIds.has(v._id));
+        
+        if (addedVids.length > 0) {
+           setVideos([...addedVids, ...videos]);
+           setActiveIndex(0);
+           containerRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+           alert(`${addedVids.length} new videos found!`);
+        } else {
+           alert("No new videos found yet.");
+        }
+     } catch (err) {
+        console.error(err);
+     }
   };
 
   const handleSearchChange = (e) => {
@@ -717,6 +841,16 @@ export default function WatchMe() {
            </button>
          </div>
 
+         {/* Top Refresh - Sync Data */}
+         <div className="absolute left-1/2 -translate-x-1/2 top-20 pointer-events-auto">
+            <button 
+               onClick={syncNewVideos}
+               className="p-3 bg-pink-500/80 backdrop-blur-md rounded-full text-white shadow-2xl hover:scale-110 active:scale-95 transition-all border border-white/20 group"
+            >
+               <RefreshCw className={`w-5 h-5 group-hover:rotate-180 transition-transform duration-500`} />
+            </button>
+         </div>
+
          {/* Top Center: Tabs */}
          {routeTag ? (
             <div className="flex items-center gap-2 md:gap-4 pointer-events-auto bg-black/20 backdrop-blur-md px-3 py-1.5 md:px-6 md:py-3 rounded-full border border-white/5 shrink-0 mx-1">
@@ -835,20 +969,23 @@ export default function WatchMe() {
                    )}
 
                    {searchQuery && searchResults.videos.length > 0 && (
-                      <div>
-                         <h3 className="text-xs font-black uppercase tracking-widest text-gray-500 mb-4">Videos</h3>
-                         <div className="grid grid-cols-2 gap-4">
-                            {searchResults.videos.map(v => (
-                               <div key={v._id} onClick={() => { setShowSearch(false); navigate(`/watch-me?v=${v._id}`); }} className="relative aspect-[9/16] bg-black rounded-2xl overflow-hidden cursor-pointer group">
-                                  <img src={getProductImageUrl(v.thumbnailUrl || v.videoUrl)} className="w-full h-full object-cover opacity-70 group-hover:scale-110 transition-transform" />
-                                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-3">
-                                     <span className="text-white font-bold text-xs line-clamp-1">{v.name}</span>
-                                     <span className="text-pink-500 text-[10px] font-black uppercase">@{v.user?.name}</span>
-                                  </div>
-                               </div>
-                            ))}
-                         </div>
-                      </div>
+                       <div>
+                          <h3 className="text-xs font-black uppercase tracking-widest text-gray-500 mb-4">Videos</h3>
+                          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                             {searchResults.videos.map(v => (
+                                <div key={v._id} onClick={() => { setShowSearch(false); navigate(`/watch-me?v=${v._id}`); }} className="relative aspect-[9/16] bg-black rounded-2xl overflow-hidden cursor-pointer group shadow-xl hover:ring-4 ring-pink-500 transition-all">
+                                   <img src={getProductImageUrl(v.thumbnailUrl || v.videoUrl)} className="w-full h-full object-cover opacity-70 group-hover:scale-110 transition-transform" />
+                                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-3">
+                                      <span className="text-white font-black text-[10px] uppercase tracking-tighter line-clamp-1">{v.name}</span>
+                                      <div className="flex items-center gap-1 mt-0.5">
+                                         <Play className="w-2.5 h-2.5 text-pink-500 fill-pink-500" />
+                                         <span className="text-pink-500 text-[8px] font-black uppercase">@{v.user?.vendorName || v.user?.name}</span>
+                                      </div>
+                                   </div>
+                                </div>
+                             ))}
+                          </div>
+                       </div>
                    )}
 
                    {searchQuery && searchResults.videos.length === 0 && searchResults.users.length === 0 && (
