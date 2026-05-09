@@ -38,6 +38,7 @@ const Portfolio = lazy(() => import("./pages/Portfolio"));
 const WatchMe = lazy(() => import("./pages/WatchMe"));
 const VideoUpload = lazy(() => import("./pages/VideoUpload"));
 const CreatorProfile = lazy(() => import("./pages/CreatorProfile"));
+const SoundPage = lazy(() => import("./pages/SoundPage"));
 
 // Admin Pages Lazy Load
 const AdminDashboard = lazy(() => import("./pages/admin/Dashboard"));
@@ -64,6 +65,7 @@ function AppContent() {
   const isImmersivePage = location.pathname === '/watch-me' || 
                           location.pathname.startsWith('/creator/') || 
                           location.pathname.startsWith('/tag/') ||
+                          location.pathname.startsWith('/sound/') ||
                           location.pathname === '/upload-video';
 
   useEffect(() => {
@@ -133,6 +135,7 @@ function AppContent() {
                   <Route path="search" element={<SearchResults />} />
                   <Route path="watch-me" element={<WatchMe />} />
                   <Route path="tag/:tag" element={<WatchMe />} />
+                  <Route path="sound/:id" element={<SoundPage />} />
                   <Route path="upload-video" element={<VideoUpload />} />
                   <Route path="creator/:id" element={<CreatorProfile />} />
                 </Routes>

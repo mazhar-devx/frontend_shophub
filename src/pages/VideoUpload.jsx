@@ -20,6 +20,8 @@ export default function VideoUpload() {
   const [status, setStatus] = useState({ type: "", message: "" });
   
   const navigate = useNavigate();
+  const searchParams = new URLSearchParams(window.location.search);
+  const soundId = searchParams.get('soundId');
   const { user } = useSelector((state) => state.auth);
 
   const handleFileChange = (e) => {
@@ -88,8 +90,9 @@ export default function VideoUpload() {
       formData.append("name", name);
       formData.append("description", description);
       formData.append("tags", tagsList.join(','));
+      if (soundId) formData.append("soundId", soundId);
 
-      console.log("[VideoUpload] Sending payload:", { name, tags: tagsList });
+      console.log("[VideoUpload] Sending payload:", { name, tags: tagsList, soundId });
       
       await api.post(`/videos`, formData, {
         headers: {

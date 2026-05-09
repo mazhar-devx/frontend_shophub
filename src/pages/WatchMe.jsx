@@ -266,97 +266,126 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
               </button>
             ))}
          </div>
-         <div className="flex items-center gap-2 text-white/80">
-            <Music2 className="w-4 h-4 animate-spin-slow" />
-            <marquee className="text-xs font-medium w-40">Original Sound - {video.name}</marquee>
-         </div>
+         <Link to={`/sound/${video.soundId || video._id}`} className="flex items-center gap-2 text-white/80 pointer-events-auto hover:text-white group">
+            <Music2 className="w-4 h-4 animate-spin group-hover:text-pink-500" style={{ animationDuration: '3s' }} />
+            <marquee className="text-xs font-medium w-40 cursor-pointer">Original Sound - {video.name}</marquee>
+         </Link>
       </div>
 
-      {/* Share Modal */}
+      {/* Share Bottom Sheet */}
       <AnimatePresence>
         {showShare && (
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            className="absolute inset-0 z-[110] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm"
-          >
-             <div className="bg-white dark:bg-[#1a1a1a] rounded-[2.5rem] p-8 w-full max-w-xs shadow-2xl relative">
-                <button onClick={() => setShowShare(false)} className="absolute top-4 right-4 p-2 dark:text-white hover:bg-black/5 rounded-full"><X className="w-5 h-5" /></button>
-                <h3 className="text-xl font-black dark:text-white uppercase tracking-tighter mb-6">Share to</h3>
-                <div className="grid grid-cols-2 gap-4">
-                   {shareLinks.map(link => (
-                      link.action ? (
-                        <button key={link.name} onClick={link.action} className="flex flex-col items-center gap-2 p-4 rounded-3xl bg-black/5 dark:bg-white/5 hover:bg-pink-500/10 transition-all">
-                           <span className="text-2xl">{link.icon}</span>
-                           <span className="text-[10px] font-black uppercase tracking-widest dark:text-white">{link.name}</span>
-                        </button>
-                      ) : (
-                        <a key={link.name} href={link.link} target="_blank" rel="noreferrer" className="flex flex-col items-center gap-2 p-4 rounded-3xl bg-black/5 dark:bg-white/5 hover:bg-pink-500/10 transition-all">
-                           <span className="text-2xl">{link.icon}</span>
-                           <span className="text-[10px] font-black uppercase tracking-widest dark:text-white">{link.name}</span>
-                        </a>
-                      )
-                   ))}
-                </div>
-             </div>
-          </motion.div>
+          <>
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowShare(false)}
+              className="absolute inset-0 z-[100] bg-black/60 backdrop-blur-sm pointer-events-auto"
+            />
+            <motion.div 
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="absolute bottom-0 left-0 right-0 z-[110] bg-white dark:bg-[#1a1a1a] rounded-t-[2.5rem] p-6 pb-12 shadow-2xl pointer-events-auto"
+            >
+              <div className="w-12 h-1.5 bg-gray-300 dark:bg-white/20 rounded-full mx-auto mb-6" />
+              <div className="flex justify-between items-center mb-6">
+                 <h3 className="text-xl font-black dark:text-white uppercase tracking-tighter">Share to</h3>
+                 <button onClick={() => setShowShare(false)} className="p-2 dark:text-white hover:bg-black/5 rounded-full"><X className="w-5 h-5" /></button>
+              </div>
+              <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4">
+                 {shareLinks.map(link => (
+                    link.action ? (
+                      <button key={link.name} onClick={link.action} className="flex-shrink-0 flex flex-col items-center gap-2 p-4 w-20 rounded-3xl bg-black/5 dark:bg-white/5 hover:bg-pink-500 hover:text-white transition-all dark:text-white group">
+                         <span className="text-2xl group-hover:scale-110 transition-transform">{link.icon}</span>
+                         <span className="text-[10px] font-black uppercase tracking-widest">{link.name}</span>
+                      </button>
+                    ) : (
+                      <a key={link.name} href={link.link} target="_blank" rel="noreferrer" className="flex-shrink-0 flex flex-col items-center gap-2 p-4 w-20 rounded-3xl bg-black/5 dark:bg-white/5 hover:bg-pink-500 hover:text-white transition-all dark:text-white group">
+                         <span className="text-2xl group-hover:scale-110 transition-transform">{link.icon}</span>
+                         <span className="text-[10px] font-black uppercase tracking-widest">{link.name}</span>
+                      </a>
+                    )
+                 ))}
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
 
-      {/* Comments Sidebar/Overlay */}
+      {/* Comments Bottom Sheet */}
       <AnimatePresence>
         {showComments && (
-          <motion.div 
-            initial={{ y: "100%" }}
-            animate={{ y: 0 }}
-            exit={{ y: "100%" }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="absolute inset-x-0 bottom-0 h-[70%] bg-white dark:bg-[#0f0f0f] rounded-t-3xl z-[100] p-6 flex flex-col shadow-2xl"
-          >
-             <div className="flex items-center justify-between mb-6">
-                <span className="text-lg font-black dark:text-white uppercase tracking-widest">{video.comments.length} Comments</span>
-                <button onClick={() => setShowComments(false)} className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-full dark:text-white">
-                   <X className="w-6 h-6" />
-                </button>
-             </div>
+          <>
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowComments(false)}
+              className="absolute inset-0 z-[100] bg-black/60 backdrop-blur-sm pointer-events-auto"
+            />
+            <motion.div 
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="absolute bottom-0 left-0 right-0 z-[110] bg-white dark:bg-[#1a1a1a] rounded-t-[2.5rem] p-6 pb-8 shadow-2xl h-[70vh] flex flex-col pointer-events-auto"
+            >
+              <div className="w-12 h-1.5 bg-gray-300 dark:bg-white/20 rounded-full mx-auto mb-6 flex-shrink-0" />
+              <div className="flex justify-between items-center mb-6 flex-shrink-0">
+                 <h3 className="text-xl font-black dark:text-white uppercase tracking-tighter">Comments <span className="text-pink-500">{video.comments.length}</span></h3>
+                 <button onClick={() => setShowComments(false)} className="p-2 dark:text-white hover:bg-black/5 rounded-full"><X className="w-5 h-5" /></button>
+              </div>
 
-             <div className="flex-1 overflow-y-auto custom-scrollbar space-y-6 mb-4">
-                {video.comments.map((comment, idx) => (
-                  <div key={idx} className="flex gap-4">
-                     <img src={comment.user?.photo ? getProductImageUrl(comment.user.photo) : "/default-avatar.png"} className="w-10 h-10 rounded-full object-cover" />
-                     <div className="flex flex-col">
-                        <span className="text-sm font-bold dark:text-white">{comment.user?.name}</span>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">{comment.text}</p>
-                        <span className="text-[10px] text-gray-500 mt-1">{new Date(comment.createdAt).toLocaleDateString()}</span>
-                     </div>
-                  </div>
-                ))}
-                {video.comments.length === 0 && (
-                  <div className="flex flex-col items-center justify-center h-full text-gray-500 opacity-50">
-                     <MessageCircle className="w-12 h-12 mb-2" />
-                     <p className="font-bold">Be the first to comment!</p>
-                  </div>
+              <div className="flex-1 overflow-y-auto no-scrollbar space-y-6 pr-2">
+                {video.comments.length === 0 ? (
+                  <p className="text-center text-gray-500 mt-10 font-bold">Be the first to comment!</p>
+                ) : (
+                  video.comments.map((comment, i) => (
+                    <div key={i} className="flex gap-3 items-start group">
+                       <div className="w-8 h-8 rounded-full overflow-hidden border border-black/10 flex-shrink-0">
+                          <img src={comment.user?.photo ? getProductImageUrl(comment.user.photo) : "/default-avatar.png"} className="w-full h-full object-cover" />
+                       </div>
+                       <div className="flex-1">
+                          <span className="font-bold text-xs dark:text-gray-300 text-gray-600">@{comment.user?.name || "User"}</span>
+                          <p className="dark:text-white text-sm font-medium mt-0.5">{comment.text}</p>
+                          <div className="flex gap-4 mt-2 text-[10px] text-gray-400 font-bold">
+                             <button className="hover:text-pink-500 transition-colors">Reply</button>
+                             <span>{new Date(comment.createdAt).toLocaleDateString()}</span>
+                          </div>
+                       </div>
+                       <button className="p-2 text-gray-400 hover:text-pink-500 transition-colors flex flex-col items-center gap-1">
+                          <Heart className="w-4 h-4" />
+                       </button>
+                    </div>
+                  ))
                 )}
-             </div>
+              </div>
 
-             <div className="flex items-center gap-3 pt-4 border-t dark:border-white/5 pointer-events-auto">
-                <input 
-                  type="text" 
-                  placeholder="Add a comment..." 
-                  value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleComment()}
-                  className="flex-1 bg-black/5 dark:bg-white/5 border-none rounded-full px-6 py-3 text-sm dark:text-white focus:ring-2 focus:ring-pink-500"
-                />
-                <button 
-                  onClick={handleComment}
-                  className="p-3 bg-pink-500 rounded-full text-white shadow-lg hover:scale-105 transition-transform"
-                >
-                   <Send className="w-5 h-5" />
-                </button>
-             </div>
-          </motion.div>
+              <div className="flex items-center gap-3 pt-4 border-t dark:border-white/5 pointer-events-auto flex-shrink-0 mt-4">
+                 <div className="w-8 h-8 rounded-full overflow-hidden border border-black/10 flex-shrink-0">
+                    <img src={user?.photo ? getProductImageUrl(user.photo) : "/default-avatar.png"} className="w-full h-full object-cover" />
+                 </div>
+                 <input 
+                   type="text" 
+                   placeholder="Add a premium comment..." 
+                   value={commentText}
+                   onChange={(e) => setCommentText(e.target.value)}
+                   onKeyPress={(e) => e.key === 'Enter' && handleComment()}
+                   className="flex-1 bg-black/5 dark:bg-white/5 border-none rounded-full px-6 py-3 text-sm dark:text-white focus:ring-2 focus:ring-pink-500"
+                 />
+                 <button 
+                   onClick={handleComment}
+                   className="p-3 bg-pink-500 rounded-full text-white shadow-lg hover:scale-105 transition-transform disabled:opacity-50"
+                   disabled={!commentText.trim()}
+                 >
+                    <Send className="w-5 h-5" />
+                 </button>
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </div>
@@ -455,7 +484,7 @@ export default function WatchMe() {
   }
 
   return (
-    <div className="h-screen w-full bg-black flex items-center justify-center overflow-hidden">
+    <div className="fixed inset-0 w-full h-[100dvh] bg-black flex items-center justify-center overflow-hidden">
       {/* Feed Container */}
       <div 
         ref={containerRef}
