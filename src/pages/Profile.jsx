@@ -35,8 +35,12 @@ export default function Profile() {
     e.preventDefault();
     setSuccessMsg('');
     
+    if (!name.trim()) {
+       return setSuccessMsg('Please enter a valid name');
+    }
+
     const formData = new FormData();
-    formData.append('name', name);
+    formData.append('name', name.trim());
     if (photo) {
       formData.append('photo', photo);
     }
@@ -44,6 +48,8 @@ export default function Profile() {
     const result = await dispatch(updateProfile(formData));
     if (updateProfile.fulfilled.match(result)) {
       setSuccessMsg('Profile updated successfully!');
+    } else {
+       console.error("Profile update failed:", result.payload);
     }
   };
 

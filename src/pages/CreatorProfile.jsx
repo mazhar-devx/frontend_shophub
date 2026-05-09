@@ -24,6 +24,13 @@ export default function CreatorProfile() {
   const [isFollowing, setIsFollowing] = useState(false);
 
   useEffect(() => {
+    // Basic check for MongoDB ObjectId format (24 hex chars)
+    const isValidId = /^[0-9a-fA-F]{24}$/.test(id);
+    if (!isValidId && id !== 'mazhar.devx') {
+       setLoading(false);
+       setCreator(null);
+       return;
+    }
     fetchCreatorData();
   }, [id]);
 

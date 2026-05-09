@@ -13,6 +13,7 @@ export default function VideoUpload() {
   const [preview, setPreview] = useState(null);
   const [thumbPreview, setThumbPreview] = useState(null);
   const [name, setName] = useState("");
+  const [caption, setCaption] = useState("");
   const [description, setDescription] = useState("");
   const [productLink, setProductLink] = useState("");
   const [tagInput, setTagInput] = useState("");
@@ -92,6 +93,7 @@ export default function VideoUpload() {
       }
 
       formData.append("name", name);
+      formData.append("caption", caption);
       formData.append("description", description);
       if (productLink) formData.append("productLink", productLink);
       formData.append("tags", tagsList.join(','));
@@ -228,6 +230,19 @@ export default function VideoUpload() {
                      className="w-full bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-2xl px-6 py-4 text-sm dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all"
                    />
                 </div>
+
+                <div className="space-y-2">
+                    <label className="text-xs font-black text-gray-500 uppercase tracking-widest ml-2 flex items-center gap-2">
+                       <Type className="w-3 h-3" /> Moving Caption (Top of Video)
+                    </label>
+                    <input 
+                      type="text" 
+                      value={caption}
+                      onChange={(e) => setCaption(e.target.value)}
+                      placeholder="Enter a moving caption for the top..." 
+                      className="w-full bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-2xl px-6 py-4 text-sm dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all"
+                    />
+                 </div>
 
                 <div className="space-y-2">
                    <label className="text-xs font-black text-gray-500 uppercase tracking-widest ml-2 flex items-center gap-2">

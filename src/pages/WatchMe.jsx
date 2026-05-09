@@ -8,6 +8,9 @@ import NotificationsModal from "../components/NotificationsModal";
 import api from "../services/api";
 import { getProductImageUrl } from "../utils/constants";
 
+// URL Detector Regex
+const URL_REGEX = /(https?:\/\/[^\s]+)/g;
+
 const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClick }) => {
   const videoRef = useRef(null);
   const [isLiked, setIsLiked] = useState(false);
@@ -275,6 +278,20 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
         className="w-full h-full object-cover"
       />
 
+      {/* Top Moving Caption */}
+      {video.caption && (
+        <div className="absolute top-12 left-0 right-0 z-30 pointer-events-none overflow-hidden bg-black/20 backdrop-blur-sm py-2 border-y border-white/10">
+           <div className="flex whitespace-nowrap animate-marquee">
+              <span className="text-white font-black uppercase tracking-widest text-sm px-4">{video.caption}</span>
+              <span className="text-pink-500 font-black uppercase tracking-widest text-sm px-4">•</span>
+              <span className="text-white font-black uppercase tracking-widest text-sm px-4">{video.caption}</span>
+              <span className="text-pink-500 font-black uppercase tracking-widest text-sm px-4">•</span>
+              <span className="text-white font-black uppercase tracking-widest text-sm px-4">{video.caption}</span>
+              <span className="text-pink-500 font-black uppercase tracking-widest text-sm px-4">•</span>
+           </div>
+        </div>
+      )}
+
       {/* Tap Overlay (handles clicks/taps instead of video element) */}
       <div 
         className="absolute inset-0 z-10" 
@@ -454,6 +471,21 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
             <h3 className="text-white font-bold text-lg mb-2 hover:underline inline-block">@{video.user?.vendorName || video.user?.name}</h3>
          </Link>
          <p className="text-white/90 text-sm mb-3 line-clamp-2">{video.description}</p>
+         
+         {/* Beautiful URL Badges from Description */}
+         <div className="flex flex-wrap gap-2 mb-3">
+            {video.description?.match(URL_REGEX)?.map((url, i) => (
+               <a 
+                 key={i} 
+                 href={url} 
+                 target="_blank" 
+                 rel="noreferrer"
+                 className="pointer-events-auto px-3 py-1.5 bg-cyan-500/20 backdrop-blur-md border border-cyan-500/30 rounded-lg text-[10px] font-black text-cyan-400 uppercase tracking-widest flex items-center gap-2 hover:bg-cyan-500/40 transition-all"
+               >
+                  <Globe className="w-3 h-3" /> Visit Site
+               </a>
+            ))}
+         </div>
          <div className="flex items-center gap-2 mb-4 flex-wrap">
             {video.tags?.map(tag => (
               <button 
