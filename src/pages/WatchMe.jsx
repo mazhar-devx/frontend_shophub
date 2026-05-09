@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { Link, useSearchParams, useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, MessageCircle, Share2, Bookmark, Plus, X, Music2, Bell, ChevronLeft, Send, Volume2, VolumeX, Download, Play, ShoppingCart, Search, MoreVertical, Edit2, Trash2, Image as ImageIcon, MoreHorizontal } from "lucide-react";
+import { Heart, MessageCircle, Share2, Bookmark, Plus, X, Music2, Bell, ChevronLeft, Send, Volume2, VolumeX, Download, Play, ShoppingCart, Search, MoreVertical, Edit2, Trash2, Image as ImageIcon, MoreHorizontal, RotateCw } from "lucide-react";
 import SEO from "../components/SEO";
 import NotificationsModal from "../components/NotificationsModal";
 import api from "../services/api";
@@ -352,40 +352,49 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
            <span className="text-white text-xs font-bold shadow-sm">Share</span>
         </button>
 
-        {/* More Menu (for owner) */}
-        {isAuthenticated && user?._id === video.user?._id && (
-          <div className="relative">
-             <button 
-               onClick={() => setShowVideoMenu(!showVideoMenu)} 
-               className="p-3 rounded-full bg-black/20 backdrop-blur-md text-white hover:bg-black/40 transition-all pointer-events-auto"
-             >
-                <MoreVertical className="w-7 h-7" />
-             </button>
-             <AnimatePresence>
-                {showVideoMenu && (
-                   <motion.div 
-                     initial={{ opacity: 0, scale: 0.9, y: 10 }}
-                     animate={{ opacity: 1, scale: 1, y: 0 }}
-                     exit={{ opacity: 0, scale: 0.9, y: 10 }}
-                     className="absolute bottom-full right-0 mb-2 w-40 bg-white dark:bg-[#1a1a1a] rounded-2xl shadow-2xl overflow-hidden border border-black/10 dark:border-white/10 pointer-events-auto"
-                   >
-                      <button 
-                        onClick={() => { setIsEditingVideo(true); setShowVideoMenu(false); }}
-                        className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 transition-colors border-b border-black/5 dark:border-white/5"
-                      >
-                         <Edit2 className="w-4 h-4" /> Edit
-                      </button>
-                      <button 
-                        onClick={handleDeleteVideo}
-                        className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
-                      >
-                         <Trash2 className="w-4 h-4" /> Delete
-                      </button>
-                   </motion.div>
-                )}
-             </AnimatePresence>
-          </div>
-        )}
+        {/* More Menu (Refresh & Management) */}
+        <div className="relative">
+           <button 
+             onClick={() => setShowVideoMenu(!showVideoMenu)} 
+             className="p-3 rounded-full bg-black/20 backdrop-blur-md text-white hover:bg-black/40 transition-all pointer-events-auto"
+           >
+              <MoreVertical className="w-7 h-7" />
+           </button>
+           <AnimatePresence>
+              {showVideoMenu && (
+                 <motion.div 
+                   initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                   animate={{ opacity: 1, scale: 1, y: 0 }}
+                   exit={{ opacity: 0, scale: 0.9, y: 10 }}
+                   className="absolute bottom-full right-0 mb-2 w-48 bg-white dark:bg-[#1a1a1a] rounded-2xl shadow-2xl overflow-hidden border border-black/10 dark:border-white/10 pointer-events-auto"
+                 >
+                    <button 
+                      onClick={() => { syncNewVideos(); setShowVideoMenu(false); }}
+                      className="w-full flex items-center gap-3 px-4 py-3 text-sm font-black text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 transition-colors border-b border-black/5 dark:border-white/5"
+                    >
+                       <RotateCw className="w-4 h-4 text-cyan-500" /> Refresh Feed
+                    </button>
+
+                    {isAuthenticated && user?._id === video.user?._id && (
+                       <>
+                          <button 
+                            onClick={() => { setIsEditingVideo(true); setShowVideoMenu(false); }}
+                            className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 transition-colors border-b border-black/5 dark:border-white/5"
+                          >
+                             <Edit2 className="w-4 h-4" /> Edit Video
+                          </button>
+                          <button 
+                            onClick={handleDeleteVideo}
+                            className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
+                          >
+                             <Trash2 className="w-4 h-4" /> Delete Video
+                          </button>
+                       </>
+                    )}
+                 </motion.div>
+              )}
+           </AnimatePresence>
+        </div>
       </div>
 
       {/* Bottom Info */}
@@ -417,7 +426,7 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
             ))}
          </div>
          <Link to={`/sound/${video.soundId || video._id}`} className="flex items-center gap-2 text-white/80 pointer-events-auto hover:text-white group">
-            <Music2 className="w-4 h-4 animate-spin group-hover:text-pink-500" style={{ animationDuration: '3s' }} />
+            <Music2 className="w-4 h-4 group-hover:text-pink-500" />
             <marquee className="text-xs font-medium w-40 cursor-pointer">Original Sound - {video.name}</marquee>
          </Link>
       </div>
@@ -772,9 +781,9 @@ export default function WatchMe() {
     return (
       <div className="h-screen w-full flex items-center justify-center bg-black">
          <motion.div 
-           animate={{ scale: [1, 1.2, 1], rotate: [0, 360] }}
+           animate={{ scale: [1, 1.2, 1] }}
            transition={{ duration: 2, repeat: Infinity }}
-           className="w-16 h-16 border-4 border-pink-500 border-t-transparent rounded-full"
+           className="w-16 h-16 border-4 border-pink-500 rounded-full"
          />
       </div>
     );
@@ -789,8 +798,16 @@ export default function WatchMe() {
           image={getProductImageUrl(videos[activeIndex].thumbnailUrl || videos[activeIndex].videoUrl)}
           type="video.other"
           url={`/watch-me?v=${videos[activeIndex]._id}`}
-          keywords={videos[activeIndex].tags?.join(', ')}
+          keywords={`${videos[activeIndex].tags?.join(', ')}, shophub, video, social, shopping, ${videos[activeIndex].user?.vendorName || videos[activeIndex].user?.name}`}
         >
+          <meta property="og:video" content={getProductImageUrl(videos[activeIndex].videoUrl)} />
+          <meta property="og:video:type" content="video/mp4" />
+          <meta property="og:video:width" content="720" />
+          <meta property="og:video:height" content="1280" />
+          <meta name="twitter:card" content="player" />
+          <meta name="twitter:player" content={getProductImageUrl(videos[activeIndex].videoUrl)} />
+          <meta name="twitter:player:width" content="720" />
+          <meta name="twitter:player:height" content="1280" />
           <script type="application/ld+json">
             {JSON.stringify({
               "@context": "https://schema.org",
@@ -801,15 +818,24 @@ export default function WatchMe() {
               "uploadDate": videos[activeIndex].createdAt,
               "contentUrl": getProductImageUrl(videos[activeIndex].videoUrl),
               "embedUrl": `${window.location.origin}/watch-me?v=${videos[activeIndex]._id}`,
-              "interactionStatistic": {
-                "@type": "InteractionCounter",
-                "interactionType": "https://schema.org/LikeAction",
-                "userInteractionCount": videos[activeIndex].likes?.length || 0
-              },
+              "duration": "PT0M30S",
+              "interactionStatistic": [
+                {
+                  "@type": "InteractionCounter",
+                  "interactionType": "https://schema.org/LikeAction",
+                  "userInteractionCount": videos[activeIndex].likes?.length || 0
+                },
+                {
+                  "@type": "InteractionCounter",
+                  "interactionType": "https://schema.org/CommentAction",
+                  "userInteractionCount": videos[activeIndex].comments?.length || 0
+                }
+              ],
               "author": {
                 "@type": "Person",
                 "name": videos[activeIndex].user?.vendorName || videos[activeIndex].user?.name,
-                "url": `${window.location.origin}/creator/${videos[activeIndex].user?._id}`
+                "url": `${window.location.origin}/creator/${videos[activeIndex].user?._id}`,
+                "image": getProductImageUrl(videos[activeIndex].user?.photo)
               }
             })}
           </script>
