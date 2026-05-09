@@ -524,6 +524,25 @@ export default function Navbar() {
               </div>
               
               <div className="flex-1 overflow-y-auto p-6 space-y-4">
+                 {/* Mobile PWA Install */}
+                 {isInstallable && (
+                    <motion.button
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      onClick={handleInstallClick}
+                      className="w-full flex items-center gap-4 p-5 rounded-3xl bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/30 text-cyan-400 mb-6"
+                    >
+                       <div className="w-12 h-12 rounded-2xl bg-cyan-500 flex items-center justify-center text-white shadow-lg shadow-cyan-500/20">
+                          <Download className="w-6 h-6" />
+                       </div>
+                       <div className="flex flex-col items-start">
+                          <span className="font-black text-white">Download App</span>
+                          <span className="text-[10px] uppercase tracking-widest font-bold opacity-60">For Better Experience</span>
+                       </div>
+                       <ArrowRight className="ml-auto w-4 h-4 opacity-30" />
+                    </motion.button>
+                 )}
+
                  {[
                     { path: '/', label: 'Home', icon: <LayoutGrid className="w-6 h-6" /> },
                     { path: '/products', label: 'Browse Shop', icon: <ShoppingCart className="w-6 h-6" /> },
