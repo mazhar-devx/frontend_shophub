@@ -732,6 +732,19 @@ export default function WatchMe() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   const [showNotifications, setShowNotifications] = useState(false);
   const [hasUnread, setHasUnread] = useState(false);
+  
+  // Dynamic Product Strip Logic: Prioritize active video's product, then recent ones
+  const prodVideos = videos.filter(v => v.productLink);
+  let displayProductVideos = prodVideos.slice(0, 4);
+  const currentVideo = videos[activeIndex];
+
+  if (currentVideo?.productLink && !displayProductVideos.some(v => v._id === currentVideo._id)) {
+     displayProductVideos = [currentVideo, ...prodVideos.filter(v => v._id !== currentVideo._id).slice(0, 3)];
+  } else if (currentVideo?.productLink) {
+     // Reorder to put current first
+     const others = displayProductVideos.filter(v => v._id !== currentVideo._id);
+     displayProductVideos = [currentVideo, ...others].slice(0, 4);
+  }
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
@@ -1034,7 +1047,7 @@ export default function WatchMe() {
                      animate={{ opacity: 1, y: 0 }}
                      className="flex gap-2 overflow-x-auto no-scrollbar max-w-[90vw] px-2 pointer-events-auto justify-center"
                    >
-                      {videos.filter(v => v.productLink).slice(0, 4).map((v, i) => (
+                      {displayProductVideos.map((v, i) => (
                          <button 
                            key={v._id} 
                            onClick={() => {
