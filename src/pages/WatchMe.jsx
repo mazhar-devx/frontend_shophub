@@ -417,7 +417,7 @@ export default function WatchMe() {
       if (feedType === "foryou") {
         url += "?sort=likes";
       } else if (feedType === "following") {
-        url += "?feed=following";
+        url += `?feed=following&userId=${user?._id}`;
       }
       if (selectedTag) {
         url += `${url.includes('?') ? '&' : '?'}tag=${encodeURIComponent(selectedTag)}`;
