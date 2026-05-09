@@ -23,7 +23,8 @@ import {
   Package, 
   Heart, 
   Settings,
-  ArrowRight
+  ArrowRight,
+  Download
 } from "lucide-react";
 
 export default function Navbar() {
@@ -42,6 +43,8 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [isThemeMenuOpen, setIsThemeMenuOpen] = useState(false);
   const [showCategoriesMegaMenu, setShowCategoriesMegaMenu] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [isInstallable, setIsInstallable] = useState(false);
 
   const themeRef = useRef(null);
   const { scrollYProgress } = useScroll();
@@ -84,6 +87,32 @@ export default function Navbar() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setIsInstallable(true);
+    };
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    
+    // Check if already installed
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      setIsInstallable(false);
+    }
+
+    return () => window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setIsInstallable(false);
+      setDeferredPrompt(null);
+    }
+  };
   
   // Get search suggestions when query changes
   useEffect(() => {
@@ -299,6 +328,19 @@ export default function Navbar() {
               )}
             </motion.button>
             
+            {/* Download App Button */}
+            {isInstallable && (
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleInstallClick}
+                className="hidden lg:flex items-center gap-2 px-4 py-2 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-500 rounded-full font-bold text-sm transition-all border border-cyan-500/20 mr-2 group"
+              >
+                <Download className="w-4 h-4 group-hover:animate-bounce" />
+                <span>Install App</span>
+              </motion.button>
+            )}
+
             {/* User Profile / Login */}
             {isAuthenticated ? (
               <div className="relative">

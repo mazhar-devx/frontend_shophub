@@ -87,26 +87,20 @@
   [data-theme='light'] .bg-white\/5,
   [data-theme='light'] .bg-white\/10,
   [data-theme='light'] .bg-white\/20,
-  [data-theme='light'] .bg-white\/50 {
-    background-color: rgba(255, 255, 255, 0.8) !important;
-    border: 1px solid #D5D9D9 !important;
-  }
-
-  /* Keep glass effects intact but adjust for light mode */
-  [data-theme='light'] .glass {
-    background: rgba(255, 255, 255, 0.7) !important;
-    border: 1px solid rgba(0, 0, 0, 0.1) !important;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05) !important;
-    color: var(--text-primary);
+  /* Transparent/glass styles for high visibility - NON AGGRESSIVE */
+  [data-theme='light'] .bg-white\/5,
+  [data-theme='light'] .bg-white\/10,
+  [data-theme='light'] .bg-white\/20 {
+    background-color: rgba(255, 255, 255, 0.4) !important;
+    border: 1px solid rgba(0, 0, 0, 0.05) !important;
   }
 
   [data-theme='light'] .border-white\/5,
   [data-theme='light'] .border-white\/10,
   [data-theme='light'] .border-white\/20 {
-    border-color: #D5D9D9 !important;
+    border-color: rgba(0, 0, 0, 0.1) !important;
   }
 
-  /* Background Gradients to Solid White (only for main wrappers) */
   [data-theme='light'] .bg-gradient-to-b.from-black,
   [data-theme='light'] .bg-gradient-to-b.from-\[\#030014\] {
     background-image: none !important;
