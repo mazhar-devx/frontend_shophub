@@ -115,8 +115,8 @@ export default function CreatorProfile() {
                </motion.div>
 
                <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left">
-                  <div className="flex flex-col md:flex-row items-center gap-4 mb-4">
-                     <h1 className="text-3xl font-black text-primary dark:text-white tracking-tighter uppercase">{creator.vendorName || creator.name}</h1>
+                  <div className="flex flex-col md:flex-row items-center gap-4 mb-6">
+                     <h1 className="text-2xl md:text-3xl font-black text-primary dark:text-white tracking-tighter uppercase text-center md:text-left">{creator.vendorName || creator.name}</h1>
                      <div className="flex gap-2">
                          {isOwnProfile ? (
                             <Link to="/upload-video" className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold rounded-full hover:scale-105 transition-all shadow-lg shadow-pink-500/20">
@@ -134,7 +134,7 @@ export default function CreatorProfile() {
                       </div>
                    </div>
  
-                   <div className="flex gap-8 mb-6">
+                   <div className="flex flex-wrap justify-center md:justify-start gap-4 md:gap-8 mb-6 w-full">
                       <button 
                         onClick={() => { setSocialType('followers'); setShowSocialModal(true); }}
                         className="flex flex-col items-center md:items-start hover:scale-105 transition-transform"
@@ -166,7 +166,7 @@ export default function CreatorProfile() {
             </div>
 
             {/* Tabs */}
-            <div className="flex border-b border-black/5 dark:border-white/5 mt-12">
+            <div className="flex overflow-x-auto no-scrollbar border-b border-black/5 dark:border-white/5 mt-12">
                <button 
                  onClick={() => setActiveTab("videos")}
                  className={`flex items-center gap-2 px-8 py-4 text-sm font-black uppercase tracking-widest transition-all relative ${activeTab === "videos" ? "text-pink-500" : "text-gray-500 hover:text-primary dark:hover:text-white"}`}

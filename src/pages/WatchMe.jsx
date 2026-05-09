@@ -2,12 +2,12 @@ import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { Link, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, MessageCircle, Share2, Bookmark, Plus, X, Music2, Bell, ChevronLeft, Send } from "lucide-react";
+import { Heart, MessageCircle, Share2, Bookmark, Plus, X, Music2, Bell, ChevronLeft, Send, Volume2, VolumeX, Download } from "lucide-react";
 import NotificationsModal from "../components/NotificationsModal";
 import api from "../services/api";
 import { getProductImageUrl } from "../utils/constants";
 
-const VideoCard = ({ video, isActive }) => {
+const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClick }) => {
   const videoRef = useRef(null);
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
@@ -83,6 +83,22 @@ const VideoCard = ({ video, isActive }) => {
     { name: "WhatsApp", icon: "🟢", link: `https://wa.me/?text=Check out this video on ShopHub: ${window.location.origin}/watch-me?v=${video._id}` },
     { name: "Facebook", icon: "🔵", link: `https://www.facebook.com/sharer/sharer.php?u=${window.location.origin}/watch-me?v=${video._id}` },
     { name: "Twitter", icon: "𝕏", link: `https://twitter.com/intent/tweet?text=Check out this video on ShopHub!&url=${window.location.origin}/watch-me?v=${video._id}` },
+    { name: "Download", icon: <Download className="w-6 h-6 text-pink-500" />, action: async () => {
+        try {
+           const response = await fetch(getProductImageUrl(video.videoUrl));
+           const blob = await response.blob();
+           const url = window.URL.createObjectURL(blob);
+           const a = document.createElement('a');
+           a.style.display = 'none';
+           a.href = url;
+           a.download = `shophub_video_${video._id}.mp4`;
+           document.body.appendChild(a);
+           a.click();
+           window.URL.revokeObjectURL(url);
+        } catch (error) {
+           alert("Download failed. Please try again.");
+        }
+    }},
     { name: "Copy Link", icon: "🔗", action: () => {
         navigator.clipboard.writeText(`${window.location.origin}/watch-me?v=${video._id}`);
         alert("Link copied!");
@@ -97,7 +113,7 @@ const VideoCard = ({ video, isActive }) => {
         src={getProductImageUrl(video.videoUrl)}
         poster={video.thumbnailUrl ? getProductImageUrl(video.thumbnailUrl) : undefined}
         loop
-        muted
+        muted={isGlobalMuted}
         playsInline
         className="w-full h-full object-cover"
         onClick={() => {
@@ -105,6 +121,14 @@ const VideoCard = ({ video, isActive }) => {
            videoRef.current?.paused ? videoRef.current.play().catch(e => console.log(e)) : videoRef.current.pause();
         }}
       />
+
+      {/* Mute Toggle Overlay */}
+      <button 
+        onClick={(e) => { e.stopPropagation(); setIsGlobalMuted(!isGlobalMuted); }} 
+        className="absolute bottom-32 right-4 p-3 rounded-full bg-black/20 backdrop-blur-md text-white hover:scale-110 transition-all z-20 group"
+      >
+        {isGlobalMuted ? <VolumeX className="w-6 h-6" /> : <Volume2 className="w-6 h-6" />}
+      </button>
 
       {/* Overlay Content */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60 pointer-events-none" />
@@ -170,9 +194,15 @@ const VideoCard = ({ video, isActive }) => {
             <h3 className="text-white font-bold text-lg mb-2 hover:underline inline-block">@{video.user?.vendorName || video.user?.name}</h3>
          </Link>
          <p className="text-white/90 text-sm mb-3 line-clamp-2">{video.description}</p>
-         <div className="flex items-center gap-2 mb-4">
+         <div className="flex items-center gap-2 mb-4 flex-wrap">
             {video.tags?.map(tag => (
-              <span key={tag} className="text-white font-black text-sm italic hover:underline cursor-pointer pointer-events-auto">#{tag}</span>
+              <button 
+                key={tag} 
+                onClick={(e) => { e.stopPropagation(); onTagClick(tag); }}
+                className="text-white font-black text-sm italic hover:text-pink-400 hover:underline cursor-pointer pointer-events-auto bg-black/30 px-2 py-0.5 rounded-md backdrop-blur-sm"
+              >
+                #{tag}
+              </button>
             ))}
          </div>
          <div className="flex items-center gap-2 text-white/80">
@@ -277,6 +307,8 @@ export default function WatchMe() {
   const [loading, setLoading] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
   const [feedType, setFeedType] = useState("foryou"); // "foryou" or "following"
+  const [selectedTag, setSelectedTag] = useState(null);
+  const [isGlobalMuted, setIsGlobalMuted] = useState(true); // Default muted for autoplay policies
   const containerRef = useRef(null);
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -315,7 +347,7 @@ export default function WatchMe() {
 
   useEffect(() => {
     fetchVideos();
-  }, [feedType]);
+  }, [feedType, selectedTag]);
 
   const fetchVideos = async () => {
     setLoading(true);
@@ -325,6 +357,9 @@ export default function WatchMe() {
         url += "?sort=likes";
       } else if (feedType === "following") {
         url += "?feed=following";
+      }
+      if (selectedTag) {
+        url += `${url.includes('?') ? '&' : '?'}tag=${encodeURIComponent(selectedTag)}`;
       }
       const res = await api.get(url);
       setVideos(res.data.data.videos);
@@ -369,6 +404,9 @@ export default function WatchMe() {
              key={video._id} 
              video={video} 
              isActive={idx === activeIndex} 
+             isGlobalMuted={isGlobalMuted}
+             setIsGlobalMuted={setIsGlobalMuted}
+             onTagClick={(tag) => setSelectedTag(tag)}
            />
          ))}
 
@@ -412,11 +450,25 @@ export default function WatchMe() {
             </button>
             <span className="w-1 h-1 rounded-full bg-white/30" />
             <button 
-              onClick={() => setFeedType("foryou")}
-              className={`text-sm font-black transition-all ${feedType === "foryou" ? 'text-white' : 'text-white/50 hover:text-white'} uppercase tracking-tighter`}
+              onClick={() => {
+                setFeedType("foryou");
+                setSelectedTag(null);
+              }}
+              className={`text-sm font-black transition-all ${feedType === "foryou" && !selectedTag ? 'text-white' : 'text-white/50 hover:text-white'} uppercase tracking-tighter`}
             >
               For You
             </button>
+            {selectedTag && (
+              <>
+                <span className="w-1 h-1 rounded-full bg-white/30" />
+                <button 
+                  onClick={() => setSelectedTag(null)}
+                  className="text-sm font-black text-pink-500 uppercase tracking-tighter flex items-center gap-1"
+                >
+                  #{selectedTag} <X className="w-3 h-3" />
+                </button>
+              </>
+            )}
          </div>
 
           {/* Top Right: Profile & Notifications */}
