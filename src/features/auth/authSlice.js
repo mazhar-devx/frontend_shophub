@@ -88,9 +88,7 @@ export const updateProfile = createAsyncThunk(
   "auth/updateProfile",
   async (formData, { rejectWithValue }) => {
     try {
-      const response = await api.patch("/users/updateMe", formData, {
-        headers: { "Content-Type": "multipart/form-data" }
-      });
+      const response = await api.patch("/users/updateMe", formData);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || { message: "Profile update failed" });
