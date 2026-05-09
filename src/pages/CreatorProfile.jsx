@@ -231,7 +231,7 @@ export default function CreatorProfile() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.1 }}
-                    onClick={() => window.location.href = `/watch-me?v=${video._id}`}
+                    onClick={() => window.location.href = `/watch-me?v=${video._id}&userId=${id}`}
                     className="group relative aspect-[9/16] bg-black rounded-3xl overflow-hidden cursor-pointer"
                   >
                      <video src={getProductImageUrl(video.videoUrl)} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" />
@@ -251,7 +251,7 @@ export default function CreatorProfile() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.1 }}
-                    onClick={() => window.location.href = `/watch-me?v=${video._id}`}
+                    onClick={() => window.location.href = `/watch-me?v=${video._id}&userId=${id}`}
                     className="group relative aspect-[9/16] bg-black rounded-3xl overflow-hidden cursor-pointer"
                   >
                      <video src={getProductImageUrl(video.videoUrl)} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" />
@@ -271,7 +271,7 @@ export default function CreatorProfile() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.1 }}
-                    onClick={() => window.location.href = `/watch-me?v=${video._id}`}
+                    onClick={() => window.location.href = `/watch-me?v=${video._id}&userId=${id}`}
                     className="group relative aspect-[9/16] bg-black rounded-3xl overflow-hidden cursor-pointer"
                   >
                      <video src={getProductImageUrl(video.videoUrl)} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" />

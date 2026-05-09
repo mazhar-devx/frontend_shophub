@@ -524,10 +524,25 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
               </button>
             ))}
          </div>
-         <Link to={`/sound/${video.soundId || video._id}`} className="flex items-center gap-2 text-white/80 pointer-events-auto hover:text-white group">
-            <Music2 className="w-4 h-4 group-hover:text-pink-500" />
-            <marquee className="text-xs font-medium w-40 cursor-pointer">Original Sound - {video.name}</marquee>
-         </Link>
+          <Link to={`/sound/${video.soundId || video._id}`} className="flex items-center gap-2 text-white/80 pointer-events-auto hover:text-white group max-w-[150px] overflow-hidden">
+            <Music2 className="w-4 h-4 group-hover:text-pink-500 shrink-0" />
+            <div className="flex whitespace-nowrap">
+              <motion.div 
+                animate={{ x: [0, -100] }}
+                transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                className="text-xs font-bold uppercase tracking-tighter pr-4"
+              >
+                Original Sound - {video.user?.vendorName || video.user?.name}
+              </motion.div>
+              <motion.div 
+                animate={{ x: [0, -100] }}
+                transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                className="text-xs font-bold uppercase tracking-tighter pr-4"
+              >
+                Original Sound - {video.user?.vendorName || video.user?.name}
+              </motion.div>
+            </div>
+          </Link>
       </div>
 
       {/* Share Bottom Sheet */}
@@ -800,12 +815,21 @@ export default function WatchMe() {
   const fetchVideos = async () => {
     setLoading(true);
     try {
+      const searchParams = new URLSearchParams(window.location.search);
+      const userIdParam = searchParams.get('userId');
+      const soundIdParam = searchParams.get('soundId');
+      
       let url = "/videos";
-      if (feedType === "foryou") {
+      if (userIdParam) {
+        url = `/videos/user/${userIdParam}`;
+      } else if (soundIdParam) {
+        url = `/videos?soundId=${soundIdParam}`;
+      } else if (feedType === "foryou") {
         url += `?sort=likes&userId=${user?._id || ''}`;
       } else if (feedType === "following") {
         url += `?feed=following&userId=${user?._id}`;
       }
+      
       if (selectedTag) {
         url += `${url.includes('?') ? '&' : '?'}tag=${encodeURIComponent(selectedTag)}`;
       }
@@ -820,12 +844,21 @@ export default function WatchMe() {
 
   const syncNewVideos = async (silent = false) => {
      try {
+        const searchParams = new URLSearchParams(window.location.search);
+        const userIdParam = searchParams.get('userId');
+        const soundIdParam = searchParams.get('soundId');
+
         let url = "/videos";
-        if (feedType === "foryou") {
+        if (userIdParam) {
+          url = `/videos/user/${userIdParam}`;
+        } else if (soundIdParam) {
+          url = `/videos?soundId=${soundIdParam}`;
+        } else if (feedType === "foryou") {
           url += `?sort=likes&userId=${user?._id || ''}`;
         } else if (feedType === "following") {
           url += `?feed=following&userId=${user?._id}`;
         }
+        
         if (selectedTag) {
           url += `${url.includes('?') ? '&' : '?'}tag=${encodeURIComponent(selectedTag)}`;
         }
