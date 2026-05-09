@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
-import { Upload, X, CheckCircle, AlertCircle, Video, Tag, Type, AlignLeft, Globe } from "lucide-react";
+import { Upload, X, CheckCircle, AlertCircle, Video, Tag, Type, AlignLeft, Globe, ChevronLeft } from "lucide-react";
+import { Link } from "react-router-dom";
 import api from "../services/api";
 
 export default function VideoUpload() {
@@ -92,8 +93,11 @@ export default function VideoUpload() {
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-white dark:bg-white/5 backdrop-blur-xl border border-black/5 dark:border-white/10 rounded-[2.5rem] shadow-2xl overflow-hidden"
+          className="bg-white dark:bg-white/5 backdrop-blur-xl border border-black/5 dark:border-white/10 rounded-[2.5rem] shadow-2xl overflow-hidden relative"
         >
+          <Link to="/watch-me" className="absolute top-8 left-8 p-3 bg-black/5 dark:bg-white/5 backdrop-blur-md rounded-full dark:text-white hover:bg-pink-500 hover:text-white transition-all z-30 group shadow-lg">
+             <ChevronLeft className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
+          </Link>
           <div className="flex flex-col lg:flex-row h-full">
             {/* Left Side: Upload Area */}
             <div className="lg:w-1/2 p-8 lg:p-12 border-b lg:border-b-0 lg:border-r border-black/5 dark:border-white/10">
