@@ -7,8 +7,10 @@ import api from "../services/api";
 
 export default function VideoUpload() {
   const [videoFile, setVideoFile] = useState(null);
+  const [thumbnailFile, setThumbnailFile] = useState(null);
   const [videoUrl, setVideoUrl] = useState("");
   const [preview, setPreview] = useState(null);
+  const [thumbPreview, setThumbPreview] = useState(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [tags, setTags] = useState("");
@@ -29,6 +31,15 @@ export default function VideoUpload() {
       setVideoUrl("");
       const url = URL.createObjectURL(file);
       setPreview(url);
+    }
+  };
+
+  const handleThumbChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setThumbnailFile(file);
+      const url = URL.createObjectURL(file);
+      setThumbPreview(url);
     }
   };
 
@@ -55,6 +66,11 @@ export default function VideoUpload() {
       } else {
         formData.append("videoUrl", videoUrl);
       }
+      
+      if (thumbnailFile) {
+        formData.append("thumbnailFile", thumbnailFile);
+      }
+
       formData.append("name", name);
       formData.append("description", description);
       formData.append("tags", tags);
@@ -109,6 +125,34 @@ export default function VideoUpload() {
                            <X className="w-4 h-4" />
                         </button>
                       )}
+                   </div>
+                </div>
+
+                {/* Thumbnail Upload */}
+                <div className="space-y-2">
+                   <label className="text-xs font-black text-gray-500 uppercase tracking-widest ml-2">Video Poster (Optional)</label>
+                   <div className="relative group">
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        onChange={handleThumbChange}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                      />
+                      <div className={`h-32 border-2 border-dashed rounded-3xl flex flex-col items-center justify-center transition-all ${thumbnailFile ? 'border-purple-500 bg-purple-500/5' : 'border-black/10 dark:border-white/10 group-hover:border-purple-500 group-hover:bg-purple-500/5'}`}>
+                         {thumbPreview ? (
+                            <img src={thumbPreview} className="w-full h-full object-cover rounded-3xl" />
+                         ) : (
+                            <div className="flex flex-col items-center">
+                               <Upload className="w-6 h-6 text-gray-400 mb-2" />
+                               <span className="text-[10px] font-bold dark:text-white uppercase tracking-widest">Upload Poster</span>
+                            </div>
+                         )}
+                         {thumbnailFile && (
+                           <button onClick={() => {setThumbnailFile(null); setThumbPreview(null);}} className="absolute top-2 right-2 p-1.5 bg-black/60 text-white rounded-full hover:bg-red-500 z-20">
+                              <X className="w-3 h-3" />
+                           </button>
+                         )}
+                      </div>
                    </div>
                 </div>
 

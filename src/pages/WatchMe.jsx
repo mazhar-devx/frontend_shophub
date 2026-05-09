@@ -95,6 +95,7 @@ const VideoCard = ({ video, isActive }) => {
       <video
         ref={videoRef}
         src={video.videoUrl}
+        poster={video.thumbnailUrl ? getProductImageUrl(video.thumbnailUrl) : undefined}
         loop
         muted
         playsInline
