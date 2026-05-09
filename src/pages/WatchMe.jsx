@@ -31,6 +31,8 @@ const VideoCard = ({ video, isActive }) => {
     }
   }, [isActive, video.videoUrl]);
 
+  const [showShare, setShowShare] = useState(false);
+
   const handleLike = async () => {
     if (!isAuthenticated) return alert("Please login to like!");
     try {
@@ -63,10 +65,15 @@ const VideoCard = ({ video, isActive }) => {
     }
   };
 
-  const handleShare = () => {
-    navigator.clipboard.writeText(`${window.location.origin}/watch-me?v=${video._id}`);
-    alert("Link copied to clipboard!");
-  };
+  const shareLinks = [
+    { name: "WhatsApp", icon: "🟢", link: `https://wa.me/?text=Check out this video on ShopHub: ${window.location.origin}/watch-me?v=${video._id}` },
+    { name: "Facebook", icon: "🔵", link: `https://www.facebook.com/sharer/sharer.php?u=${window.location.origin}/watch-me?v=${video._id}` },
+    { name: "Twitter", icon: "𝕏", link: `https://twitter.com/intent/tweet?text=Check out this video on ShopHub!&url=${window.location.origin}/watch-me?v=${video._id}` },
+    { name: "Copy Link", icon: "🔗", action: () => {
+        navigator.clipboard.writeText(`${window.location.origin}/watch-me?v=${video._id}`);
+        alert("Link copied!");
+    }}
+  ];
 
   return (
     <div className="relative w-full h-full snap-start bg-black flex items-center justify-center overflow-hidden">
@@ -91,7 +98,7 @@ const VideoCard = ({ video, isActive }) => {
       <div className="absolute right-4 bottom-24 flex flex-col items-center gap-6 z-20">
         {/* Creator DP */}
         <div className="relative mb-4">
-           <Link to={`/creator/${video.user?._id}`}>
+           <Link to={`/creator/${video.user?._id}`} className="pointer-events-auto">
               <motion.div 
                 whileHover={{ scale: 1.1 }}
                 className="w-12 h-12 rounded-full border-2 border-white overflow-hidden shadow-lg"
@@ -102,9 +109,9 @@ const VideoCard = ({ video, isActive }) => {
            {user?._id !== video.user?._id && (
              <button 
                onClick={handleFollow}
-               className={`absolute -bottom-2 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full flex items-center justify-center border-2 border-black transition-all ${isFollowing ? 'bg-white text-black' : 'bg-pink-500 text-white'}`}
+               className={`absolute -bottom-2 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full flex items-center justify-center border-2 border-black transition-all pointer-events-auto ${isFollowing ? 'bg-white text-black' : 'bg-pink-500 text-white hover:scale-110'}`}
              >
-                {isFollowing ? <X className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
+                {isFollowing ? <X className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
              </button>
            )}
         </div>
@@ -117,7 +124,7 @@ const VideoCard = ({ video, isActive }) => {
            <span className="text-white text-xs font-bold shadow-sm">{likes}</span>
         </button>
 
-        {/* Comment */}
+        {/* Message / Comment */}
         <button onClick={() => setShowComments(true)} className="flex flex-col items-center gap-1 group">
            <div className="p-3 rounded-full bg-black/20 backdrop-blur-md text-white group-hover:scale-110 transition-all">
               <MessageCircle className="w-7 h-7" />
@@ -134,7 +141,7 @@ const VideoCard = ({ video, isActive }) => {
         </button>
 
         {/* Share */}
-        <button onClick={handleShare} className="flex flex-col items-center gap-1 group">
+        <button onClick={() => setShowShare(true)} className="flex flex-col items-center gap-1 group">
            <div className="p-3 rounded-full bg-black/20 backdrop-blur-md text-white group-hover:scale-110 transition-all">
               <Share2 className="w-7 h-7" />
            </div>
@@ -144,7 +151,9 @@ const VideoCard = ({ video, isActive }) => {
 
       {/* Bottom Info */}
       <div className="absolute left-4 bottom-8 right-16 z-20 pointer-events-none">
-         <h3 className="text-white font-bold text-lg mb-2">@{video.user?.vendorName || video.user?.name}</h3>
+         <Link to={`/creator/${video.user?._id}`} className="pointer-events-auto">
+            <h3 className="text-white font-bold text-lg mb-2 hover:underline inline-block">@{video.user?.vendorName || video.user?.name}</h3>
+         </Link>
          <p className="text-white/90 text-sm mb-3 line-clamp-2">{video.description}</p>
          <div className="flex items-center gap-2 mb-4">
             {video.tags?.map(tag => (
@@ -156,6 +165,38 @@ const VideoCard = ({ video, isActive }) => {
             <marquee className="text-xs font-medium w-40">Original Sound - {video.name}</marquee>
          </div>
       </div>
+
+      {/* Share Modal */}
+      <AnimatePresence>
+        {showShare && (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            className="absolute inset-0 z-[110] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm"
+          >
+             <div className="bg-white dark:bg-[#1a1a1a] rounded-[2.5rem] p-8 w-full max-w-xs shadow-2xl relative">
+                <button onClick={() => setShowShare(false)} className="absolute top-4 right-4 p-2 dark:text-white hover:bg-black/5 rounded-full"><X className="w-5 h-5" /></button>
+                <h3 className="text-xl font-black dark:text-white uppercase tracking-tighter mb-6">Share to</h3>
+                <div className="grid grid-cols-2 gap-4">
+                   {shareLinks.map(link => (
+                      link.action ? (
+                        <button key={link.name} onClick={link.action} className="flex flex-col items-center gap-2 p-4 rounded-3xl bg-black/5 dark:bg-white/5 hover:bg-pink-500/10 transition-all">
+                           <span className="text-2xl">{link.icon}</span>
+                           <span className="text-[10px] font-black uppercase tracking-widest dark:text-white">{link.name}</span>
+                        </button>
+                      ) : (
+                        <a key={link.name} href={link.link} target="_blank" rel="noreferrer" className="flex flex-col items-center gap-2 p-4 rounded-3xl bg-black/5 dark:bg-white/5 hover:bg-pink-500/10 transition-all">
+                           <span className="text-2xl">{link.icon}</span>
+                           <span className="text-[10px] font-black uppercase tracking-widest dark:text-white">{link.name}</span>
+                        </a>
+                      )
+                   ))}
+                </div>
+             </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Comments Sidebar/Overlay */}
       <AnimatePresence>
