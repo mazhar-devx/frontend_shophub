@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { Link, useSearchParams, useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, MessageCircle, Share2, Bookmark, Plus, X, Music2, Bell, ChevronLeft, Send, Volume2, VolumeX, Download, Play } from "lucide-react";
+import { Heart, MessageCircle, Share2, Bookmark, Plus, X, Music2, Bell, ChevronLeft, Send, Volume2, VolumeX, Download, Play, ShoppingCart } from "lucide-react";
 import NotificationsModal from "../components/NotificationsModal";
 import api from "../services/api";
 import { getProductImageUrl } from "../utils/constants";
@@ -250,7 +250,18 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
       </div>
 
       {/* Bottom Info */}
-      <div className="absolute left-4 bottom-8 right-16 z-20 pointer-events-none">
+      <div className="absolute left-4 bottom-8 right-16 z-20 pointer-events-none flex flex-col items-start">
+         {video.productLink && (
+           <a 
+             href={video.productLink} 
+             target="_blank" 
+             rel="noreferrer"
+             className="mb-4 pointer-events-auto flex items-center gap-2 bg-white/95 dark:bg-[#1a1a1a]/95 backdrop-blur-md text-black dark:text-white px-4 py-2.5 rounded-2xl font-black shadow-2xl hover:scale-105 transition-transform border border-black/5 dark:border-white/10 group"
+           >
+             <ShoppingCart className="w-5 h-5 text-pink-500 group-hover:-translate-y-1 transition-transform" />
+             <span className="text-sm uppercase tracking-widest">Shop Item</span>
+           </a>
+         )}
          <Link to={`/creator/${video.user?._id}`} className="pointer-events-auto">
             <h3 className="text-white font-bold text-lg mb-2 hover:underline inline-block">@{video.user?.vendorName || video.user?.name}</h3>
          </Link>

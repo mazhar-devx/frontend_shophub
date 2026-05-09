@@ -119,9 +119,14 @@ export default function CreatorProfile() {
                      <h1 className="text-2xl md:text-3xl font-black text-primary dark:text-white tracking-tighter uppercase text-center md:text-left">{creator.vendorName || creator.name}</h1>
                      <div className="flex gap-2">
                          {isOwnProfile ? (
-                            <Link to="/upload-video" className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold rounded-full hover:scale-105 transition-all shadow-lg shadow-pink-500/20">
-                               Upload Video
-                            </Link>
+                            <>
+                              <Link to="/upload-video" className="px-6 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold rounded-full hover:scale-105 transition-all shadow-lg shadow-pink-500/20">
+                                 Upload Video
+                              </Link>
+                              <Link to="/profile" className="px-6 py-2 bg-black/5 dark:bg-white/10 dark:text-white font-bold rounded-full hover:scale-105 transition-all">
+                                 Edit Profile
+                              </Link>
+                            </>
                          ) : (
                             <button 
                               onClick={handleFollow}

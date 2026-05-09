@@ -14,6 +14,7 @@ export default function VideoUpload() {
   const [thumbPreview, setThumbPreview] = useState(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [productLink, setProductLink] = useState("");
   const [tagInput, setTagInput] = useState("");
   const [tagsList, setTagsList] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -89,6 +90,7 @@ export default function VideoUpload() {
 
       formData.append("name", name);
       formData.append("description", description);
+      if (productLink) formData.append("productLink", productLink);
       formData.append("tags", tagsList.join(','));
       if (soundId) formData.append("soundId", soundId);
 
@@ -232,6 +234,19 @@ export default function VideoUpload() {
                      onChange={(e) => setDescription(e.target.value)}
                      placeholder="Tell us about your video..." 
                      className="w-full bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-2xl px-6 py-4 text-sm dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all resize-none"
+                   />
+                </div>
+
+                <div className="space-y-2">
+                   <label className="text-xs font-black text-gray-500 uppercase tracking-widest ml-2 flex items-center gap-2">
+                      <Globe className="w-3 h-3" /> Product Link (Optional)
+                   </label>
+                   <input 
+                     type="url" 
+                     value={productLink}
+                     onChange={(e) => setProductLink(e.target.value)}
+                     placeholder="https://example.com/product/123" 
+                     className="w-full bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-2xl px-6 py-4 text-sm dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all"
                    />
                 </div>
 
