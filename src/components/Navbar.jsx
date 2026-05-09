@@ -513,6 +513,3 @@ export default function Navbar() {
     </>
   );
 }
-    </>
-  );
-}
