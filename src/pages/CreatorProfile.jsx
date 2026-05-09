@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Heart, Play, Users, MessageCircle, ChevronLeft, Share2, Grid, Bookmark } from "lucide-react";
 import api from "../services/api";
 import { getProductImageUrl, DEFAULT_AVATAR } from "../utils/constants";
