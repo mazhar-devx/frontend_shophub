@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams, useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, MessageCircle, Share2, Bookmark, Plus, X, Music2, Bell, ChevronLeft, Send, Volume2, VolumeX, Download, Play } from "lucide-react";
 import NotificationsModal from "../components/NotificationsModal";
@@ -364,11 +364,13 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
 };
 
 export default function WatchMe() {
+  const { tag: routeTag } = useParams();
+  const navigate = useNavigate();
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
   const [feedType, setFeedType] = useState("foryou"); // "foryou" or "following"
-  const [selectedTag, setSelectedTag] = useState(null);
+  const [selectedTag, setSelectedTag] = useState(routeTag || null);
   const [isGlobalMuted, setIsGlobalMuted] = useState(true); // Default muted for autoplay policies
   const containerRef = useRef(null);
   const { isAuthenticated, user } = useSelector((state) => state.auth);
@@ -415,7 +417,7 @@ export default function WatchMe() {
     try {
       let url = "/videos";
       if (feedType === "foryou") {
-        url += "?sort=likes";
+        url += `?sort=likes&userId=${user?._id || ''}`;
       } else if (feedType === "following") {
         url += `?feed=following&userId=${user?._id}`;
       }
@@ -478,7 +480,10 @@ export default function WatchMe() {
                isActive={idx === activeIndex} 
                isGlobalMuted={isGlobalMuted}
                setIsGlobalMuted={setIsGlobalMuted}
-               onTagClick={(tag) => setSelectedTag(tag)}
+               onTagClick={(tag) => {
+                 setSelectedTag(tag);
+                 navigate(`/tag/${tag}`);
+               }}
              />
            </motion.div>
          ))}
@@ -543,7 +548,10 @@ export default function WatchMe() {
               <>
                 <span className="w-1 h-1 rounded-full bg-white/30" />
                 <button 
-                  onClick={() => setSelectedTag(null)}
+                  onClick={() => {
+                    setSelectedTag(null);
+                    if (routeTag) navigate('/watch-me');
+                  }}
                   className="text-sm font-black text-pink-500 uppercase tracking-tighter flex items-center gap-1"
                 >
                   #{selectedTag} <X className="w-3 h-3" />

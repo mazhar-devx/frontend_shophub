@@ -63,6 +63,7 @@ function AppContent() {
   const location = useLocation();
   const isImmersivePage = location.pathname === '/watch-me' || 
                           location.pathname.startsWith('/creator/') || 
+                          location.pathname.startsWith('/tag/') ||
                           location.pathname === '/upload-video';
 
   useEffect(() => {
@@ -111,7 +112,7 @@ function AppContent() {
             )}
             <Toast />
             <Modal />
-            <main id="main-content" className={`${isImmersivePage ? 'pt-0' : 'pt-24'} pb-20 md:pb-0 min-h-screen overflow-x-hidden`}>
+            <main id="main-content" className={`${isImmersivePage ? 'pt-0 pb-0' : 'pt-24 pb-20 md:pb-0'} min-h-screen overflow-x-hidden`}>
               <Suspense fallback={<PageLoader />}>
                 <Routes>
                   <Route index element={<Home />} />
@@ -131,6 +132,7 @@ function AppContent() {
                   <Route path="profile" element={<Profile />} />
                   <Route path="search" element={<SearchResults />} />
                   <Route path="watch-me" element={<WatchMe />} />
+                  <Route path="tag/:tag" element={<WatchMe />} />
                   <Route path="upload-video" element={<VideoUpload />} />
                   <Route path="creator/:id" element={<CreatorProfile />} />
                 </Routes>
