@@ -742,6 +742,7 @@ export default function WatchMe() {
                    setFeedType("foryou");
                  }}
                  className={`text-sm font-black transition-all ${feedType === "foryou" ? 'text-white' : 'text-white/50 hover:text-white'} uppercase tracking-tighter`}
+               >
                  For You
                </button>
             </div>
