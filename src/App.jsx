@@ -35,6 +35,9 @@ const SearchResults = lazy(() => import("./pages/SearchResults"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const Portfolio = lazy(() => import("./pages/Portfolio"));
+const WatchMe = lazy(() => import("./pages/WatchMe"));
+const VideoUpload = lazy(() => import("./pages/VideoUpload"));
+const CreatorProfile = lazy(() => import("./pages/CreatorProfile"));
 
 // Admin Pages Lazy Load
 const AdminDashboard = lazy(() => import("./pages/admin/Dashboard"));
@@ -127,6 +130,9 @@ export default function App() {
                   <Route path="wishlist" element={<Wishlist />} />
                   <Route path="profile" element={<Profile />} />
                   <Route path="search" element={<SearchResults />} />
+                  <Route path="watch-me" element={<WatchMe />} />
+                  <Route path="upload-video" element={<VideoUpload />} />
+                  <Route path="creator/:id" element={<CreatorProfile />} />
                 </Routes>
               </Suspense>
             </main>

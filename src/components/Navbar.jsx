@@ -204,6 +204,16 @@ export default function Navbar() {
                   )}
                 </Link>
               ))}
+
+              <Link 
+                to="/watch-me" 
+                className={`relative px-4 py-2 rounded-full text-sm font-bold transition-all hover:bg-black/5 dark:hover:bg-white/10 ${location.pathname === '/watch-me' ? 'text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500' : 'text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400'}`}
+              >
+                Watch Me
+                {location.pathname === '/watch-me' && (
+                  <motion.div layoutId="nav-pill" className="absolute inset-0 bg-purple-500/10 rounded-full -z-10" />
+                )}
+              </Link>
               
               {/* Mega Menu Trigger */}
               <div 
