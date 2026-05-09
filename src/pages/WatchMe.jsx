@@ -14,13 +14,13 @@ const VideoCard = ({ video, isActive }) => {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    if (isActive) {
-      videoRef.current?.play();
+    if (isActive && video.videoUrl) {
+      videoRef.current?.play().catch(e => console.log("Autoplay blocked:", e.message));
     } else {
       videoRef.current?.pause();
-      videoRef.current.currentTime = 0;
+      if (videoRef.current) videoRef.current.currentTime = 0;
     }
-  }, [isActive]);
+  }, [isActive, video.videoUrl]);
 
   const handleLike = async () => {
     if (!isAuthenticated) return alert("Please login to like!");
@@ -40,8 +40,13 @@ const VideoCard = ({ video, isActive }) => {
         ref={videoRef}
         src={video.videoUrl}
         loop
+        muted
+        playsInline
         className="w-full h-full object-cover"
-        onClick={() => videoRef.current?.paused ? videoRef.current.play() : videoRef.current.pause()}
+        onClick={() => {
+           if (!video.videoUrl) return;
+           videoRef.current?.paused ? videoRef.current.play().catch(e => console.log(e)) : videoRef.current.pause();
+        }}
       />
 
       {/* Overlay Content */}
