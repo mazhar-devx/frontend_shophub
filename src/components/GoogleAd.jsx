@@ -14,8 +14,27 @@ const GoogleAd = ({
     const adElement = adRef.current;
     if (!adElement) return;
 
+    let pushed = false;
+    const intersectionObserver = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && !pushed) {
+        pushed = true;
+        try {
+          if (typeof window !== 'undefined' && window.adsbygoogle) {
+            if (adElement.getAttribute('data-adsbygoogle-status') !== 'done') {
+              (window.adsbygoogle = window.adsbygoogle || []).push({});
+            }
+          }
+        } catch (e) {
+          console.warn('[ShopHub Ads] AdSense push error:', e.message);
+        }
+        intersectionObserver.unobserve(adElement);
+      }
+    }, { threshold: 0.1 });
+
+    intersectionObserver.observe(adElement);
+
     // Mutation observer to detect when AdSense modifies the 'ins' tag
-    const observer = new MutationObserver((mutations) => {
+    const statusObserver = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
         if (mutation.type === 'attributes' && mutation.attributeName === 'data-ad-status') {
           const status = adElement.getAttribute('data-ad-status');
@@ -28,24 +47,11 @@ const GoogleAd = ({
       });
     });
 
-    observer.observe(adElement, { attributes: true });
-
-    // Initial push
-    const timer = setTimeout(() => {
-      try {
-        if (typeof window !== 'undefined' && window.adsbygoogle) {
-          if (adElement.getAttribute('data-adsbygoogle-status') !== 'done') {
-            (window.adsbygoogle = window.adsbygoogle || []).push({});
-          }
-        }
-      } catch (e) {
-        console.warn('[ShopHub Ads] AdSense push error:', e.message);
-      }
-    }, 200);
+    statusObserver.observe(adElement, { attributes: true });
 
     return () => {
-      clearTimeout(timer);
-      observer.disconnect();
+      intersectionObserver.disconnect();
+      statusObserver.disconnect();
     };
   }, []);
 
