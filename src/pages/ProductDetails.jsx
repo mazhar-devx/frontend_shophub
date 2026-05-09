@@ -192,6 +192,12 @@ export default function ProductDetails() {
         description={product.description?.substring(0, 160)}
         image={getProductImageUrl(product.images?.[0] || product.image)}
         type="product"
+        price={product.discountPercentage > 0 
+          ? (product.price * (1 - product.discountPercentage / 100)).toFixed(2)
+          : product.price.toString()}
+        currency={product.currency || "PKR"}
+        availability={product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"}
+        keywords={`${product.name}, ${product.category}, ${product.brand}, ShopHub, premium`}
       >
         <script type="application/ld+json">
           {JSON.stringify(productSchema)}

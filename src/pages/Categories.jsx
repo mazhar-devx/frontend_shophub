@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { API_URL } from "../utils/constants";
 import { categories as staticCategories } from "../data/categories";
+import SEO from "../components/SEO";
 
 export default function Categories() {
   const [stats, setStats] = useState({}); // Map of category ID -> count
@@ -77,6 +78,11 @@ export default function Categories() {
 
   return (
     <div className="min-h-screen pt-24 pb-20 px-4 sm:px-6 relative overflow-hidden">
+      <SEO 
+        title="Explore Product Categories"
+        description="Browse our curated collections of premium electronics, fashion, home essentials, and more. Find exactly what you need at ShopHub."
+        keywords="categories, shopping, collections, electronics, fashion, home"
+      />
       {/* Ambient Background */}
       <div className="fixed inset-0 pointer-events-none -z-10">
           <div className="absolute top-0 left-0 w-full h-[500px] bg-gradient-to-b from-purple-900/10 to-transparent"></div>

@@ -4,6 +4,7 @@ import { fetchProducts } from "../features/products/productSlice";
 import { Link } from "react-router-dom";
 import { formatPrice } from "../utils/currency";
 import { getProductImageUrl } from "../utils/constants";
+import SEO from "../components/SEO";
 
 export default function Deals() {
   const dispatch = useDispatch();
@@ -42,6 +43,11 @@ export default function Deals() {
 
   return (
     <div className="min-h-screen pt-24 px-4 pb-12">
+      <SEO 
+        title="Flash Deals & Special Offers"
+        description="Grab the best deals on premium electronics, fashion, and home products. Limited time offers with massive discounts only at ShopHub."
+        keywords="deals, flash sale, discounts, offers, cheap electronics, fashion sale"
+      />
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16 relative">
              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-cyan-500/10 dark:bg-cyan-500/20 rounded-full blur-3xl -z-10"></div>

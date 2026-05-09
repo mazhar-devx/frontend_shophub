@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Heart, Play, Users, MessageCircle, ChevronLeft, Share2, Grid, Bookmark } from "lucide-react";
 import api from "../services/api";
 import { getProductImageUrl, DEFAULT_AVATAR } from "../utils/constants";
+import SEO from "../components/SEO";
 
 export default function CreatorProfile() {
   const { id } = useParams();
@@ -95,6 +96,13 @@ export default function CreatorProfile() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#030014]">
+      <SEO 
+        title={`${creator.vendorName || creator.name} (@${creator.vendorName || creator.name})`}
+        description={creator.description || `Check out ${creator.vendorName || creator.name}'s profile on ShopHub. Watch their latest videos and explore their collections.`}
+        image={creator.photo ? getProductImageUrl(creator.photo) : DEFAULT_AVATAR}
+        type="profile"
+        keywords={`${creator.name}, creator, video, shophub, influencer, profile`}
+      />
       {/* Header / Cover Area */}
       <div className="h-48 bg-gradient-to-r from-pink-500/20 via-purple-500/20 to-blue-500/20 relative">
          <Link to="/watch-me" className="absolute top-8 left-8 p-3 bg-white/10 backdrop-blur-md rounded-full text-white hover:bg-white/20 transition-all">

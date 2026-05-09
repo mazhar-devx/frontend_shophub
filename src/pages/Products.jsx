@@ -4,6 +4,7 @@ import { fetchProducts, searchProducts } from "../features/products/productSlice
 import ProductList from "../components/ProductList";
 import ProductFilter from "../components/ProductFilter";
 import { useUIStore } from "../zustand/uiStore";
+import SEO from "../components/SEO";
 
 import { useSearchParams } from "react-router-dom";
 
@@ -70,6 +71,11 @@ export default function Products() {
   
   return (
     <div className="p-4 md:p-6 min-h-screen pt-20">
+      <SEO 
+        title="Browse All Products"
+        description="Discover our full range of premium electronics, fashion, and lifestyle products. Filter by category, price, and rating to find your perfect match."
+        keywords="products, shop, electronics, fashion, mobile, accessories"
+      />
       <div className="mb-12 relative">
         <div className="absolute -top-20 -left-20 w-96 h-96 bg-purple-900/10 rounded-full blur-[60px] pointer-events-none"></div>
         <div className="relative z-10 bg-[#0a0a0a] border border-white/10 rounded-[2.5rem] p-8 md:p-12 mb-8 overflow-hidden group">

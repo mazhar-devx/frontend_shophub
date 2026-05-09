@@ -10,11 +10,14 @@ export default function SEO({
   image, 
   url, 
   keywords,
+  price,
+  currency,
+  availability,
   children 
 }) {
-  const siteTitle = "HA Store - Premium E-Commerce";
-  const defaultDescription = "HA Store is your premium destination for the latest electronics, fashion, and home essentials. Fast delivery and secure payments.";
-  const siteUrl = "https://www.shophub.pro"; // Replace with actual domain if different
+  const siteTitle = "ShopHub - Premium E-Commerce & Social Video";
+  const defaultDescription = "ShopHub is your premium destination for the latest electronics, fashion, and immersive social video shopping experience. Fast delivery and secure payments.";
+  const siteUrl = "https://www.shophub.pro";
   const defaultImage = `${siteUrl}/logo.png`;
 
   const metaTitle = title ? `${title} | ${siteTitle}` : siteTitle;
@@ -37,12 +40,21 @@ export default function SEO({
       <meta property="og:image" content={metaImage} />
       <meta property="og:url" content={metaUrl} />
       <meta property="og:site_name" content="ShopHub" />
+      
+      {price && <meta property="product:price:amount" content={price} />}
+      {currency && <meta property="product:price:currency" content={currency} />}
+      {availability && <meta property="product:availability" content={availability} />}
 
       {/* Twitter Cards */}
-      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:card" content={type === 'product' ? 'product' : 'summary_large_image'} />
       <meta name="twitter:title" content={metaTitle} />
       <meta name="twitter:description" content={metaDescription} />
       <meta name="twitter:image" content={metaImage} />
+      
+      {price && <meta name="twitter:label1" content="Price" />}
+      {price && <meta name="twitter:data1" content={`${price} ${currency || 'PKR'}`} />}
+      {availability && <meta name="twitter:label2" content="Availability" />}
+      {availability && <meta name="twitter:data2" content={availability === 'https://schema.org/InStock' ? 'In Stock' : 'Out of Stock'} />}
 
       {/* Custom Child Tags (like JSON-LD) */}
       {children}
@@ -58,5 +70,8 @@ SEO.propTypes = {
   image: PropTypes.string,
   url: PropTypes.string,
   keywords: PropTypes.string,
+  price: PropTypes.string,
+  currency: PropTypes.string,
+  availability: PropTypes.string,
   children: PropTypes.node
 };

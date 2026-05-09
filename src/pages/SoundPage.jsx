@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Play, Pause, ChevronLeft, Share2, Bookmark, Plus, Music2 } from "lucide-react";
 import api from "../services/api";
 import { getProductImageUrl } from "../utils/constants";
+import SEO from "../components/SEO";
 
 export default function SoundPage() {
   const { id } = useParams();
@@ -74,6 +75,13 @@ export default function SoundPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-[#030014] pb-20">
+      <SEO 
+        title={`Original Sound - ${originalVideo?.name || 'Music'}`}
+        description={`Explore videos using the sound "${originalVideo?.name}" by @${originalVideo?.user?.name}. Watch, create, and share!`}
+        image={getProductImageUrl(originalVideo?.thumbnailUrl || originalVideo?.videoUrl)}
+        type="music.song"
+        keywords={`sound, music, tiktok, shophub, ${originalVideo?.name}, ${originalVideo?.user?.name}`}
+      />
       {/* Header Area */}
       <div className="p-6 pt-10 sticky top-0 z-50 bg-white/80 dark:bg-[#030014]/80 backdrop-blur-xl border-b border-black/5 dark:border-white/10 flex items-center justify-between">
          <button onClick={() => navigate(-1)} className="p-2 bg-black/5 dark:bg-white/10 rounded-full dark:text-white">

@@ -416,10 +416,43 @@ export default function Home() {
   return (
     <>
       <SEO
-        title="Home"
-        description="HA Store — Premium E-Commerce for Electronics, Fashion, and More."
-        keywords="ecommerce, electronics, fashion, shopping, online store"
-      />
+        title="Premium Shopping & Social Video Experience"
+        description="ShopHub is the ultimate destination for premium electronics, fashion, and an immersive social video shopping experience. Fast shipping, secure payments, and 24/7 support."
+        keywords="ShopHub, online shopping, electronics, fashion, social commerce, video shopping, premium store, fast delivery"
+      >
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "ShopHub",
+            "url": "https://www.shophub.pro",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": "https://www.shophub.pro/products?search={search_term_string}",
+              "query-input": "required name=search_term_string"
+            }
+          })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "ShopHub",
+            "url": "https://www.shophub.pro",
+            "logo": "https://www.shophub.pro/logo.png",
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "telephone": "+92-XXX-XXXXXXX",
+              "contactType": "customer service"
+            },
+            "sameAs": [
+              "https://www.facebook.com/shophub",
+              "https://www.twitter.com/shophub",
+              "https://www.instagram.com/shophub"
+            ]
+          })}
+        </script>
+      </SEO>
 
       {/* ── Scroll Progress Bar ── */}
       <div
