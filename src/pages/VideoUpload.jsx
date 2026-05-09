@@ -14,7 +14,8 @@ export default function VideoUpload() {
   const [thumbPreview, setThumbPreview] = useState(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [tags, setTags] = useState("");
+  const [tagInput, setTagInput] = useState("");
+  const [tagsList, setTagsList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState({ type: "", message: "" });
   
@@ -51,6 +52,18 @@ export default function VideoUpload() {
     setPreview(url);
   };
 
+  const addTag = () => {
+    const tag = tagInput.trim().toLowerCase();
+    if (tag && !tagsList.includes(tag) && tagsList.length < 10) {
+      setTagsList([...tagsList, tag]);
+      setTagInput("");
+    }
+  };
+
+  const removeTag = (tagToRemove) => {
+    setTagsList(tagsList.filter(tag => tag !== tagToRemove));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!videoFile && !videoUrl) {
@@ -74,8 +87,10 @@ export default function VideoUpload() {
 
       formData.append("name", name);
       formData.append("description", description);
-      formData.append("tags", tags);
+      formData.append("tags", tagsList.join(','));
 
+      console.log("[VideoUpload] Sending payload:", { name, tags: tagsList });
+      
       await api.post(`/videos`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -219,15 +234,37 @@ export default function VideoUpload() {
 
                 <div className="space-y-2">
                    <label className="text-xs font-black text-gray-500 uppercase tracking-widest ml-2 flex items-center gap-2">
-                      <Tag className="w-3 h-3" /> Tags (Comma separated)
+                      <Tag className="w-3 h-3" /> Tags ({tagsList.length}/10)
                    </label>
-                   <input 
-                     type="text" 
-                     value={tags}
-                     onChange={(e) => setTags(e.target.value)}
-                     placeholder="tech, fashion, lifestyle" 
-                     className="w-full bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-2xl px-6 py-4 text-sm dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all"
-                   />
+                   
+                   <div className="flex gap-2">
+                      <input 
+                        type="text" 
+                        value={tagInput}
+                        onChange={(e) => setTagInput(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
+                        placeholder="Add a tag..." 
+                        className="flex-1 bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-2xl px-6 py-4 text-sm dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all"
+                      />
+                      <button 
+                        type="button"
+                        onClick={addTag}
+                        className="px-6 bg-primary dark:bg-white text-white dark:text-black font-bold rounded-2xl hover:scale-105 active:scale-95 transition-all text-xs uppercase tracking-widest"
+                      >
+                         Add
+                      </button>
+                   </div>
+
+                   <div className="flex flex-wrap gap-2">
+                      {tagsList.map(tag => (
+                        <span key={tag} className="flex items-center gap-2 px-4 py-2 bg-pink-500/10 text-pink-500 border border-pink-500/20 rounded-full text-xs font-bold uppercase tracking-wider">
+                           #{tag}
+                           <button type="button" onClick={() => removeTag(tag)} className="hover:text-pink-700 transition-colors">
+                              <X className="w-3 h-3" />
+                           </button>
+                        </span>
+                      ))}
+                   </div>
                 </div>
 
                 {status.message && (
