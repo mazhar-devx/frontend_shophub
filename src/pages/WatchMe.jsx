@@ -2,8 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, MessageCircle, Share2, Bookmark, Plus, X, Send, Music2, User } from "lucide-react";
-import axios from "axios";
-import { API_URL } from "../utils/constants";
+import api from "../services/api";
 import { getProductImageUrl } from "../utils/constants";
 
 const VideoCard = ({ video, isActive }) => {
@@ -25,7 +24,7 @@ const VideoCard = ({ video, isActive }) => {
   const handleLike = async () => {
     if (!isAuthenticated) return alert("Please login to like!");
     try {
-      const res = await axios.post(`${API_URL}/videos/${video._id}/like`, {}, { withCredentials: true });
+      const res = await api.post(`/videos/${video._id}/like`);
       setIsLiked(res.data.data.isLiked);
       setLikes(res.data.data.likeCount);
     } catch (err) {
@@ -176,7 +175,7 @@ export default function WatchMe() {
 
   const fetchVideos = async () => {
     try {
-      const res = await axios.get(`${API_URL}/videos`);
+      const res = await api.get(`/videos`);
       setVideos(res.data.data.videos);
       setLoading(false);
     } catch (err) {

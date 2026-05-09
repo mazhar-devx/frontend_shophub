@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { motion } from "framer-motion";
 import { Upload, X, CheckCircle, AlertCircle, Video, Tag, Type, AlignLeft, Globe } from "lucide-react";
-import axios from "axios";
-import { API_URL } from "../utils/constants";
+import api from "../services/api";
 
 export default function VideoUpload() {
   const [videoFile, setVideoFile] = useState(null);
@@ -60,10 +59,7 @@ export default function VideoUpload() {
       formData.append("description", description);
       formData.append("tags", tags);
 
-      await axios.post(`${API_URL}/videos`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-        withCredentials: true
-      });
+      await api.post(`/videos`, formData);
 
       setStatus({ type: "success", message: "Video uploaded successfully! Redirecting..." });
       setTimeout(() => navigate("/watch-me"), 2000);

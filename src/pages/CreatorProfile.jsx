@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Heart, Play, Users, MessageCircle, ChevronLeft, Share2, Grid, Bookmark } from "lucide-react";
-import axios from "axios";
-import { API_URL, getProductImageUrl, DEFAULT_AVATAR } from "../utils/constants";
+import api from "../services/api";
+import { getProductImageUrl, DEFAULT_AVATAR } from "../utils/constants";
 
 export default function CreatorProfile() {
   const { id } = useParams();
@@ -20,10 +20,10 @@ export default function CreatorProfile() {
     try {
       // For now, we get creator info from the first video or a specific user endpoint
       // Assuming we have a GET /api/v1/users/:id endpoint
-      const userRes = await axios.get(`${API_URL}/users/${id}`, { withCredentials: true });
+      const userRes = await api.get(`/users/${id}`);
       setCreator(userRes.data.data.user);
 
-      const videoRes = await axios.get(`${API_URL}/videos/user/${id}`);
+      const videoRes = await api.get(`/videos/user/${id}`);
       setVideos(videoRes.data.data.videos);
       setLoading(false);
     } catch (err) {
