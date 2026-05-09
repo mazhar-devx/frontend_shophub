@@ -699,40 +699,40 @@ export default function WatchMe() {
       </div>
 
       {/* Floating Header */}
-      <div className="absolute top-0 left-0 right-0 p-6 flex items-start justify-between z-[100] pointer-events-none">
+      <div className="absolute top-0 left-0 right-0 p-3 md:p-6 flex items-start justify-between z-[100] pointer-events-none gap-1">
          {/* Top Left: Back to Home & Mute */}
-         <div className="flex gap-2 pointer-events-auto">
+         <div className="flex gap-1 md:gap-2 pointer-events-auto shrink-0">
            <Link 
              to="/" 
-             className="p-3 bg-black/40 backdrop-blur-xl rounded-2xl text-white hover:bg-black/60 transition-all flex items-center gap-2 group shadow-2xl border border-white/10"
+             className="p-2 md:p-3 bg-black/40 backdrop-blur-xl rounded-2xl text-white hover:bg-black/60 transition-all flex items-center gap-2 group shadow-2xl border border-white/10"
            >
-              <ChevronLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
-              <span className="text-xs font-black uppercase tracking-widest hidden md:inline">Store</span>
+              <ChevronLeft className="w-4 h-4 md:w-6 md:h-6 group-hover:-translate-x-1 transition-transform" />
+              <span className="text-xs font-black uppercase tracking-widest hidden lg:inline">Store</span>
            </Link>
            <button 
              onClick={() => setIsGlobalMuted(!isGlobalMuted)} 
-             className="p-3 bg-black/40 backdrop-blur-xl rounded-2xl text-white hover:bg-black/60 transition-all flex items-center justify-center shadow-2xl border border-white/10"
+             className="p-2 md:p-3 bg-black/40 backdrop-blur-xl rounded-2xl text-white hover:bg-black/60 transition-all flex items-center justify-center shadow-2xl border border-white/10"
            >
-             {isGlobalMuted ? <VolumeX className="w-6 h-6" /> : <Volume2 className="w-6 h-6" />}
+             {isGlobalMuted ? <VolumeX className="w-4 h-4 md:w-6 md:h-6" /> : <Volume2 className="w-4 h-4 md:w-6 md:h-6" />}
            </button>
          </div>
 
          {/* Top Center: Tabs */}
          {routeTag ? (
-            <div className="flex items-center gap-4 pointer-events-auto bg-black/20 backdrop-blur-md px-6 py-3 rounded-full border border-white/5">
+            <div className="flex items-center gap-2 md:gap-4 pointer-events-auto bg-black/20 backdrop-blur-md px-3 py-1.5 md:px-6 md:py-3 rounded-full border border-white/5 shrink-0 mx-1">
                <button onClick={() => navigate('/watch-me')} className="text-white hover:text-pink-500 transition-colors">
-                 <ChevronLeft className="w-5 h-5" />
+                 <ChevronLeft className="w-4 h-4 md:w-5 md:h-5" />
                </button>
-               <span className="text-sm font-black text-white uppercase tracking-tighter">#{routeTag}</span>
+               <span className="text-[10px] md:text-sm font-black text-white uppercase tracking-tighter">#{routeTag}</span>
             </div>
          ) : (
-            <div className="flex items-center gap-4 pointer-events-auto bg-black/20 backdrop-blur-md px-6 py-3 rounded-full border border-white/5">
+            <div className="flex items-center gap-2 md:gap-4 pointer-events-auto bg-black/20 backdrop-blur-md px-3 py-1.5 md:px-6 md:py-3 rounded-full border border-white/5 shrink-0 mx-1">
                <button 
                  onClick={() => {
                    if (!isAuthenticated) return alert("Please login to see Following feed");
                    setFeedType("following");
                  }}
-                 className={`text-sm font-black transition-all ${feedType === "following" ? 'text-white' : 'text-white/50 hover:text-white'} uppercase tracking-tighter`}
+                 className={`text-[10px] md:text-sm font-black transition-all ${feedType === "following" ? 'text-white' : 'text-white/50 hover:text-white'} uppercase tracking-tighter`}
                >
                  Following
                </button>
@@ -741,45 +741,45 @@ export default function WatchMe() {
                  onClick={() => {
                    setFeedType("foryou");
                  }}
-                 className={`text-sm font-black transition-all ${feedType === "foryou" ? 'text-white' : 'text-white/50 hover:text-white'} uppercase tracking-tighter`}
+                 className={`text-[10px] md:text-sm font-black transition-all ${feedType === "foryou" ? 'text-white' : 'text-white/50 hover:text-white'} uppercase tracking-tighter`}
                >
                  For You
                </button>
             </div>
          )}
            {/* Top Right: Profile & Notifications */}
-           <div className="flex flex-col items-end gap-3 pointer-events-auto">
-              <div className="flex items-center gap-3">
+           <div className="flex flex-col items-end gap-2 md:gap-3 pointer-events-auto shrink-0">
+              <div className="flex items-center gap-1 md:gap-3">
                  <button 
                    onClick={() => setShowSearch(true)}
-                   className="p-3 bg-black/40 backdrop-blur-xl rounded-2xl text-white hover:bg-black/60 transition-all border border-white/10 shadow-2xl"
+                   className="p-2 md:p-3 bg-black/40 backdrop-blur-xl rounded-2xl text-white hover:bg-black/60 transition-all border border-white/10 shadow-2xl"
                  >
-                    <Search className="w-6 h-6" />
+                    <Search className="w-4 h-4 md:w-6 md:h-6" />
                  </button>
                  
                  {isAuthenticated && (
                    <button 
                      onClick={() => setShowNotifications(true)}
-                     className="relative p-3 bg-black/40 backdrop-blur-xl rounded-2xl text-white hover:bg-black/60 transition-all border border-white/10 shadow-2xl"
+                     className="relative p-2 md:p-3 bg-black/40 backdrop-blur-xl rounded-2xl text-white hover:bg-black/60 transition-all border border-white/10 shadow-2xl"
                    >
-                      <Bell className="w-6 h-6" />
-                      {hasUnread && <span className="absolute top-2 right-2 w-3 h-3 bg-pink-500 rounded-full border-2 border-black" />}
+                      <Bell className="w-4 h-4 md:w-6 md:h-6" />
+                      {hasUnread && <span className="absolute top-1.5 right-1.5 md:top-2 md:right-2 w-2 h-2 md:w-3 md:h-3 bg-pink-500 rounded-full border border-black md:border-2" />}
                    </button>
                  )}
               </div>
 
               {isAuthenticated ? (
-                 <Link to={`/creator/${user._id}`} className="group flex items-center gap-3 bg-black/40 backdrop-blur-xl p-1 pr-4 rounded-full border border-white/10 hover:bg-black/60 transition-all shadow-2xl">
-                      <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-pink-500 shadow-lg">
+                 <Link to={`/creator/${user._id}`} className="group flex items-center gap-2 md:gap-3 bg-black/40 backdrop-blur-xl p-1 pr-3 md:pr-4 rounded-full border border-white/10 hover:bg-black/60 transition-all shadow-2xl">
+                      <div className="w-8 h-8 md:w-10 md:h-10 rounded-full overflow-hidden border-2 border-pink-500 shadow-lg">
                          <img src={user.photo ? getProductImageUrl(user.photo) : "/default-avatar.png"} className="w-full h-full object-cover" />
                       </div>
-                      <div className="hidden md:flex flex-col text-left">
+                      <div className="hidden lg:flex flex-col text-left">
                          <span className="text-xs font-black text-white uppercase tracking-tighter leading-none">{user.name}</span>
                          <span className="text-[9px] text-white/50 font-medium truncate w-24">{user.email}</span>
                       </div>
                    </Link>
              ) : (
-                <Link to="/login" className="px-6 py-3 bg-pink-500 text-white text-xs font-black uppercase tracking-widest rounded-full shadow-xl hover:scale-105 active:scale-95 transition-all shadow-pink-500/20">
+                <Link to="/login" className="px-4 py-2 md:px-6 md:py-3 bg-pink-500 text-white text-[10px] md:text-xs font-black uppercase tracking-widest rounded-full shadow-xl hover:scale-105 active:scale-95 transition-all shadow-pink-500/20">
                    Login
                 </Link>
              )}
