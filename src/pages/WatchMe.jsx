@@ -1005,26 +1005,56 @@ export default function WatchMe() {
                <span className="text-[10px] md:text-sm font-black text-white uppercase tracking-tighter">#{routeTag}</span>
             </div>
          ) : (
-            <div className="flex items-center gap-2 md:gap-4 pointer-events-auto bg-black/20 backdrop-blur-md px-3 py-1.5 md:px-6 md:py-3 rounded-full border border-white/5 shrink-0 mx-1">
-               <button 
-                 onClick={() => {
-                   if (!isAuthenticated) return alert("Please login to see Following feed");
-                   setFeedType("following");
-                 }}
-                 className={`text-[10px] md:text-sm font-black transition-all ${feedType === "following" ? 'text-white' : 'text-white/50 hover:text-white'} uppercase tracking-tighter`}
-               >
-                 Following
-               </button>
-               <span className="w-1 h-1 rounded-full bg-white/30" />
-               <button 
-                 onClick={() => {
-                   setFeedType("foryou");
-                 }}
-                 className={`text-[10px] md:text-sm font-black transition-all ${feedType === "foryou" ? 'text-white' : 'text-white/50 hover:text-white'} uppercase tracking-tighter`}
-               >
-                 For You
-               </button>
-            </div>
+             <div className="flex flex-col items-center gap-4">
+                <div className="flex items-center gap-4 px-4 py-2 bg-black/40 backdrop-blur-xl rounded-full border border-white/10 shadow-2xl pointer-events-auto">
+                   <button 
+                     onClick={() => {
+                       if (!isAuthenticated) return alert("Please login to see Following feed");
+                       setFeedType("following");
+                     }}
+                     className={`text-[10px] md:text-sm font-black transition-all ${feedType === "following" ? 'text-white' : 'text-white/50 hover:text-white'} uppercase tracking-tighter`}
+                   >
+                     Following
+                   </button>
+                   <span className="w-1 h-1 rounded-full bg-white/30" />
+                   <button 
+                     onClick={() => {
+                       setFeedType("foryou");
+                     }}
+                     className={`text-[10px] md:text-sm font-black transition-all ${feedType === "foryou" ? 'text-white' : 'text-white/50 hover:text-white'} uppercase tracking-tighter`}
+                   >
+                     For You
+                   </button>
+                </div>
+
+                {/* Horizontal Product Feed */}
+                {videos.some(v => v.productLink) && (
+                   <motion.div 
+                     initial={{ opacity: 0, y: -20 }}
+                     animate={{ opacity: 1, y: 0 }}
+                     className="flex gap-3 overflow-x-auto no-scrollbar max-w-[80vw] md:max-w-md px-2 pointer-events-auto"
+                   >
+                      {videos.filter(v => v.productLink).slice(0, 10).map((v, i) => (
+                         <button 
+                           key={v._id} 
+                           onClick={() => {
+                             const index = videos.findIndex(vid => vid._id === v._id);
+                             if (index !== -1) {
+                               setActiveIndex(index);
+                               containerRef.current?.scrollTo({ top: index * containerRef.current.clientHeight, behavior: 'smooth' });
+                             }
+                           }}
+                           className={`flex-shrink-0 w-12 h-12 md:w-16 md:h-16 rounded-2xl overflow-hidden border-2 transition-all ${videos[activeIndex]?._id === v._id ? 'border-pink-500 scale-110 shadow-lg shadow-pink-500/20' : 'border-white/10 hover:border-white/30 opacity-60'}`}
+                         >
+                            <img src={getProductImageUrl(v.thumbnailUrl || v.videoUrl)} className="w-full h-full object-cover" alt="Product" />
+                         </button>
+                      ))}
+                      <Link to="/search" className="flex-shrink-0 w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors">
+                         <Plus className="w-6 h-6 text-white/50" />
+                      </Link>
+                   </motion.div>
+                )}
+             </div>
          )}
            {/* Top Right: Profile & Notifications */}
            <div className="flex flex-col items-end gap-2 md:gap-3 pointer-events-auto shrink-0">
