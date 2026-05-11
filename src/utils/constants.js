@@ -1,4 +1,4 @@
-const PROD_BACKEND = 'https://backendshophub-production.up.railway.app';
+const PROD_BACKEND = 'https://backend-shophub.vercel.app';
 
 const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
 
