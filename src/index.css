@@ -67,9 +67,9 @@
     color: var(--text-secondary);
   }
 
-  /* Transform dark backgrounds into clean white surfaces */
-  [data-theme='light'] .bg-black:not(.absolute):not([class*='opacity-']),
-  [data-theme='light'] .bg-gray-900:not(.absolute),
+  /* Transform dark backgrounds into clean white surfaces, but EXCLUDE buttons and special interactive elements */
+  [data-theme='light'] .bg-black:not(.absolute):not([class*='opacity-']):not(button):not([role="button"]),
+  [data-theme='light'] .bg-gray-900:not(.absolute):not(button):not([role="button"]),
   [data-theme='light'] .bg-\[\#121212\],
   [data-theme='light'] .bg-\[\#030014\],
   [data-theme='light'] .bg-\[\#0f0f0f\],
@@ -78,6 +78,21 @@
     background-color: #FFFFFF !important;
     color: var(--text-primary) !important;
     border: 1px solid rgba(0, 0, 0, 0.03) !important;
+  }
+
+  /* Specific Button Refinements for Light Mode */
+  [data-theme='light'] button.bg-black,
+  [data-theme='light'] a.bg-black,
+  [data-theme='light'] .bg-primary {
+    background-color: #0F172A !important; /* Slate 900 for premium contrast */
+    color: #FFFFFF !important;
+  }
+
+  [data-theme='light'] button.bg-white,
+  [data-theme='light'] a.bg-white {
+    background-color: #FFFFFF !important;
+    color: #0F172A !important;
+    border: 1px solid rgba(0, 0, 0, 0.05) !important;
   }
 
   /* Refined Glassmorphism for Light Mode */

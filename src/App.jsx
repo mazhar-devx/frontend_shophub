@@ -42,6 +42,16 @@ const VideoUpload = lazy(() => import("./pages/VideoUpload"));
 const CreatorProfile = lazy(() => import("./pages/CreatorProfile"));
 const SoundPage = lazy(() => import("./pages/SoundPage"));
 
+// Informational Pages Lazy Load
+const AboutUs = lazy(() => import("./pages/info/AboutUs"));
+const Careers = lazy(() => import("./pages/info/Careers"));
+const PrivacyPolicy = lazy(() => import("./pages/info/PrivacyPolicy"));
+const TermsOfService = lazy(() => import("./pages/info/TermsOfService"));
+const HelpCenter = lazy(() => import("./pages/info/HelpCenter"));
+const ShippingReturns = lazy(() => import("./pages/info/ShippingReturns"));
+const SizeGuide = lazy(() => import("./pages/info/SizeGuide"));
+const ContactUs = lazy(() => import("./pages/info/ContactUs"));
+
 // Admin Pages Lazy Load
 const AdminDashboard = lazy(() => import("./pages/admin/Dashboard"));
 const AdminProducts = lazy(() => import("./pages/admin/Products"));
@@ -141,6 +151,16 @@ function AppContent() {
                   <Route path="sound/:id" element={<SoundPage />} />
                   <Route path="upload-video" element={<ProtectedRoute><VideoUpload /></ProtectedRoute>} />
                   <Route path="creator/:id" element={<CreatorProfile />} />
+                  
+                  {/* Informational Routes */}
+                  <Route path="about-us" element={<AboutUs />} />
+                  <Route path="careers" element={<Careers />} />
+                  <Route path="privacy-policy" element={<PrivacyPolicy />} />
+                  <Route path="terms-of-service" element={<TermsOfService />} />
+                  <Route path="help-center" element={<HelpCenter />} />
+                  <Route path="shipping-returns" element={<ShippingReturns />} />
+                  <Route path="size-guide" element={<SizeGuide />} />
+                  <Route path="contact-us" element={<ContactUs />} />
                 </Routes>
               </Suspense>
             </main>

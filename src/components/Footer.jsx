@@ -2,17 +2,6 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 
 export default function Footer() {
-  const [showInfoModal, setShowInfoModal] = useState(false);
-  const [modalContent, setModalContent] = useState({ title: '', body: '' });
-
-  const handleLinkClick = (e, linkName) => {
-    e.preventDefault();
-    setModalContent({
-      title: linkName,
-      body: `Welcome to the ${linkName} page for HA Store. We are committed to providing the best experience, premium products, and top-tier support. For specific inquiries, please contact our support team.`
-    });
-    setShowInfoModal(true);
-  };
 
   return (
       <footer className="relative mt-20 border-t border-black/5 dark:border-white/10 bg-white dark:bg-[#050505] overflow-hidden transition-colors duration-500">
@@ -100,20 +89,20 @@ export default function Footer() {
                    { 
                       title: "Support", 
                       links: [
-                        { name: "Help Center", path: "/" },
+                        { name: "Help Center", path: "/help-center" },
                         { name: "Order Status", path: "/my-orders" },
-                        { name: "Shipping & Returns", path: "/" },
-                        { name: "Size Guide", path: "/" },
-                        { name: "Contact Us", path: "/" }
+                        { name: "Shipping & Returns", path: "/shipping-returns" },
+                        { name: "Size Guide", path: "/size-guide" },
+                        { name: "Contact Us", path: "/contact-us" }
                       ] 
                    },
                    { 
                       title: "Company", 
                       links: [
-                        { name: "About Us", path: "/" },
-                        { name: "Careers", path: "/" },
-                        { name: "Privacy Policy", path: "/" },
-                        { name: "Terms of Service", path: "/" }
+                        { name: "About Us", path: "/about-us" },
+                        { name: "Careers", path: "/careers" },
+                        { name: "Privacy Policy", path: "/privacy-policy" },
+                        { name: "Terms of Service", path: "/terms-of-service" }
                       ] 
                    }
                 ].map((column) => (
@@ -122,13 +111,13 @@ export default function Footer() {
                       <ul className="space-y-4">
                          {column.links.map(link => (
                             <li key={link.name}>
-                                <a 
-                                 href={link.path}
-                                 onClick={(e) => link.path === "/" ? handleLinkClick(e, link.name) : window.scrollTo({ top: 0, behavior: 'smooth' })}
-                                 className="text-sm text-secondary dark:text-gray-400 hover:text-cyan-500 transition-colors cursor-pointer"
-                               >
-                                 {link.name}
-                               </a>
+                               <Link 
+                                to={link.path}
+                                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                                className="text-sm text-secondary dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors cursor-pointer"
+                              >
+                                {link.name}
+                              </Link>
                             </li>
                          ))}
                       </ul>
@@ -156,7 +145,7 @@ export default function Footer() {
 
             <div className="mt-20 pt-8 border-t border-black/5 dark:border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
                <div className="flex flex-col items-center md:items-start gap-2">
-                  <p className="text-secondary dark:text-gray-500 text-sm">© {new Date().getFullYear()} HA Store. All rights reserved.</p>
+                  <p className="text-secondary dark:text-gray-500 text-sm">© 2024 - 2026 HA Store. All rights reserved.</p>
                   <a 
                      href="https://linkedin.com/in/mazhar-devx" 
                      target="_blank" 
@@ -185,39 +174,6 @@ export default function Footer() {
             </div>
          </div>
 
-         {/* Information Modal */}
-         {showInfoModal && (
-            <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
-               <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-fade-in-down" onClick={() => setShowInfoModal(false)}></div>
-               <div className="relative w-full max-w-lg bg-white dark:bg-[#0a0a0a] rounded-3xl shadow-2xl border border-black/10 dark:border-white/10 overflow-hidden animate-fade-scale">
-                  <div className="p-8">
-                     <div className="flex items-center justify-between mb-6">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center shadow-lg">
-                           <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                           </svg>
-                        </div>
-                        <button onClick={() => setShowInfoModal(false)} className="w-8 h-8 rounded-full bg-black/5 dark:bg-white/5 flex items-center justify-center text-primary dark:text-white hover:bg-black/10 dark:hover:bg-white/10 transition-colors">
-                           ✕
-                        </button>
-                     </div>
-                     
-                     <h2 className="text-2xl font-black text-primary dark:text-white mb-4 tracking-tight">{modalContent.title}</h2>
-                     <div className="w-12 h-1 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full mb-6"></div>
-                     
-                     <p className="text-secondary dark:text-gray-300 leading-relaxed text-base">
-                        {modalContent.body}
-                     </p>
-                     
-                     <div className="mt-8 pt-6 border-t border-black/5 dark:border-white/5 flex justify-end">
-                        <button onClick={() => setShowInfoModal(false)} className="px-6 py-2 bg-gradient-to-r from-cyan-600 to-purple-600 text-white font-bold rounded-xl hover:shadow-lg transition-all hover:-translate-y-0.5">
-                           Close
-                        </button>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         )}
       </footer>
   );
 }
