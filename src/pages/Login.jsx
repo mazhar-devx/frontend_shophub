@@ -281,7 +281,7 @@ export default function Login() {
                     theme={document.documentElement.getAttribute('data-theme') === 'light' ? 'outline' : 'filled_black'}
                     shape="pill"
                     text="continue_with"
-                    width="100%"
+                    width={400}
                 />
                 <p className="text-[10px] text-center text-gray-500 uppercase tracking-widest font-bold">
                   Google One Tap enabled. Ensure cookies are accepted.

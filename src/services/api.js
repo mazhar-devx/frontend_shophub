@@ -40,16 +40,7 @@ api.interceptors.response.use(
     }
     // Handle common errors
     if (error.response?.status === 401) {
-      // Unauthorized - redirect to login and clear everything
-      console.warn('Unauthorized! Logging out...', error.config.url);
-
-      // Don't auto-logout if we're just checking session (e.g. loadUser)
-      // This prevents a loop if the token is invalid on load
-      if (!error.config.url.includes('/users/me')) {
-        // localStorage.removeItem('token');
-        // localStorage.removeItem('user'); 
-        // window.location.href = '/login';
-      }
+      // Unauthorized - ignore log for background checks to avoid cluttering console
     }
     return Promise.reject(error);
   }
