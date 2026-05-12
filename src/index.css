@@ -2,6 +2,13 @@
 
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
+/* Hide default cursor on desktop for ultra-premium custom cursor experience */
+@media (min-width: 1024px) {
+  html, body, a, button, [role="button"], .cursor-pointer, input, textarea {
+    cursor: none !important;
+  }
+}
+
 @layer base {
   :root {
     --glass-bg: rgba(255, 255, 255, 0.05);
