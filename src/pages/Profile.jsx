@@ -14,14 +14,25 @@ export default function Profile() {
 
   const [preview, setPreview] = useState(null);
   const [successMsg, setSuccessMsg] = useState('');
+  const [unreadCount, setUnreadCount] = useState(0);
 
   // Sync state with user data when it loads
   useEffect(() => {
     if (user) {
         setName(user.name || '');
         setPreview(user.photo ? getProductImageUrl(user.photo) : null);
+        fetchUnreadCount();
     }
   }, [user]);
+
+  const fetchUnreadCount = async () => {
+    try {
+      const res = await api.get('/messages/unread-count');
+      setUnreadCount(res.data.data.unreadCount);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
@@ -64,10 +75,15 @@ export default function Profile() {
           <h2 className="text-3xl font-bold text-white">Your Profile</h2>
           <button 
             onClick={() => navigate('/inbox')}
-            className="flex items-center gap-2 px-4 py-2 bg-pink-500/10 hover:bg-pink-500/20 text-pink-500 rounded-full border border-pink-500/20 transition-all font-black uppercase tracking-widest text-[10px]"
+            className="flex items-center gap-2 px-4 py-2 bg-pink-500/10 hover:bg-pink-500/20 text-pink-500 rounded-full border border-pink-500/20 transition-all font-black uppercase tracking-widest text-[10px] relative"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
             Inbox
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[8px] w-4 h-4 rounded-full flex items-center justify-center border border-white dark:border-[#1a1a1a] shadow-lg animate-pulse">
+                {unreadCount}
+              </span>
+            )}
           </button>
         </div>
 

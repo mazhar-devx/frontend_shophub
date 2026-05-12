@@ -6,7 +6,7 @@ import { Heart, MessageCircle, Share2, Bookmark, Plus, X, Music2, Bell, ChevronL
 import SEO from "../components/SEO";
 import NotificationsModal from "../components/NotificationsModal";
 import api from "../services/api";
-import { getProductImageUrl } from "../utils/constants";
+import { getProductImageUrl, DEFAULT_AVATAR } from "../utils/constants";
 
 // URL Detector Regex
 const URL_REGEX = /(https?:\/\/[^\s]+)/g;
@@ -728,7 +728,7 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
                            >
                               <div className="relative">
                                  <div className="w-14 h-14 rounded-full border-2 border-pink-500 overflow-hidden shadow-lg group-hover:scale-110 transition-transform">
-                                    <img src={getProductImageUrl(friend.photo)} className="w-full h-full object-cover" />
+                                    <img src={friend.photo ? getProductImageUrl(friend.photo) : DEFAULT_AVATAR} className="w-full h-full object-cover" />
                                  </div>
                                  <div className="absolute -bottom-1 -right-1 bg-pink-500 rounded-full p-1 border-2 border-white dark:border-[#1a1a1a]">
                                     <Send className="w-2.5 h-2.5 text-white" />
