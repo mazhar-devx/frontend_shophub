@@ -23,6 +23,22 @@ let DefaultIcon = L.icon({
 
 L.Marker.prototype.options.icon = DefaultIcon;
 
+// Custom Company HQ Icon
+const hqIcon = L.divIcon({
+  className: 'custom-div-icon',
+  html: `
+    <div class="relative flex items-center justify-center">
+      <div class="absolute w-12 h-12 bg-pink-500/30 rounded-full animate-ping"></div>
+      <div class="absolute w-8 h-8 bg-pink-500/50 rounded-full animate-pulse"></div>
+      <div class="relative w-6 h-6 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full border-2 border-white flex items-center justify-center shadow-lg">
+        <span class="text-[10px] font-black text-white">SH</span>
+      </div>
+    </div>
+  `,
+  iconSize: [40, 40],
+  iconAnchor: [20, 20]
+});
+
 function LocationMarker({ position, setPosition }) {
     const map = useMapEvents({
       click(e) {
@@ -78,6 +94,7 @@ export default function Checkout() {
   const [showComingSoon, setShowComingSoon] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
+  const [pakistanGeoJson, setPakistanGeoJson] = useState(null);
   const { showToast } = useUIStore(); 
 
   const handleLocateMe = () => {
@@ -134,6 +151,20 @@ export default function Checkout() {
         }
     };
     fetchOffers();
+  }, []);
+
+  // Fetch Pakistan GeoJSON for Highlighting
+  useEffect(() => {
+    const fetchGeoJson = async () => {
+        try {
+            const res = await fetch("https://raw.githubusercontent.com/johan/world.geo.json/master/countries/PAK.geo.json");
+            const data = await res.json();
+            setPakistanGeoJson(data);
+        } catch (err) {
+            console.error("GeoJSON fetch failed", err);
+        }
+    };
+    fetchGeoJson();
   }, []);
 
   // Restore guest shipping info if returning from login
@@ -469,24 +500,60 @@ export default function Checkout() {
                         <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 text-[10px] px-3 py-1.5 rounded-lg font-bold transition-all uppercase">Find</button>
                     </form>
                  </div>
-
                  <div className="h-[400px] w-full rounded-2xl overflow-hidden border border-white/10 relative z-0 shadow-2xl group/map">
                     <div className="absolute inset-0 border-[20px] border-white/5 pointer-events-none z-10 rounded-2xl opacity-50"></div>
                     <MapContainer 
                         center={[30.3753, 69.3451]} 
                         zoom={5} 
-                        style={{ height: "100%", width: "100%" }}
+                        style={{ height: "100%", width: "100%", background: "#030014" }}
                         maxBounds={PAKISTAN_BOUNDS}
                         minZoom={5}
                     >
                          <TileLayer 
-                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" 
-                            attribution='&copy; OpenStreetMap' 
+                            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" 
+                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>' 
                          />
+                         
+                         {/* Pakistan Highlight */}
+                         {pakistanGeoJson && (
+                            <L.GeoJSON 
+                                data={pakistanGeoJson} 
+                                style={() => ({
+                                    color: "#EC4899",
+                                    weight: 2,
+                                    opacity: 0.6,
+                                    fillColor: "#EC4899",
+                                    fillOpacity: 0.05,
+                                    dashArray: '5, 10'
+                                })}
+                            />
+                         )}
+
+                         {/* ShopHub.pro HQ Marker */}
+                         <Marker 
+                            position={[30.5229, 72.6981]} 
+                            icon={hqIcon}
+                         >
+                            <L.Popup className="custom-popup">
+                                <div className="text-center p-2">
+                                    <h4 className="font-black text-pink-500 uppercase tracking-tighter mb-1">ShopHub.pro HQ</h4>
+                                    <p className="text-[10px] text-gray-600 font-bold">Chichawatni, Pakistan</p>
+                                    <a 
+                                        href="https://maps.app.goo.gl/Zy26FTzxMHys5mSu9" 
+                                        target="_blank" 
+                                        rel="noreferrer"
+                                        className="inline-block mt-2 text-[10px] bg-pink-500 text-white px-2 py-1 rounded-full font-bold"
+                                    >
+                                        View on Google Maps
+                                    </a>
+                                </div>
+                            </L.Popup>
+                         </Marker>
+
                          <LocationMarker position={location} setPosition={setLocation} />
                     </MapContainer>
                  </div>
-                 <div className="flex justify-between items-center mt-3">
+
                     <p className="text-[10px] text-gray-500 font-medium">✨ Click anywhere to refine delivery point</p>
                     {location && <p className="text-[10px] text-cyan-400 font-mono">Coords: {location.lat.toFixed(4)}, {location.lng.toFixed(4)}</p>}
                  </div>
