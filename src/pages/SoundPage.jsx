@@ -139,7 +139,7 @@ export default function SoundPage() {
                  initial={{ opacity: 0, scale: 0.9 }}
                  animate={{ opacity: 1, scale: 1 }}
                  transition={{ delay: idx * 0.05 }}
-                 onClick={() => window.location.href = `/watch-me?v=${video._id}&soundId=${id}`}
+                 onClick={() => navigate(`/watch-me?v=${video._id}&soundId=${id}`)}
                  className="group relative aspect-[9/16] bg-black cursor-pointer"
                >
                   <video src={getProductImageUrl(video.videoUrl)} className="w-full h-full object-cover" />

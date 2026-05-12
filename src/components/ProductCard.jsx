@@ -4,6 +4,7 @@ import { getProductImageUrl } from "../utils/constants";
 import { Link } from "react-router-dom";
 import { addToCart } from "../features/cart/cartSlice";
 import { useUIStore } from "../zustand/uiStore";
+import { Play } from "lucide-react";
 
 export default function ProductCard({ product }) {
   const dispatch = useDispatch();
@@ -41,6 +42,12 @@ export default function ProductCard({ product }) {
                    <span className="px-4 py-1.5 bg-white/90 dark:bg-purple-500/90 border border-gray-100 dark:border-purple-400/30 text-indigo-600 dark:text-white text-[9px] font-black uppercase tracking-[0.15em] rounded-full shadow-lg backdrop-blur-md">
                        Premium
                    </span>
+               )}
+               {product.video && (
+                    <span className="px-4 py-1.5 bg-pink-500/90 text-white text-[9px] font-black uppercase tracking-[0.15em] rounded-full shadow-lg backdrop-blur-md flex items-center gap-1.5">
+                        <Play className="w-2.5 h-2.5 fill-current" />
+                        Video
+                    </span>
                )}
            </div>
 

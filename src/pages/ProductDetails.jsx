@@ -14,6 +14,7 @@ import ProductAIChat from "../components/ProductAIChat";
 import { store } from "../app/store"; // Import store for direct access
 import SEO from "../components/SEO";
 import GoogleAd from "../components/GoogleAd";
+import { Play, Video } from "lucide-react";
 
 // Helper to check if string is a valid MongoDB ObjectId
 function isObjectId(id) {
@@ -50,6 +51,22 @@ export default function ProductDetails() {
   };
   
   const [recommendations, setRecommendations] = useState([]);
+  const [socialVideo, setSocialVideo] = useState(null);
+
+  useEffect(() => {
+    const fetchSocialVideo = async () => {
+      try {
+        // Try searching by product ID in productLink
+        const res = await api.get(`/videos?productLink=${id}`);
+        if (res.data.data.videos && res.data.data.videos.length > 0) {
+          setSocialVideo(res.data.data.videos[0]);
+        }
+      } catch (err) {
+        console.error("Error fetching social video:", err);
+      }
+    };
+    if (id) fetchSocialVideo();
+  }, [id]);
 
   useEffect(() => {
     // We now support slugs. If id is non-empty, we try to fetch.
@@ -396,7 +413,17 @@ export default function ProductDetails() {
                 )}
               </div>
 
-              <p className="text-secondary dark:text-gray-300 mb-8 leading-relaxed text-lg">{product.description}</p>
+              <p className="text-secondary dark:text-gray-300 mb-6 leading-relaxed text-lg">{product.description}</p>
+              
+              {socialVideo && (
+                <button 
+                  onClick={() => navigate(`/watch-me?v=${socialVideo._id}`)}
+                  className="mb-8 flex items-center gap-3 bg-pink-500/10 hover:bg-pink-500/20 text-pink-500 px-6 py-3 rounded-2xl font-black uppercase tracking-widest text-xs transition-all border border-pink-500/20 group shadow-lg shadow-pink-500/5"
+                >
+                  <Play className="w-5 h-5 fill-current group-hover:scale-110 transition-transform" />
+                  Watch Product Video
+                </button>
+              )}
             </div>
             
             {product.stock > 0 && (

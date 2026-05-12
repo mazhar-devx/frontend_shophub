@@ -1,16 +1,19 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Play, Users, MessageCircle, ChevronLeft, Share2, Grid, Bookmark, Music2 } from "lucide-react";
+import { Heart, Play, Users, MessageCircle, ChevronLeft, Share2, Grid, Bookmark, Music2, ShoppingCart } from "lucide-react";
+import { formatPrice } from "../utils/currency";
 import api from "../services/api";
 import { getProductImageUrl, DEFAULT_AVATAR } from "../utils/constants";
 import SEO from "../components/SEO";
 
 export default function CreatorProfile() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [creator, setCreator] = useState(null);
   const [videos, setVideos] = useState([]);
+  const [products, setProducts] = useState([]);
   const [likedVideos, setLikedVideos] = useState([]);
   const [savedVideos, setSavedVideos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -35,10 +38,21 @@ export default function CreatorProfile() {
   }, [id]);
 
   useEffect(() => {
-     if (activeTab !== 'videos') {
+     if (activeTab === 'shop') {
+        fetchProducts();
+     } else if (activeTab !== 'videos') {
         fetchTabData();
      }
   }, [activeTab]);
+
+  const fetchProducts = async () => {
+     try {
+        const res = await api.get(`/products?vendor=${id}`);
+        setProducts(res.data.data.products);
+     } catch (err) {
+        console.error(err);
+     }
+  };
 
   const fetchTabData = async () => {
      try {
@@ -221,6 +235,13 @@ export default function CreatorProfile() {
                    <Music2 className="w-4 h-4" /> Sounds
                    {activeTab === "sounds" && <motion.div layoutId="tab-underline" className="absolute bottom-0 left-0 right-0 h-1 bg-pink-500 rounded-full" />}
                 </button>
+                <button 
+                  onClick={() => setActiveTab("shop")}
+                  className={`flex items-center gap-2 px-8 py-4 text-sm font-black uppercase tracking-widest transition-all relative ${activeTab === "shop" ? "text-pink-500" : "text-gray-500 hover:text-primary dark:hover:text-white"}`}
+                >
+                   <ShoppingCart className="w-4 h-4" /> Shop
+                   {activeTab === "shop" && <motion.div layoutId="tab-underline" className="absolute bottom-0 left-0 right-0 h-1 bg-pink-500 rounded-full" />}
+                </button>
             </div>
 
             {/* Content Grid */}
@@ -231,7 +252,7 @@ export default function CreatorProfile() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.1 }}
-                    onClick={() => window.location.href = `/watch-me?v=${video._id}&userId=${id}`}
+                    onClick={() => navigate(`/watch-me?v=${video._id}&userId=${id}`)}
                     className="group relative aspect-[9/16] bg-black rounded-3xl overflow-hidden cursor-pointer"
                   >
                      <video src={getProductImageUrl(video.videoUrl)} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" />
@@ -251,7 +272,7 @@ export default function CreatorProfile() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.1 }}
-                    onClick={() => window.location.href = `/watch-me?v=${video._id}&userId=${id}`}
+                    onClick={() => navigate(`/watch-me?v=${video._id}&userId=${id}`)}
                     className="group relative aspect-[9/16] bg-black rounded-3xl overflow-hidden cursor-pointer"
                   >
                      <video src={getProductImageUrl(video.videoUrl)} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" />
@@ -271,7 +292,7 @@ export default function CreatorProfile() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.1 }}
-                    onClick={() => window.location.href = `/watch-me?v=${video._id}&userId=${id}`}
+                    onClick={() => navigate(`/watch-me?v=${video._id}&userId=${id}`)}
                     className="group relative aspect-[9/16] bg-black rounded-3xl overflow-hidden cursor-pointer"
                   >
                      <video src={getProductImageUrl(video.videoUrl)} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700" />
@@ -291,7 +312,7 @@ export default function CreatorProfile() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.1 }}
-                    onClick={() => window.location.href = `/sounds/${sound._id}`}
+                    onClick={() => navigate(`/sounds/${sound._id}`)}
                     className="group relative h-24 bg-white dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-2xl overflow-hidden cursor-pointer flex items-center p-4 hover:scale-[1.02] transition-transform"
                   >
                      <div className="w-16 h-16 rounded-xl overflow-hidden bg-black flex-shrink-0 relative">
@@ -304,6 +325,29 @@ export default function CreatorProfile() {
                      </div>
                      <div className="ml-4 px-3 py-1 bg-black/5 dark:bg-white/10 rounded-lg text-[10px] font-black dark:text-white uppercase">
                         {sound.useCount || 0} vids
+                     </div>
+                  </motion.div>
+               )) : activeTab === 'shop' ? products.map((product, idx) => (
+                  <motion.div 
+                    key={product._id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.1 }}
+                    onClick={() => navigate(`/product/${product.slug || product._id}`)}
+                    className="group relative aspect-[3/4] bg-white dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-3xl overflow-hidden cursor-pointer flex flex-col"
+                  >
+                     <img src={getProductImageUrl(product.image)} className="w-full h-2/3 object-cover group-hover:scale-105 transition-transform duration-500" />
+                     <div className="p-4 flex-1 flex flex-col justify-between">
+                        <div>
+                           <h4 className="font-bold dark:text-white text-xs truncate">{product.name}</h4>
+                           <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">{product.category}</p>
+                        </div>
+                        <div className="flex justify-between items-center mt-2">
+                           <span className="font-black dark:text-white text-sm">{formatPrice(product.price)}</span>
+                           <div className="p-1.5 bg-black/5 dark:bg-white/10 rounded-lg group-hover:bg-pink-500 group-hover:text-white transition-colors">
+                              <ShoppingCart className="w-3.5 h-3.5" />
+                           </div>
+                        </div>
                      </div>
                   </motion.div>
                )) : null}

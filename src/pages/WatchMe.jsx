@@ -24,6 +24,7 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
   const [isActionLoading, setIsActionLoading] = useState({ like: false, save: false, follow: false, comment: false });
   const [showFullDescription, setShowFullDescription] = useState(false);
   const [isAutoplayBlocked, setIsAutoplayBlocked] = useState(false);
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const { user, isAuthenticated } = useSelector((state) => state.auth);
 
   useEffect(() => {
@@ -286,15 +287,54 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
          </div>
       )}
 
+      {/* Loading Skeleton / Spinner for slow internet */}
+      <AnimatePresence>
+        {!isVideoLoaded && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 z-40 bg-black flex flex-col items-center justify-center gap-6"
+          >
+             {/* Blurred Thumbnail as Background */}
+             {video.thumbnailUrl && (
+                <div className="absolute inset-0 overflow-hidden">
+                   <img 
+                     src={getProductImageUrl(video.thumbnailUrl)} 
+                     className="w-full h-full object-cover blur-2xl opacity-50 scale-110" 
+                     alt=""
+                   />
+                </div>
+             )}
+             
+             {/* Spinning Glow */}
+             <div className="relative w-24 h-24">
+                <div className="absolute inset-0 border-4 border-pink-500/20 rounded-full" />
+                <motion.div 
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                  className="absolute inset-0 border-4 border-t-pink-500 rounded-full shadow-[0_0_20px_rgba(236,72,153,0.5)]"
+                />
+             </div>
+             
+             <div className="text-center z-10">
+                <h3 className="text-white font-black uppercase tracking-widest text-sm mb-2 animate-pulse">Loading Video</h3>
+                <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest">Experience the moment...</p>
+             </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Video element */}
       <video
         ref={videoRef}
-        src={getProductImageUrl(video.videoUrl)}
+        src={isActive ? getProductImageUrl(video.videoUrl) : undefined}
         poster={video.thumbnailUrl ? getProductImageUrl(video.thumbnailUrl) : undefined}
         loop
         muted={isGlobalMuted}
         playsInline
-        className="w-full h-full object-cover"
+        onLoadedData={() => setIsVideoLoaded(true)}
+        className={`w-full h-full object-cover transition-opacity duration-500 ${isVideoLoaded ? 'opacity-100' : 'opacity-0'}`}
       />
 
       {/* Top Moving Caption */}
@@ -784,14 +824,16 @@ export default function WatchMe() {
        const index = videos.findIndex(v => v._id === videoId);
        if (index !== -1) {
           setActiveIndex(index);
-          // Scroll to that video
-          const container = containerRef.current;
-          if (container) {
-             container.scrollTo({ top: index * container.clientHeight, behavior: 'smooth' });
-          }
+          // Scroll to that video with a slight delay to ensure DOM is ready
+          setTimeout(() => {
+            const container = containerRef.current;
+            if (container) {
+               container.scrollTo({ top: index * container.clientHeight, behavior: 'auto' });
+            }
+          }, 100);
        }
     }
-  }, [videos]);
+  }, [videos, window.location.search]);
 
   useEffect(() => {
      if (isAuthenticated) {
