@@ -13,6 +13,7 @@ import MobileBottomNav from "./components/MobileBottomNav";
 import AdminLayout from "./layouts/AdminLayout";
 import VendorNamePrompt from "./components/VendorNamePrompt";
 import ProtectedRoute from "./components/ProtectedRoute";
+import CookieConsent from "./components/CookieConsent";
 import { useEffect, lazy, Suspense } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { loadUser } from "./features/auth/authSlice";
@@ -94,6 +95,7 @@ function AppContent() {
   return (
     <>
       <VendorNamePrompt />
+      <CookieConsent />
       <Routes>
         {/* Portfolio route - Full screen, no layout */}
         <Route path="/mazhar.devx" element={

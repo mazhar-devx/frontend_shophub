@@ -9,10 +9,31 @@ const GoogleAd = ({
 }) => {
   const adRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [hasConsent, setHasConsent] = useState(false);
+
+  useEffect(() => {
+    const checkConsent = () => {
+      const consentStr = localStorage.getItem('cookie-consent');
+      if (consentStr) {
+        try {
+          const consent = JSON.parse(consentStr);
+          setHasConsent(consent.marketing);
+        } catch (e) {
+          setHasConsent(false);
+        }
+      } else {
+        setHasConsent(false);
+      }
+    };
+    
+    checkConsent();
+    window.addEventListener('cookie-consent-updated', checkConsent);
+    return () => window.removeEventListener('cookie-consent-updated', checkConsent);
+  }, []);
 
   useEffect(() => {
     const adElement = adRef.current;
-    if (!adElement) return;
+    if (!adElement || !hasConsent) return;
 
     let pushed = false;
     const intersectionObserver = new IntersectionObserver(([entry]) => {
@@ -54,6 +75,8 @@ const GoogleAd = ({
       statusObserver.disconnect();
     };
   }, []);
+
+  if (!hasConsent) return null;
 
   return (
     <div 
