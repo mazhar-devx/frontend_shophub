@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   Upload, X, CheckCircle, AlertCircle, Video, Tag, 
   Type, AlignLeft, Globe, ChevronLeft, 
-  Search, Package, Sparkles, Wand2
+  Search, Package, Sparkles, Wand2, ShoppingCart
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import api from "../services/api";
@@ -178,14 +178,22 @@ export default function VideoUpload() {
                            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Video Preview</p>
                         </div>
                      )}
-                     {caption && (
-                       <div className="absolute top-10 left-0 right-0 z-20 overflow-hidden bg-black/40 backdrop-blur-md py-2">
-                          <div className="whitespace-nowrap animate-marquee font-black text-[10px] text-white uppercase tracking-widest px-4">
-                             {caption} • {caption}
-                          </div>
-                       </div>
-                     )}
-                  </div>
+                      {/* Product Link Preview Overlay */}
+                      {(selectedProduct || productLink) && (
+                        <div className="absolute left-4 bottom-24 z-30 flex items-center gap-2 bg-white/95 dark:bg-[#1a1a1a]/95 backdrop-blur-md text-black dark:text-white px-4 py-2.5 rounded-2xl font-black shadow-2xl scale-[0.6] origin-left border border-black/5 dark:border-white/10">
+                           <ShoppingCart className="w-5 h-5 text-pink-500" />
+                           <span className="text-xs uppercase tracking-widest">Shop Item</span>
+                        </div>
+                      )}
+
+                      {caption && (
+                        <div className="absolute top-10 left-0 right-0 z-20 overflow-hidden bg-black/40 backdrop-blur-md py-2">
+                           <div className="whitespace-nowrap animate-marquee font-black text-[10px] text-white uppercase tracking-widest px-4">
+                              {caption} • {caption}
+                           </div>
+                        </div>
+                      )}
+                   </div>
               </div>
 
               {/* Progress Summary Card */}
@@ -289,38 +297,66 @@ export default function VideoUpload() {
                         </div>
                      </div>
 
-                     {/* Product Search */}
-                     <div className="space-y-4">
+                    {/* Product Search & Link */}
+                    <div className="space-y-6">
                         <label className="text-xs font-black text-gray-500 uppercase tracking-widest ml-1 flex items-center gap-2"><Package className="w-3 h-3" /> Tag a Product</label>
-                        <div className="relative">
-                           <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                        
+                        {/* Manual Link Input */}
+                        <div className="space-y-3">
+                           <div className="flex items-center justify-between ml-1">
+                              <span className="text-[10px] font-bold text-gray-600 uppercase tracking-widest">Option A: External Product Link</span>
+                           </div>
                            <input 
-                             type="text" 
-                             value={productQuery}
-                             onChange={(e) => setProductQuery(e.target.value)}
-                             placeholder="Search catalog..." 
-                             className="w-full bg-white/5 border border-white/10 rounded-2xl pl-14 pr-6 py-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+                             type="url" 
+                             value={productLink}
+                             onChange={(e) => {
+                               setProductLink(e.target.value);
+                               if (e.target.value) setSelectedProduct(null);
+                             }}
+                             placeholder="Paste URL (e.g. https://shophub.pro/product/...)" 
+                             className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all shadow-inner"
                            />
-                           {isSearchingProducts && (
-                             <div className="absolute right-5 top-1/2 -translate-y-1/2 w-4 h-4 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
-                           )}
-                           
-                           {/* Results */}
-                           <AnimatePresence>
-                             {productResults.length > 0 && !selectedProduct && (
-                               <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="absolute w-full z-50 mt-2 glass border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
-                                  {productResults.map(p => (
-                                    <button key={p._id} type="button" onClick={() => {setSelectedProduct(p); setProductQuery(""); setProductResults([]);}} className="w-full flex items-center gap-4 px-4 py-4 hover:bg-white/10 transition-colors text-left border-b border-white/5 last:border-0">
-                                       <img src={getProductImageUrl(p.images?.[0] || p.image)} className="w-12 h-12 rounded-xl object-cover" />
-                                       <div>
-                                          <p className="text-xs font-black text-white uppercase tracking-tight">{p.name}</p>
-                                          <p className="text-[10px] text-cyan-400 font-black">{formatPrice(p.price)}</p>
-                                       </div>
-                                    </button>
-                                  ))}
-                               </motion.div>
-                             )}
-                           </AnimatePresence>
+                        </div>
+
+                        <div className="relative flex items-center py-2">
+                           <div className="flex-1 h-[1px] bg-white/5"></div>
+                           <span className="px-4 text-[9px] font-black text-gray-600 uppercase tracking-widest">OR</span>
+                           <div className="flex-1 h-[1px] bg-white/5"></div>
+                        </div>
+
+                        {/* Search Internal Catalog */}
+                        <div className="space-y-3">
+                           <span className="text-[10px] font-bold text-gray-600 uppercase tracking-widest ml-1">Option B: Search Store Catalog</span>
+                           <div className="relative">
+                              <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                              <input 
+                                type="text" 
+                                value={productQuery}
+                                onChange={(e) => setProductQuery(e.target.value)}
+                                placeholder="Find product by name..." 
+                                className="w-full bg-white/5 border border-white/10 rounded-2xl pl-14 pr-6 py-4 text-sm text-white focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+                              />
+                              {isSearchingProducts && (
+                                <div className="absolute right-5 top-1/2 -translate-y-1/2 w-4 h-4 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+                              )}
+                              
+                              {/* Results */}
+                              <AnimatePresence>
+                                {productResults.length > 0 && !selectedProduct && (
+                                  <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="absolute w-full z-50 mt-2 glass border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
+                                     {productResults.map(p => (
+                                       <button key={p._id} type="button" onClick={() => {setSelectedProduct(p); setProductLink(""); setProductQuery(""); setProductResults([]);}} className="w-full flex items-center gap-4 px-4 py-4 hover:bg-white/10 transition-colors text-left border-b border-white/5 last:border-0">
+                                          <img src={getProductImageUrl(p.images?.[0] || p.image)} className="w-12 h-12 rounded-xl object-cover" />
+                                          <div>
+                                             <p className="text-xs font-black text-white uppercase tracking-tight">{p.name}</p>
+                                             <p className="text-[10px] text-cyan-400 font-black">{formatPrice(p.price)}</p>
+                                          </div>
+                                       </button>
+                                     ))}
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+                           </div>
                         </div>
 
                         {selectedProduct && (

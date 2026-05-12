@@ -783,6 +783,88 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
           </>
         )}
       </AnimatePresence>
+
+      {/* Edit Video Modal */}
+      <AnimatePresence>
+        {isEditingVideo && (
+          <>
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsEditingVideo(false)}
+              className="absolute inset-0 z-[150] bg-black/80 backdrop-blur-md pointer-events-auto"
+            />
+            <motion.div 
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="absolute bottom-0 left-0 right-0 z-[160] bg-white dark:bg-[#1a1a1a] rounded-t-[2.5rem] p-8 pb-12 shadow-2xl pointer-events-auto flex flex-col max-h-[90vh]"
+            >
+              <div className="w-12 h-1.5 bg-gray-300 dark:bg-white/20 rounded-full mx-auto mb-8" />
+              
+              <div className="flex justify-between items-center mb-8">
+                 <h3 className="text-2xl font-black dark:text-white uppercase tracking-tighter">Edit Video Details</h3>
+                 <button onClick={() => setIsEditingVideo(false)} className="p-2 dark:text-white hover:bg-black/5 rounded-full">
+                    <X className="w-6 h-6" />
+                 </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto no-scrollbar space-y-6 pr-2">
+                 <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Video Name</label>
+                    <input 
+                      type="text" 
+                      value={editForm.name}
+                      onChange={(e) => setEditForm({...editForm, name: e.target.value})}
+                      className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-2xl px-6 py-4 text-sm dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all"
+                    />
+                 </div>
+
+                 <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Description</label>
+                    <textarea 
+                      rows="3"
+                      value={editForm.description}
+                      onChange={(e) => setEditForm({...editForm, description: e.target.value})}
+                      className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-2xl px-6 py-4 text-sm dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all resize-none"
+                    />
+                 </div>
+
+                 <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Tags (comma separated)</label>
+                    <input 
+                      type="text" 
+                      value={editForm.tags}
+                      onChange={(e) => setEditForm({...editForm, tags: e.target.value})}
+                      placeholder="e.g. fashion, style, viral"
+                      className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-2xl px-6 py-4 text-sm dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all"
+                    />
+                 </div>
+
+                 <div className="space-y-2">
+                    <label className="text-[10px] font-black text-pink-500 uppercase tracking-widest ml-1">Product Link (External or Shop ID)</label>
+                    <input 
+                      type="text" 
+                      value={editForm.productLink}
+                      onChange={(e) => setEditForm({...editForm, productLink: e.target.value})}
+                      placeholder="Paste product link here..."
+                      className="w-full bg-pink-500/5 border border-pink-500/20 rounded-2xl px-6 py-4 text-sm dark:text-white focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all"
+                    />
+                 </div>
+              </div>
+
+              <button 
+                onClick={handleUpdateVideo}
+                className="w-full mt-8 bg-gradient-to-r from-pink-500 to-purple-600 text-white font-black uppercase tracking-[0.2em] py-5 rounded-2xl shadow-xl shadow-pink-500/20 hover:scale-[1.02] active:scale-95 transition-all text-sm"
+              >
+                 Save Changes
+              </button>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
