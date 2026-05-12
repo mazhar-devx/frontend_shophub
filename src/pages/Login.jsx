@@ -4,6 +4,7 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { GoogleLogin } from '@react-oauth/google';
 import { login, googleLogin, clearError } from "../features/auth/authSlice";
 import { getProductImageUrl } from "../utils/constants";
+import { formatPrice } from "../utils/currency";
 
 export default function Login() {
   const [formData, setFormData] = useState({
