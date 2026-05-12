@@ -83,25 +83,51 @@ export default function Login() {
 
           {/* Checkout Context: Show products if redirecting from checkout */}
           {redirect === '/checkout' && cartItems.length > 0 && (
-            <div className="mb-8 animate-fade-in-down">
-                <div className="flex -space-x-4 justify-center mb-4">
-                    {cartItems.slice(0, 3).map((item, i) => (
-                        <div key={i} className="w-16 h-16 rounded-2xl border-4 border-[#030014] overflow-hidden shadow-2xl transform hover:-translate-y-2 transition-transform duration-300 relative z-[10]">
+            <div className="mb-10 animate-fade-in-down p-6 rounded-3xl bg-gradient-to-br from-purple-500/10 to-cyan-500/10 border border-white/5 relative overflow-hidden group">
+                {/* Background Glow */}
+                <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/20 rounded-full blur-2xl -z-10 group-hover:bg-purple-500/30 transition-all duration-700"></div>
+                
+                <div className="flex -space-x-6 justify-center mb-6">
+                    {cartItems.slice(0, 4).map((item, i) => (
+                        <div 
+                          key={i} 
+                          className="w-20 h-20 rounded-2xl border-4 border-[#030014] overflow-hidden shadow-2xl transform hover:-translate-y-3 transition-all duration-500 relative z-[10] cart-item-entry"
+                          style={{ animationDelay: `${i * 100}ms` }}
+                        >
                             <img 
                                 src={getProductImageUrl(item.images?.[0] || item.image) || "/placeholder.svg"} 
                                 alt="" 
-                                className="w-full h-full object-cover"
+                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                             />
+                            {/* Price Badge on Hover */}
+                            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                               <span className="text-[10px] font-bold text-white">{formatPrice(item.price)}</span>
+                            </div>
                         </div>
                     ))}
-                    {cartItems.length > 3 && (
-                        <div className="w-16 h-16 rounded-2xl border-4 border-[#030014] bg-gray-800 flex items-center justify-center text-white font-bold text-xs relative z-0">
-                            +{cartItems.length - 3}
+                    {cartItems.length > 4 && (
+                        <div className="w-20 h-20 rounded-2xl border-4 border-[#030014] bg-gray-900/80 backdrop-blur-md flex items-center justify-center text-white font-black text-lg relative z-0 shadow-2xl cart-item-entry" style={{ animationDelay: '400ms' }}>
+                            <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-cyan-400">+{cartItems.length - 4}</span>
                         </div>
                     )}
                 </div>
-                <h2 className="text-center text-2xl font-black text-white tracking-tight">Finalize Your Order</h2>
-                <p className="text-center text-sm text-cyan-400 font-bold mt-1">Sign in to complete your purchase</p>
+                
+                <div className="text-center relative z-10">
+                  <h2 className="text-3xl font-black text-white tracking-tighter mb-2 bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-400">Your Gear Awaits</h2>
+                  <p className="text-sm font-medium text-cyan-400 uppercase tracking-[0.2em] animate-pulse">Sign in to complete order</p>
+                  
+                  <div className="mt-4 flex items-center justify-center gap-4 text-xs text-gray-500 font-bold border-t border-white/5 pt-4">
+                     <div className="flex items-center gap-1">
+                        <svg className="w-3 h-3 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                        SECURE
+                     </div>
+                     <div className="w-1 h-1 rounded-full bg-gray-700"></div>
+                     <div className="flex items-center gap-1">
+                        <svg className="w-3 h-3 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                        ENCRYPTED
+                     </div>
+                  </div>
+                </div>
             </div>
           )}
 

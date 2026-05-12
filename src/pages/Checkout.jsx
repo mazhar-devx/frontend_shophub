@@ -272,7 +272,8 @@ export default function Checkout() {
     if (!isAuthenticated) {
         localStorage.setItem('guestShippingInfo', JSON.stringify(shippingInfo));
         if (location) localStorage.setItem('guestLocation', JSON.stringify(location));
-        showToast("Please login to complete your order", "info");
+        
+        showToast("Please login to finalize your purchase", "info");
         navigate("/login?redirect=/checkout");
         return;
     }
@@ -418,9 +419,18 @@ export default function Checkout() {
                      <span className="flex items-center gap-2">Pin Delivery Location</span>
                      <button type="button" onClick={handleLocateMe} className="text-[10px] bg-white/5 border border-white/10 hover:bg-white/10 px-3 py-1 rounded-full text-cyan-400 font-bold">Locate Me</button>
                  </label>
-                 <div className="h-[400px] w-full rounded-2xl overflow-hidden border border-white/10 relative z-0">
-                    <MapContainer center={[30.3753, 69.3451]} zoom={5} style={{ height: "100%", width: "100%", background: "#030014" }} maxBounds={PAKISTAN_BOUNDS} minZoom={5}>
-                         <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" />
+                 <div className="h-[400px] w-full rounded-2xl overflow-hidden border border-white/10 relative z-0 shadow-2xl premium-map">
+                    <MapContainer 
+                        center={[30.3753, 69.3451]} 
+                        zoom={5} 
+                        style={{ height: "100%", width: "100%", background: "#030014" }}
+                        maxBounds={PAKISTAN_BOUNDS}
+                        minZoom={5}
+                    >
+                         <TileLayer 
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" 
+                            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                         />
                          {pakistanGeoJson && (
                             <GeoJSON 
                                 data={pakistanGeoJson} 
