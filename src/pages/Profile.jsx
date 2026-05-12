@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { updateProfile } from '../features/auth/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { IMAGE_URL, DEFAULT_AVATAR, getProductImageUrl } from "../utils/constants";
+import api from "../services/api";
 
 export default function Profile() {
   const { user, loading, error } = useSelector((state) => state.auth);
