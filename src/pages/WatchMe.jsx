@@ -533,7 +533,7 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
            <div className="p-3 rounded-full bg-black/20 backdrop-blur-md text-white group-hover:scale-110 transition-all">
               <Share2 className="w-7 h-7" />
            </div>
-            <span className="text-white text-xs font-bold shadow-sm">Share</span>
+            <span className="text-white text-xs font-bold shadow-sm">{video.sharesCount || 0}</span>
          </button>
 
          {/* More Menu (Refresh & Management) */}
