@@ -169,16 +169,22 @@ export default function AdminLayout() {
               </div>
               
               <div className="flex items-center gap-3 pl-6 border-l border-white/10">
-                 <div className="text-right hidden md:block">
-                    <p className="text-sm font-bold text-white">{user?.name || 'Admin User'}</p>
-                    <p className="text-xs text-gray-400">Super Administrator</p>
-                 </div>
-                 <div className="h-10 w-10 rounded-full bg-gradient-to-br from-purple-500 to-cyan-500 p-[1px]">
-                    <div className="h-full w-full rounded-full bg-black flex items-center justify-center">
-                       {user?.name?.charAt(0) || 'A'}
-                    </div>
-                 </div>
-              </div>
+                  <div className="text-right hidden md:block">
+                     <p className="text-sm font-bold text-white leading-tight">{user?.vendorName || user?.name || 'Admin User'}</p>
+                     <p className="text-[10px] text-gray-500 uppercase tracking-widest font-black mt-0.5">
+                        {user?.role === 'admin' ? 'Super Administrator' : 'Staff'}
+                     </p>
+                  </div>
+                  <div className="h-10 w-10 rounded-full bg-gradient-to-br from-purple-500 to-cyan-500 p-[1px] shadow-lg shadow-purple-500/20">
+                     <div className="h-full w-full rounded-full bg-black overflow-hidden flex items-center justify-center">
+                        {user?.photo ? (
+                           <img src={user.photo.startsWith('http') ? user.photo : `/api/v1/users/photo/${user.photo}`} className="w-full h-full object-cover" alt="" />
+                        ) : (
+                           <span className="text-sm font-black text-white">{user?.name?.charAt(0) || 'A'}</span>
+                        )}
+                     </div>
+                  </div>
+               </div>
            </div>
         </header>
 

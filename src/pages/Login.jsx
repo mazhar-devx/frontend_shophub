@@ -215,14 +215,19 @@ export default function Login() {
                 </div>
              </div>
 
-             <GoogleLogin
-                onSuccess={handleGoogleSuccess}
-                onError={() => console.log('Login Failed')}
-                theme={document.documentElement.getAttribute('data-theme') === 'light' ? 'outline' : 'filled_black'}
-                shape="pill"
-                text="continue_with"
-                width={400}
-             />
+             <div className="flex flex-col gap-3">
+                <GoogleLogin
+                    onSuccess={handleGoogleSuccess}
+                    onError={() => console.log('Login Failed')}
+                    theme={document.documentElement.getAttribute('data-theme') === 'light' ? 'outline' : 'filled_black'}
+                    shape="pill"
+                    text="continue_with"
+                    width="100%"
+                />
+                <p className="text-[10px] text-center text-gray-500 uppercase tracking-widest font-bold">
+                  Google One Tap enabled. Ensure cookies are accepted.
+                </p>
+             </div>
           </div>
         </div>
         

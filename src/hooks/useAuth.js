@@ -18,6 +18,7 @@ const useAuth = () => {
           // One Tap needs at least functional or marketing consent
           setHasConsent(consent.functional || consent.marketing);
         } catch (e) {
+          console.error('[Auth] Failed to parse cookie consent', e);
           setHasConsent(false);
         }
       } else {
@@ -46,18 +47,23 @@ const useAuth = () => {
   }, [dispatch, isAuthenticated]);
 
   // Google One Tap Login
+  // Note: This only shows if:
+  // 1. User is NOT authenticated
+  // 2. User HAS given functional/marketing cookie consent
+  // 3. User is on a supported browser/device
   useGoogleOneTapLogin({
     onSuccess: (credentialResponse) => {
       if (!isAuthenticated) {
-        console.log('[Auth] Google One Tap Success');
+        console.log('[Auth] Google One Tap Success - Initiating login');
         dispatch(googleLogin(credentialResponse.credential));
       }
     },
-    onError: () => {
-      // One Tap Login Failed
+    onError: (error) => {
+      console.warn('[Auth] Google One Tap Login Failed or Dismissed', error);
     },
     disabled: isAuthenticated || !hasConsent,
-    auto_select: true,
+    auto_select: true, // Automatically select if only one account
+    cancel_on_tap_outside: false,
   });
 };
 

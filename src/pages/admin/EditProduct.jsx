@@ -218,8 +218,14 @@ export default function EditProduct() {
 
               {/* Success Message */}
               {success && (
-                <div className="p-4 bg-green-500/20 border border-green-500/30 text-green-200 rounded-xl flex items-center animate-pulse">
-                   <span className="mr-2">✅</span> Product updated successfully! Redirecting...
+                <div className="p-5 bg-green-500/10 border border-green-500/30 text-green-400 rounded-2xl flex items-center gap-4 animate-in fade-in zoom-in duration-500 shadow-lg shadow-green-500/5">
+                   <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center text-xl shrink-0">
+                      ✅
+                   </div>
+                   <div>
+                      <h4 className="font-bold">Product Updated!</h4>
+                      <p className="text-sm opacity-80">All changes have been synchronized. Redirecting to your inventory...</p>
+                   </div>
                 </div>
               )}
 

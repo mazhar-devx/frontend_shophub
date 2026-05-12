@@ -9,7 +9,7 @@ const CustomCursor = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isMoving, setIsMoving] = useState(false);
   const idleTimer = useRef(null);
-
+  
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
@@ -22,19 +22,20 @@ const CustomCursor = () => {
     const handleMouseMove = (e) => {
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
-      
-      if (!isVisible) setIsVisible(true);
-      
-      // Handle moving state (show label)
       setIsMoving(true);
       
-      // Clear previous timer
       if (idleTimer.current) clearTimeout(idleTimer.current);
-      
-      // Set new timer to hide label after 1.5 seconds of no movement
       idleTimer.current = setTimeout(() => {
         setIsMoving(false);
-      }, 1500);
+      }, 5000); // Increased to 5s for better presence
+    };
+
+    const handleScroll = () => {
+      setIsMoving(true);
+      if (idleTimer.current) clearTimeout(idleTimer.current);
+      idleTimer.current = setTimeout(() => {
+        setIsMoving(false);
+      }, 5000);
     };
 
     const handleMouseLeave = () => {
@@ -44,16 +45,18 @@ const CustomCursor = () => {
     const handleMouseEnter = () => setIsVisible(true);
 
     window.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseleave', handleMouseLeave);
-    document.addEventListener('mouseenter', handleMouseEnter);
+    window.addEventListener('mouseenter', handleMouseEnter);
+    window.addEventListener('mouseleave', handleMouseLeave);
+    window.addEventListener('scroll', handleScroll, { capture: true });
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseleave', handleMouseLeave);
-      document.removeEventListener('mouseenter', handleMouseEnter);
+      window.removeEventListener('mouseenter', handleMouseEnter);
+      window.removeEventListener('mouseleave', handleMouseLeave);
+      window.removeEventListener('scroll', handleScroll, { capture: true });
       if (idleTimer.current) clearTimeout(idleTimer.current);
     };
-  }, [mouseX, mouseY, isVisible]);
+  }, [mouseX, mouseY]);
 
   // Handle clickable elements for scaling
   useEffect(() => {
@@ -84,11 +87,18 @@ const CustomCursor = () => {
           translateX: '-50%',
           translateY: '-50%',
         }}
-        className="absolute w-4 h-4 bg-pink-500 rounded-full border-2 border-white shadow-lg mix-blend-difference"
+        className="absolute w-4 h-4 bg-pink-500 rounded-full border-2 border-white shadow-lg mix-blend-difference z-[9999]"
         animate={{ 
           scale: isHovering ? 1.5 : 1,
         }}
-      />
+      >
+        {/* Pulse Effect */}
+        <motion.div 
+          animate={{ scale: [1, 1.5, 1], opacity: [0.3, 0, 0.3] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute inset-0 bg-pink-500 rounded-full"
+        />
+      </motion.div>
 
       {/* Trailing Profile Label */}
       <motion.div

@@ -14,53 +14,51 @@ export default function AdminDashboard() {
   const [recentProducts, setRecentProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [lastUpdated, setLastUpdated] = useState(null);
+
+  const fetchData = async (silent = false) => {
+    try {
+      if (!silent) setLoading(true);
+      
+      const { data } = await api.get("/dashboard/stats");
+      
+      if (data.status === 'success') {
+         const statsData = data.data;
+         
+         setStats({
+          totalProducts: statsData.totalProducts,
+          totalOrders: statsData.totalOrders,
+          totalCustomers: statsData.totalCustomers,
+          totalRevenue: statsData.totalRevenue,
+        });
+
+        setRecentOrders(statsData.recentOrders.map(order => ({
+          id: order._id.substring(0, 8).toUpperCase(),
+          customer: order.user ? order.user.name : (order.shippingAddress?.fullName || "Guest"),
+          amount: order.totalPrice,
+          status: order.orderStatus || "Pending"
+        })));
+
+        setRecentProducts(statsData.recentProducts.map(product => ({
+          id: product._id,
+          name: product.name,
+          category: product.category,
+          price: product.price,
+          stock: product.stock
+        })));
+        
+        setLastUpdated(new Date());
+      }
+      
+      setLoading(false);
+    } catch (err) {
+      setError("Failed to fetch dashboard data");
+      setLoading(false);
+      console.error("Error fetching dashboard data:", err);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        
-        // Fetch stats from our new endpoint
-        const { data } = await api.get("/dashboard/stats");
-        
-        if (data.status === 'success') {
-           const statsData = data.data;
-           
-           setStats({
-            totalProducts: statsData.totalProducts,
-            totalOrders: statsData.totalOrders,
-            totalCustomers: statsData.totalCustomers,
-            totalRevenue: statsData.totalRevenue,
-          });
-
-          // Map recent orders
-          const mappedOrders = statsData.recentOrders.map(order => ({
-            id: order._id.substring(0, 8).toUpperCase(), // Short ID
-            customer: order.user ? order.user.name : (order.shippingAddress?.fullName || "Guest"),
-            amount: order.totalPrice,
-            status: order.orderStatus || "Pending" // Assuming orderStatus field
-          }));
-          setRecentOrders(mappedOrders);
-
-          // Map recent products
-          const mappedProducts = statsData.recentProducts.map(product => ({
-            id: product._id,
-            name: product.name,
-            category: product.category,
-            price: product.price,
-            stock: product.stock
-          }));
-          setRecentProducts(mappedProducts);
-        }
-        
-        setLoading(false);
-      } catch (err) {
-        setError("Failed to fetch dashboard data");
-        setLoading(false);
-        console.error("Error fetching dashboard data:", err);
-      }
-    };
-
     fetchData();
   }, []);
 
@@ -123,6 +121,15 @@ export default function AdminDashboard() {
         </div>
         <div className="flex flex-col sm:flex-row gap-3">
           <button
+            onClick={() => fetchData(false)}
+            disabled={loading}
+            className="flex items-center px-4 py-3 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all font-bold group"
+            title="Refresh statistics"
+          >
+            <span className={`mr-2 ${loading ? 'animate-spin' : 'group-hover:rotate-180 transition-transform duration-500'}`}>🔄</span>
+            {loading ? 'Refreshing...' : 'Refresh'}
+          </button>
+          <button
             onClick={handleGoogleSync}
             disabled={syncing}
             className={`flex items-center px-6 py-3 border border-white/10 rounded-xl transition-all transform hover:-translate-y-1 font-bold group ${syncing ? 'opacity-50 cursor-not-allowed' : 'bg-white/5 hover:bg-white/10'}`}
@@ -139,6 +146,13 @@ export default function AdminDashboard() {
           </Link>
         </div>
       </div>
+
+      {lastUpdated && (
+        <div className="flex items-center gap-2 text-[10px] text-gray-500 uppercase tracking-widest font-black animate-fade-in">
+           <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+           Last updated: {lastUpdated.toLocaleTimeString()}
+        </div>
+      )}
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

@@ -37,6 +37,7 @@ export default function ProductDetails() {
   // Zoom state
   const [isHovering, setIsHovering] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [showFullDescription, setShowFullDescription] = useState(false);
 
   const handleMouseMove = (e) => {
     const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
@@ -413,7 +414,23 @@ export default function ProductDetails() {
                 )}
               </div>
 
-              <p className="text-secondary dark:text-gray-300 mb-6 leading-relaxed text-lg">{product.description}</p>
+              <div className="relative">
+                <p className={`text-secondary dark:text-gray-300 mb-2 leading-relaxed text-lg ${!showFullDescription && product.description?.length > 300 ? 'line-clamp-3' : ''}`}>
+                  {product.description}
+                </p>
+                {product.description?.length > 300 && (
+                  <button 
+                    onClick={() => setShowFullDescription(!showFullDescription)}
+                    className="text-cyan-500 hover:text-cyan-400 font-bold text-sm uppercase tracking-widest flex items-center gap-1 transition-all mb-6"
+                  >
+                    {showFullDescription ? (
+                      <>Show Less <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" /></svg></>
+                    ) : (
+                      <>Show More <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg></>
+                    )}
+                  </button>
+                )}
+              </div>
               
               {/* Desktop Social Sharing */}
               <div className="hidden lg:flex items-center gap-3 mb-8">

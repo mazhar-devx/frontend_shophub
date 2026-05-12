@@ -36,12 +36,12 @@ const CustomContextMenu = () => {
 
     window.addEventListener('contextmenu', handleContextMenu);
     window.addEventListener('click', handleClick);
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { capture: true });
 
     return () => {
       window.removeEventListener('contextmenu', handleContextMenu);
       window.removeEventListener('click', handleClick);
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('scroll', handleScroll, { capture: true });
     };
   }, []);
 
