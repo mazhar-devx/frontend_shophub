@@ -146,7 +146,7 @@ function AppContent() {
                   <Route path="forgot-password" element={<ForgotPassword />} />
                   <Route path="reset-password/:token" element={<ResetPassword />} />
                   <Route path="cart" element={<Cart />} />
-                  <Route path="checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+                  <Route path="checkout" element={<Checkout />} />
                   <Route path="order-confirmation" element={<ProtectedRoute><OrderSuccess /></ProtectedRoute>} />
                   <Route path="my-orders" element={<ProtectedRoute><MyOrders /></ProtectedRoute>} />
                   <Route path="wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />

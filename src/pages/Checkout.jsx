@@ -48,6 +48,7 @@ const PAKISTAN_BOUNDS = [
 ];
 
 export default function Checkout() {
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
   const { items: cartItems, totalAmount } = useSelector((state) => state.cart);
   const navigate = useNavigate();
   
@@ -134,6 +135,23 @@ export default function Checkout() {
     };
     fetchOffers();
   }, []);
+
+  // Restore guest shipping info if returning from login
+  useEffect(() => {
+    if (isAuthenticated) {
+        const savedInfo = localStorage.getItem('guestShippingInfo');
+        const savedLocation = localStorage.getItem('guestLocation');
+        
+        if (savedInfo) {
+            setShippingInfo(JSON.parse(savedInfo));
+            localStorage.removeItem('guestShippingInfo');
+        }
+        if (savedLocation) {
+            setLocation(JSON.parse(savedLocation));
+            localStorage.removeItem('guestLocation');
+        }
+    }
+  }, [isAuthenticated]);
   
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -179,9 +197,18 @@ export default function Checkout() {
       }
   };
 
-  const handlePaymentSuccess = async () => {
     // Validate form first
     if (!validateForm()) return;
+
+    // IF NOT AUTHENTICATED: Save progress and redirect to login
+    if (!isAuthenticated) {
+        localStorage.setItem('guestShippingInfo', JSON.stringify(shippingInfo));
+        if (location) localStorage.setItem('guestLocation', JSON.stringify(location));
+        
+        showToast("Please login to complete your order", "info");
+        navigate("/login?redirect=/checkout");
+        return;
+    }
 
     // Show processing toast
     const processingToast = document.createElement("div");

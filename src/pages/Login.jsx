@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { GoogleLogin } from '@react-oauth/google';
 import { login, googleLogin, clearError } from "../features/auth/authSlice";
+import { getProductImageUrl } from "../utils/constants";
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -11,6 +12,7 @@ export default function Login() {
   });
   
   const { loading, error, validationErrors } = useSelector((state) => state.auth);
+  const { items: cartItems } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -78,12 +80,42 @@ export default function Login() {
           <div className="mx-auto h-16 w-16 bg-gradient-to-tr from-cyan-400 to-purple-500 rounded-2xl rotate-3 flex items-center justify-center shadow-lg shadow-purple-500/20 mb-6">
              <span className="text-3xl font-bold text-white transform -rotate-3">M</span>
           </div>
-          <h2 className="mt-2 text-center text-3xl font-bold tracking-tight text-primary">
-            Welcome Back
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-400">
-            Sign in to access your account
-          </p>
+
+          {/* Checkout Context: Show products if redirecting from checkout */}
+          {redirect === '/checkout' && cartItems.length > 0 && (
+            <div className="mb-8 animate-fade-in-down">
+                <div className="flex -space-x-4 justify-center mb-4">
+                    {cartItems.slice(0, 3).map((item, i) => (
+                        <div key={i} className="w-16 h-16 rounded-2xl border-4 border-[#030014] overflow-hidden shadow-2xl transform hover:-translate-y-2 transition-transform duration-300 relative z-[10]">
+                            <img 
+                                src={getProductImageUrl(item.images?.[0] || item.image) || "/placeholder.svg"} 
+                                alt="" 
+                                className="w-full h-full object-cover"
+                            />
+                        </div>
+                    ))}
+                    {cartItems.length > 3 && (
+                        <div className="w-16 h-16 rounded-2xl border-4 border-[#030014] bg-gray-800 flex items-center justify-center text-white font-bold text-xs relative z-0">
+                            +{cartItems.length - 3}
+                        </div>
+                    )}
+                </div>
+                <h2 className="text-center text-2xl font-black text-white tracking-tight">Finalize Your Order</h2>
+                <p className="text-center text-sm text-cyan-400 font-bold mt-1">Sign in to complete your purchase</p>
+            </div>
+          )}
+
+          {!redirect || redirect !== '/checkout' ? (
+            <>
+              <h2 className="mt-2 text-center text-3xl font-bold tracking-tight text-primary">
+                Welcome Back
+              </h2>
+              <p className="mt-2 text-center text-sm text-gray-400">
+                Sign in to access your account
+              </p>
+            </>
+          ) : null}
+          
           <p className="mt-1 text-center text-xs text-gray-500">
             Admin? Use an account with role <code className="bg-white/10 px-1 rounded">admin</code> in the database.
           </p>

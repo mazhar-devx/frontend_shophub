@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { GoogleLogin } from '@react-oauth/google';
 import { signup, googleLogin, clearError } from "../features/auth/authSlice";
+import { getProductImageUrl } from "../utils/constants";
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -13,6 +14,7 @@ export default function Register() {
   });
   
   const { loading, error, validationErrors } = useSelector((state) => state.auth);
+  const { items: cartItems } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -72,12 +74,40 @@ export default function Register() {
       
       <div className="max-w-md w-full space-y-8 relative z-10 glass border border-white/10 p-8 rounded-3xl shadow-2xl animate-fade-in-down">
         <div>
-          <h2 className="mt-2 text-center text-3xl font-bold tracking-tight text-primary">
-            Create your account
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-400">
-            Join us and experience the future of shopping
-          </p>
+          {/* Checkout Context: Show products if redirecting from checkout */}
+          {redirect === '/checkout' && cartItems.length > 0 && (
+            <div className="mb-8 animate-fade-in-down">
+                <div className="flex -space-x-4 justify-center mb-4">
+                    {cartItems.slice(0, 3).map((item, i) => (
+                        <div key={i} className="w-16 h-16 rounded-2xl border-4 border-[#030014] overflow-hidden shadow-2xl transform hover:-translate-y-2 transition-transform duration-300 relative z-[10]">
+                            <img 
+                                src={getProductImageUrl(item.images?.[0] || item.image) || "/placeholder.svg"} 
+                                alt="" 
+                                className="w-full h-full object-cover"
+                            />
+                        </div>
+                    ))}
+                    {cartItems.length > 3 && (
+                        <div className="w-16 h-16 rounded-2xl border-4 border-[#030014] bg-gray-800 flex items-center justify-center text-white font-bold text-xs relative z-0">
+                            +{cartItems.length - 3}
+                        </div>
+                    )}
+                </div>
+                <h2 className="text-center text-2xl font-black text-white tracking-tight">Complete Your Order</h2>
+                <p className="text-center text-sm text-cyan-400 font-bold mt-1">Create an account to finalize purchase</p>
+            </div>
+          )}
+
+          {!redirect || redirect !== '/checkout' ? (
+            <>
+              <h2 className="mt-2 text-center text-3xl font-bold tracking-tight text-primary">
+                Create your account
+              </h2>
+              <p className="mt-2 text-center text-sm text-gray-400">
+                Join us and experience the future of shopping
+              </p>
+            </>
+          ) : null}
         </div>
         
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
