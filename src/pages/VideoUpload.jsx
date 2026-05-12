@@ -45,7 +45,7 @@ export default function VideoUpload() {
       const delay = setTimeout(async () => {
         setIsSearchingProducts(true);
         try {
-          const res = await api.get(`/products?keyword=${productQuery}&limit=5`);
+          const res = await api.get(`/products/search?q=${productQuery}&limit=5`);
           if (res.data?.status === 'success') {
             setProductResults(res.data.data.products);
           }
