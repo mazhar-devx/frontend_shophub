@@ -37,14 +37,7 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// Initialize auth
-const AppWithAuth = () => {
-  useAuth();
-  return <App />;
-};
-
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "YOUR_GOOGLE_CLIENT_ID_HERE";
-
 import { HelmetProvider } from 'react-helmet-async';
 
 ReactDOM.createRoot(document.getElementById("root")).render(
@@ -52,7 +45,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <Provider store={store}>
       <HelmetProvider>
         <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-           <AppWithAuth />
+           <App />
         </GoogleOAuthProvider>
       </HelmetProvider>
     </Provider>

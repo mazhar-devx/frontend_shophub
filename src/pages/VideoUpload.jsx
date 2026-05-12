@@ -61,8 +61,15 @@ export default function VideoUpload() {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      if (file.size > 50 * 1024 * 1024) {
-         setStatus({ type: "error", message: "Video size must be less than 50MB" });
+      const isVercel = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+      const limit = isVercel ? 4.5 * 1024 * 1024 : 50 * 1024 * 1024;
+      if (file.size > limit) {
+         setStatus({ 
+           type: "error", 
+           message: isVercel 
+             ? "Vercel limits uploads to 4.5MB. Please upload a smaller video or use direct Cloudinary upload." 
+             : "Video size must be less than 50MB" 
+         });
          return;
       }
       setVideoFile(file);

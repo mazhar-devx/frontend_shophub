@@ -21,6 +21,8 @@ import { useEffect, lazy, Suspense } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { loadUser } from "./features/auth/authSlice";
 import { useUIStore } from "./zustand/uiStore";
+import useAuth from "./hooks/useAuth";
+import GoogleOneTap from "./components/GoogleOneTap";
 
 // Lazy Load Pages
 const Home = lazy(() => import("./pages/Home"));
@@ -101,12 +103,8 @@ function AppContent() {
   const dispatch = useDispatch();
   const { loading, isAuthenticated } = useSelector((state) => state.auth);
   const hasToken = localStorage.getItem('token');
-
-  useEffect(() => {
-    if (hasToken && !isAuthenticated) {
-      dispatch(loadUser());
-    }
-  }, [dispatch, hasToken, isAuthenticated]);
+  
+  useAuth();
 
   if (loading && hasToken && !isAuthenticated) {
     return <PageLoader />;
@@ -115,6 +113,7 @@ function AppContent() {
   return (
     <>
       <ScrollToTop />
+      <GoogleOneTap />
       <VendorNamePrompt />
       <CookieConsent />
       <CustomCursor />

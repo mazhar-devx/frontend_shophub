@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setUser, googleLogin } from '../features/auth/authSlice';
-import { useGoogleOneTapLogin } from '@react-oauth/google';
+import { setUser } from '../features/auth/authSlice';
 import api from '../services/api';
 
 const useAuth = () => {
@@ -45,27 +44,6 @@ const useAuth = () => {
         });
     }
   }, [dispatch, isAuthenticated]);
-
-  // Google One Tap Login
-  // Note: This only shows if:
-  // 1. User is NOT authenticated
-  // 2. User HAS given functional/marketing cookie consent
-  // 3. User is on a supported browser/device
-  useGoogleOneTapLogin({
-    onSuccess: (credentialResponse) => {
-      if (!isAuthenticated) {
-        console.log('[Auth] Google One Tap Success - Initiating login');
-        dispatch(googleLogin(credentialResponse.credential));
-      }
-    },
-    onError: (error) => {
-      console.warn('[Auth] Google One Tap Login Failed or Dismissed', error);
-    },
-    disabled: isAuthenticated || !hasConsent,
-    auto_select: false, // Set to false to avoid automatic login which can suppress the prompt after manual logout
-    cancel_on_tap_outside: false,
-    use_fedcm_for_prompt: true, // Use latest FedCM for better reliability
-  });
 };
 
 export default useAuth;

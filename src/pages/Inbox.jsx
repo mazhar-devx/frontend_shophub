@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, Send, Search, Music2, Play, User, MessageCircle, MoreVertical } from "lucide-react";
+import { ChevronLeft, Send, Search, Music2, Play, User, MessageCircle, MoreVertical, Sparkles } from "lucide-react";
 import api from "../services/api";
-import { getProductImageUrl } from "../utils/constants";
+import { getProductImageUrl, DEFAULT_AVATAR_FALLBACK } from "../utils/constants";
 import SEO from "../components/SEO";
 
 export default function Inbox() {
@@ -13,11 +13,13 @@ export default function Inbox() {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(true);
+  const [friends, setFriends] = useState([]);
   const { user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchConversations();
+    fetchFriends();
   }, []);
 
   useEffect(() => {
@@ -30,6 +32,15 @@ export default function Inbox() {
       return () => clearInterval(interval);
     }
   }, [selectedConvo]);
+
+  const fetchFriends = async () => {
+    try {
+      const res = await api.get("/messages/friends");
+      setFriends(res.data.data.friends);
+    } catch (err) {
+      console.error("Failed to fetch friends:", err);
+    }
+  };
 
   const fetchConversations = async () => {
     try {
@@ -105,6 +116,30 @@ export default function Inbox() {
          </div>
 
          <div className="flex-1 overflow-y-auto no-scrollbar">
+            {/* Friends Horizontal List */}
+            {friends.length > 0 && (
+               <div className="p-4 border-b border-white/5 bg-white/[0.02]">
+                  <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 mb-4 ml-1 flex items-center gap-2">
+                    <Sparkles className="w-3 h-3 text-pink-500" /> Friends
+                  </h3>
+                  <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2">
+                     {friends.map(friend => (
+                        <button 
+                          key={friend._id}
+                          onClick={() => setSelectedConvo({ otherUser: friend, lastMessage: { text: "Start chatting...", createdAt: new Date() } })}
+                          className="flex-shrink-0 flex flex-col items-center gap-2 group"
+                        >
+                           <div className="w-14 h-14 rounded-full border-2 border-pink-500 overflow-hidden shadow-lg group-hover:scale-110 transition-transform">
+                              <img src={friend.photo ? getProductImageUrl(friend.photo) : DEFAULT_AVATAR_FALLBACK} className="w-full h-full object-cover" />
+                           </div>
+                           <span className="text-[9px] font-black uppercase tracking-widest text-gray-400 group-hover:text-pink-500 transition-colors w-14 truncate text-center">{friend.name}</span>
+                        </button>
+                     ))}
+                  </div>
+               </div>
+            )}
+
+            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 mt-6 mb-2 ml-5">Messages</h3>
             {conversations.length === 0 ? (
                <div className="p-10 text-center text-gray-500 font-bold">
                   <MessageCircle className="w-12 h-12 mx-auto mb-4 opacity-20" />
