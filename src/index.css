@@ -23,42 +23,37 @@
     --ultra-card-border-hover: var(--neon-purple);
   }
 
-  /* Light Theme Overrides (Perfect Amazon Style) */
+  /* Light Theme Overrides (Premium Minimalist Luxury) */
   [data-theme='light'] {
-    --deep-bg: #FFFFFF;
-    /* Pure white background like Amazon product pages */
-    --text-primary: #0F1111;
-    /* Amazon signature black */
-    --text-secondary: #565959;
-    /* Amazon signature gray */
+    --deep-bg: #F8FAFC; /* Luxurious soft off-white */
+    --text-primary: #0F172A; /* Deep slate for maximum legibility */
+    --text-secondary: #475569; /* Muted slate for secondary elements */
 
-    --glass-bg: #FFFFFF;
-    --glass-border: #D5D9D9;
+    --glass-bg: rgba(255, 255, 255, 0.75);
+    --glass-border: rgba(0, 0, 0, 0.05);
 
     --card-bg: #FFFFFF;
 
     --ultra-card-bg: #FFFFFF;
-    --ultra-card-border: #D5D9D9;
-    --ultra-card-shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.1);
-    --ultra-card-border-hover: #007185;
-    /* Amazon blue link color */
+    --ultra-card-border: rgba(0, 0, 0, 0.03);
+    --ultra-card-shadow-hover: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+    --ultra-card-border-hover: #6366F1; /* Elegant Indigo */
 
-    --neon-blue: #007185;
-    --neon-purple: #C7511F;
-    /* Amazon orange */
+    --neon-blue: #06B6D4; /* Modern Cyan */
+    --neon-purple: #8B5CF6; /* Modern Violet */
 
-    --shadow-glow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    --shadow-glow: 0 10px 40px rgba(99, 102, 241, 0.05);
   }
 
-  /* Robust Amazon Light Mode Overrides */
+  /* Robust Light Mode Aesthetic Overrides */
   [data-theme='light'] body,
   [data-theme='light'] main#main-content,
   [data-theme='light'] #root {
-    background-color: #F3f3f3 !important;
+    background-color: var(--deep-bg) !important;
     background-image: none !important;
   }
 
-  /* Force all "white" text to adapt */
+  /* Force all "white" text to adapt beautifully */
   [data-theme='light'] .text-white,
   [data-theme='light'] .text-gray-100,
   [data-theme='light'] .text-gray-200,
@@ -67,11 +62,12 @@
     color: var(--text-primary);
   }
 
-  [data-theme='light'] .text-gray-500 {
+  [data-theme='light'] .text-gray-500,
+  [data-theme='light'] .text-slate-400 {
     color: var(--text-secondary);
   }
 
-  /* Force "black" and dark backgrounds to adapt, but avoid breaking overlays */
+  /* Transform dark backgrounds into clean white surfaces */
   [data-theme='light'] .bg-black:not(.absolute):not([class*='opacity-']),
   [data-theme='light'] .bg-gray-900:not(.absolute),
   [data-theme='light'] .bg-\[\#121212\],
@@ -81,34 +77,31 @@
   [data-theme='light'] .bg-\[\#050505\] {
     background-color: #FFFFFF !important;
     color: var(--text-primary) !important;
+    border: 1px solid rgba(0, 0, 0, 0.03) !important;
   }
 
-  /* Transform transparent/glass styles for high visibility */
-  [data-theme='light'] .bg-white\/5,
-  [data-theme='light'] .bg-white\/10,
-  [data-theme='light'] .bg-white\/20,
-  /* Transparent/glass styles for high visibility - NON AGGRESSIVE */
+  /* Refined Glassmorphism for Light Mode */
   [data-theme='light'] .bg-white\/5,
   [data-theme='light'] .bg-white\/10,
   [data-theme='light'] .bg-white\/20 {
-    background-color: rgba(255, 255, 255, 0.4) !important;
-    border: 1px solid rgba(0, 0, 0, 0.05) !important;
+    background-color: rgba(255, 255, 255, 0.6) !important;
+    backdrop-filter: blur(10px) saturate(180%) !important;
+    border: 1px solid rgba(0, 0, 0, 0.03) !important;
   }
 
   [data-theme='light'] .border-white\/5,
   [data-theme='light'] .border-white\/10,
   [data-theme='light'] .border-white\/20 {
-    border-color: rgba(0, 0, 0, 0.1) !important;
+    border-color: rgba(0, 0, 0, 0.05) !important;
   }
 
   [data-theme='light'] .bg-gradient-to-b.from-black,
   [data-theme='light'] .bg-gradient-to-b.from-\[\#030014\] {
     background-image: none !important;
-    background-color: #FFFFFF !important;
+    background-color: var(--deep-bg) !important;
   }
 
-
-  /* Global SVG Fix - Only stroke */
+  /* Icon visibility */
   [data-theme='light'] svg {
     stroke: currentColor;
   }
@@ -118,7 +111,7 @@
     fill: var(--text-primary) !important;
   }
 
-  /* Brands & Gradients visibility */
+  /* Gradients & Accents */
   [data-theme='light'] .bg-clip-text,
   [data-theme='light'] .text-transparent {
     color: var(--text-primary);
@@ -127,19 +120,18 @@
   [data-theme='light'] .text-cyan-400,
   [data-theme='light'] .text-purple-500,
   [data-theme='light'] .text-indigo-400 {
-    color: #007185;
-    /* Amazon Blue */
+    color: var(--neon-purple);
   }
 
-  /* Verification Shadow */
+  /* Sophisticated Shadows */
   [data-theme='light'] .shadow-2xl {
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08) !important;
+    box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.05) !important;
   }
 
   [data-theme='light'] footer {
     background-color: #FFFFFF !important;
     background-image: none !important;
-    border-top: 1px solid #D5D9D9 !important;
+    border-top: 1px solid rgba(0, 0, 0, 0.03) !important;
     color: var(--text-primary) !important;
   }
 
@@ -147,26 +139,32 @@
   [data-theme='light'] footer span,
   [data-theme='light'] footer a,
   [data-theme='light'] footer p {
+    color: var(--text-secondary) !important;
+  }
+
+  [data-theme='light'] footer h3,
+  [data-theme='light'] footer strong {
     color: var(--text-primary) !important;
   }
 
   [data-theme='light'] #newsletter-bg {
     background-color: #FFFFFF !important;
     background-image: none !important;
-    border: 1px solid #D5D9D9 !important;
+    border: 1px solid rgba(0, 0, 0, 0.05) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02) !important;
   }
 
   [data-theme='light'] .glass {
-    background-color: #FFFFFF !important;
-    background-image: none !important;
-    border: 1px solid #D5D9D9 !important;
+    background-color: var(--glass-bg) !important;
+    backdrop-filter: blur(12px) saturate(180%) !important;
+    border: 1px solid var(--glass-border) !important;
     color: var(--text-primary) !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03) !important;
   }
 
   [data-theme='light'] input::placeholder {
-    color: #565959 !important;
-    opacity: 1 !important;
+    color: var(--text-secondary) !important;
+    opacity: 0.6 !important;
   }
 
 

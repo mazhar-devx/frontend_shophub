@@ -162,7 +162,7 @@ export default function Navbar() {
           layout
           className={`mx-auto flex items-center justify-between relative transition-all duration-500 ${
             scrolled 
-              ? 'max-w-5xl bg-white/70 dark:bg-black/60 backdrop-blur-2xl border border-white/20 dark:border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.15)] rounded-full px-6 py-2' 
+              ? 'max-w-5xl bg-white/80 dark:bg-black/60 backdrop-blur-2xl border border-gray-100 dark:border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-full px-6 py-2' 
               : 'max-w-7xl px-4 sm:px-6 py-4'
           }`}
         >
@@ -454,7 +454,7 @@ export default function Navbar() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -20, scale: 0.95 }}
               transition={{ type: "spring", stiffness: 400, damping: 30 }}
-              className="relative w-full max-w-2xl bg-white dark:bg-[#0a0a0a] border border-black/10 dark:border-white/10 rounded-3xl shadow-2xl overflow-hidden"
+              className="relative w-full max-w-2xl bg-white dark:bg-[#0a0a0a] border border-gray-100 dark:border-white/10 rounded-[2.5rem] shadow-[0_30px_100px_rgba(0,0,0,0.1)] dark:shadow-2xl overflow-hidden"
             >
                <form onSubmit={handleSearch} className="flex items-center px-6 py-5 border-b border-black/5 dark:border-white/5">
                   <Search className="w-6 h-6 text-cyan-500 mr-4" />
