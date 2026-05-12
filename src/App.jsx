@@ -15,6 +15,7 @@ import VendorNamePrompt from "./components/VendorNamePrompt";
 import ProtectedRoute from "./components/ProtectedRoute";
 import CookieConsent from "./components/CookieConsent";
 import CustomCursor from "./components/CustomCursor";
+import CustomContextMenu from "./components/CustomContextMenu";
 import { useEffect, lazy, Suspense } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { loadUser } from "./features/auth/authSlice";
@@ -108,6 +109,7 @@ function AppContent() {
       <VendorNamePrompt />
       <CookieConsent />
       <CustomCursor />
+      <CustomContextMenu />
       <Routes>
         {/* Portfolio route - Full screen, no layout */}
         <Route path="/mazhar.devx" element={

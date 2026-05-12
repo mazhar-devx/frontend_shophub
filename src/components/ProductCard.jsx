@@ -24,6 +24,7 @@ export default function ProductCard({ product }) {
       to={`/product/${product.slug || product._id}`}
       aria-label={`View details for ${product.name}`}
       className="group relative block h-full select-none"
+      data-product-id={product.slug || product._id}
     >
         {/* Glow Effect Background - REMOVED for Ultra Light */}
       

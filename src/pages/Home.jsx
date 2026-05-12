@@ -17,7 +17,6 @@ import GoogleAd from "../components/GoogleAd";
 import CategoryGrid from "../components/CategoryGrid";
 import ProductSlider from "../components/ProductSlider";
 import { toast } from "react-hot-toast";
-import LiveCursors from "../components/LiveCursors";
 
 /* ═══════════════════════════════════════════════
    PERFORMANCE HOOKS — Zero Dependencies
@@ -416,7 +415,6 @@ export default function Home() {
 
   return (
     <>
-      <LiveCursors />
       <SEO
         title="Premium Shopping & Social Video Experience"
         description="ShopHub is the ultimate destination for premium electronics, fashion, and an immersive social video shopping experience. Fast shipping, secure payments, and 24/7 support."
