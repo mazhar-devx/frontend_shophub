@@ -16,6 +16,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import CookieConsent from "./components/CookieConsent";
 import CustomCursor from "./components/CustomCursor";
 import CustomContextMenu from "./components/CustomContextMenu";
+import ScrollToTop from "./components/ScrollToTop";
 import { useEffect, lazy, Suspense } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { loadUser } from "./features/auth/authSlice";
@@ -106,6 +107,7 @@ function AppContent() {
 
   return (
     <>
+      <ScrollToTop />
       <VendorNamePrompt />
       <CookieConsent />
       <CustomCursor />
