@@ -988,52 +988,41 @@ export default function WatchMe() {
       {videos[activeIndex] && (
         <SEO 
           title={videos[activeIndex].name}
-          description={videos[activeIndex].description || `Watch @${videos[activeIndex].user?.vendorName || videos[activeIndex].user?.name}'s video on ShopHub.`}
+          description={videos[activeIndex].description?.substring(0, 160) || "Watch premium short videos and shop the look on ShopHub.pro"}
           image={getProductImageUrl(videos[activeIndex].thumbnailUrl || videos[activeIndex].videoUrl)}
           type="video.other"
-          url={`/watch-me?v=${videos[activeIndex]._id}`}
-          keywords={`${videos[activeIndex].tags?.join(', ')}, shophub, video, social, shopping, ${videos[activeIndex].user?.vendorName || videos[activeIndex].user?.name}`}
-        >
-          <meta property="og:video" content={getProductImageUrl(videos[activeIndex].videoUrl)} />
-          <meta property="og:video:type" content="video/mp4" />
-          <meta property="og:video:width" content="720" />
-          <meta property="og:video:height" content="1280" />
-          <meta name="twitter:card" content="player" />
-          <meta name="twitter:player" content={getProductImageUrl(videos[activeIndex].videoUrl)} />
-          <meta name="twitter:player:width" content="720" />
-          <meta name="twitter:player:height" content="1280" />
-          <script type="application/ld+json">
-            {JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "VideoObject",
-              "name": videos[activeIndex].name,
-              "description": videos[activeIndex].description || "Short video on ShopHub",
-              "thumbnailUrl": [getProductImageUrl(videos[activeIndex].thumbnailUrl || videos[activeIndex].videoUrl)],
-              "uploadDate": videos[activeIndex].createdAt,
-              "contentUrl": getProductImageUrl(videos[activeIndex].videoUrl),
-              "embedUrl": `${window.location.origin}/watch-me?v=${videos[activeIndex]._id}`,
-              "duration": "PT0M30S",
-              "interactionStatistic": [
-                {
-                  "@type": "InteractionCounter",
-                  "interactionType": "https://schema.org/LikeAction",
-                  "userInteractionCount": videos[activeIndex].likes?.length || 0
-                },
-                {
-                  "@type": "InteractionCounter",
-                  "interactionType": "https://schema.org/CommentAction",
-                  "userInteractionCount": videos[activeIndex].comments?.length || 0
-                }
-              ],
-              "author": {
-                "@type": "Person",
-                "name": videos[activeIndex].user?.vendorName || videos[activeIndex].user?.name,
-                "url": `${window.location.origin}/creator/${videos[activeIndex].user?._id}`,
-                "image": getProductImageUrl(videos[activeIndex].user?.photo)
+          url={`${window.location.origin}/watch-me?v=${videos[activeIndex]._id}`}
+          keywords={`Watch Me, social shopping, ${videos[activeIndex].tags?.join(', ')}, ShopHub.pro`}
+          schema={{
+            "@context": "https://schema.org",
+            "@type": "VideoObject",
+            "name": videos[activeIndex].name,
+            "description": videos[activeIndex].description || "Short video on ShopHub.pro",
+            "thumbnailUrl": [getProductImageUrl(videos[activeIndex].thumbnailUrl || videos[activeIndex].videoUrl)],
+            "uploadDate": videos[activeIndex].createdAt,
+            "contentUrl": getProductImageUrl(videos[activeIndex].videoUrl),
+            "embedUrl": `${window.location.origin}/watch-me?v=${videos[activeIndex]._id}`,
+            "duration": "PT0M30S",
+            "interactionStatistic": [
+              {
+                "@type": "InteractionCounter",
+                "interactionType": "https://schema.org/LikeAction",
+                "userInteractionCount": videos[activeIndex].likes?.length || 0
+              },
+              {
+                "@type": "InteractionCounter",
+                "interactionType": "https://schema.org/CommentAction",
+                "userInteractionCount": videos[activeIndex].comments?.length || 0
               }
-            })}
-          </script>
-        </SEO>
+            ],
+            "author": {
+              "@type": "Person",
+              "name": videos[activeIndex].user?.vendorName || videos[activeIndex].user?.name,
+              "url": `${window.location.origin}/creator/${videos[activeIndex].user?._id}`,
+              "image": getProductImageUrl(videos[activeIndex].user?.photo)
+            }
+          }}
+        />
       )}
 
       {/* Feed Container */}

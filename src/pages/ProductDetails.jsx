@@ -215,12 +215,9 @@ export default function ProductDetails() {
           : product.price.toString()}
         currency={product.currency || "PKR"}
         availability={product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"}
-        keywords={`${product.name}, ${product.category}, ${product.brand}, ShopHub, premium`}
-      >
-        <script type="application/ld+json">
-          {JSON.stringify(productSchema)}
-        </script>
-      </SEO>
+        keywords={`${product.name}, ${product.category}, ${product.brand}, ShopHub.pro, luxury shopping`}
+        schema={productSchema}
+      />
       <div className="p-4 md:p-6 min-h-screen">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
         {/* Product Images */}

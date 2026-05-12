@@ -10,10 +10,15 @@
   <meta name="theme-color" content="#000000" />
   <link rel="manifest" href="/manifest.json" />
   <meta name="description"
-    content="HA Store - Your ultimate destination for premium fashion. Shop the latest trends in men's, women's, and kid's clothing. Fast delivery across Pakistan with secure checkout and easy returns.">
+    content="ShopHub.pro - Pakistan's premier luxury destination for high-end fashion, electronics, and social shopping. Experience the future of e-commerce with 24h delivery and premium quality.">
   <meta name="keywords"
-    content="HA Store, ShopHub, online shopping Pakistan, men fashion, women clothing, kids wear, electronics Pakistan, ecommerce store">
+    content="ShopHub.pro, luxury shopping Pakistan, online electronics store, premium fashion marketplace, social commerce app, Pakistan online store, fast delivery e-commerce">
+  <link rel="canonical" href="https://www.shophub.pro/" />
   
+  {/* Preconnect to critical domains */}
+  <link rel="preconnect" href="https://backend-shophub.vercel.app">
+  <link rel="preconnect" href="https://images.unsplash.com">
+
   <!-- Cache Control to prevent stale content -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
@@ -23,9 +28,7 @@
   <script>
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
-      // Prevent the mini-infobar from appearing on mobile
       e.preventDefault();
-      // Stash the event so it can be triggered later.
       deferredPrompt = e;
       console.log('PWA: deferredPrompt saved');
     });
@@ -34,33 +37,40 @@
   <!-- Open Graph / Social Media -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://www.shophub.pro/">
-  <meta property="og:title" content="HA Store - Premium Online Shopping Pakistan">
+  <meta property="og:title" content="ShopHub.pro - Pakistan's Luxury Shopping & Social Hub">
   <meta property="og:description"
-    content="Shop premium clothing and more at HA Store. Quality fashion at affordable prices.">
+    content="ShopHub.pro is the ultimate destination for premium electronics, fashion, and social video shopping in Pakistan. Experience 24h delivery and exclusive deals.">
   <meta property="og:image" content="https://www.shophub.pro/logo.png">
+  <meta property="og:site_name" content="ShopHub.pro">
 
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="https://www.shophub.pro/">
-  <meta property="twitter:title" content="HA Store - Premium Online Shopping Pakistan">
+  <meta property="twitter:title" content="ShopHub.pro - Pakistan's Luxury Shopping & Social Hub">
   <meta property="twitter:description"
-    content="Shop premium clothing and more at HA Store. Quality fashion at affordable prices.">
+    content="Experience the future of shopping in Pakistan. Premium electronics, fashion, and social videos at ShopHub.pro.">
   <meta property="twitter:image" content="https://www.shophub.pro/logo.png">
 
-  <title>HA Store - Premium Online Shopping Pakistan</title>
+  <title>ShopHub.pro - Pakistan's #1 Luxury Shopping & Social Marketplace</title>
 
   <!-- Structured Data for Rich Results -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "HA Store",
+    "name": "ShopHub.pro",
     "url": "https://www.shophub.pro",
     "logo": "https://www.shophub.pro/logo.png",
     "sameAs": [
-      "https://facebook.com/shophub",
-      "https://instagram.com/shophub"
-    ]
+      "https://facebook.com/shophub.pro",
+      "https://instagram.com/shophub.pro",
+      "https://twitter.com/shophub_pro"
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+92-300-1234567",
+      "contactType": "customer service"
+    }
   }
   </script>
 
@@ -69,10 +79,11 @@
     "@context": "https://schema.org",
     "@type": "WebSite",
     "url": "https://www.shophub.pro",
-    "name": "HA Store",
+    "name": "ShopHub.pro",
+    "alternateName": "ShopHub",
     "potentialAction": {
       "@type": "SearchAction",
-      "target": "https://www.shophub.pro/search?q={search_term_string}",
+      "target": "https://www.shophub.pro/products?search={search_term_string}",
       "query-input": "required name=search_term_string"
     }
   }
@@ -82,75 +93,33 @@
   {
     "@context": "https://schema.org",
     "@type": "ItemList",
-    "name": "Sitelinks Navigation",
+    "name": "ShopHub.pro Navigation",
     "itemListElement": [
       {
         "@type": "SiteNavigationElement",
         "position": 1,
-        "name": "Shop All Products",
-        "description": "Browse our full catalog of premium items.",
-        "url": "https://www.shophub.pro/products"
+        "name": "Premium Electronics",
+        "url": "https://www.shophub.pro/products?category=electronics"
       },
       {
         "@type": "SiteNavigationElement",
         "position": 2,
-        "name": "Clothing Categories",
-        "description": "Discover latest fashion trends for Men, Women and Kids.",
-        "url": "https://www.shophub.pro/categories"
+        "name": "Luxury Fashion",
+        "url": "https://www.shophub.pro/products?category=fashion"
       },
       {
         "@type": "SiteNavigationElement",
         "position": 3,
-        "name": "Exclusive Flash Deals",
-        "description": "Get huge discounts on top products for a limited time.",
-        "url": "https://www.shophub.pro/deals"
+        "name": "Watch Me - Social Shopping",
+        "url": "https://www.shophub.pro/watch-me"
       },
       {
         "@type": "SiteNavigationElement",
         "position": 4,
-        "name": "Sign In / Login",
-        "description": "Access your account to manage orders and wishlist.",
-        "url": "https://www.shophub.pro/login"
-      },
-      {
-        "@type": "SiteNavigationElement",
-        "position": 5,
-        "name": "Create Account / Register",
-        "description": "Join ShopHub to start shopping premium products.",
-        "url": "https://www.shophub.pro/register"
-      },
-      {
-        "@type": "SiteNavigationElement",
-        "position": 6,
-        "name": "My Orders",
-        "description": "Track and view your previous purchases.",
-        "url": "https://www.shophub.pro/my-orders"
+        "name": "Flash Sale Deals",
+        "url": "https://www.shophub.pro/deals"
       }
     ]
-  }
-  </script>
-
-  <!-- Breadcrumb Schema -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [{
-      "@type": "ListItem",
-      "position": 1,
-      "name": "Home",
-      "item": "https://www.shophub.pro"
-    },{
-      "@type": "ListItem",
-      "position": 2,
-      "name": "Products",
-      "item": "https://www.shophub.pro/products"
-    },{
-      "@type": "ListItem",
-      "position": 3,
-      "name": "Categories",
-      "item": "https://www.shophub.pro/categories"
-    }]
   }
   </script>
 

@@ -416,43 +416,22 @@ export default function Home() {
   return (
     <>
       <SEO
-        title="Premium Shopping & Social Video Experience"
-        description="ShopHub is the ultimate destination for premium electronics, fashion, and an immersive social video shopping experience. Fast shipping, secure payments, and 24/7 support."
-        keywords="ShopHub, online shopping, electronics, fashion, social commerce, video shopping, premium store, fast delivery"
-      >
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebSite",
-            "name": "ShopHub",
-            "url": "https://www.shophub.pro",
-            "potentialAction": {
-              "@type": "SearchAction",
-              "target": "https://www.shophub.pro/products?search={search_term_string}",
-              "query-input": "required name=search_term_string"
-            }
-          })}
-        </script>
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            "name": "ShopHub",
-            "url": "https://www.shophub.pro",
-            "logo": "https://www.shophub.pro/logo.png",
-            "contactPoint": {
-              "@type": "ContactPoint",
-              "telephone": "+92-XXX-XXXXXXX",
-              "contactType": "customer service"
-            },
-            "sameAs": [
-              "https://www.facebook.com/shophub",
-              "https://www.twitter.com/shophub",
-              "https://www.instagram.com/shophub"
-            ]
-          })}
-        </script>
-      </SEO>
+        title="Pakistan's #1 Luxury Shopping & Social Marketplace"
+        description="ShopHub.pro - Experience ultra-premium electronics, fashion, and social video shopping. Discover the latest trends with fast 24h delivery across Pakistan."
+        keywords="ShopHub.pro, luxury shopping Pakistan, online electronics store, social commerce Pakistan, video shopping app, premium fashion marketplace"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "name": "ShopHub.pro",
+          "alternateName": ["ShopHub", "Shop Hub"],
+          "url": "https://www.shophub.pro",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://www.shophub.pro/products?search={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        }}
+      />
 
       {/* ── Scroll Progress Bar ── */}
       <div
