@@ -5,7 +5,7 @@ import StripeCheckout from "../components/StripeCheckout";
 import api from "../services/api";
 import { formatPrice } from "../utils/currency";
 import { getProductImageUrl } from "../utils/constants";
-import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, useMapEvents, GeoJSON } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { useUIStore } from "../zustand/uiStore";
@@ -14,14 +14,12 @@ import { useUIStore } from "../zustand/uiStore";
 import icon from "leaflet/dist/images/marker-icon.png";
 import iconShadow from "leaflet/dist/images/marker-shadow.png";
 
-let DefaultIcon = L.icon({
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: icon,
   iconUrl: icon,
   shadowUrl: iconShadow,
-  iconSize: [25, 41],
-  iconAnchor: [12, 41]
 });
-
-L.Marker.prototype.options.icon = DefaultIcon;
 
 // Custom Company HQ Icon
 const hqIcon = L.divIcon({
@@ -423,7 +421,18 @@ export default function Checkout() {
                  <div className="h-[400px] w-full rounded-2xl overflow-hidden border border-white/10 relative z-0">
                     <MapContainer center={[30.3753, 69.3451]} zoom={5} style={{ height: "100%", width: "100%", background: "#030014" }} maxBounds={PAKISTAN_BOUNDS} minZoom={5}>
                          <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" />
-                         {pakistanGeoJson && <L.GeoJSON data={pakistanGeoJson} style={() => ({ color: "#EC4899", weight: 2, opacity: 0.6, fillColor: "#EC4899", fillOpacity: 0.05 })} />}
+                         {pakistanGeoJson && (
+                            <GeoJSON 
+                                data={pakistanGeoJson} 
+                                style={() => ({
+                                    color: "#EC4899",
+                                    weight: 2,
+                                    opacity: 0.6,
+                                    fillColor: "#EC4899",
+                                    fillOpacity: 0.05
+                                })}
+                            />
+                         )}
                          <Marker position={[30.5229, 72.6981]} icon={hqIcon} />
                          <LocationMarker position={location} setPosition={setLocation} />
                     </MapContainer>
