@@ -60,7 +60,16 @@ export default function Profile() {
         {/* Decorative background glow */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
 
-        <h2 className="text-3xl font-bold text-white mb-8 relative z-10">Your Profile</h2>
+        <div className="flex justify-between items-center mb-8 relative z-10">
+          <h2 className="text-3xl font-bold text-white">Your Profile</h2>
+          <button 
+            onClick={() => navigate('/inbox')}
+            className="flex items-center gap-2 px-4 py-2 bg-pink-500/10 hover:bg-pink-500/20 text-pink-500 rounded-full border border-pink-500/20 transition-all font-black uppercase tracking-widest text-[10px]"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" /></svg>
+            Inbox
+          </button>
+        </div>
 
         {error && (
             <div className="bg-red-500/20 border border-red-500/50 text-red-200 p-4 rounded-xl mb-6 backdrop-blur-sm">

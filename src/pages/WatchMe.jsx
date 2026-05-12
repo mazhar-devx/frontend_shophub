@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { Link, useSearchParams, useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, MessageCircle, Share2, Bookmark, Plus, X, Music2, Bell, ChevronLeft, Send, Volume2, VolumeX, Download, Play, ShoppingCart, Search, MoreVertical, Edit2, Trash2, Image as ImageIcon, MoreHorizontal, RotateCw } from "lucide-react";
+import { Heart, MessageCircle, Share2, Bookmark, Plus, X, Music2, Bell, ChevronLeft, ChevronUp, ChevronDown, Send, Volume2, VolumeX, Download, Play, ShoppingCart, Search, MoreVertical, Edit2, Trash2, Image as ImageIcon, MoreHorizontal, RotateCw, Globe, Type } from "lucide-react";
 import SEO from "../components/SEO";
 import NotificationsModal from "../components/NotificationsModal";
 import api from "../services/api";
@@ -11,7 +11,7 @@ import { getProductImageUrl } from "../utils/constants";
 // URL Detector Regex
 const URL_REGEX = /(https?:\/\/[^\s]+)/g;
 
-const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClick }) => {
+const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClick, isAutoScroll, setIsAutoScroll, showCaptions, setShowCaptions, scrollDown, onNotInterested }) => {
   const videoRef = useRef(null);
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
@@ -100,6 +100,57 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
   const [commentMedia, setCommentMedia] = useState(null);
   const [replyingTo, setReplyingTo] = useState(null); // { commentId, username }
   const [localComments, setLocalComments] = useState(video.comments || []);
+  const [friends, setFriends] = useState([]);
+  const [isSharing, setIsSharing] = useState(false);
+  const [contextMenu, setContextMenu] = useState(null);
+
+  useEffect(() => {
+     if (showShare && isAuthenticated) {
+        fetchFriends();
+     }
+  }, [showShare, isAuthenticated]);
+
+  const fetchFriends = async () => {
+     try {
+        const res = await api.get('/messages/friends');
+        setFriends(res.data.data.friends);
+     } catch (err) {
+        console.error(err);
+     }
+  };
+
+  const handleShareToFriend = async (friendId) => {
+     try {
+        setIsSharing(true);
+        await api.post('/messages/send', {
+           recipient: friendId,
+           videoId: video._id
+        });
+        alert(`Video shared with friend!`);
+        setShowShare(false);
+     } catch (err) {
+        alert("Failed to share video");
+     } finally {
+        setIsSharing(false);
+     }
+  };
+
+  const handleContextMenu = (e) => {
+     e.preventDefault();
+     setContextMenu({ x: e.clientX, y: e.clientY });
+  };
+
+  const handlePiP = async () => {
+    try {
+      if (document.pictureInPictureElement) {
+        await document.exitPictureInPicture();
+      } else if (videoRef.current) {
+        await videoRef.current.requestPictureInPicture();
+      }
+    } catch (err) {
+      console.error("PiP failed:", err);
+    }
+  };
 
   const handleComment = async () => {
     if (!isAuthenticated) return alert("Please login to comment!");
@@ -330,12 +381,28 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
         ref={videoRef}
         src={isActive ? getProductImageUrl(video.videoUrl) : undefined}
         poster={video.thumbnailUrl ? getProductImageUrl(video.thumbnailUrl) : undefined}
-        loop
+        loop={!isAutoScroll}
         muted={isGlobalMuted}
         playsInline
         onLoadedData={() => setIsVideoLoaded(true)}
+        onEnded={() => {
+          if (isAutoScroll && scrollDown) {
+            scrollDown();
+          }
+        }}
         className={`w-full h-full object-cover transition-opacity duration-500 ${isVideoLoaded ? 'opacity-100' : 'opacity-0'}`}
       />
+
+      {/* Captions Overlay */}
+      {showCaptions && (
+        <div className="absolute bottom-32 left-0 right-0 px-8 z-30 pointer-events-none">
+          <div className="bg-black/60 backdrop-blur-md p-4 rounded-2xl border border-white/10 text-center shadow-2xl">
+            <p className="text-white text-sm font-bold leading-relaxed">
+              {video.description || video.name}
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Top Moving Caption */}
       {video.caption && (
@@ -358,6 +425,7 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
         onPointerLeave={handlePointerUp}
+        onContextMenu={handleContextMenu}
       />
 
       {/* Double Tap Heart Animation */}
@@ -465,52 +533,90 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
            <div className="p-3 rounded-full bg-black/20 backdrop-blur-md text-white group-hover:scale-110 transition-all">
               <Share2 className="w-7 h-7" />
            </div>
-           <span className="text-white text-xs font-bold shadow-sm">Share</span>
-        </button>
+            <span className="text-white text-xs font-bold shadow-sm">Share</span>
+         </button>
 
-        {/* More Menu (Refresh & Management) */}
-        <div className="relative">
-           <button 
-             onClick={() => setShowVideoMenu(!showVideoMenu)} 
-             className="p-3 rounded-full bg-black/20 backdrop-blur-md text-white hover:bg-black/40 transition-all pointer-events-auto"
-           >
-              <MoreVertical className="w-7 h-7" />
-           </button>
-           <AnimatePresence>
-              {showVideoMenu && (
-                 <motion.div 
-                   initial={{ opacity: 0, scale: 0.9, y: 10 }}
-                   animate={{ opacity: 1, scale: 1, y: 0 }}
-                   exit={{ opacity: 0, scale: 0.9, y: 10 }}
-                   className="absolute bottom-full right-0 mb-2 w-48 bg-white dark:bg-[#1a1a1a] rounded-2xl shadow-2xl overflow-hidden border border-black/10 dark:border-white/10 pointer-events-auto"
-                 >
-                    <button 
-                      onClick={() => { syncNewVideos(); setShowVideoMenu(false); }}
-                      className="w-full flex items-center gap-3 px-4 py-3 text-sm font-black text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 transition-colors border-b border-black/5 dark:border-white/5"
-                    >
-                       <RotateCw className="w-4 h-4 text-cyan-500" /> Refresh Feed
-                    </button>
+         {/* More Menu (Refresh & Management) */}
+         <div className="relative">
+            <button 
+              onClick={() => setShowVideoMenu(!showVideoMenu)} 
+              className="p-3 rounded-full bg-black/20 backdrop-blur-md text-white hover:bg-black/40 transition-all pointer-events-auto"
+            >
+               <MoreHorizontal className="w-7 h-7" />
+            </button>
+            <AnimatePresence>
+               {showVideoMenu && (
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.9, y: 10 }}
+                    className="absolute bottom-full right-0 mb-2 w-56 bg-white dark:bg-[#1a1a1a] rounded-2xl shadow-2xl overflow-hidden border border-black/10 dark:border-white/10 pointer-events-auto"
+                  >
+                     <button 
+                       onClick={() => { syncNewVideos(); setShowVideoMenu(false); }}
+                       className="w-full flex items-center gap-3 px-4 py-3 text-sm font-black text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 transition-colors border-b border-black/5 dark:border-white/5"
+                     >
+                        <RotateCw className="w-4 h-4 text-cyan-500" /> Refresh Feed
+                     </button>
 
-                    {isAuthenticated && user?._id === video.user?._id && (
-                       <>
-                          <button 
-                            onClick={() => { setIsEditingVideo(true); setShowVideoMenu(false); }}
-                            className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 transition-colors border-b border-black/5 dark:border-white/5"
-                          >
-                             <Edit2 className="w-4 h-4" /> Edit Video
-                          </button>
-                          <button 
-                            onClick={handleDeleteVideo}
-                            className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
-                          >
-                             <Trash2 className="w-4 h-4" /> Delete Video
-                          </button>
-                       </>
-                    )}
-                 </motion.div>
-              )}
-           </AnimatePresence>
-        </div>
+                     <button 
+                       onClick={() => { setIsAutoScroll(!isAutoScroll); setShowVideoMenu(false); }}
+                       className="w-full flex items-center justify-between px-4 py-3 text-sm font-bold text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 transition-colors border-b border-black/5 dark:border-white/5"
+                     >
+                        <div className="flex items-center gap-3">
+                           <RotateCw className={`w-4 h-4 ${isAutoScroll ? 'text-pink-500 animate-spin-slow' : 'text-gray-400'}`} /> Auto Scroll
+                        </div>
+                        <div className={`w-8 h-4 rounded-full relative transition-colors ${isAutoScroll ? 'bg-pink-500' : 'bg-gray-300 dark:bg-white/20'}`}>
+                           <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all ${isAutoScroll ? 'right-0.5' : 'left-0.5'}`} />
+                        </div>
+                     </button>
+
+                     <button 
+                       onClick={() => { setShowCaptions(!showCaptions); setShowVideoMenu(false); }}
+                       className="w-full flex items-center justify-between px-4 py-3 text-sm font-bold text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 transition-colors border-b border-black/5 dark:border-white/5"
+                     >
+                        <div className="flex items-center gap-3">
+                           <Type className={`w-4 h-4 ${showCaptions ? 'text-pink-500' : 'text-gray-400'}`} /> Captions
+                        </div>
+                        <div className={`w-8 h-4 rounded-full relative transition-colors ${showCaptions ? 'bg-pink-500' : 'bg-gray-300 dark:bg-white/20'}`}>
+                           <div className={`absolute top-0.5 w-3 h-3 bg-white rounded-full transition-all ${showCaptions ? 'right-0.5' : 'left-0.5'}`} />
+                        </div>
+                     </button>
+
+                     <button 
+                       onClick={() => { handlePiP(); setShowVideoMenu(false); }}
+                       className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 transition-colors border-b border-black/5 dark:border-white/5"
+                     >
+                        <Play className="w-4 h-4 text-purple-500" /> Floating Player
+                     </button>
+
+                     <button 
+                       onClick={() => { onNotInterested(video._id); setShowVideoMenu(false); }}
+                       className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 transition-colors border-b border-black/5 dark:border-white/5"
+                     >
+                        <X className="w-4 h-4 text-red-500" /> Not Interested
+                     </button>
+
+                     {isAuthenticated && user?._id === video.user?._id && (
+                        <>
+                           <button 
+                             onClick={() => { setIsEditingVideo(true); setShowVideoMenu(false); }}
+                             className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 transition-colors border-b border-black/5 dark:border-white/5"
+                           >
+                              <Edit2 className="w-4 h-4" /> Edit Video
+                           </button>
+                           <button 
+                             onClick={handleDeleteVideo}
+                             className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
+                           >
+                              <Trash2 className="w-4 h-4" /> Delete Video
+                           </button>
+                        </>
+                     )}
+                  </motion.div>
+               )}
+            </AnimatePresence>
+         </div>
       </div>
 
       {/* Bottom Info */}
@@ -609,6 +715,33 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
                  <button onClick={() => setShowShare(false)} className="p-2 dark:text-white hover:bg-black/5 rounded-full"><X className="w-5 h-5" /></button>
               </div>
               <div className="flex flex-col gap-6">
+                 {/* Friends to Share */}
+                 {isAuthenticated && friends.length > 0 && (
+                   <>
+                     <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2">
+                        {friends.map(friend => (
+                           <button 
+                             key={friend._id} 
+                             onClick={() => handleShareToFriend(friend._id)}
+                             disabled={isSharing}
+                             className="flex-shrink-0 flex flex-col items-center gap-2 group"
+                           >
+                              <div className="relative">
+                                 <div className="w-14 h-14 rounded-full border-2 border-pink-500 overflow-hidden shadow-lg group-hover:scale-110 transition-transform">
+                                    <img src={getProductImageUrl(friend.photo)} className="w-full h-full object-cover" />
+                                 </div>
+                                 <div className="absolute -bottom-1 -right-1 bg-pink-500 rounded-full p-1 border-2 border-white dark:border-[#1a1a1a]">
+                                    <Send className="w-2.5 h-2.5 text-white" />
+                                 </div>
+                              </div>
+                              <span className="text-[10px] font-black uppercase tracking-widest dark:text-gray-300 text-gray-700 truncate w-14 text-center">{friend.name}</span>
+                           </button>
+                        ))}
+                     </div>
+                     <div className="w-full h-[1px] bg-black/5 dark:bg-white/10" />
+                   </>
+                 )}
+
                  <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2">
                     {shareApps.map(link => (
                        <a key={link.name} href={link.link || '#'} onClick={link.action ? (e) => { e.preventDefault(); link.action(); } : undefined} target="_blank" rel="noreferrer" className="flex-shrink-0 flex flex-col items-center gap-2 group">
@@ -751,10 +884,6 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
                <div className="flex items-center gap-3 pt-4 border-t dark:border-white/5 pointer-events-auto flex-shrink-0 mt-2 px-4">
                   <div className="w-10 h-10 rounded-full overflow-hidden border border-black/10 flex-shrink-0 relative group">
                      <img src={user?.photo ? getProductImageUrl(user.photo) : "/default-avatar.png"} className="w-full h-full object-cover" />
-                     <label className="absolute inset-0 bg-black/40 flex items-center justify-center cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity">
-                        <ImageIcon className="w-4 h-4 text-white" />
-                        <input type="file" accept="image/*" className="hidden" onChange={(e) => setCommentMedia(e.target.files[0])} />
-                     </label>
                   </div>
                   
                   <div className="flex-1 flex items-center bg-black/5 dark:bg-white/5 border-none rounded-3xl pr-2 focus-within:ring-2 focus-within:ring-pink-500 transition-all">
@@ -766,6 +895,10 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
                        onKeyPress={(e) => e.key === 'Enter' && handleComment()}
                        className="w-full bg-transparent px-6 py-4 text-sm dark:text-white focus:outline-none"
                      />
+                     <label className="p-2 mr-1 text-gray-400 hover:text-pink-500 cursor-pointer transition-colors shrink-0" title="Attach Image or GIF">
+                        <ImageIcon className="w-5 h-5" />
+                        <input type="file" accept="image/*,image/gif" className="hidden" onChange={(e) => setCommentMedia(e.target.files[0])} />
+                     </label>
                   </div>
                  <button 
                     onClick={handleComment}
@@ -865,6 +998,52 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
           </>
         )}
       </AnimatePresence>
+
+      {/* Custom Context Menu */}
+      <AnimatePresence>
+        {contextMenu && (
+          <>
+            <div className="fixed inset-0 z-[200]" onClick={() => setContextMenu(null)} onContextMenu={(e) => { e.preventDefault(); setContextMenu(null); }} />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              style={{ top: contextMenu.y, left: contextMenu.x }}
+              className="fixed z-[210] min-w-[200px] bg-white dark:bg-[#1a1a1a] rounded-2xl shadow-2xl border border-black/10 dark:border-white/10 overflow-hidden pointer-events-auto"
+            >
+               <button 
+                 onClick={() => {
+                    const downloadBtn = shareActions.find(a => a.name === "Save Video");
+                    if (downloadBtn && downloadBtn.action) downloadBtn.action();
+                    setContextMenu(null);
+                 }}
+                 className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 transition-colors border-b border-black/5 dark:border-white/5"
+               >
+                  <Download className="w-4 h-4 text-pink-500" /> Download Video
+               </button>
+               <button 
+                 onClick={() => {
+                    setShowShare(true);
+                    setContextMenu(null);
+                 }}
+                 className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 transition-colors border-b border-black/5 dark:border-white/5"
+               >
+                  <Share2 className="w-4 h-4 text-blue-500" /> Send to Friend
+               </button>
+               <button 
+                 onClick={() => {
+                    navigator.clipboard.writeText(`${window.location.origin}/watch-me?v=${video._id}`);
+                    alert("Link copied!");
+                    setContextMenu(null);
+                 }}
+                 className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+               >
+                  <Search className="w-4 h-4 text-green-500 rotate-45" /> Copy Link
+               </button>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
@@ -885,6 +1064,8 @@ export default function WatchMe() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   const [showNotifications, setShowNotifications] = useState(false);
   const [hasUnread, setHasUnread] = useState(false);
+  const [isAutoScroll, setIsAutoScroll] = useState(false);
+  const [showCaptions, setShowCaptions] = useState(false);
   
   // Dynamic Product Strip Logic: Prioritize active video's product, then recent ones
   const prodVideos = videos.filter(v => v.productLink);
@@ -1016,6 +1197,22 @@ export default function WatchMe() {
      return () => clearInterval(interval);
   }, [videos, feedType, selectedTag]);
 
+  const scrollUp = () => {
+    if (activeIndex > 0) {
+      const newIndex = activeIndex - 1;
+      setActiveIndex(newIndex);
+      containerRef.current?.scrollTo({ top: newIndex * containerRef.current.clientHeight, behavior: 'smooth' });
+    }
+  };
+
+  const scrollDown = () => {
+    if (activeIndex < videos.length - 1) {
+      const newIndex = activeIndex + 1;
+      setActiveIndex(newIndex);
+      containerRef.current?.scrollTo({ top: newIndex * containerRef.current.clientHeight, behavior: 'smooth' });
+    }
+  };
+
   const handleSearchChange = (e) => {
      const q = e.target.value;
      setSearchQuery(q);
@@ -1042,6 +1239,13 @@ export default function WatchMe() {
      });
 
      setSearchResults({ videos: vids, users: Array.from(usersMap.values()) });
+  };
+
+  const handleNotInterested = (videoId) => {
+    setVideos(prev => prev.filter(v => v._id !== videoId));
+    if (activeIndex >= videos.length - 1) {
+       setActiveIndex(Math.max(0, videos.length - 2));
+    }
   };
 
   const handleScroll = (e) => {
@@ -1127,15 +1331,21 @@ export default function WatchMe() {
              className="w-full h-full snap-start"
            >
              <VideoCard 
-               video={video} 
-               isActive={idx === activeIndex} 
-               isGlobalMuted={isGlobalMuted}
-               setIsGlobalMuted={setIsGlobalMuted}
-               onTagClick={(tag) => {
-                 setSelectedTag(tag);
-                 navigate(`/tag/${tag}`);
-               }}
-             />
+                video={video} 
+                isActive={idx === activeIndex} 
+                isGlobalMuted={isGlobalMuted}
+                setIsGlobalMuted={setIsGlobalMuted}
+                onTagClick={(tag) => {
+                  setSelectedTag(tag);
+                  navigate(`/tag/${tag}`);
+                }}
+                isAutoScroll={isAutoScroll}
+                setIsAutoScroll={setIsAutoScroll}
+                showCaptions={showCaptions}
+                setShowCaptions={setShowCaptions}
+                scrollDown={scrollDown}
+                onNotInterested={handleNotInterested}
+              />
            </motion.div>
          ))}
 
@@ -1153,6 +1363,24 @@ export default function WatchMe() {
                )}
             </div>
          )}
+      </div>
+
+      {/* Desktop Navigation Arrows */}
+      <div className="hidden md:flex absolute right-12 top-1/2 -translate-y-1/2 flex-col gap-6 z-[100]">
+         <button 
+           onClick={scrollUp}
+           disabled={activeIndex === 0}
+           className="p-4 bg-white/10 backdrop-blur-xl rounded-full text-white hover:bg-pink-500 transition-all disabled:opacity-30 disabled:pointer-events-none border border-white/20 shadow-2xl group"
+         >
+            <ChevronUp className="w-8 h-8 group-hover:-translate-y-1 transition-transform" />
+         </button>
+         <button 
+           onClick={scrollDown}
+           disabled={activeIndex === videos.length - 1}
+           className="p-4 bg-white/10 backdrop-blur-xl rounded-full text-white hover:bg-pink-500 transition-all disabled:opacity-30 disabled:pointer-events-none border border-white/20 shadow-2xl group"
+         >
+            <ChevronDown className="w-8 h-8 group-hover:translate-y-1 transition-transform" />
+         </button>
       </div>
 
       {/* Floating Header */}

@@ -44,6 +44,7 @@ const WatchMe = lazy(() => import("./pages/WatchMe"));
 const VideoUpload = lazy(() => import("./pages/VideoUpload"));
 const CreatorProfile = lazy(() => import("./pages/CreatorProfile"));
 const SoundPage = lazy(() => import("./pages/SoundPage"));
+const Inbox = lazy(() => import("./pages/Inbox"));
 
 // Informational Pages Lazy Load
 const AboutUs = lazy(() => import("./pages/info/AboutUs"));
@@ -157,6 +158,7 @@ function AppContent() {
                   <Route path="sound/:id" element={<SoundPage />} />
                   <Route path="upload-video" element={<ProtectedRoute><VideoUpload /></ProtectedRoute>} />
                   <Route path="creator/:id" element={<CreatorProfile />} />
+                  <Route path="inbox" element={<ProtectedRoute><Inbox /></ProtectedRoute>} />
                   
                   {/* Informational Routes */}
                   <Route path="about-us" element={<AboutUs />} />
