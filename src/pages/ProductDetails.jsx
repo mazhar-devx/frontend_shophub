@@ -14,7 +14,7 @@ import ProductAIChat from "../components/ProductAIChat";
 import { store } from "../app/store"; // Import store for direct access
 import SEO from "../components/SEO";
 import GoogleAd from "../components/GoogleAd";
-import { Play, Video } from "lucide-react";
+import { Play, Video, Facebook, Twitter, Link2, Share2, MessageCircle } from "lucide-react";
 
 // Helper to check if string is a valid MongoDB ObjectId
 function isObjectId(id) {
@@ -415,6 +415,51 @@ export default function ProductDetails() {
 
               <p className="text-secondary dark:text-gray-300 mb-6 leading-relaxed text-lg">{product.description}</p>
               
+              {/* Desktop Social Sharing */}
+              <div className="hidden lg:flex items-center gap-3 mb-8">
+                <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mr-2">Share:</span>
+                <button 
+                  onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, '_blank')}
+                  className="p-2.5 bg-[#1877F2]/10 text-[#1877F2] border border-[#1877F2]/20 rounded-xl hover:bg-[#1877F2] hover:text-white transition-all transform hover:-translate-y-1"
+                  title="Share on Facebook"
+                >
+                  <Facebook className="w-5 h-5" />
+                </button>
+                <button 
+                  onClick={() => window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(product.name)}`, '_blank')}
+                  className="p-2.5 bg-[#1DA1F2]/10 text-[#1DA1F2] border border-[#1DA1F2]/20 rounded-xl hover:bg-[#1DA1F2] hover:text-white transition-all transform hover:-translate-y-1"
+                  title="Share on Twitter"
+                >
+                  <Twitter className="w-5 h-5" />
+                </button>
+                <button 
+                  onClick={() => window.open(`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(window.location.href)}&media=${encodeURIComponent(getProductImageUrl(product.image))}&description=${encodeURIComponent(product.name)}`, '_blank')}
+                  className="p-2.5 bg-[#BD081C]/10 text-[#BD081C] border border-[#BD081C]/20 rounded-xl hover:bg-[#BD081C] hover:text-white transition-all transform hover:-translate-y-1"
+                  title="Share on Pinterest"
+                >
+                  <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                    <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.097.118.112.222.085.343-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001.012.001z"/>
+                  </svg>
+                </button>
+                <button 
+                  onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(product.name + " " + window.location.href)}`, '_blank')}
+                  className="p-2.5 bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/20 rounded-xl hover:bg-[#25D366] hover:text-white transition-all transform hover:-translate-y-1"
+                  title="Share on WhatsApp"
+                >
+                  <MessageCircle className="w-5 h-5" />
+                </button>
+                <button 
+                  onClick={() => {
+                    navigator.clipboard.writeText(window.location.href);
+                    showToast("Link copied to clipboard!", "success");
+                  }}
+                  className="p-2.5 bg-gray-500/10 text-gray-500 border border-gray-500/20 rounded-xl hover:bg-gray-500 hover:text-white transition-all transform hover:-translate-y-1"
+                  title="Copy Link"
+                >
+                  <Link2 className="w-5 h-5" />
+                </button>
+              </div>
+
               {socialVideo && (
                 <button 
                   onClick={() => navigate(`/watch-me?v=${socialVideo._id}`)}
