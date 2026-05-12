@@ -99,12 +99,18 @@ function AppContent() {
   }, [theme]);
 
   const dispatch = useDispatch();
+  const { loading, isAuthenticated } = useSelector((state) => state.auth);
+  const hasToken = localStorage.getItem('token');
+
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
+    if (hasToken && !isAuthenticated) {
       dispatch(loadUser());
     }
-  }, [dispatch]);
+  }, [dispatch, hasToken, isAuthenticated]);
+
+  if (loading && hasToken && !isAuthenticated) {
+    return <PageLoader />;
+  }
 
   return (
     <>
