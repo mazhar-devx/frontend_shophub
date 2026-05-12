@@ -12,6 +12,7 @@ import AIHelper from "./components/AIHelper";
 import MobileBottomNav from "./components/MobileBottomNav";
 import AdminLayout from "./layouts/AdminLayout";
 import VendorNamePrompt from "./components/VendorNamePrompt";
+import ProtectedRoute from "./components/ProtectedRoute";
 import { useEffect, lazy, Suspense } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { loadUser } from "./features/auth/authSlice";
@@ -127,16 +128,16 @@ function AppContent() {
                   <Route path="forgot-password" element={<ForgotPassword />} />
                   <Route path="reset-password/:token" element={<ResetPassword />} />
                   <Route path="cart" element={<Cart />} />
-                  <Route path="checkout" element={<Checkout />} />
-                  <Route path="order-confirmation" element={<OrderSuccess />} />
-                  <Route path="my-orders" element={<MyOrders />} />
-                  <Route path="wishlist" element={<Wishlist />} />
-                  <Route path="profile" element={<Profile />} />
+                  <Route path="checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
+                  <Route path="order-confirmation" element={<ProtectedRoute><OrderSuccess /></ProtectedRoute>} />
+                  <Route path="my-orders" element={<ProtectedRoute><MyOrders /></ProtectedRoute>} />
+                  <Route path="wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
+                  <Route path="profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                   <Route path="search" element={<SearchResults />} />
                   <Route path="watch-me" element={<WatchMe />} />
                   <Route path="tag/:tag" element={<WatchMe />} />
                   <Route path="sound/:id" element={<SoundPage />} />
-                  <Route path="upload-video" element={<VideoUpload />} />
+                  <Route path="upload-video" element={<ProtectedRoute><VideoUpload /></ProtectedRoute>} />
                   <Route path="creator/:id" element={<CreatorProfile />} />
                 </Routes>
               </Suspense>

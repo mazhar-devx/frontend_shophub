@@ -1,12 +1,14 @@
 import { useSelector, useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { removeFromCart, increaseQuantity, decreaseQuantity, clearCart } from "../features/cart/cartSlice";
 import { formatPrice } from "../utils/currency";
 import { getProductImageUrl } from "../utils/constants";
 
 export default function Cart() {
   const { items: cartItems, totalAmount, totalQuantity } = useSelector((state) => state.cart);
+  const { isAuthenticated } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   
   const handleRemoveFromCart = (id) => {
     dispatch(removeFromCart(id));
@@ -28,6 +30,15 @@ export default function Cart() {
   
   const handleClearCart = () => {
     dispatch(clearCart());
+  };
+
+  const handleCheckoutClick = (e) => {
+    e.preventDefault();
+    if (isAuthenticated) {
+      navigate("/checkout");
+    } else {
+      navigate("/login?redirect=/checkout");
+    }
   };
   
   // Calculate shipping
@@ -236,12 +247,12 @@ export default function Cart() {
               </div>
             </div>
             
-            <Link 
-              to="/checkout" 
+            <button 
+              onClick={handleCheckoutClick}
               className="block w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-center py-4 rounded-xl hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] transition-all transform hover:-translate-y-1 mb-4 font-bold text-lg"
             >
               Proceed to Checkout
-            </Link>
+            </button>
             
             <Link 
               to="/products" 

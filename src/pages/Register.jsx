@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { GoogleLogin } from '@react-oauth/google';
 import { signup, googleLogin, clearError } from "../features/auth/authSlice";
 
@@ -15,6 +15,8 @@ export default function Register() {
   const { loading, error, validationErrors } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirect = searchParams.get("redirect");
   
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,7 +36,11 @@ export default function Register() {
     dispatch(signup(formData))
       .unwrap()
       .then(() => {
-        navigate("/");
+        if (redirect) {
+          navigate(redirect);
+        } else {
+          navigate("/");
+        }
       })
       .catch((err) => {
         console.error("Signup failed:", err);
@@ -47,7 +53,11 @@ export default function Register() {
         .unwrap()
         .then((payload) => {
             const user = payload?.data?.user;
-            navigate(user?.role === "admin" ? "/admin/dashboard" : "/");
+            if (redirect) {
+              navigate(redirect);
+            } else {
+              navigate(user?.role === "admin" ? "/admin/dashboard" : "/");
+            }
         })
         .catch((err) => {
             console.error("Google Login Failed:", err);
@@ -192,7 +202,7 @@ export default function Register() {
         <div className="text-center mt-6">
           <p className="text-sm text-gray-400">
             Already have an account?{' '}
-            <Link to="/login" className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 hover:text-white transition-all">
+            <Link to={`/login${redirect ? `?redirect=${redirect}` : ""}`} className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 hover:text-white transition-all">
               Sign in
             </Link>
           </p>

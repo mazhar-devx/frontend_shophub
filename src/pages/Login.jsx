@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { GoogleLogin } from '@react-oauth/google';
 import { login, googleLogin, clearError } from "../features/auth/authSlice";
 
@@ -13,6 +13,8 @@ export default function Login() {
   const { loading, error, validationErrors } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirect = searchParams.get("redirect");
   
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,7 +35,11 @@ export default function Login() {
       .unwrap()
       .then((payload) => {
         const user = payload?.data?.user;
-        navigate(user?.role === "admin" ? "/admin/dashboard" : "/");
+        if (redirect) {
+          navigate(redirect);
+        } else {
+          navigate(user?.role === "admin" ? "/admin/dashboard" : "/");
+        }
       })
       .catch((err) => {
         const errorMessage = err?.message || "Login failed";
@@ -50,7 +56,11 @@ export default function Login() {
         .unwrap()
         .then((payload) => {
             const user = payload?.data?.user;
-            navigate(user?.role === "admin" ? "/admin/dashboard" : "/");
+            if (redirect) {
+              navigate(redirect);
+            } else {
+              navigate(user?.role === "admin" ? "/admin/dashboard" : "/");
+            }
         })
         .catch((err) => {
             console.error("Google Login Failed:", err);
@@ -219,7 +229,7 @@ export default function Login() {
         <div className="text-center mt-6">
           <p className="text-sm text-gray-400">
             Don't have an account?{' '}
-            <Link to="/register" className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 hover:text-white transition-all">
+            <Link to={`/register${redirect ? `?redirect=${redirect}` : ""}`} className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 hover:text-white transition-all">
               Sign up today
             </Link>
           </p>
