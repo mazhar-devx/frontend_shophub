@@ -34,11 +34,7 @@ export default function Cart() {
 
   const handleCheckoutClick = (e) => {
     e.preventDefault();
-    if (isAuthenticated) {
-      navigate("/checkout");
-    } else {
-      navigate("/login?redirect=/checkout");
-    }
+    navigate("/checkout");
   };
   
   // Calculate shipping

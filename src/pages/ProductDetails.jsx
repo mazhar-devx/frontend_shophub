@@ -527,13 +527,6 @@ export default function ProductDetails() {
                   </button>
                   <button 
                      onClick={() => {
-                        const { user } = store.getState().auth; // Access store directly or use selector if available in scope
-                        if (!user) {
-                           showToast("Please login to purchase products", "error");
-                           navigate('/login');
-                           return;
-                        }
-
                         if (product) {
                            // Check stock limit logic NOT strictly needed for Buy Now as it usually goes to checkout, 
                            // but good to validate against cart if mixed.

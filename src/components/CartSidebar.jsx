@@ -136,12 +136,6 @@ export default function CartSidebar() {
                 
                 <button
                   onClick={() => {
-                    const { user } = store.getState().auth;
-                    if (!user) {
-                      toggleCart(); 
-                      navigate('/login');
-                      return;
-                    }
                     toggleCart();
                     navigate('/checkout');
                   }}
