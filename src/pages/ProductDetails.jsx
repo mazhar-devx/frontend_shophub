@@ -630,9 +630,25 @@ export default function ProductDetails() {
           <div className="prose prose-invert max-w-none text-secondary">
             {activeTab === 'description' && (
               <div className="animate-fade-in">
-                  <p className="text-lg leading-relaxed">{product.description}</p>
+                  <div className="relative">
+                    <p className={`text-lg leading-relaxed ${!showFullDescription && product.description?.length > 500 ? 'line-clamp-6' : ''}`}>
+                      {product.description}
+                    </p>
+                    {product.description?.length > 500 && (
+                      <button 
+                        onClick={() => setShowFullDescription(!showFullDescription)}
+                        className="text-cyan-500 hover:text-cyan-400 font-bold text-sm uppercase tracking-widest flex items-center gap-1 transition-all mt-4"
+                      >
+                        {showFullDescription ? (
+                          <>Show Less <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" /></svg></>
+                        ) : (
+                          <>Show More <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg></>
+                        )}
+                      </button>
+                    )}
+                  </div>
                   <GoogleAd slot="8211277173" layout="in-article" format="fluid" />
-                  <p className="mt-4 text-gray-400">Experience the quality and innovation that defines our {product.category} collection. Designed for the modern lifestyle, this product combines functionality with aesthetic appeal.</p>
+                  <p className="mt-4 text-secondary opacity-70 italic">Experience the quality and innovation that defines our {product.category} collection. Designed for the modern lifestyle, this product combines functionality with aesthetic appeal.</p>
               </div>
             )}
             {activeTab === 'specifications' && (

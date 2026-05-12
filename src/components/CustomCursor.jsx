@@ -103,23 +103,23 @@ const CustomCursor = () => {
       {/* Trailing Profile Label */}
       <motion.div
         style={{
-          left: cursorX,
-          top: cursorY,
+          left: mouseX, // Using mouseX directly for zero-lag following
+          top: mouseY, // Using mouseY directly for zero-lag following
           x: 20, // Offset to the right
           y: -20, // Offset up
         }}
-        className="absolute flex items-center gap-2 px-2 py-1 bg-white/90 dark:bg-black/90 backdrop-blur-md rounded-full border border-pink-500/20 shadow-2xl"
+        className="fixed flex items-center gap-2 px-2 py-1 bg-white/90 dark:bg-black/90 backdrop-blur-md rounded-full border border-pink-500/20 shadow-2xl"
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ 
           opacity: isMoving ? 1 : 0, 
           scale: isMoving ? 1 : 0.8,
           x: isHovering ? 30 : 20
         }}
-        transition={{ duration: 0.3, ease: "easeOut" }}
+        transition={{ duration: 0.2, ease: "easeOut" }}
       >
         <div className="w-6 h-6 rounded-full overflow-hidden border border-pink-500">
           <img 
-            src={user.photo ? getProductImageUrl(user.photo) : DEFAULT_AVATAR} 
+            src={user.photo ? (user.photo.startsWith('http') ? user.photo : getProductImageUrl(user.photo)) : DEFAULT_AVATAR} 
             className="w-full h-full object-cover" 
             alt=""
           />

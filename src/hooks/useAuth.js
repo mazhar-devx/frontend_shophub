@@ -62,8 +62,9 @@ const useAuth = () => {
       console.warn('[Auth] Google One Tap Login Failed or Dismissed', error);
     },
     disabled: isAuthenticated || !hasConsent,
-    auto_select: true, // Automatically select if only one account
+    auto_select: false, // Set to false to avoid automatic login which can suppress the prompt after manual logout
     cancel_on_tap_outside: false,
+    use_fedcm_for_prompt: true, // Use latest FedCM for better reliability
   });
 };
 

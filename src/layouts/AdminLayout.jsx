@@ -30,7 +30,7 @@ export default function AdminLayout() {
   // If loading, OR if we have a token but no user (waiting for loadUser), show loader
   if (loading || (token && !user)) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center text-white">
+      <div className="min-h-screen bg-main flex items-center justify-center text-primary">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
       </div>
     );
@@ -60,7 +60,7 @@ export default function AdminLayout() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white flex overflow-hidden font-sans selection:bg-purple-500/30">
+    <div className="min-h-screen bg-main text-primary flex overflow-hidden font-sans selection:bg-purple-500/30">
       {/* Background Ambience */}
       <div className="fixed inset-0 z-0 pointer-events-none">
          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-900/20 rounded-full blur-[120px] animate-pulse"></div>
@@ -85,7 +85,7 @@ export default function AdminLayout() {
       >
         <div className="h-20 flex items-center justify-center border-b border-white/10 relative">
           <Link to="/" className={`text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500 transition-all ${isSidebarOpen ? 'opacity-100' : 'opacity-0 md:opacity-0 w-0 overflow-hidden'} md:block ${!isSidebarOpen && 'hidden'}`}>
-            NEXUS<span className="text-white">ADMIN</span>
+            NEXUS<span className="text-primary">ADMIN</span>
           </Link>
           {/* Logo Icon for collapsed state */}
           <span className={`text-2xl absolute transition-opacity duration-300 ${!isSidebarOpen && !isMobileOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>⚡</span>
@@ -142,7 +142,7 @@ export default function AdminLayout() {
       {/* Main Content */}
       <main className="flex-1 flex flex-col h-screen overflow-hidden relative z-10">
         {/* Header */}
-        <header className="h-20 glass border-b border-white/10 flex items-center justify-between px-4 md:px-8 bg-black/20 backdrop-blur-md">
+        <header className="h-20 glass border-b border-white/10 flex items-center justify-between px-4 md:px-8 bg-black/5 dark:bg-black/20 backdrop-blur-md">
            <div className="flex items-center">
                {/* Mobile Menu Button */}
                <button 
@@ -154,8 +154,8 @@ export default function AdminLayout() {
                    </svg>
                </button>
 
-               <div className="flex items-center text-gray-400 text-sm breadcrumbs">
-                  <span className="hidden sm:inline mr-2">Admin</span> <span className="hidden sm:inline">/</span> <span className="ml-0 sm:ml-2 text-white font-medium capitalize">{location.pathname.split('/').pop() || 'Dashboard'}</span>
+               <div className="flex items-center text-secondary text-sm breadcrumbs">
+                  <span className="hidden sm:inline mr-2">Admin</span> <span className="hidden sm:inline">/</span> <span className="ml-0 sm:ml-2 text-primary font-medium capitalize">{location.pathname.split('/').pop() || 'Dashboard'}</span>
                </div>
            </div>
 
@@ -170,17 +170,17 @@ export default function AdminLayout() {
               
               <div className="flex items-center gap-3 pl-6 border-l border-white/10">
                   <div className="text-right hidden md:block">
-                     <p className="text-sm font-bold text-white leading-tight">{user?.vendorName || user?.name || 'Admin User'}</p>
-                     <p className="text-[10px] text-gray-500 uppercase tracking-widest font-black mt-0.5">
+                     <p className="text-sm font-bold text-primary leading-tight">{user?.vendorName || user?.name || 'Admin User'}</p>
+                     <p className="text-[10px] text-secondary uppercase tracking-widest font-black mt-0.5">
                         {user?.role === 'admin' ? 'Super Administrator' : 'Staff'}
                      </p>
                   </div>
                   <div className="h-10 w-10 rounded-full bg-gradient-to-br from-purple-500 to-cyan-500 p-[1px] shadow-lg shadow-purple-500/20">
-                     <div className="h-full w-full rounded-full bg-black overflow-hidden flex items-center justify-center">
+                     <div className="h-full w-full rounded-full bg-main overflow-hidden flex items-center justify-center">
                         {user?.photo ? (
                            <img src={user.photo.startsWith('http') ? user.photo : `/api/v1/users/photo/${user.photo}`} className="w-full h-full object-cover" alt="" />
                         ) : (
-                           <span className="text-sm font-black text-white">{user?.name?.charAt(0) || 'A'}</span>
+                           <span className="text-sm font-black text-primary">{user?.name?.charAt(0) || 'A'}</span>
                         )}
                      </div>
                   </div>

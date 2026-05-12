@@ -49,16 +49,16 @@ export default function ProductReviews({ productId, reviews }) {
   };
 
   return (
-    <div className="mt-12 glass border border-white/10 rounded-3xl p-8 mb-12">
-      <h3 className="text-2xl font-bold mb-8 text-white flex items-center">
+    <div className="mt-12 glass border border-white/10 rounded-3xl p-8 mb-12 bg-white/5 dark:bg-white/5">
+      <h3 className="text-2xl font-bold mb-8 text-primary flex items-center">
         <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-cyan-400">Customer Reviews</span>
-        <span className="ml-4 text-sm font-normal text-gray-500 bg-white/5 py-1 px-3 rounded-full border border-white/5">{reviews ? reviews.length : 0} Reviews</span>
+        <span className="ml-4 text-sm font-normal text-secondary bg-black/5 dark:bg-white/5 py-1 px-3 rounded-full border border-black/5 dark:border-white/5">{reviews ? reviews.length : 0} Reviews</span>
       </h3>
       
       {reviews && reviews.length > 0 ? (
         <div className="space-y-4 md:space-y-6 mb-12">
           {reviews.map((review) => (
-            <div key={review._id} className="bg-black/20 border border-white/5 rounded-2xl p-4 md:p-6 hover:bg-black/30 transition-colors">
+            <div key={review._id} className="bg-black/5 dark:bg-black/20 border border-black/5 dark:border-white/5 rounded-2xl p-4 md:p-6 hover:bg-black/10 dark:hover:bg-black/30 transition-colors">
               <div className="flex items-center justify-between mb-3 md:mb-4">
                 <div className="flex items-center">
                   <div className="w-8 h-8 md:w-10 md:h-10 rounded-full overflow-hidden border border-white/10 mr-3 md:mr-4 shadow-lg">
@@ -73,9 +73,9 @@ export default function ProductReviews({ productId, reviews }) {
                     )}
                   </div>
                   <div>
-                    <h4 className="text-sm md:text-base font-bold text-white leading-tight flex items-center">
+                    <h4 className="text-sm md:text-base font-bold text-primary leading-tight flex items-center">
                       {review.isDummy ? review.dummyName : (review.user?.name || 'User')}
-                      {review.isDummy && <span className="ml-2 text-[8px] bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 px-1.5 py-0.5 rounded-full uppercase tracking-tighter">Verified Buyer</span>}
+                      {review.isDummy && <span className="ml-2 text-[8px] bg-cyan-500/10 text-cyan-500 dark:text-cyan-400 border border-cyan-500/20 px-1.5 py-0.5 rounded-full uppercase tracking-tighter">Verified Buyer</span>}
                     </h4>
                     <div className="flex text-yellow-500 text-[10px] md:text-sm mt-0.5">
                       {[...Array(5)].map((_, i) => (
@@ -90,11 +90,11 @@ export default function ProductReviews({ productId, reviews }) {
                     </div>
                   </div>
                 </div>
-                <div className="text-[10px] md:text-xs text-gray-500 font-medium bg-white/5 py-1 px-2 md:px-3 rounded-full">
+                <div className="text-[10px] md:text-xs text-secondary font-medium bg-black/5 dark:bg-white/5 py-1 px-2 md:px-3 rounded-full">
                   {new Date(review.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                 </div>
               </div>
-              <p className="text-sm md:text-base text-gray-300 leading-relaxed md:pl-14">{review.review}</p>
+              <p className="text-sm md:text-base text-secondary leading-relaxed md:pl-14">{review.review}</p>
               
               {review.aiReply && (
                 <div className="mt-4 md:ml-14 p-3 md:p-4 glass border border-cyan-500/20 bg-cyan-500/5 rounded-xl md:rounded-2xl animate-fade-in relative overflow-hidden group">
@@ -105,10 +105,10 @@ export default function ProductReviews({ productId, reviews }) {
                     </div>
                     <div>
                       <div className="flex items-center gap-1.5 md:gap-2 mb-0.5 md:mb-1">
-                        <span className="text-[10px] md:text-xs font-bold text-cyan-400 uppercase tracking-tighter">AI Support</span>
-                        <span className="w-1 h-1 rounded-full bg-cyan-400 animate-pulse"></span>
+                        <span className="text-[10px] md:text-xs font-bold text-cyan-500 dark:text-cyan-400 uppercase tracking-tighter">AI Support</span>
+                        <span className="w-1 h-1 rounded-full bg-cyan-500 dark:bg-cyan-400 animate-pulse"></span>
                       </div>
-                      <p className="text-xs md:text-sm text-gray-200 italic leading-relaxed">
+                      <p className="text-xs md:text-sm text-primary italic leading-relaxed">
                         "{review.aiReply}"
                       </p>
                     </div>
@@ -119,16 +119,16 @@ export default function ProductReviews({ productId, reviews }) {
           ))}
         </div>
       ) : (
-        <div className="text-center py-12 bg-white/5 rounded-2xl border border-white/5 border-dashed mb-12">
+        <div className="text-center py-12 bg-black/5 dark:bg-white/5 rounded-2xl border border-black/5 dark:border-white/5 border-dashed mb-12">
           <div className="text-4xl mb-4">📝</div>
-          <p className="text-gray-400 text-lg">No reviews yet. Be the first to review this product!</p>
+          <p className="text-secondary text-lg">No reviews yet. Be the first to review this product!</p>
         </div>
       )}
       
       {/* Review Form */}
-      <div className="bg-gradient-to-br from-purple-900/10 to-indigo-900/10 rounded-2xl border border-white/10 p-8 relative overflow-hidden">
+      <div className="bg-gradient-to-br from-purple-900/5 to-indigo-900/5 dark:from-purple-900/10 dark:to-indigo-900/10 rounded-2xl border border-black/5 dark:border-white/10 p-8 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-purple-600/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
-        <h4 className="text-xl font-bold mb-6 text-white flex items-center">
+        <h4 className="text-xl font-bold mb-6 text-primary flex items-center">
           <svg className="w-5 h-5 mr-3 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
           </svg>
@@ -146,7 +146,7 @@ export default function ProductReviews({ productId, reviews }) {
         
         <form onSubmit={handleSubmitReview}>
           <div className="mb-6">
-            <label className="block text-gray-300 text-sm font-bold mb-3 uppercase tracking-wider">
+            <label className="block text-secondary text-sm font-bold mb-3 uppercase tracking-wider">
               Your Rating
             </label>
             <div className="flex space-x-2">
@@ -168,7 +168,7 @@ export default function ProductReviews({ productId, reviews }) {
           </div>
           
           <div className="mb-6">
-            <label htmlFor="review" className="block text-gray-300 text-sm font-bold mb-3 uppercase tracking-wider">
+            <label htmlFor="review" className="block text-secondary text-sm font-bold mb-3 uppercase tracking-wider">
               Your Review
             </label>
             <textarea
@@ -176,7 +176,7 @@ export default function ProductReviews({ productId, reviews }) {
               rows={5}
               value={reviewText}
               onChange={(e) => setReviewText(e.target.value)}
-              className="w-full bg-black/40 border border-white/10 rounded-xl px-5 py-4 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all resize-none shadow-inner"
+              className="w-full bg-black/5 dark:bg-black/40 border border-black/10 dark:border-white/10 rounded-xl px-5 py-4 text-primary placeholder-secondary/50 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all resize-none shadow-inner"
               placeholder="Share your experience with this product... (min 10 characters)"
             ></textarea>
           </div>
