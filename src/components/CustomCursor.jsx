@@ -11,13 +11,21 @@ const CustomCursor = () => {
   const mouseX = useMotionValue(-100);
   const mouseY = useMotionValue(-100);
 
-  // Smooth springs for trailing effect on the main point
-  const springConfig = { damping: 25, stiffness: 250, mass: 0.5 };
-  const cursorX = useSpring(mouseX, springConfig);
-  const cursorY = useSpring(mouseY, springConfig);
+  // Configuration for smooth but responsive movement
+  // Stiffness and Damping tuned for "Liquid" feel without vibration
+  const mainSpringConfig = { damping: 30, stiffness: 350, mass: 0.5 };
+  const labelSpringConfig = { damping: 35, stiffness: 450, mass: 0.2 };
+
+  const cursorX = useSpring(mouseX, mainSpringConfig);
+  const cursorY = useSpring(mouseY, mainSpringConfig);
+  
+  const labelX = useSpring(mouseX, labelSpringConfig);
+  const labelY = useSpring(mouseY, labelSpringConfig);
 
   useEffect(() => {
     const handleMouseMove = (e) => {
+      // Use requestAnimationFrame for extra smoothness if needed, 
+      // but MotionValues are already optimized.
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
       if (!isVisible) setIsVisible(true);
@@ -62,7 +70,7 @@ const CustomCursor = () => {
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[999999] overflow-hidden hidden lg:block">
-      {/* Main Cursor Point */}
+      {/* 1. Main Cursor Point (The pink dot) */}
       <motion.div
         style={{
           left: cursorX,
@@ -74,53 +82,9 @@ const CustomCursor = () => {
         animate={{ 
           scale: isHovering ? 1.5 : 1,
         }}
-      >
-        <motion.div 
-          animate={{ scale: [1, 2, 1], opacity: [0.5, 0, 0.5] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
-          className="absolute inset-0 bg-pink-500 rounded-full"
-        />
-      </motion.div>
+      />
 
-      {/* Profile Label - Zero Lag */}
-      <motion.div
-        style={{
-          x: mouseX,
-          y: mouseY,
-          left: 0,
-          top: 0,
-        }}
-        className="absolute flex items-center gap-3 px-3 py-1.5 bg-white dark:bg-black/80 backdrop-blur-xl rounded-full border border-pink-500/30 shadow-2xl"
-        animate={{ 
-          x: mouseX.get() + (isHovering ? 35 : 25),
-          y: mouseY.get() - 25,
-          opacity: isVisible ? 1 : 0,
-          scale: isVisible ? 1 : 0.9
-        }}
-        transition={{ type: "spring", damping: 30, stiffness: 400 }}
-      >
-        <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-pink-500 shadow-inner bg-gray-100 dark:bg-gray-800">
-          <img 
-            src={getProductImageUrl(user.photo) || DEFAULT_AVATAR_FALLBACK} 
-            className="w-full h-full object-cover" 
-            alt=""
-            onError={(e) => { e.target.src = DEFAULT_AVATAR_FALLBACK; }}
-          />
-        </div>
-        <div className="flex flex-col pr-2">
-          <span className="text-[10px] font-black text-primary dark:text-white uppercase tracking-tight leading-none whitespace-nowrap">
-            {user.role === 'admin' ? (user.vendorName || user.name) : user.name}
-          </span>
-          <span className="text-[8px] text-pink-500 font-bold uppercase tracking-widest leading-none mt-1">
-            Online
-          </span>
-        </div>
-        
-        {/* Decorative corner tag */}
-        <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full border border-white dark:border-black shadow-sm" />
-      </motion.div>
-
-      {/* Trailing Outer Circle */}
+      {/* 2. Trailing Pulse Ring */}
       <motion.div
         style={{
           left: cursorX,
@@ -128,12 +92,58 @@ const CustomCursor = () => {
           translateX: '-50%',
           translateY: '-50%',
         }}
-        className="absolute w-10 h-10 border border-pink-500/20 rounded-full"
+        className="absolute w-8 h-8 border border-pink-500/30 rounded-full"
         animate={{ 
-          scale: isHovering ? 1.8 : 1,
-          opacity: isHovering ? 0.4 : 0.1
+          scale: isHovering ? 2 : 1,
+          opacity: isHovering ? 0.6 : 0.2
         }}
       />
+
+      {/* 3. The Professional Profile Label - Fluid Zero-Vibration Movement */}
+      <motion.div
+        style={{
+          left: labelX,
+          top: labelY,
+        }}
+        className="absolute flex items-center gap-3 px-3 py-1.5 bg-white/95 dark:bg-black/90 backdrop-blur-xl rounded-full border border-pink-500/30 shadow-2xl"
+        animate={{ 
+          x: isHovering ? 40 : 30, // Horizontal offset
+          y: -30,                 // Vertical offset
+          opacity: isVisible ? 1 : 0,
+          scale: isVisible ? 1 : 0.8
+        }}
+        transition={{ 
+           x: { type: "spring", damping: 25, stiffness: 200 },
+           y: { type: "spring", damping: 25, stiffness: 200 },
+           opacity: { duration: 0.2 }
+        }}
+      >
+        {/* Profile Avatar */}
+        <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-pink-500 shadow-inner bg-gray-100 dark:bg-gray-800">
+          <img 
+            src={getProductImageUrl(user.photo) || DEFAULT_AVATAR_FALLBACK} 
+            className="w-full h-full object-cover" 
+            alt={user.name}
+            onError={(e) => { e.target.src = DEFAULT_AVATAR_FALLBACK; }}
+          />
+        </div>
+
+        {/* User Info */}
+        <div className="flex flex-col pr-2">
+          <span className="text-[10px] font-black text-primary dark:text-white uppercase tracking-tight leading-none whitespace-nowrap">
+            {user.role === 'admin' ? (user.vendorName || user.name) : user.name}
+          </span>
+          <div className="flex items-center gap-1.5 mt-1">
+             <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse shadow-[0_0_5px_rgba(34,197,94,0.5)]"></span>
+             <span className="text-[8px] text-pink-500 font-bold uppercase tracking-widest leading-none">
+                Online
+             </span>
+          </div>
+        </div>
+        
+        {/* Decorative corner tag */}
+        <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-pink-500 rounded-full border border-white dark:border-black shadow-sm" />
+      </motion.div>
     </div>
   );
 };
