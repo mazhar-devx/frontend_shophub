@@ -547,39 +547,49 @@ export default function AIHelper() {
             setConnectionStatus("error");
             playSound("error");
 
-            if (retryCount < RETRY_ATTEMPTS) {
-                setRetryCount((prev) => prev + 1);
-                const fallback = localResponse || `⚠️ Neural link disrupted (attempt ${retryCount + 1}/${RETRY_ATTEMPTS}). Retrying automatically...`;
+            const isServerError = err.response?.status >= 500;
+            
+            // If it's a server error or we've reached max retries, show final error
+            if (isServerError || retryCount >= RETRY_ATTEMPTS) {
+                const errorMsg = isServerError 
+                    ? "🔴 **Neural link server error (500)**. Our backend is currently overwhelmed or undergoing maintenance. Please try again in a few minutes or contact **Asad** on WhatsApp. 🙏"
+                    : localResponse || "🔴 My neural link is experiencing heavy interference. Please try again later or contact **Asad** for direct support! 🙏";
+                
                 setMessages((prev) => [
                     ...prev,
                     {
                         id: generateId(),
                         role: "assistant",
-                        content: fallback,
-                        timestamp: getTimestamp(),
-                        reactions: [],
-                        isError: true,
-                    },
-                ]);
-
-                setTimeout(() => {
-                    setInput(trimmed);
-                    handleSendMessage();
-                }, RETRY_DELAY);
-            } else {
-                const fallback = localResponse || "🔴 My neural link is experiencing interference. Please try again or contact **Asad** on WhatsApp for immediate assistance! 🙏";
-                setMessages((prev) => [
-                    ...prev,
-                    {
-                        id: generateId(),
-                        role: "assistant",
-                        content: fallback,
+                        content: errorMsg,
                         timestamp: getTimestamp(),
                         reactions: [],
                         isError: true,
                     },
                 ]);
                 setRetryCount(0);
+            } else {
+                // Network/Transient error - retry logic
+                setRetryCount((prev) => prev + 1);
+                
+                // Only show the "disrupted" message on the first retry to avoid "replay" clutter
+                if (retryCount === 0) {
+                    setMessages((prev) => [
+                        ...prev,
+                        {
+                            id: generateId(),
+                            role: "assistant",
+                            content: `⚠️ Neural link disrupted. Retrying connection... (Attempt ${retryCount + 1}/${RETRY_ATTEMPTS})`,
+                            timestamp: getTimestamp(),
+                            reactions: [],
+                            isError: true,
+                        },
+                    ]);
+                }
+
+                setTimeout(() => {
+                    setInput(trimmed);
+                    handleSendMessage();
+                }, RETRY_DELAY);
             }
         } finally {
             setIsLoading(false);
