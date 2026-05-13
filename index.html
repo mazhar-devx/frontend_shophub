@@ -174,12 +174,23 @@
       // The cookie method is the most reliable for React apps
       const cookieValue = `/en/${langCode}`;
       const domain = window.location.hostname;
-      const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toUTCString();
+      const domainParts = domain.split('.');
+      const rootDomain = domainParts.length > 2 ? domainParts.slice(-2).join('.') : domain;
+
+      // DELETE existing cookies first to prevent "stuck" languages
+      const paths = ['/', '/index.html', window.location.pathname];
+      const domains = [domain, `.${domain}`, rootDomain, `.${rootDomain}`, ''];
       
-      // Set cookie for all possible paths and subdomains
+      domains.forEach(d => {
+        paths.forEach(p => {
+          document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${p};${d ? ` domain=${d};` : ''}`;
+        });
+      });
+
+      // Set new cookie with broad scope
+      const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toUTCString();
+      document.cookie = `googtrans=${cookieValue}; path=/; expires=${expires}; domain=.${rootDomain};`;
       document.cookie = `googtrans=${cookieValue}; path=/; expires=${expires};`;
-      document.cookie = `googtrans=${cookieValue}; path=/; domain=.${domain}; expires=${expires};`;
-      document.cookie = `googtrans=${cookieValue}; path=/; domain=${domain}; expires=${expires};`;
       
       // Reload is required for the engine to pick up the cookie and translate the whole DOM
       window.location.reload();
