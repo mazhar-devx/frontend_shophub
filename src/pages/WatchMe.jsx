@@ -909,24 +909,23 @@ const VideoCard = memo(({ video, isActive, isNext, isGlobalMuted, setIsGlobalMut
                   </div>
                   
                    <div className="flex-1 flex items-center bg-black/5 dark:bg-white/5 border-none rounded-3xl pr-2 focus-within:ring-2 focus-within:ring-pink-500 transition-all relative">
+                      <button 
+                         onClick={() => setShowGifPicker(!showGifPicker)}
+                         className={`ml-2 px-3 py-1.5 rounded-lg border-2 transition-all flex items-center justify-center gap-1 ${showGifPicker ? 'bg-pink-500 border-pink-500 text-white shadow-lg' : 'border-pink-500/30 text-pink-500 hover:border-pink-500 hover:bg-pink-500/5'}`}
+                         title="Add GIF"
+                       >
+                          <span className="text-[10px] font-black uppercase tracking-widest">GIF</span>
+                       </button>
                       <input 
                         type="text" 
                         placeholder={commentMedia ? "Add caption..." : "Add comment..."}
                         value={commentText}
                         onChange={(e) => setCommentText(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && handleComment()}
-                        className="w-full bg-transparent px-6 py-4 text-sm dark:text-white focus:outline-none"
+                        className="flex-1 bg-transparent px-4 py-4 text-sm dark:text-white focus:outline-none"
                       />
                       
                       <div className="flex items-center gap-1">
-                         <button 
-                           onClick={() => setShowGifPicker(!showGifPicker)}
-                           className={`px-3 py-1.5 rounded-lg border-2 transition-all flex items-center justify-center gap-1 ${showGifPicker ? 'bg-pink-500 border-pink-500 text-white shadow-lg' : 'border-pink-500/30 text-pink-500 hover:border-pink-500 hover:bg-pink-500/5'}`}
-                           title="Add GIF"
-                         >
-                            <span className="text-[10px] font-black uppercase tracking-widest">GIF</span>
-                         </button>
-
                          <label className="p-2 text-gray-400 hover:text-pink-500 cursor-pointer transition-colors shrink-0" title="Attach Image">
                             <ImageIcon className="w-5 h-5" />
                             <input type="file" accept="image/*,image/gif" className="hidden" onChange={(e) => setCommentMedia(e.target.files[0])} />
