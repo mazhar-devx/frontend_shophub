@@ -83,63 +83,27 @@ export default function Navbar() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Google Translate Integration
+  // Check current language from cookie on mount
   useEffect(() => {
-    if (!window.googleTranslateElementInit) {
-      const addScript = document.createElement('script');
-      addScript.setAttribute('src', 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit');
-      document.body.appendChild(addScript);
-      window.googleTranslateElementInit = () => {
-        new window.google.translate.TranslateElement({
-          pageLanguage: 'en',
-          // REMOVED includedLanguages to support ALL world languages
-          layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
-          autoDisplay: false
-        }, 'google_translate_element');
-      };
-    }
-
-    // Auto-apply saved language if it's not English
-    const savedLang = localStorage.getItem("preferred_lang");
-    if (savedLang && savedLang !== "en") {
-      const checkInterval = setInterval(() => {
-        const combo = document.querySelector('.goog-te-combo');
-        if (combo) {
-          combo.value = savedLang;
-          combo.dispatchEvent(new Event('change'));
-          clearInterval(checkInterval);
-        }
-      }, 1000);
-      setTimeout(() => clearInterval(checkInterval), 15000);
+    const getCookie = (name) => {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+    };
+    const currentGoogTrans = getCookie('googtrans');
+    if (currentGoogTrans) {
+      const lang = currentGoogTrans.split('/').pop();
+      setCurrentLang(lang);
     }
   }, []);
 
   const changeLanguage = (langCode) => {
-    setIsLangMenuOpen(false);
-    const toastId = toast.loading(`Translating website...`);
-
-    let attempts = 0;
-    const checkInterval = setInterval(() => {
-      const googleCombo = document.querySelector('.goog-te-combo');
-      if (googleCombo) {
-        googleCombo.value = langCode;
-        googleCombo.dispatchEvent(new Event('change'));
-        setCurrentLang(langCode);
-        localStorage.setItem("preferred_lang", langCode);
-        toast.success(`Website translated! ✨`, { id: toastId });
-        clearInterval(checkInterval);
-        
-        // Force a small scroll to trigger Google's dynamic translation of all elements
-        window.scrollTo(0, window.scrollY + 1);
-        setTimeout(() => window.scrollTo(0, window.scrollY - 1), 100);
-      }
-      
-      attempts++;
-      if (attempts > 30) {
-        toast.error("Translation server busy. Please try again.", { id: toastId });
-        clearInterval(checkInterval);
-      }
-    }, 500);
+    if (window.doGoogleLanguageTranslation) {
+      localStorage.setItem("preferred_lang", langCode);
+      window.doGoogleLanguageTranslation(langCode);
+    } else {
+      toast.error("Translation engine not ready. Please refresh.");
+    }
   };
 
   // Handle clicks outside theme/lang menu
@@ -416,14 +380,6 @@ export default function Navbar() {
                   </motion.div>
                 )}
               </AnimatePresence>
-              
-              {/* Hidden Google Translate Element */}
-              <div id="google_translate_element" style={{ display: 'none' }}></div>
-              <style>{`
-                .goog-te-banner-frame { display: none !important; }
-                body { top: 0 !important; }
-                .skiptranslate { display: none !important; }
-              `}</style>
             </div>
 
             {/* Theme Switcher */}

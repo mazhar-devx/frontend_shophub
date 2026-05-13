@@ -129,6 +129,32 @@
 </head>
 
 <body>
+  <div id="google_translate_element" style="display:none"></div>
+  <script>
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+        autoDisplay: false
+      }, 'google_translate_element');
+    }
+
+    function doGoogleLanguageTranslation(langCode) {
+      // The cookie method is the most reliable for React apps
+      const cookieValue = `/en/${langCode}`;
+      const domain = window.location.hostname;
+      const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toUTCString();
+      
+      // Set cookie for all possible paths and subdomains
+      document.cookie = `googtrans=${cookieValue}; path=/; expires=${expires};`;
+      document.cookie = `googtrans=${cookieValue}; path=/; domain=.${domain}; expires=${expires};`;
+      document.cookie = `googtrans=${cookieValue}; path=/; domain=${domain}; expires=${expires};`;
+      
+      // Reload is required for the engine to pick up the cookie and translate the whole DOM
+      window.location.reload();
+    }
+  </script>
+  <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
 </body>
