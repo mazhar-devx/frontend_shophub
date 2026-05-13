@@ -78,6 +78,13 @@ export default function AIHelper() {
         else if (lowerInput.includes("founder") || lowerInput.includes("owner") || lowerInput.includes("mazhar")) localResponse = `${STORE_KNOWLEDGE.name} was founded by Mazhar. Our lead administrator is Asad.`;
         else if (lowerInput.includes("payment")) localResponse = STORE_KNOWLEDGE.payments;
 
+        try {
+            const { data } = await api.post("/ai/deep-brain", {
+                message: input,
+                history: messages.slice(-6).map(m => ({ role: m.role, content: m.content })),
+                localContext: localResponse // Send local knowledge to backend AI if needed
+            });
+
             if (data.status === 'success') {
                 const finalReply = localResponse ? `${localResponse}\n\n${data.data.reply}` : data.data.reply;
                 
