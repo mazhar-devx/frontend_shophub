@@ -13,7 +13,7 @@ export default function AIHelper() {
     const [messages, setMessages] = useState(() => {
         const saved = localStorage.getItem("ai_chat_history");
         return saved ? JSON.parse(saved) : [
-            { role: "assistant", content: "Assalamualaikum! I'm your HA Store Deep Brain AI. I have full knowledge of our inventory and can find exactly what you need. How can I assist you today? 🚀🤖" }
+            { role: "assistant", content: "Neural Link established. I am Deep Brain AI. I have analyzed every product in our catalog and synced with direct support channels. How can I help you find something extraordinary today? 🧠✨" }
         ];
     });
     const [input, setInput] = useState("");
@@ -108,29 +108,44 @@ export default function AIHelper() {
                                 key={i}
                                 to={`/product/${product.slug || product._id}`}
                                 onClick={() => setIsOpen(false)}
-                                className="min-w-[200px] max-w-[200px] flex flex-col bg-white/5 hover:bg-white/10 rounded-[2rem] border border-white/10 transition-all group/card overflow-hidden relative shadow-2xl snap-start"
+                                className="min-w-[220px] max-w-[220px] flex flex-col bg-gradient-to-br from-white/10 to-white/5 hover:from-white/20 hover:to-white/10 rounded-[2.5rem] border border-white/10 transition-all duration-500 group/card overflow-hidden relative shadow-2xl snap-start"
                             >
-                                <div className="absolute top-3 right-3 z-10">
-                                   <div className="bg-pink-500/80 backdrop-blur-md text-[8px] font-black px-2 py-1 rounded-full text-white uppercase tracking-widest shadow-lg">Premium</div>
+                                <div className="absolute top-4 right-4 z-10 flex flex-col gap-2 items-end">
+                                   <div className="bg-cyan-500/90 backdrop-blur-md text-[7px] font-black px-2 py-1 rounded-full text-white uppercase tracking-[0.2em] shadow-lg border border-white/20">Verified AI Pick</div>
+                                   <div className="bg-black/60 backdrop-blur-md text-[7px] font-black px-2 py-1 rounded-full text-white uppercase tracking-[0.1em] shadow-lg border border-white/10 flex items-center gap-1">
+                                      <span className="w-1 h-1 bg-green-500 rounded-full animate-pulse"></span> In Stock
+                                   </div>
                                 </div>
-                                <div className="relative aspect-square overflow-hidden">
+                                
+                                <div className="relative aspect-square overflow-hidden m-2 rounded-[2rem]">
                                    <img 
                                        src={getProductImageUrl(product.image || (product.images && product.images[0]))} 
                                        alt={product.name}
-                                       className="w-full h-full object-cover transition-transform duration-500 group-hover/card:scale-110"
+                                       className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-110"
                                    />
-                                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity"></div>
+                                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity"></div>
                                 </div>
-                                <div className="p-4 flex flex-col gap-1">
-                                    <h4 className="text-white font-bold text-xs truncate group-hover/card:text-cyan-400 transition-colors uppercase tracking-tight">{product.name}</h4>
-                                    <div className="flex items-center justify-between mt-1">
-                                        <span className="text-pink-500 font-black text-sm">{formatPrice(product.price, product.currency)}</span>
-                                        <div className="flex items-center gap-1 bg-white/5 px-2 py-0.5 rounded-full">
-                                            <span className="text-yellow-400 text-[8px]">⭐</span>
-                                            <span className="text-[8px] text-gray-300 font-bold">{product.ratingsAverage || 5.0}</span>
+                                
+                                <div className="px-5 pb-5 flex flex-col gap-1">
+                                    <h4 className="text-white font-black text-[11px] leading-tight group-hover/card:text-cyan-400 transition-colors uppercase tracking-tighter line-clamp-2 min-h-[2.4em] mt-1">{product.name}</h4>
+                                    
+                                    <div className="flex items-center justify-between mt-2 pt-3 border-t border-white/5">
+                                        <div className="flex flex-col">
+                                           <span className="text-pink-500 font-black text-sm tracking-tighter">{formatPrice(product.price, product.currency)}</span>
+                                           <span className="text-[7px] text-gray-500 font-bold uppercase tracking-widest">Inclusive Price</span>
+                                        </div>
+                                        <div className="flex flex-col items-end">
+                                            <div className="flex items-center gap-1 bg-white/5 px-2 py-0.5 rounded-full border border-white/5">
+                                                <span className="text-yellow-400 text-[8px]">⭐</span>
+                                                <span className="text-[8px] text-gray-300 font-black">{product.ratingsAverage || 5.0}</span>
+                                            </div>
+                                            <span className="text-[6px] text-gray-500 font-black uppercase mt-1">Authentic</span>
                                         </div>
                                     </div>
-                                    <button className="mt-3 w-full py-2 bg-white/10 group-hover/card:bg-pink-500 text-[10px] font-black uppercase tracking-widest text-white rounded-xl transition-all active:scale-95">View Details</button>
+                                    
+                                    <button className="mt-4 w-full py-3 bg-gradient-to-r from-cyan-600/50 to-purple-600/50 group-hover/card:from-cyan-500 group-hover/card:to-purple-600 text-[9px] font-black uppercase tracking-[0.2em] text-white rounded-2xl transition-all active:scale-95 shadow-xl">
+                                       Purchase Now
+                                    </button>
                                 </div>
                             </Link>
                         );
@@ -234,11 +249,18 @@ export default function AIHelper() {
                             </div>
                         ))}
                         {isLoading && (
-                            <div className="flex justify-start">
-                                <div className="bg-white/5 border border-white/10 p-5 rounded-2xl rounded-tl-none flex gap-2 shadow-xl">
-                                    <div className="w-2.5 h-2.5 bg-cyan-400 rounded-full animate-bounce"></div>
-                                    <div className="w-2.5 h-2.5 bg-purple-400 rounded-full animate-bounce delay-100"></div>
-                                    <div className="w-2.5 h-2.5 bg-indigo-400 rounded-full animate-bounce delay-200"></div>
+                            <div className="flex justify-start animate-fade-in">
+                                <div className="bg-white/5 border border-white/10 p-5 rounded-[2rem] rounded-tl-none flex flex-col gap-3 shadow-2xl backdrop-blur-xl relative overflow-hidden group">
+                                    <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-purple-500/5 animate-pulse"></div>
+                                    <div className="flex items-center gap-3 relative z-10">
+                                        <div className="flex gap-1.5">
+                                            <div className="w-2.5 h-2.5 bg-cyan-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                                            <div className="w-2.5 h-2.5 bg-purple-400 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                                            <div className="w-2.5 h-2.5 bg-indigo-400 rounded-full animate-bounce"></div>
+                                        </div>
+                                        <span className="text-[10px] font-black text-cyan-400 uppercase tracking-[0.2em] animate-pulse">Deep Thinking...</span>
+                                    </div>
+                                    <p className="text-[11px] text-gray-500 font-medium italic">Analyzing inventory and neural patterns...</p>
                                 </div>
                             </div>
                         )}
@@ -267,26 +289,39 @@ export default function AIHelper() {
                 </div>
             </div>
 
-            {/* Toggle Button */}
+            {/* Ultra Professional Toggle Button */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className={`pointer-events-auto group relative w-20 h-20 rounded-full flex items-center justify-center transition-all duration-700 transform hover:scale-110 active:scale-95 shadow-[0_0_50px_rgba(124,58,237,0.5)] ${isOpen ? 'rotate-180 bg-white/10' : 'bg-gradient-to-br from-indigo-900 via-purple-700 to-cyan-600'}`}
+                className={`pointer-events-auto group relative w-24 h-24 flex items-center justify-center transition-all duration-700 transform hover:scale-110 active:scale-90 ${isOpen ? 'rotate-180' : ''}`}
             >
-                <div className="absolute inset-0 bg-white/5 backdrop-blur-[4px] rounded-full"></div>
-                <div className="absolute inset-0 rounded-full border-2 border-white/20 group-hover:border-white/40 transition-colors animate-pulse"></div>
+                {/* Orbital Rings */}
+                <div className={`absolute inset-0 rounded-full border-2 border-cyan-500/30 transition-all duration-1000 ${isOpen ? 'scale-150 opacity-0' : 'animate-[spin_4s_linear_infinite]'}`}></div>
+                <div className={`absolute inset-2 rounded-full border border-purple-500/30 transition-all duration-1000 ${isOpen ? 'scale-125 opacity-0' : 'animate-[spin_3s_linear_infinite_reverse]'}`}></div>
                 
-                {isOpen ? (
-                    <svg className="w-10 h-10 text-white relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                ) : (
-                    <div className="relative z-10 flex flex-col items-center">
-                        <div className="relative">
-                            <span className="text-3xl animate-bounce inline-block">🧠</span>
-                            <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-ping"></div>
+                {/* Main Sphere */}
+                <div className={`absolute inset-4 rounded-full shadow-[0_0_50px_rgba(34,211,238,0.4)] transition-all duration-500 flex items-center justify-center overflow-hidden ${isOpen ? 'bg-white/10 backdrop-blur-xl border border-white/20' : 'bg-gradient-to-br from-indigo-950 via-purple-900 to-black border-2 border-white/10 group-hover:border-cyan-400/50'}`}>
+                    {/* Inner Glow */}
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,_rgba(255,255,255,0.1),_transparent)]"></div>
+                    
+                    {isOpen ? (
+                        <svg className="w-8 h-8 text-white relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
+                        </svg>
+                    ) : (
+                        <div className="relative z-10 flex flex-col items-center">
+                            <div className="relative mb-1">
+                                <span className="text-4xl filter drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]">🧠</span>
+                                <div className="absolute -top-1 -right-1 w-3 h-3 bg-cyan-400 rounded-full animate-ping"></div>
+                                <div className="absolute -top-1 -right-1 w-3 h-3 bg-cyan-400 rounded-full shadow-[0_0_10px_#22d3ee]"></div>
+                            </div>
+                            <span className="text-[9px] font-black tracking-[0.2em] text-cyan-400 uppercase leading-none">Deep Brain</span>
                         </div>
-                        <span className="text-[8px] font-black tracking-widest text-white/90 uppercase -mt-1">Deep Brain</span>
-                    </div>
+                    )}
+                </div>
+
+                {/* Outer Glow Pulse */}
+                {!isOpen && (
+                   <div className="absolute inset-0 rounded-full bg-cyan-500/10 animate-pulse -z-10 blur-xl"></div>
                 )}
             </button>
         </div>
