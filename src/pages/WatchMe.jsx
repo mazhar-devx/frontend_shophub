@@ -1122,7 +1122,7 @@ const VideoCard = memo(({ video, isActive, isNext, isGlobalMuted, setIsGlobalMut
       </AnimatePresence>
     </div>
   );
-};
+});
 
 export default function WatchMe() {
   const { tag: routeTag } = useParams();
