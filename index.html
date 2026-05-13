@@ -171,29 +171,32 @@
     }
 
     function doGoogleLanguageTranslation(langCode) {
-      // The cookie method is the most reliable for React apps
       const cookieValue = `/en/${langCode}`;
       const domain = window.location.hostname;
       const domainParts = domain.split('.');
       const rootDomain = domainParts.length > 2 ? domainParts.slice(-2).join('.') : domain;
 
-      // DELETE existing cookies first to prevent "stuck" languages
-      const paths = ['/', '/index.html', window.location.pathname];
-      const domains = [domain, `.${domain}`, rootDomain, `.${rootDomain}`, ''];
-      
-      domains.forEach(d => {
-        paths.forEach(p => {
-          document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${p};${d ? ` domain=${d};` : ''}`;
-        });
-      });
-
-      // Set new cookie with broad scope
+      // Set cookies for persistence
       const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toUTCString();
       document.cookie = `googtrans=${cookieValue}; path=/; expires=${expires}; domain=.${rootDomain};`;
       document.cookie = `googtrans=${cookieValue}; path=/; expires=${expires};`;
-      
-      // Reload is required for the engine to pick up the cookie and translate the whole DOM
-      window.location.reload();
+
+      // INSTANT APPLY: Try to find the combo box and trigger it without reload
+      const googleCombo = document.querySelector('.goog-te-combo');
+      if (googleCombo) {
+        googleCombo.value = langCode;
+        googleCombo.dispatchEvent(new Event('change'));
+        
+        // Hide any "Loading" artifacts if they appear
+        setTimeout(() => {
+          const banner = document.querySelector('.goog-te-banner-frame');
+          if (banner) banner.style.display = 'none';
+          document.body.style.top = '0';
+        }, 500);
+      } else {
+        // Fallback to reload only if the engine hasn't initialized yet
+        window.location.reload();
+      }
     }
   </script>
   <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
