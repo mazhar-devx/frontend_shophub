@@ -43,11 +43,14 @@ export default function Navbar() {
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isThemeMenuOpen, setIsThemeMenuOpen] = useState(false);
+  const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
+  const [currentLang, setCurrentLang] = useState("en");
   const [showCategoriesMegaMenu, setShowCategoriesMegaMenu] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [isInstallable, setIsInstallable] = useState(false);
 
   const themeRef = useRef(null);
+  const langRef = useRef(null);
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
@@ -78,11 +81,39 @@ export default function Navbar() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Handle clicks outside theme menu
+  // Google Translate Integration
+  useEffect(() => {
+    const addScript = document.createElement('script');
+    addScript.setAttribute('src', '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit');
+    document.body.appendChild(addScript);
+    window.googleTranslateElementInit = () => {
+      new window.google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'en,ur,ar,zh-CN,fr',
+        layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
+        autoDisplay: false
+      }, 'google_translate_element');
+    };
+  }, []);
+
+  const changeLanguage = (langCode) => {
+    const googleCombo = document.querySelector('.goog-te-combo');
+    if (googleCombo) {
+      googleCombo.value = langCode;
+      googleCombo.dispatchEvent(new Event('change'));
+      setCurrentLang(langCode);
+      setIsLangMenuOpen(false);
+    }
+  };
+
+  // Handle clicks outside theme/lang menu
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (themeRef.current && !themeRef.current.contains(event.target)) {
         setIsThemeMenuOpen(false);
+      }
+      if (langRef.current && !langRef.current.contains(event.target)) {
+        setIsLangMenuOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -286,6 +317,55 @@ export default function Navbar() {
                <Search className="h-5 w-5 group-hover:text-cyan-500 transition-colors" />
             </motion.button>
             
+            {/* Language Selector */}
+            <div className="relative" ref={langRef}>
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
+                className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/10 text-primary dark:text-white transition-all gap-1"
+              >
+                  <span className="text-xs font-black uppercase">{currentLang}</span>
+                  <ChevronDown className={`w-3 h-3 transition-transform ${isLangMenuOpen ? 'rotate-180' : ''}`} />
+              </motion.button>
+
+              <AnimatePresence>
+                {isLangMenuOpen && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    className="absolute right-0 mt-3 w-40 glass border border-white/10 rounded-2xl shadow-2xl py-2 z-50 origin-top-right overflow-hidden"
+                  >
+                    {[
+                      { code: 'en', label: 'English', flag: '🇬🇧' },
+                      { code: 'ur', label: 'Urdu', flag: '🇵🇰' },
+                      { code: 'ar', label: 'Arabic', flag: '🇸🇦' },
+                      { code: 'zh-CN', label: 'Chinese', flag: '🇨🇳' },
+                      { code: 'fr', label: 'French', flag: '🇫🇷' }
+                    ].map((lang) => (
+                      <button
+                        key={lang.code}
+                        onClick={() => changeLanguage(lang.code)}
+                        className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors ${currentLang === lang.code ? 'bg-cyan-500/10 text-cyan-500 font-bold' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}
+                      >
+                        <span className="text-lg">{lang.flag}</span>
+                        <span>{lang.label}</span>
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              
+              {/* Hidden Google Translate Element */}
+              <div id="google_translate_element" style={{ display: 'none' }}></div>
+              <style>{`
+                .goog-te-banner-frame { display: none !important; }
+                body { top: 0 !important; }
+                .skiptranslate { display: none !important; }
+              `}</style>
+            </div>
+
             {/* Theme Switcher */}
             <div className="relative" ref={themeRef}>
               <motion.button
