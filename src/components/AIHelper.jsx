@@ -258,7 +258,6 @@ export default function AIHelper() {
             </div>
         );
     };
-    };
 
     return (
         <div className="fixed max-md:bottom-24 bottom-6 right-6 z-[1000] flex flex-col items-end w-auto pointer-events-none group/ai forced-dark">
