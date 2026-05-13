@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, memo } from "react";
 import { useSelector } from "react-redux";
 import { Link, useSearchParams, useParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -11,7 +11,8 @@ import { getProductImageUrl, DEFAULT_AVATAR } from "../utils/constants";
 // URL Detector Regex
 const URL_REGEX = /(https?:\/\/[^\s]+)/g;
 
-const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClick, isAutoScroll, setIsAutoScroll, showCaptions, setShowCaptions, scrollDown, onNotInterested }) => {
+const VideoCard = memo(({ video, isActive, isNext, isGlobalMuted, setIsGlobalMuted, onTagClick, isAutoScroll, setIsAutoScroll, showCaptions, setShowCaptions, scrollDown, onNotInterested }) => {
+  const shouldLoad = isActive || isNext;
   const videoRef = useRef(null);
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
@@ -103,6 +104,12 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
   const [friends, setFriends] = useState([]);
   const [isSharing, setIsSharing] = useState(false);
   const [contextMenu, setContextMenu] = useState(null);
+
+  useEffect(() => {
+     if (video.comments) {
+        setLocalComments(video.comments);
+     }
+  }, [video.comments]);
 
   useEffect(() => {
      if (showShare && isAuthenticated) {
@@ -379,12 +386,17 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
       {/* Video element */}
       <video
         ref={videoRef}
-        src={isActive ? getProductImageUrl(video.videoUrl) : undefined}
+        src={shouldLoad ? getProductImageUrl(video.videoUrl) : undefined}
         poster={video.thumbnailUrl ? getProductImageUrl(video.thumbnailUrl) : undefined}
+        preload={isActive ? "auto" : (isNext ? "metadata" : "none")}
         loop={!isAutoScroll}
         muted={isGlobalMuted}
         playsInline
         onLoadedData={() => setIsVideoLoaded(true)}
+        onPlaying={() => setIsVideoLoaded(true)}
+        onCanPlay={() => {
+           if (isActive) videoRef.current?.play().catch(e => console.log("Play failed:", e));
+        }}
         onEnded={() => {
           if (isAutoScroll && scrollDown) {
             scrollDown();
@@ -800,12 +812,12 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
                   localComments.map((comment) => (
                     <div key={comment._id} className="flex flex-col gap-3 group">
                       <div className="flex gap-3 items-start">
-                         <div className="w-10 h-10 rounded-full overflow-hidden border border-black/10 flex-shrink-0">
-                            <img src={comment.user?.photo ? getProductImageUrl(comment.user.photo) : "/default-avatar.png"} className="w-full h-full object-cover" />
+                         <div className="w-10 h-10 rounded-full overflow-hidden border border-black/10 flex-shrink-0 bg-gray-800">
+                            <img src={comment.user?.photo ? getProductImageUrl(comment.user.photo) : DEFAULT_AVATAR_FALLBACK} className="w-full h-full object-cover" />
                          </div>
                          <div className="flex-1">
                             <div className="flex items-center gap-2">
-                               <span className="font-bold text-xs dark:text-gray-300 text-gray-600">@{comment.user?.name || "User"}</span>
+                               <span className="font-bold text-xs dark:text-gray-300 text-gray-600">@{comment.user?.vendorName || comment.user?.name || "User"}</span>
                                {comment.user?._id === video.user?._id && (
                                   <span className="bg-pink-500 text-white text-[9px] px-1.5 py-0.5 rounded uppercase font-black tracking-widest">Creator</span>
                                )}
@@ -815,7 +827,7 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
                                 <img src={getProductImageUrl(comment.mediaUrl)} className="w-32 h-auto rounded-xl mt-2 border border-black/10 dark:border-white/10" />
                              )}
                              <div className="flex gap-4 mt-2 text-[10px] text-gray-400 font-bold items-center">
-                                <button onClick={() => setReplyingTo({ commentId: comment._id, username: comment.user?.name })} className="hover:text-pink-500 transition-colors">Reply</button>
+                                <button onClick={() => setReplyingTo({ commentId: comment._id, username: comment.user?.vendorName || comment.user?.name })} className="hover:text-pink-500 transition-colors">Reply</button>
                                 <span>{new Date(comment.createdAt).toLocaleDateString()}</span>
                                 {isAuthenticated && (user?._id === comment.user?._id || user?._id === video.user?._id) && (
                                    <div className="flex gap-3 ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
@@ -841,12 +853,12 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
                          <div className="pl-12 space-y-4 mt-2">
                             {comment.replies.map(reply => (
                                <div key={reply._id} className="flex gap-3 items-start">
-                                  <div className="w-7 h-7 rounded-full overflow-hidden border border-black/10 flex-shrink-0">
-                                     <img src={reply.user?.photo ? getProductImageUrl(reply.user.photo) : "/default-avatar.png"} className="w-full h-full object-cover" />
+                                  <div className="w-7 h-7 rounded-full overflow-hidden border border-black/10 flex-shrink-0 bg-gray-800">
+                                     <img src={reply.user?.photo ? getProductImageUrl(reply.user.photo) : DEFAULT_AVATAR_FALLBACK} className="w-full h-full object-cover" />
                                   </div>
                                   <div className="flex-1">
                                      <div className="flex items-center gap-2">
-                                        <span className="font-bold text-xs dark:text-gray-400 text-gray-500">@{reply.user?.name || "User"}</span>
+                                        <span className="font-bold text-xs dark:text-gray-400 text-gray-500">@{reply.user?.vendorName || reply.user?.name || "User"}</span>
                                         {reply.user?._id === video.user?._id && (
                                            <span className="bg-pink-500 text-white text-[8px] px-1.5 py-0.5 rounded uppercase font-black tracking-widest">Creator</span>
                                         )}
@@ -882,8 +894,8 @@ const VideoCard = ({ video, isActive, isGlobalMuted, setIsGlobalMuted, onTagClic
                )}
 
                <div className="flex items-center gap-3 pt-4 border-t dark:border-white/5 pointer-events-auto flex-shrink-0 mt-2 px-4">
-                  <div className="w-10 h-10 rounded-full overflow-hidden border border-black/10 flex-shrink-0 relative group">
-                     <img src={user?.photo ? getProductImageUrl(user.photo) : "/default-avatar.png"} className="w-full h-full object-cover" />
+                  <div className="w-10 h-10 rounded-full overflow-hidden border border-black/10 flex-shrink-0 relative group bg-gray-800">
+                     <img src={user?.photo ? getProductImageUrl(user.photo) : DEFAULT_AVATAR_FALLBACK} className="w-full h-full object-cover" />
                   </div>
                   
                   <div className="flex-1 flex items-center bg-black/5 dark:bg-white/5 border-none rounded-3xl pr-2 focus-within:ring-2 focus-within:ring-pink-500 transition-all">
@@ -1333,6 +1345,7 @@ export default function WatchMe() {
              <VideoCard 
                 video={video} 
                 isActive={idx === activeIndex} 
+                isNext={idx === activeIndex + 1}
                 isGlobalMuted={isGlobalMuted}
                 setIsGlobalMuted={setIsGlobalMuted}
                 onTagClick={(tag) => {

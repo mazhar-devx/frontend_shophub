@@ -129,10 +129,10 @@ export default function Inbox() {
                           onClick={() => setSelectedConvo({ otherUser: friend, lastMessage: { text: "Start chatting...", createdAt: new Date() } })}
                           className="flex-shrink-0 flex flex-col items-center gap-2 group"
                         >
-                           <div className="w-14 h-14 rounded-full border-2 border-pink-500 overflow-hidden shadow-lg group-hover:scale-110 transition-transform">
+                           <div className="w-14 h-14 rounded-full border-2 border-pink-500 overflow-hidden shadow-lg group-hover:scale-110 transition-transform bg-gray-800">
                               <img src={friend.photo ? getProductImageUrl(friend.photo) : DEFAULT_AVATAR_FALLBACK} className="w-full h-full object-cover" />
                            </div>
-                           <span className="text-[9px] font-black uppercase tracking-widest text-gray-400 group-hover:text-pink-500 transition-colors w-14 truncate text-center">{friend.name}</span>
+                           <span className="text-[9px] font-black uppercase tracking-widest text-gray-400 group-hover:text-pink-500 transition-colors w-14 truncate text-center">{friend.vendorName || friend.name}</span>
                         </button>
                      ))}
                   </div>
@@ -153,12 +153,12 @@ export default function Inbox() {
                     onClick={() => setSelectedConvo(convo)}
                     className={`w-full p-4 flex gap-4 items-center hover:bg-white/5 transition-colors border-b border-white/5 ${selectedConvo?.otherUser._id === convo.otherUser._id ? 'bg-white/10' : ''}`}
                   >
-                     <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-white/10 flex-shrink-0">
-                        <img src={getProductImageUrl(convo.otherUser.photo)} className="w-full h-full object-cover" />
+                     <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-white/10 flex-shrink-0 bg-gray-800">
+                        <img src={convo.otherUser.photo ? getProductImageUrl(convo.otherUser.photo) : DEFAULT_AVATAR_FALLBACK} className="w-full h-full object-cover" />
                      </div>
                      <div className="flex-1 text-left">
                         <div className="flex justify-between items-center mb-1">
-                           <span className="font-black uppercase tracking-tight text-sm">{convo.otherUser.name}</span>
+                           <span className="font-black uppercase tracking-tight text-sm">{convo.otherUser.vendorName || convo.otherUser.name}</span>
                            <span className="text-[10px] text-gray-500 font-bold">{new Date(convo.lastMessage.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                         </div>
                         <p className={`text-xs truncate ${convo.lastMessage.read || convo.lastMessage.sender === user._id ? 'text-gray-500' : 'text-pink-500 font-black'}`}>
@@ -183,11 +183,11 @@ export default function Inbox() {
                         <ChevronLeft className="w-6 h-6" />
                      </button>
                      <Link to={`/creator/${selectedConvo.otherUser._id}`} className="flex items-center gap-3 group">
-                        <div className="w-10 h-10 rounded-full overflow-hidden border border-white/10 group-hover:scale-110 transition-transform">
-                           <img src={getProductImageUrl(selectedConvo.otherUser.photo)} className="w-full h-full object-cover" />
+                        <div className="w-10 h-10 rounded-full overflow-hidden border border-white/10 group-hover:scale-110 transition-transform bg-gray-800">
+                           <img src={selectedConvo.otherUser.photo ? getProductImageUrl(selectedConvo.otherUser.photo) : DEFAULT_AVATAR_FALLBACK} className="w-full h-full object-cover" />
                         </div>
                         <div>
-                           <h3 className="font-black text-sm uppercase tracking-tight group-hover:text-pink-500 transition-colors">{selectedConvo.otherUser.name}</h3>
+                           <h3 className="font-black text-sm uppercase tracking-tight group-hover:text-pink-500 transition-colors">{selectedConvo.otherUser.vendorName || selectedConvo.otherUser.name}</h3>
                            <p className="text-[10px] text-pink-500 font-bold uppercase tracking-widest">Friend</p>
                         </div>
                      </Link>
@@ -215,11 +215,11 @@ export default function Inbox() {
                                     </div>
                                  </div>
                                  <div className="p-4 flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10">
-                                       <img src={getProductImageUrl(selectedConvo.otherUser.photo)} className="w-full h-full object-cover" />
+                                    <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 bg-gray-800">
+                                       <img src={selectedConvo.otherUser.photo ? getProductImageUrl(selectedConvo.otherUser.photo) : DEFAULT_AVATAR_FALLBACK} className="w-full h-full object-cover" />
                                     </div>
                                     <div className="flex-1">
-                                       <p className="text-[10px] font-black text-pink-500 uppercase tracking-widest">Shared by {isMine ? 'You' : selectedConvo.otherUser.name}</p>
+                                       <p className="text-[10px] font-black text-pink-500 uppercase tracking-widest">Shared by {isMine ? 'You' : (selectedConvo.otherUser.vendorName || selectedConvo.otherUser.name)}</p>
                                        <p className="text-xs font-bold truncate">{msg.video.name}</p>
                                     </div>
                                  </div>
