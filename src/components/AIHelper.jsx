@@ -28,6 +28,7 @@ export default function AIHelper() {
     };
     const [input, setInput] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [streamingMessage, setStreamingMessage] = useState("");
     const { showToast } = useUIStore();
     const [allProducts, setAllProducts] = useState([]);
     const messagesEndRef = useRef(null);
@@ -77,20 +78,25 @@ export default function AIHelper() {
         else if (lowerInput.includes("founder") || lowerInput.includes("owner") || lowerInput.includes("mazhar")) localResponse = `${STORE_KNOWLEDGE.name} was founded by Mazhar. Our lead administrator is Asad.`;
         else if (lowerInput.includes("payment")) localResponse = STORE_KNOWLEDGE.payments;
 
-        try {
-            const { data } = await api.post("/ai/deep-brain", {
-                message: input,
-                history: messages.slice(-6).map(m => ({ role: m.role, content: m.content })),
-                localContext: localResponse // Send local knowledge to backend AI if needed
-            });
-
             if (data.status === 'success') {
                 const finalReply = localResponse ? `${localResponse}\n\n${data.data.reply}` : data.data.reply;
+                
+                // Stream the message for a more powerful feel
+                let current = "";
+                const words = finalReply.split(" ");
+                for (let i = 0; i < words.length; i++) {
+                    current += words[i] + " ";
+                    setStreamingMessage(current);
+                    await new Promise(r => setTimeout(r, 20));
+                }
+                
                 setMessages(prev => [...prev, { role: "assistant", content: finalReply }]);
+                setStreamingMessage("");
             }
         } catch (err) {
             console.error("Deep Brain Error:", err);
-            setMessages(prev => [...prev, { role: "assistant", content: localResponse || "My neural link is flickering. Please ask again or contact Asad on WhatsApp! 🙏" }]);
+            const fallback = localResponse || "My neural link is flickering. Please ask again or contact Asad on WhatsApp! 🙏";
+            setMessages(prev => [...prev, { role: "assistant", content: fallback }]);
         } finally {
             setIsLoading(false);
         }
@@ -183,14 +189,18 @@ export default function AIHelper() {
     };
 
     return (
-        <div className="fixed max-md:bottom-24 bottom-6 right-6 z-[1000] flex flex-col items-end w-auto pointer-events-none group/ai">
+        <div className="fixed max-md:bottom-24 bottom-6 right-6 z-[1000] flex flex-col items-end w-auto pointer-events-none group/ai forced-dark">
+            <style>{`
+                .forced-dark { color-scheme: dark; }
+                @keyframes scan { from { top: 0; } to { top: 100%; } }
+                @keyframes grid-move { from { background-position: 0 0; } to { background-position: 0 40px; } }
+            `}</style>
+            
             {/* AI Chat Panel */}
-            <div className={`w-[92vw] sm:w-[450px] mb-6 pointer-events-auto transition-all duration-700 cubic-bezier(0.16, 1, 0.3, 1) ${isOpen ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-20 opacity-0 scale-95 pointer-events-none'}`}>
-                <div className="glass border border-white/20 rounded-[2.5rem] shadow-[0_40px_100px_-15px_rgba(0,0,0,0.8)] backdrop-blur-3xl overflow-hidden flex flex-col h-[75vh] sm:h-[650px] relative">
-                    {/* Neural Background Effect */}
-                    <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-20">
-                        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,_rgba(124,58,237,0.2),_transparent_70%)] animate-pulse"></div>
-                    </div>
+            <div className={`w-[95vw] sm:w-[480px] mb-6 pointer-events-auto transition-all duration-700 cubic-bezier(0.16, 1, 0.3, 1) ${isOpen ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-20 opacity-0 scale-95 pointer-events-none'}`}>
+                <div className="bg-[#050505] border border-white/10 rounded-[3rem] shadow-[0_50px_120px_-20px_rgba(0,0,0,1)] overflow-hidden flex flex-col h-[80vh] sm:h-[700px] relative">
+                    {/* Neural Grid Background */}
+                    <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'linear-gradient(rgba(34,211,238,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(34,211,238,0.1) 1px, transparent 1px)', backgroundSize: '40px 40px', animation: 'grid-move 4s linear infinite' }}></div>
 
                     {/* Header */}
                     <div className="p-6 bg-gradient-to-br from-indigo-950 via-purple-950 to-black border-b border-white/10 flex items-center justify-between relative z-10">
@@ -276,12 +286,22 @@ export default function AIHelper() {
 
                         {messages.map((msg, idx) => (
                             <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in-up`}>
-                                <div className={`relative max-w-[85%] p-4 rounded-[1.5rem] text-[15px] leading-relaxed shadow-2xl ${msg.role === 'user' ? 'bg-gradient-to-br from-indigo-600 to-purple-700 text-white rounded-tr-none border border-white/20' : 'bg-white/5 border border-white/10 text-gray-100 rounded-tl-none backdrop-blur-md'}`}>
+                                <div className={`relative max-w-[85%] p-5 rounded-[2rem] text-[15px] leading-relaxed shadow-2xl ${msg.role === 'user' ? 'bg-gradient-to-br from-cyan-600 to-indigo-700 text-white rounded-tr-none border border-white/20' : 'bg-white/5 border border-white/10 text-cyan-50 rounded-tl-none backdrop-blur-xl'}`}>
                                     {renderMessage(msg)}
                                 </div>
                             </div>
                         ))}
-                        {isLoading && (
+                        
+                        {streamingMessage && (
+                            <div className="flex justify-start animate-fade-in">
+                                <div className="bg-white/5 border border-white/10 p-5 rounded-[2rem] rounded-tl-none text-cyan-50 shadow-2xl backdrop-blur-xl">
+                                    <p className="text-[15px] leading-relaxed">{streamingMessage}</p>
+                                    <span className="inline-block w-2 h-4 bg-cyan-400 animate-pulse ml-1 align-middle"></span>
+                                </div>
+                            </div>
+                        )}
+
+                        {isLoading && !streamingMessage && (
                             <div className="flex justify-start animate-fade-in">
                                 <div className="bg-white/5 border border-white/10 p-5 rounded-[2rem] rounded-tl-none flex flex-col gap-3 shadow-2xl backdrop-blur-xl relative overflow-hidden group">
                                     <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-purple-500/5 animate-pulse"></div>
@@ -300,8 +320,24 @@ export default function AIHelper() {
                         <div ref={messagesEndRef} />
                     </div>
 
+                    {/* Quick Suggestions */}
+                    <div className="px-6 py-3 bg-black/40 flex gap-2 overflow-x-auto no-scrollbar pointer-events-auto relative z-10 border-t border-white/5">
+                        {["Where is my order?", "How to pay?", "Track Delivery", "Contact Asad"].map((text) => (
+                            <button 
+                                key={text}
+                                onClick={() => {
+                                    setInput(text);
+                                    setTimeout(() => handleSendMessage(), 100);
+                                }}
+                                className="whitespace-nowrap px-4 py-2 bg-white/5 hover:bg-cyan-500/20 border border-white/10 rounded-full text-[10px] font-black text-cyan-400 uppercase tracking-widest transition-all active:scale-95"
+                            >
+                                {text}
+                            </button>
+                        ))}
+                    </div>
+
                     {/* Input Area */}
-                    <form onSubmit={handleSendMessage} className="p-6 bg-black/80 border-t border-white/10 flex gap-3 pointer-events-auto relative z-10">
+                    <form onSubmit={handleSendMessage} className="p-6 bg-[#0a0a0a] border-t border-white/10 flex gap-3 pointer-events-auto relative z-10">
                         <input 
                             type="text" 
                             value={input}
