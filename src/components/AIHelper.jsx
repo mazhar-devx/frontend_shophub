@@ -13,9 +13,19 @@ export default function AIHelper() {
     const [messages, setMessages] = useState(() => {
         const saved = localStorage.getItem("ai_chat_history");
         return saved ? JSON.parse(saved) : [
-            { role: "assistant", content: "Neural Link established. I am Deep Brain AI. I have analyzed every product in our catalog and synced with direct support channels. How can I help you find something extraordinary today? 🧠✨" }
+            { role: "assistant", content: "Neural Link Alpha-1 established. I am the HA Deep Brain, fully synchronized with HA Store's core systems. I have complete knowledge of our 2026 collection, shipping logistics, and secure payment protocols. How may I optimize your shopping experience? ⚡🧠" }
         ];
     });
+
+    const STORE_KNOWLEDGE = {
+        name: "HA Store (ShopHub.pro)",
+        location: "Faisalabad, Pakistan",
+        founder: "Mazhar (Admin: Asad)",
+        shipping: "Fast Cash on Delivery (COD) across Pakistan. Delivery typically takes 2-4 working days.",
+        returns: "7-day easy return policy for any manufacturing defects or damaged items.",
+        payments: "We support COD, JazzCash, and EasyPaisa for direct/advanced payments.",
+        contact: "You can contact our lead admin Asad directly via the WhatsApp button above."
+    };
     const [input, setInput] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const { showToast } = useUIStore();
@@ -58,18 +68,29 @@ export default function AIHelper() {
         setInput("");
         setIsLoading(true);
 
+        // Local Knowledge Check
+        const lowerInput = input.toLowerCase();
+        let localResponse = "";
+        if (lowerInput.includes("location") || lowerInput.includes("where")) localResponse = `We are located in ${STORE_KNOWLEDGE.location}, but we ship all across Pakistan! 🇵🇰`;
+        else if (lowerInput.includes("delivery") || lowerInput.includes("ship")) localResponse = STORE_KNOWLEDGE.shipping;
+        else if (lowerInput.includes("return") || lowerInput.includes("policy")) localResponse = STORE_KNOWLEDGE.returns;
+        else if (lowerInput.includes("founder") || lowerInput.includes("owner") || lowerInput.includes("mazhar")) localResponse = `${STORE_KNOWLEDGE.name} was founded by Mazhar. Our lead administrator is Asad.`;
+        else if (lowerInput.includes("payment")) localResponse = STORE_KNOWLEDGE.payments;
+
         try {
             const { data } = await api.post("/ai/deep-brain", {
                 message: input,
-                history: messages.slice(-6).map(m => ({ role: m.role, content: m.content }))
+                history: messages.slice(-6).map(m => ({ role: m.role, content: m.content })),
+                localContext: localResponse // Send local knowledge to backend AI if needed
             });
 
             if (data.status === 'success') {
-                setMessages(prev => [...prev, { role: "assistant", content: data.data.reply }]);
+                const finalReply = localResponse ? `${localResponse}\n\n${data.data.reply}` : data.data.reply;
+                setMessages(prev => [...prev, { role: "assistant", content: finalReply }]);
             }
         } catch (err) {
             console.error("Deep Brain Error:", err);
-            setMessages(prev => [...prev, { role: "assistant", content: "My neural link is flickering. Please ask again or contact Asad on WhatsApp! 🙏" }]);
+            setMessages(prev => [...prev, { role: "assistant", content: localResponse || "My neural link is flickering. Please ask again or contact Asad on WhatsApp! 🙏" }]);
         } finally {
             setIsLoading(false);
         }
@@ -117,13 +138,18 @@ export default function AIHelper() {
                                    </div>
                                 </div>
                                 
-                                <div className="relative aspect-square overflow-hidden m-2 rounded-[2rem]">
+                                <div className="relative aspect-square overflow-hidden m-2 rounded-[2rem] bg-indigo-950/50">
                                    <img 
                                        src={getProductImageUrl(product.image || (product.images && product.images[0]))} 
                                        alt={product.name}
                                        className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-110"
+                                       onError={(e) => e.target.src = '/placeholder-product.jpg'}
                                    />
-                                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity"></div>
+                                   {/* AI Scanning Overlay */}
+                                   <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/10 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity">
+                                      <div className="w-full h-[2px] bg-cyan-400/50 absolute top-0 animate-[scan_2s_ease-in-out_infinite]"></div>
+                                   </div>
+                                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity"></div>
                                 </div>
                                 
                                 <div className="px-5 pb-5 flex flex-col gap-1">
@@ -170,16 +196,23 @@ export default function AIHelper() {
                     <div className="p-6 bg-gradient-to-br from-indigo-950 via-purple-950 to-black border-b border-white/10 flex items-center justify-between relative z-10">
                         <div className="flex items-center gap-4">
                             <div className="relative group">
-                                <div className="absolute -inset-1 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-2xl blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
-                                <div className="relative w-12 h-12 rounded-2xl bg-black border border-white/20 flex items-center justify-center text-3xl shadow-2xl">
-                                    🧠
+                                <div className="absolute -inset-1 bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-600 rounded-2xl blur opacity-75 group-hover:opacity-100 transition duration-1000 animate-tilt"></div>
+                                <div className="relative w-14 h-14 rounded-2xl bg-black border border-white/20 flex items-center justify-center shadow-2xl overflow-hidden">
+                                    <svg className="w-10 h-10 text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M12 2a10 10 0 0 0-10 10c0 5.52 4.48 10 10 10s10-4.48 10-10A10 10 0 0 0 12 2z"/>
+                                        <path d="M12 6v6l4 2"/>
+                                        <path d="M16.2 7.8l-4.2 4.2"/>
+                                        <circle cx="12" cy="12" r="3" fill="currentColor" fillOpacity="0.2"/>
+                                        <path d="M12 12h.01"/>
+                                    </svg>
                                 </div>
-                                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-indigo-950 rounded-full animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]"></div>
+                                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 border-2 border-indigo-950 rounded-full animate-pulse shadow-[0_0_15px_rgba(34,197,94,0.6)]"></div>
                             </div>
                             <div>
-                                <h3 className="text-white font-black text-lg leading-tight tracking-tighter uppercase italic bg-clip-text text-transparent bg-gradient-to-r from-white via-indigo-200 to-cyan-200">HA DEEP BRAIN</h3>
+                                <h3 className="text-white font-black text-xl leading-tight tracking-tighter uppercase italic bg-clip-text text-transparent bg-gradient-to-r from-white via-cyan-200 to-indigo-300 drop-shadow-sm">HA DEEP BRAIN</h3>
                                 <div className="flex items-center gap-2">
-                                    <span className="text-[8px] text-cyan-400 font-black uppercase tracking-[0.3em] animate-pulse">Neural Link Active</span>
+                                    <div className="w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse shadow-[0_0_5px_#22d3ee]"></div>
+                                    <span className="text-[9px] text-cyan-400 font-black uppercase tracking-[0.25em] animate-pulse">Neural Core v2.4</span>
                                 </div>
                             </div>
                         </div>
