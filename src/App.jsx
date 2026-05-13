@@ -7,7 +7,7 @@ import SearchBar from "./components/SearchBar";
 import MobileMenu from "./components/MobileMenu";
 import Modal from "./components/Modal";
 import BackToTop from "./components/BackToTop";
-import WhatsAppContact from "./components/WhatsAppContact";
+
 import AIHelper from "./components/AIHelper";
 import MobileBottomNav from "./components/MobileBottomNav";
 import AdminLayout from "./layouts/AdminLayout";
@@ -182,7 +182,7 @@ function AppContent() {
                 <Footer />
                 <MobileBottomNav />
                 <BackToTop />
-                <WhatsAppContact />
+
                 <AIHelper />
               </>
             )}
