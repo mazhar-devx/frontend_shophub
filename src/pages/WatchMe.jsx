@@ -110,7 +110,9 @@ const VideoCard = memo(({ video, isActive, isNext, isGlobalMuted, setIsGlobalMut
      "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZ3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKMGpx4R7885p0A/giphy.gif",
      "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZ3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/l0HlIDW3I2M3iY7qE/giphy.gif",
      "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZ3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKVUn7iM8FMEU24/giphy.gif",
-     "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZ3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/26gsjCZpPolPr3sBy/giphy.gif"
+     "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZ3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/26gsjCZpPolPr3sBy/giphy.gif",
+     "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZ3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/l41lTfuxV3Gk15r0Y/giphy.gif",
+     "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZ3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKSzRpfV8713T56/giphy.gif"
   ]);
 
   useEffect(() => {
@@ -919,10 +921,10 @@ const VideoCard = memo(({ video, isActive, isNext, isGlobalMuted, setIsGlobalMut
                       <div className="flex items-center gap-1">
                          <button 
                            onClick={() => setShowGifPicker(!showGifPicker)}
-                           className={`p-2 text-gray-400 hover:text-pink-500 transition-colors ${showGifPicker ? 'text-pink-500' : ''}`}
+                           className={`px-3 py-1.5 rounded-lg border-2 transition-all flex items-center justify-center gap-1 ${showGifPicker ? 'bg-pink-500 border-pink-500 text-white shadow-lg' : 'border-pink-500/30 text-pink-500 hover:border-pink-500 hover:bg-pink-500/5'}`}
                            title="Add GIF"
                          >
-                            <span className="text-[10px] font-black border-2 border-current px-1 rounded-md">GIF</span>
+                            <span className="text-[10px] font-black uppercase tracking-widest">GIF</span>
                          </button>
 
                          <label className="p-2 text-gray-400 hover:text-pink-500 cursor-pointer transition-colors shrink-0" title="Attach Image">
