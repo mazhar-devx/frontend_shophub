@@ -106,14 +106,34 @@ const VideoCard = memo(({ video, isActive, isNext, isGlobalMuted, setIsGlobalMut
   const [contextMenu, setContextMenu] = useState(null);
   const [showGifPicker, setShowGifPicker] = useState(false);
   const [gifSearch, setGifSearch] = useState("");
-  const [trendingGifs, setTrendingGifs] = useState([
-     "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZ3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKMGpx4R7885p0A/giphy.gif",
-     "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZ3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/l0HlIDW3I2M3iY7qE/giphy.gif",
-     "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZ3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKVUn7iM8FMEU24/giphy.gif",
-     "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZ3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/26gsjCZpPolPr3sBy/giphy.gif",
-     "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZ3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/l41lTfuxV3Gk15r0Y/giphy.gif",
-     "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZ3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKSzRpfV8713T56/giphy.gif"
-  ]);
+  const [trendingGifs, setTrendingGifs] = useState([]);
+  const [isGifLoading, setIsGifLoading] = useState(false);
+
+  useEffect(() => {
+     if (!showGifPicker) return;
+     
+     const fetchGifs = async () => {
+        setIsGifLoading(true);
+        try {
+           const endpoint = gifSearch.trim() 
+              ? `https://api.giphy.com/v1/gifs/search?api_key=dc6zaTOxFJmzC&q=${gifSearch}&limit=12`
+              : `https://api.giphy.com/v1/gifs/trending?api_key=dc6zaTOxFJmzC&limit=12`;
+           
+           const res = await fetch(endpoint);
+           const json = await res.json();
+           if (json.data) {
+              setTrendingGifs(json.data.map(g => g.images.fixed_height.url));
+           }
+        } catch (err) {
+           console.error("GIF fetch failed:", err);
+        } finally {
+           setIsGifLoading(false);
+        }
+     };
+
+     const debounce = setTimeout(fetchGifs, 500);
+     return () => clearTimeout(debounce);
+  }, [gifSearch, showGifPicker]);
 
   useEffect(() => {
      if (video.comments) {
@@ -952,21 +972,32 @@ const VideoCard = memo(({ video, isActive, isNext, isGlobalMuted, setIsGlobalMut
                                   />
                                </div>
                                <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto no-scrollbar">
-                                  {trendingGifs.map((url, i) => (
-                                     <button 
-                                       key={i} 
-                                       onClick={() => {
-                                          fetch(url).then(r => r.blob()).then(blob => {
-                                             const file = new File([blob], "comment.gif", { type: "image/gif" });
-                                             setCommentMedia(file);
-                                             setShowGifPicker(false);
-                                          });
-                                       }}
-                                       className="aspect-video bg-black/5 rounded-lg overflow-hidden hover:scale-105 transition-transform"
-                                     >
-                                        <img src={url} className="w-full h-full object-cover" alt="GIF" />
-                                     </button>
-                                  ))}
+                                  {isGifLoading ? (
+                                     <div className="col-span-2 py-10 flex flex-col items-center justify-center gap-2">
+                                        <div className="w-8 h-8 border-2 border-pink-500 border-t-transparent rounded-full animate-spin" />
+                                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Searching...</span>
+                                     </div>
+                                  ) : trendingGifs.length > 0 ? (
+                                     trendingGifs.map((url, i) => (
+                                        <button 
+                                          key={i} 
+                                          onClick={() => {
+                                             fetch(url).then(r => r.blob()).then(blob => {
+                                                const file = new File([blob], "comment.gif", { type: "image/gif" });
+                                                setCommentMedia(file);
+                                                setShowGifPicker(false);
+                                             });
+                                          }}
+                                          className="aspect-video bg-black/5 rounded-lg overflow-hidden hover:scale-105 transition-transform"
+                                        >
+                                           <img src={url} className="w-full h-full object-cover" alt="GIF" />
+                                        </button>
+                                     ))
+                                  ) : (
+                                     <div className="col-span-2 py-10 text-center">
+                                        <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">No GIFs found</span>
+                                     </div>
+                                  )}
                                </div>
                                <div className="mt-4 flex justify-between items-center text-[8px] font-bold text-gray-400 uppercase tracking-widest">
                                   <span>Powered by GIPHY</span>
