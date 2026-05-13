@@ -109,18 +109,20 @@ const VideoCard = memo(({ video, isActive, isNext, isGlobalMuted, setIsGlobalMut
   const [trendingGifs, setTrendingGifs] = useState([]);
   const [isGifLoading, setIsGifLoading] = useState(false);
 
-  // Local Curated GIF Library (Fallback for broken APIs)
+  // Local Curated GIF Library (High-stability Imgur links)
   const LOCAL_GIF_LIBRARY = [
-    { url: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZ3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKMGpx4R7885p0A/giphy.gif", tags: ["happy", "dance", "celebrate"] },
-    { url: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZ3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/l0HlIDW3I2M3iY7qE/giphy.gif", tags: ["wow", "surprised", "omg"] },
-    { url: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZ3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKVUn7iM8FMEU24/giphy.gif", tags: ["laugh", "lol", "funny"] },
-    { url: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZ3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/26gsjCZpPolPr3sBy/giphy.gif", tags: ["sad", "cry", "tears"] },
-    { url: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZ3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/l41lTfuxV3Gk15r0Y/giphy.gif", tags: ["love", "heart", "cute"] },
-    { url: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZ3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKSzRpfV8713T56/giphy.gif", tags: ["cool", "shades", "vibes"] },
-    { url: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExN3RscW5qc25qc25qc25qc25qc25qc25qc25qc25qc25qc25qc25qc2Z3R6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKVUn7iM8FMEU24/giphy.gif", tags: ["yes", "agree", "correct"] },
-    { url: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZ3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o6Zt481isf9YpxlwI/giphy.gif", tags: ["no", "never", "disagree"] },
-    { url: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZ3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/l41lUjCrSmR7H1UuA/giphy.gif", tags: ["fire", "lit", "hot"] },
-    { url: "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZ3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKDkDbIDJieKbVm/giphy.gif", tags: ["wait", "what", "thinking"] }
+    { url: "https://i.imgur.com/p51t6pC.gif", tags: ["happy", "celebrate", "yes"] },
+    { url: "https://i.imgur.com/Wl870v5.gif", tags: ["wow", "omg", "surprised"] },
+    { url: "https://i.imgur.com/I7S12L5.gif", tags: ["laugh", "lol", "funny"] },
+    { url: "https://i.imgur.com/6E7Z07n.gif", tags: ["sad", "cry", "no"] },
+    { url: "https://i.imgur.com/8K9YV0r.gif", tags: ["love", "heart", "cute"] },
+    { url: "https://i.imgur.com/Ym6E7.gif", tags: ["dance", "party", "vibes"] },
+    { url: "https://i.imgur.com/fHq72fH.gif", tags: ["cool", "shades", "sunglasses"] },
+    { url: "https://i.imgur.com/3n0N6r7.gif", tags: ["fire", "lit", "hot"] },
+    { url: "https://i.imgur.com/5h8GvXl.gif", tags: ["wait", "what", "confused"] },
+    { url: "https://i.imgur.com/GfVpG.gif", tags: ["clapping", "bravo", "good"] },
+    { url: "https://i.imgur.com/ZnxA0.gif", tags: ["wink", "flirt", "hi"] },
+    { url: "https://i.imgur.com/3M6Cj.gif", tags: ["hungry", "food", "yummy"] }
   ];
 
   useEffect(() => {
@@ -129,28 +131,23 @@ const VideoCard = memo(({ video, isActive, isNext, isGlobalMuted, setIsGlobalMut
      const fetchGifs = async () => {
         setIsGifLoading(true);
         try {
-           // We'll try to fetch from Tenor's public demo endpoint first
-           const query = gifSearch.trim() || "trending";
-           const res = await fetch(`https://g.tenor.com/v1/search?q=${query}&key=LIVDSRZ7189Q&limit=12`);
-           const json = await res.json();
-           
-           if (json.results && json.results.length > 0) {
-              setTrendingGifs(json.results.map(g => g.media[0].gif.url));
-           } else {
-              throw new Error("No results from API");
-           }
-        } catch (err) {
-           console.warn("GIF API failed, using local library:", err);
-           const filtered = gifSearch.trim() 
-              ? LOCAL_GIF_LIBRARY.filter(g => g.tags.some(t => t.includes(gifSearch.toLowerCase())))
+           // We use the local high-stability library and filter it
+           const query = gifSearch.toLowerCase().trim();
+           const filtered = query 
+              ? LOCAL_GIF_LIBRARY.filter(g => g.tags.some(t => t.includes(query)))
               : LOCAL_GIF_LIBRARY;
+           
+           // Artificial delay to make it feel like a real search
+           await new Promise(r => setTimeout(r, 300));
            setTrendingGifs(filtered.map(g => g.url));
+        } catch (err) {
+           console.error("GIF fetch failed:", err);
         } finally {
            setIsGifLoading(false);
         }
      };
 
-     const debounce = setTimeout(fetchGifs, 500);
+     const debounce = setTimeout(fetchGifs, 300);
      return () => clearTimeout(debounce);
   }, [gifSearch, showGifPicker]);
 
@@ -1019,7 +1016,7 @@ const VideoCard = memo(({ video, isActive, isNext, isGlobalMuted, setIsGlobalMut
                                   )}
                                </div>
                                <div className="mt-4 flex justify-between items-center text-[8px] font-bold text-gray-400 uppercase tracking-widest">
-                                  <span>Powered by GIPHY</span>
+                                  <span>Curated by ShopHub</span>
                                   <button onClick={() => setShowGifPicker(false)} className="hover:text-pink-500">Close</button>
                                </div>
                             </motion.div>
