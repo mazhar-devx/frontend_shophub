@@ -335,10 +335,13 @@ export default function Navbar() {
                     initial={{ opacity: 0, y: 10, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    className="absolute right-0 mt-3 w-40 glass border border-white/10 rounded-2xl shadow-2xl py-2 z-50 origin-top-right overflow-hidden"
+                    className="absolute right-0 mt-3 w-80 glass border border-white/10 rounded-3xl shadow-2xl py-4 z-50 origin-top-right overflow-hidden"
                   >
-                    <div className="max-h-[400px] overflow-y-auto custom-scrollbar px-1">
-                      <div className="grid grid-cols-1 gap-1">
+                    <div className="px-4 pb-3 border-b border-white/5 mb-2">
+                       <p className="text-[10px] font-black text-cyan-500 uppercase tracking-[0.2em]">Select Global Language</p>
+                    </div>
+                    <div className="max-h-[450px] overflow-y-auto custom-scrollbar px-2">
+                      <div className="grid grid-cols-2 gap-1">
                         {[
                           { code: 'en', label: 'English', flag: '🇬🇧' },
                           { code: 'ur', label: 'Urdu', flag: '🇵🇰' },
@@ -362,17 +365,47 @@ export default function Navbar() {
                           { code: 'id', label: 'Indonesian', flag: '🇮🇩' },
                           { code: 'ms', label: 'Malay', flag: '🇲🇾' },
                           { code: 'pa', label: 'Punjabi', flag: '🇵🇰' },
+                          { code: 'el', label: 'Greek', flag: '🇬🇷' },
+                          { code: 'he', label: 'Hebrew', flag: '🇮🇱' },
+                          { code: 'sv', label: 'Swedish', flag: '🇸🇪' },
+                          { code: 'no', label: 'Norwegian', flag: '🇳🇴' },
+                          { code: 'da', label: 'Danish', flag: '🇩🇰' },
+                          { code: 'fi', label: 'Finnish', flag: '🇫🇮' },
+                          { code: 'pl', label: 'Polish', flag: '🇵🇱' },
+                          { code: 'uk', label: 'Ukrainian', flag: '🇺🇦' },
+                          { code: 'ro', label: 'Romanian', flag: '🇷🇴' },
+                          { code: 'hu', label: 'Hungarian', flag: '🇭🇺' },
+                          { code: 'cs', label: 'Czech', flag: '🇨🇿' },
+                          { code: 'sk', label: 'Slovak', flag: '🇸🇰' },
+                          { code: 'bg', label: 'Bulgarian', flag: '🇧🇬' },
+                          { code: 'hr', label: 'Croatian', flag: '🇭🇷' },
+                          { code: 'sr', label: 'Serbian', flag: '🇷🇸' },
+                          { code: 'sl', label: 'Slovenian', flag: '🇸🇮' },
+                          { code: 'et', label: 'Estonian', flag: '🇪🇪' },
+                          { code: 'lv', label: 'Latvian', flag: '🇱🇻' },
+                          { code: 'lt', label: 'Lithuanian', flag: '🇱🇹' },
+                          { code: 'tl', label: 'Tagalog', flag: '🇵🇭' },
+                          { code: 'sw', label: 'Swahili', flag: '🇰🇪' },
+                          { code: 'am', label: 'Amharic', flag: '🇪🇹' },
+                          { code: 'yo', label: 'Yoruba', flag: '🇳🇬' },
+                          { code: 'ig', label: 'Igbo', flag: '🇳🇬' },
+                          { code: 'ha', label: 'Hausa', flag: '🇳🇬' },
+                          { code: 'zu', label: 'Zulu', flag: '🇿🇦' },
+                          { code: 'xh', label: 'Xhosa', flag: '🇿🇦' },
+                          { code: 'af', label: 'Afrikaans', flag: '🇿🇦' },
+                          { code: 'my', label: 'Burmese', flag: '🇲🇲' },
+                          { code: 'km', label: 'Khmer', flag: '🇰🇭' },
+                          { code: 'lo', label: 'Lao', flag: '🇱🇦' },
+                          { code: 'si', label: 'Sinhala', flag: '🇱🇰' },
+                          { code: 'ne', label: 'Nepali', flag: '🇳🇵' },
                         ].map((lang) => (
                           <button
                             key={lang.code}
                             onClick={() => changeLanguage(lang.code)}
-                            className={`w-full flex items-center justify-between gap-3 px-4 py-3 text-xs transition-colors rounded-xl ${currentLang === lang.code ? 'bg-cyan-500/10 text-cyan-500 font-bold' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}
+                            className={`flex items-center gap-2 px-3 py-2 text-[10px] transition-all rounded-xl ${currentLang === lang.code ? 'bg-cyan-500/10 text-cyan-500 font-bold' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}
                           >
-                            <div className="flex items-center gap-3">
-                              <span className="text-lg">{lang.flag}</span>
-                              <span>{lang.label}</span>
-                            </div>
-                            {currentLang === lang.code && <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.5)]"></div>}
+                            <span className="text-base">{lang.flag}</span>
+                            <span className="truncate">{lang.label}</span>
                           </button>
                         ))}
                       </div>

@@ -129,6 +129,37 @@
 </head>
 
 <body>
+  <style>
+    /* HIDE GOOGLE TRANSLATE BAR & BANNERS */
+    .goog-te-banner-frame.skiptranslate, 
+    .goog-te-banner-frame,
+    #goog-gt-tt,
+    .goog-te-balloon-frame,
+    .goog-tooltip,
+    .goog-tooltip:hover {
+      display: none !important;
+    }
+    
+    body {
+      top: 0 !important;
+    }
+
+    .skiptranslate {
+      display: none !important;
+    }
+
+    /* Custom Scrollbar for Language Menu */
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(6, 182, 212, 0.3);
+      border-radius: 10px;
+    }
+  </style>
   <div id="google_translate_element" style="display:none"></div>
   <script>
     function googleTranslateElementInit() {
