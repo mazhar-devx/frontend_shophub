@@ -31,6 +31,8 @@ export default function AIHelper() {
     const [streamingMessage, setStreamingMessage] = useState("");
     const { showToast } = useUIStore();
     const [allProducts, setAllProducts] = useState([]);
+    const [allVideos, setAllVideos] = useState([]);
+    const [userOrders, setUserOrders] = useState([]);
     const messagesEndRef = useRef(null);
 
     const scrollToBottom = () => {
@@ -42,23 +44,35 @@ export default function AIHelper() {
         localStorage.setItem("ai_chat_history", JSON.stringify(messages));
     }, [messages]);
 
-    // Pre-fetch products for local lookup
+    // Pre-fetch products, videos, and orders
     useEffect(() => {
-        const fetchProducts = async () => {
+        const fetchStoreData = async () => {
             try {
-        const { data } = await api.get('/products?limit=100');
-        if (data.status === 'success') {
-            // Products are in data.data.products, not data.data.data
-            setAllProducts(data.data.products || []);
-        }
+                // Fetch Products
+                const prodRes = await api.get('/products?limit=50');
+                if (prodRes.data.status === 'success') {
+                    setAllProducts(prodRes.data.data.products || []);
+                }
+
+                // Fetch Trending Videos
+                const vidRes = await api.get('/videos?limit=10');
+                if (vidRes.data.status === 'success') {
+                    setAllVideos(vidRes.data.data.videos || []);
+                }
+
+                // Fetch User Orders (if logged in)
+                const orderRes = await api.get('/orders/myorders');
+                if (orderRes.data.status === 'success') {
+                    setUserOrders(orderRes.data.data || []);
+                }
             } catch (err) {
-                console.warn("AI Helper product fetch failed:", err);
+                console.warn("AI Helper data fetch failed:", err);
             }
         };
-        if (isOpen && allProducts.length === 0) {
-            fetchProducts();
+        if (isOpen) {
+            fetchStoreData();
         }
-    }, [isOpen, allProducts.length]);
+    }, [isOpen]);
 
     const handleSendMessage = async (e) => {
         if (e) e.preventDefault();
@@ -77,6 +91,19 @@ export default function AIHelper() {
         else if (lowerInput.includes("return") || lowerInput.includes("policy")) localResponse = STORE_KNOWLEDGE.returns;
         else if (lowerInput.includes("founder") || lowerInput.includes("owner") || lowerInput.includes("mazhar")) localResponse = `${STORE_KNOWLEDGE.name} was founded by Mazhar. Our lead administrator is Asad.`;
         else if (lowerInput.includes("payment")) localResponse = STORE_KNOWLEDGE.payments;
+        else if (lowerInput.includes("order") || lowerInput.includes("track")) {
+            if (userOrders.length > 0) {
+                const latest = userOrders[0];
+                localResponse = `I found your latest order #${latest.orderNumber || latest._id.slice(-6).toUpperCase()}! It is currently in "${latest.status}" status. Total: ${formatPrice(latest.totalPrice, latest.currency)}`;
+            } else {
+                localResponse = "I couldn't find any active orders in your account. Please make sure you are logged in or check My Orders page.";
+            }
+        } else if (lowerInput.includes("video") || lowerInput.includes("watch")) {
+            if (allVideos.length > 0) {
+                localResponse = "I have scanned our 'Watch Me' database and found some amazing moments for you!";
+                // The backend AI will pick the IDs or I can append them here
+            }
+        }
 
         try {
             const { data } = await api.post("/ai/deep-brain", {
@@ -117,82 +144,120 @@ export default function AIHelper() {
         }
     };
 
-    // Helper to render message with product cards
+    // Helper to render message with product/video cards
     const renderMessage = (msg) => {
         if (msg.role === 'user') return msg.content;
 
-        // Regex to find [PRODUCT_ID:...]
+        // Regex to find [PRODUCT_ID:...] and [VIDEO_ID:...]
         const productRegex = /\[PRODUCT_ID:([\w-]+)\]/g;
-        const parts = msg.content.split(productRegex);
-        const matches = [...msg.content.matchAll(productRegex)];
+        const videoRegex = /\[VIDEO_ID:([\w-]+)\]/g;
+        
+        let content = msg.content;
+        const productsMatches = [...content.matchAll(productRegex)];
+        const videoMatches = [...content.matchAll(videoRegex)];
 
-        if (matches.length === 0) return msg.content;
+        if (productsMatches.length === 0 && videoMatches.length === 0) return content;
 
         return (
-            <div className="space-y-4">
-                <p className="text-[15px] leading-relaxed">{parts[0]}</p>
-                <div className="flex overflow-x-auto gap-4 pb-4 no-scrollbar -mx-2 px-2 snap-x">
-                    {matches.map((match, i) => {
-                        const productId = match[1];
-                        const product = allProducts.find(p => p._id === productId || p.slug === productId);
-                        if (!product) return null;
+            <div className="space-y-6">
+                <p className="text-[15px] leading-relaxed">{content.replace(productRegex, '').replace(videoRegex, '').trim()}</p>
+                
+                {/* Product Horizontal Scroll */}
+                {productsMatches.length > 0 && (
+                   <div className="flex overflow-x-auto gap-4 pb-4 no-scrollbar -mx-2 px-2 snap-x">
+                        {productsMatches.map((match, i) => {
+                            const productId = match[1];
+                            const product = allProducts.find(p => p._id === productId || p.slug === productId);
+                            if (!product) return null;
 
-                        return (
-                            <Link 
-                                key={i}
-                                to={`/product/${product.slug || product._id}`}
-                                onClick={() => setIsOpen(false)}
-                                className="min-w-[220px] max-w-[220px] flex flex-col bg-gradient-to-br from-white/10 to-white/5 hover:from-white/20 hover:to-white/10 rounded-[2.5rem] border border-white/10 transition-all duration-500 group/card overflow-hidden relative shadow-2xl snap-start"
-                            >
-                                <div className="absolute top-4 right-4 z-10 flex flex-col gap-2 items-end">
-                                   <div className="bg-cyan-500/90 backdrop-blur-md text-[7px] font-black px-2 py-1 rounded-full text-white uppercase tracking-[0.2em] shadow-lg border border-white/20">Verified AI Pick</div>
-                                   <div className="bg-black/60 backdrop-blur-md text-[7px] font-black px-2 py-1 rounded-full text-white uppercase tracking-[0.1em] shadow-lg border border-white/10 flex items-center gap-1">
-                                      <span className="w-1 h-1 bg-green-500 rounded-full animate-pulse"></span> In Stock
-                                   </div>
-                                </div>
-                                
-                                <div className="relative aspect-square overflow-hidden m-2 rounded-[2rem] bg-indigo-950/50">
-                                   <img 
-                                       src={getProductImageUrl(product.image || (product.images && product.images[0]))} 
-                                       alt={product.name}
-                                       className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-110"
-                                       onError={(e) => e.target.src = '/placeholder-product.jpg'}
-                                   />
-                                   {/* AI Scanning Overlay */}
-                                   <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/10 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity">
-                                      <div className="w-full h-[2px] bg-cyan-400/50 absolute top-0 animate-[scan_2s_ease-in-out_infinite]"></div>
-                                   </div>
-                                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity"></div>
-                                </div>
-                                
-                                <div className="px-5 pb-5 flex flex-col gap-1">
-                                    <h4 className="text-white font-black text-[11px] leading-tight group-hover/card:text-cyan-400 transition-colors uppercase tracking-tighter line-clamp-2 min-h-[2.4em] mt-1">{product.name}</h4>
-                                    
-                                    <div className="flex items-center justify-between mt-2 pt-3 border-t border-white/5">
-                                        <div className="flex flex-col">
-                                           <span className="text-pink-500 font-black text-sm tracking-tighter">{formatPrice(product.price, product.currency)}</span>
-                                           <span className="text-[7px] text-gray-500 font-bold uppercase tracking-widest">Inclusive Price</span>
-                                        </div>
-                                        <div className="flex flex-col items-end">
-                                            <div className="flex items-center gap-1 bg-white/5 px-2 py-0.5 rounded-full border border-white/5">
-                                                <span className="text-yellow-400 text-[8px]">⭐</span>
-                                                <span className="text-[8px] text-gray-300 font-black">{product.ratingsAverage || 5.0}</span>
-                                            </div>
-                                            <span className="text-[6px] text-gray-500 font-black uppercase mt-1">Authentic</span>
-                                        </div>
+                            return (
+                                <Link 
+                                    key={i}
+                                    to={`/product/${product.slug || product._id}`}
+                                    onClick={() => setIsOpen(false)}
+                                    className="min-w-[220px] max-w-[220px] flex flex-col bg-gradient-to-br from-white/10 to-white/5 hover:from-white/20 hover:to-white/10 rounded-[2.5rem] border border-white/10 transition-all duration-500 group/card overflow-hidden relative shadow-2xl snap-start"
+                                >
+                                    <div className="absolute top-4 right-4 z-10 flex flex-col gap-2 items-end">
+                                       <div className="bg-cyan-500/90 backdrop-blur-md text-[7px] font-black px-2 py-1 rounded-full text-white uppercase tracking-[0.2em] shadow-lg border border-white/20">Verified AI Pick</div>
+                                       <div className="bg-black/60 backdrop-blur-md text-[7px] font-black px-2 py-1 rounded-full text-white uppercase tracking-[0.1em] shadow-lg border border-white/10 flex items-center gap-1">
+                                          <span className="w-1 h-1 bg-green-500 rounded-full animate-pulse"></span> In Stock
+                                       </div>
                                     </div>
                                     
-                                    <button className="mt-4 w-full py-3 bg-gradient-to-r from-cyan-600/50 to-purple-600/50 group-hover/card:from-cyan-500 group-hover/card:to-purple-600 text-[9px] font-black uppercase tracking-[0.2em] text-white rounded-2xl transition-all active:scale-95 shadow-xl">
-                                       Purchase Now
-                                    </button>
-                                </div>
-                            </Link>
-                        );
-                    })}
-                </div>
-                {parts[parts.length - 1] && <p className="text-[15px] leading-relaxed">{parts[parts.length - 1]}</p>}
+                                    <div className="relative aspect-square overflow-hidden m-2 rounded-[2rem] bg-indigo-950/50">
+                                       <img 
+                                           src={getProductImageUrl(product.image || (product.images && product.images[0]))} 
+                                           alt={product.name}
+                                           className="w-full h-full object-cover transition-transform duration-700 group-hover/card:scale-110"
+                                           onError={(e) => e.target.src = '/placeholder-product.jpg'}
+                                       />
+                                       <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/10 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity">
+                                          <div className="w-full h-[2px] bg-cyan-400/50 absolute top-0 animate-[scan_2s_ease-in-out_infinite]"></div>
+                                       </div>
+                                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity"></div>
+                                    </div>
+                                    
+                                    <div className="px-5 pb-5 flex flex-col gap-1">
+                                        <h4 className="text-white font-black text-[11px] leading-tight group-hover/card:text-cyan-400 transition-colors uppercase tracking-tighter line-clamp-2 min-h-[2.4em] mt-1">{product.name}</h4>
+                                        <div className="flex items-center justify-between mt-2 pt-3 border-t border-white/5">
+                                            <div className="flex flex-col">
+                                               <span className="text-pink-500 font-black text-sm tracking-tighter">{formatPrice(product.price, product.currency)}</span>
+                                               <span className="text-[7px] text-gray-500 font-bold uppercase tracking-widest">Inclusive Price</span>
+                                            </div>
+                                            <div className="flex flex-col items-end">
+                                                <div className="flex items-center gap-1 bg-white/5 px-2 py-0.5 rounded-full border border-white/5">
+                                                    <span className="text-yellow-400 text-[8px]">⭐</span>
+                                                    <span className="text-[8px] text-gray-300 font-black">{product.ratingsAverage || 5.0}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button className="mt-4 w-full py-3 bg-gradient-to-r from-cyan-600/50 to-purple-600/50 group-hover/card:from-cyan-500 group-hover/card:to-purple-600 text-[9px] font-black uppercase tracking-[0.2em] text-white rounded-2xl transition-all active:scale-95 shadow-xl">
+                                           Purchase Now
+                                        </button>
+                                    </div>
+                                </Link>
+                            );
+                        })}
+                   </div>
+                )}
+
+                {/* Video Horizontal Scroll */}
+                {videoMatches.length > 0 && (
+                   <div className="flex overflow-x-auto gap-4 pb-4 no-scrollbar -mx-2 px-2 snap-x">
+                        {videoMatches.map((match, i) => {
+                            const videoId = match[1];
+                            const video = allVideos.find(v => v._id === videoId);
+                            if (!video) return null;
+
+                            return (
+                                <Link 
+                                    key={i}
+                                    to={`/watch-me?v=${video._id}`}
+                                    onClick={() => setIsOpen(false)}
+                                    className="min-w-[160px] max-w-[160px] aspect-[9/16] flex flex-col bg-black rounded-[2.5rem] border border-white/10 transition-all duration-500 group/vid overflow-hidden relative shadow-2xl snap-start"
+                                >
+                                    <img 
+                                        src={video.thumbnail || "https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg"} 
+                                        alt={video.name}
+                                        className="w-full h-full object-cover opacity-60 group-hover/vid:opacity-100 group-hover/vid:scale-110 transition-all duration-700"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+                                    <div className="absolute inset-0 flex items-center justify-center">
+                                       <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/40 group-hover/vid:scale-125 transition-transform">
+                                          <Play className="w-6 h-6 text-white fill-white" />
+                                       </div>
+                                    </div>
+                                    <div className="absolute bottom-4 left-4 right-4">
+                                       <p className="text-[10px] font-black text-white uppercase tracking-widest line-clamp-2 drop-shadow-lg">{video.name || "Watch Me"}</p>
+                                    </div>
+                                </Link>
+                            );
+                        })}
+                   </div>
+                )}
             </div>
         );
+    };
     };
 
     return (
