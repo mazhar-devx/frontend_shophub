@@ -104,6 +104,14 @@ const VideoCard = memo(({ video, isActive, isNext, isGlobalMuted, setIsGlobalMut
   const [friends, setFriends] = useState([]);
   const [isSharing, setIsSharing] = useState(false);
   const [contextMenu, setContextMenu] = useState(null);
+  const [showGifPicker, setShowGifPicker] = useState(false);
+  const [gifSearch, setGifSearch] = useState("");
+  const [trendingGifs, setTrendingGifs] = useState([
+     "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZ3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKMGpx4R7885p0A/giphy.gif",
+     "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZ3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/l0HlIDW3I2M3iY7qE/giphy.gif",
+     "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZ3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/3o7TKVUn7iM8FMEU24/giphy.gif",
+     "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJqZ3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6Z3R6JmVwPXYxX2ludGVybmFsX2dpZl9ieV9pZCZjdD1n/26gsjCZpPolPr3sBy/giphy.gif"
+  ]);
 
   useEffect(() => {
      if (video.comments) {
@@ -898,20 +906,75 @@ const VideoCard = memo(({ video, isActive, isNext, isGlobalMuted, setIsGlobalMut
                      <img src={user?.photo ? getProductImageUrl(user.photo) : DEFAULT_AVATAR_FALLBACK} className="w-full h-full object-cover" />
                   </div>
                   
-                  <div className="flex-1 flex items-center bg-black/5 dark:bg-white/5 border-none rounded-3xl pr-2 focus-within:ring-2 focus-within:ring-pink-500 transition-all">
-                     <input 
-                       type="text" 
-                       placeholder={commentMedia ? "Add caption..." : "Add comment..."}
-                       value={commentText}
-                       onChange={(e) => setCommentText(e.target.value)}
-                       onKeyPress={(e) => e.key === 'Enter' && handleComment()}
-                       className="w-full bg-transparent px-6 py-4 text-sm dark:text-white focus:outline-none"
-                     />
-                     <label className="p-2 mr-1 text-gray-400 hover:text-pink-500 cursor-pointer transition-colors shrink-0" title="Attach Image or GIF">
-                        <ImageIcon className="w-5 h-5" />
-                        <input type="file" accept="image/*,image/gif" className="hidden" onChange={(e) => setCommentMedia(e.target.files[0])} />
-                     </label>
-                  </div>
+                   <div className="flex-1 flex items-center bg-black/5 dark:bg-white/5 border-none rounded-3xl pr-2 focus-within:ring-2 focus-within:ring-pink-500 transition-all relative">
+                      <input 
+                        type="text" 
+                        placeholder={commentMedia ? "Add caption..." : "Add comment..."}
+                        value={commentText}
+                        onChange={(e) => setCommentText(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && handleComment()}
+                        className="w-full bg-transparent px-6 py-4 text-sm dark:text-white focus:outline-none"
+                      />
+                      
+                      <div className="flex items-center gap-1">
+                         <button 
+                           onClick={() => setShowGifPicker(!showGifPicker)}
+                           className={`p-2 text-gray-400 hover:text-pink-500 transition-colors ${showGifPicker ? 'text-pink-500' : ''}`}
+                           title="Add GIF"
+                         >
+                            <span className="text-[10px] font-black border-2 border-current px-1 rounded-md">GIF</span>
+                         </button>
+
+                         <label className="p-2 text-gray-400 hover:text-pink-500 cursor-pointer transition-colors shrink-0" title="Attach Image">
+                            <ImageIcon className="w-5 h-5" />
+                            <input type="file" accept="image/*,image/gif" className="hidden" onChange={(e) => setCommentMedia(e.target.files[0])} />
+                         </label>
+                      </div>
+
+                      {/* GIF Picker Popover */}
+                      <AnimatePresence>
+                         {showGifPicker && (
+                            <motion.div 
+                              initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                              animate={{ opacity: 1, y: 0, scale: 1 }}
+                              exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                              className="absolute bottom-full right-0 mb-4 w-72 bg-white dark:bg-[#1a1a1a] rounded-2xl shadow-2xl border border-black/10 dark:border-white/10 p-4 z-[120]"
+                            >
+                               <div className="flex items-center gap-2 mb-4 bg-black/5 dark:bg-white/5 rounded-xl px-3 py-2">
+                                  <Search className="w-4 h-4 text-gray-400" />
+                                  <input 
+                                    type="text" 
+                                    placeholder="Search GIFs..." 
+                                    value={gifSearch}
+                                    onChange={(e) => setGifSearch(e.target.value)}
+                                    className="bg-transparent border-none focus:outline-none text-xs w-full dark:text-white"
+                                  />
+                               </div>
+                               <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto no-scrollbar">
+                                  {trendingGifs.map((url, i) => (
+                                     <button 
+                                       key={i} 
+                                       onClick={() => {
+                                          fetch(url).then(r => r.blob()).then(blob => {
+                                             const file = new File([blob], "comment.gif", { type: "image/gif" });
+                                             setCommentMedia(file);
+                                             setShowGifPicker(false);
+                                          });
+                                       }}
+                                       className="aspect-video bg-black/5 rounded-lg overflow-hidden hover:scale-105 transition-transform"
+                                     >
+                                        <img src={url} className="w-full h-full object-cover" alt="GIF" />
+                                     </button>
+                                  ))}
+                               </div>
+                               <div className="mt-4 flex justify-between items-center text-[8px] font-bold text-gray-400 uppercase tracking-widest">
+                                  <span>Powered by GIPHY</span>
+                                  <button onClick={() => setShowGifPicker(false)} className="hover:text-pink-500">Close</button>
+                               </div>
+                            </motion.div>
+                         )}
+                      </AnimatePresence>
+                   </div>
                  <button 
                     onClick={handleComment}
                     className="p-4 bg-pink-500 rounded-full text-white shadow-xl hover:scale-110 active:scale-95 transition-transform disabled:opacity-50 flex items-center justify-center"
