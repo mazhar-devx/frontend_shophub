@@ -92,7 +92,7 @@ export default function Navbar() {
       window.googleTranslateElementInit = () => {
         new window.google.translate.TranslateElement({
           pageLanguage: 'en',
-          includedLanguages: 'en,ur,ar,zh-CN,fr',
+          // REMOVED includedLanguages to support ALL world languages
           layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
           autoDisplay: false
         }, 'google_translate_element');
@@ -109,15 +109,14 @@ export default function Navbar() {
           combo.dispatchEvent(new Event('change'));
           clearInterval(checkInterval);
         }
-      }, 500);
-      setTimeout(() => clearInterval(checkInterval), 10000);
+      }, 1000);
+      setTimeout(() => clearInterval(checkInterval), 15000);
     }
   }, []);
 
   const changeLanguage = (langCode) => {
     setIsLangMenuOpen(false);
-    const langNames = { en: "English", ur: "Urdu", ar: "Arabic", "zh-CN": "Chinese", fr: "French" };
-    const toastId = toast.loading(`Switching to ${langNames[langCode]}...`);
+    const toastId = toast.loading(`Translating website...`);
 
     let attempts = 0;
     const checkInterval = setInterval(() => {
@@ -127,13 +126,17 @@ export default function Navbar() {
         googleCombo.dispatchEvent(new Event('change'));
         setCurrentLang(langCode);
         localStorage.setItem("preferred_lang", langCode);
-        toast.success(`Translated to ${langNames[langCode]}! ✨`, { id: toastId });
+        toast.success(`Website translated! ✨`, { id: toastId });
         clearInterval(checkInterval);
+        
+        // Force a small scroll to trigger Google's dynamic translation of all elements
+        window.scrollTo(0, window.scrollY + 1);
+        setTimeout(() => window.scrollTo(0, window.scrollY - 1), 100);
       }
       
       attempts++;
-      if (attempts > 20) { // Wait up to 10 seconds
-        toast.error("Translation engine is taking too long. Please refresh.", { id: toastId });
+      if (attempts > 30) {
+        toast.error("Translation server busy. Please try again.", { id: toastId });
         clearInterval(checkInterval);
       }
     }, 500);
@@ -370,22 +373,46 @@ export default function Navbar() {
                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
                     className="absolute right-0 mt-3 w-40 glass border border-white/10 rounded-2xl shadow-2xl py-2 z-50 origin-top-right overflow-hidden"
                   >
-                    {[
-                      { code: 'en', label: 'English', flag: '🇬🇧' },
-                      { code: 'ur', label: 'Urdu', flag: '🇵🇰' },
-                      { code: 'ar', label: 'Arabic', flag: '🇸🇦' },
-                      { code: 'zh-CN', label: 'Chinese', flag: '🇨🇳' },
-                      { code: 'fr', label: 'French', flag: '🇫🇷' }
-                    ].map((lang) => (
-                      <button
-                        key={lang.code}
-                        onClick={() => changeLanguage(lang.code)}
-                        className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors ${currentLang === lang.code ? 'bg-cyan-500/10 text-cyan-500 font-bold' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}
-                      >
-                        <span className="text-lg">{lang.flag}</span>
-                        <span>{lang.label}</span>
-                      </button>
-                    ))}
+                    <div className="max-h-[400px] overflow-y-auto custom-scrollbar px-1">
+                      <div className="grid grid-cols-1 gap-1">
+                        {[
+                          { code: 'en', label: 'English', flag: '🇬🇧' },
+                          { code: 'ur', label: 'Urdu', flag: '🇵🇰' },
+                          { code: 'ar', label: 'Arabic', flag: '🇸🇦' },
+                          { code: 'zh-CN', label: 'Chinese', flag: '🇨🇳' },
+                          { code: 'es', label: 'Spanish', flag: '🇪🇸' },
+                          { code: 'hi', label: 'Hindi', flag: '🇮🇳' },
+                          { code: 'bn', label: 'Bengali', flag: '🇧🇩' },
+                          { code: 'pt', label: 'Portuguese', flag: '🇵🇹' },
+                          { code: 'ru', label: 'Russian', flag: '🇷🇺' },
+                          { code: 'ja', label: 'Japanese', flag: '🇯🇵' },
+                          { code: 'de', label: 'German', flag: '🇩🇪' },
+                          { code: 'fr', label: 'French', flag: '🇫🇷' },
+                          { code: 'tr', label: 'Turkish', flag: '🇹🇷' },
+                          { code: 'it', label: 'Italian', flag: '🇮🇹' },
+                          { code: 'ko', label: 'Korean', flag: '🇰🇷' },
+                          { code: 'fa', label: 'Persian', flag: '🇮🇷' },
+                          { code: 'vi', label: 'Vietnamese', flag: '🇻🇳' },
+                          { code: 'th', label: 'Thai', flag: '🇹🇭' },
+                          { code: 'nl', label: 'Dutch', flag: '🇳🇱' },
+                          { code: 'id', label: 'Indonesian', flag: '🇮🇩' },
+                          { code: 'ms', label: 'Malay', flag: '🇲🇾' },
+                          { code: 'pa', label: 'Punjabi', flag: '🇵🇰' },
+                        ].map((lang) => (
+                          <button
+                            key={lang.code}
+                            onClick={() => changeLanguage(lang.code)}
+                            className={`w-full flex items-center justify-between gap-3 px-4 py-3 text-xs transition-colors rounded-xl ${currentLang === lang.code ? 'bg-cyan-500/10 text-cyan-500 font-bold' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}
+                          >
+                            <div className="flex items-center gap-3">
+                              <span className="text-lg">{lang.flag}</span>
+                              <span>{lang.label}</span>
+                            </div>
+                            {currentLang === lang.code && <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.5)]"></div>}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>
