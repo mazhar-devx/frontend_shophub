@@ -28,6 +28,8 @@ import {
   Play
 } from "lucide-react";
 
+import { toast } from "react-hot-toast";
+
 export default function Navbar() {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
   const { items: cartItems } = useSelector((state) => state.cart);
@@ -44,7 +46,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [isThemeMenuOpen, setIsThemeMenuOpen] = useState(false);
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
-  const [currentLang, setCurrentLang] = useState("en");
+  const [currentLang, setCurrentLang] = useState(localStorage.getItem("preferred_lang") || "en");
   const [showCategoriesMegaMenu, setShowCategoriesMegaMenu] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [isInstallable, setIsInstallable] = useState(false);
@@ -83,27 +85,58 @@ export default function Navbar() {
 
   // Google Translate Integration
   useEffect(() => {
-    const addScript = document.createElement('script');
-    addScript.setAttribute('src', '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit');
-    document.body.appendChild(addScript);
-    window.googleTranslateElementInit = () => {
-      new window.google.translate.TranslateElement({
-        pageLanguage: 'en',
-        includedLanguages: 'en,ur,ar,zh-CN,fr',
-        layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
-        autoDisplay: false
-      }, 'google_translate_element');
-    };
+    if (!window.googleTranslateElementInit) {
+      const addScript = document.createElement('script');
+      addScript.setAttribute('src', 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit');
+      document.body.appendChild(addScript);
+      window.googleTranslateElementInit = () => {
+        new window.google.translate.TranslateElement({
+          pageLanguage: 'en',
+          includedLanguages: 'en,ur,ar,zh-CN,fr',
+          layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
+          autoDisplay: false
+        }, 'google_translate_element');
+      };
+    }
+
+    // Auto-apply saved language if it's not English
+    const savedLang = localStorage.getItem("preferred_lang");
+    if (savedLang && savedLang !== "en") {
+      const checkInterval = setInterval(() => {
+        const combo = document.querySelector('.goog-te-combo');
+        if (combo) {
+          combo.value = savedLang;
+          combo.dispatchEvent(new Event('change'));
+          clearInterval(checkInterval);
+        }
+      }, 500);
+      setTimeout(() => clearInterval(checkInterval), 10000);
+    }
   }, []);
 
   const changeLanguage = (langCode) => {
-    const googleCombo = document.querySelector('.goog-te-combo');
-    if (googleCombo) {
-      googleCombo.value = langCode;
-      googleCombo.dispatchEvent(new Event('change'));
-      setCurrentLang(langCode);
-      setIsLangMenuOpen(false);
-    }
+    setIsLangMenuOpen(false);
+    const langNames = { en: "English", ur: "Urdu", ar: "Arabic", "zh-CN": "Chinese", fr: "French" };
+    const toastId = toast.loading(`Switching to ${langNames[langCode]}...`);
+
+    let attempts = 0;
+    const checkInterval = setInterval(() => {
+      const googleCombo = document.querySelector('.goog-te-combo');
+      if (googleCombo) {
+        googleCombo.value = langCode;
+        googleCombo.dispatchEvent(new Event('change'));
+        setCurrentLang(langCode);
+        localStorage.setItem("preferred_lang", langCode);
+        toast.success(`Translated to ${langNames[langCode]}! ✨`, { id: toastId });
+        clearInterval(checkInterval);
+      }
+      
+      attempts++;
+      if (attempts > 20) { // Wait up to 10 seconds
+        toast.error("Translation engine is taking too long. Please refresh.", { id: toastId });
+        clearInterval(checkInterval);
+      }
+    }, 500);
   };
 
   // Handle clicks outside theme/lang menu
