@@ -4,12 +4,12 @@ import { persist } from 'zustand/middleware';
 export const useUIStore = create(
   persist(
     (set) => ({
-      theme: 'dark', // Default to dark
+      theme: 'system', // Default to system theme
       setTheme: (newTheme) => set({ theme: newTheme }),
       toggleTheme: () => set((state) => {
+        if (state.theme === 'system') return { theme: 'dark' };
         if (state.theme === 'dark') return { theme: 'light' };
-        if (state.theme === 'light') return { theme: 'system' };
-        return { theme: 'dark' };
+        return { theme: 'system' };
       }),
       isCartOpen: false,
       toggleCart: () => set((state) => ({ isCartOpen: !state.isCartOpen })),
