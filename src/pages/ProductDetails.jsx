@@ -147,7 +147,7 @@ export default function ProductDetails() {
     return (
       <div className="p-6 text-center glass rounded-2xl border border-red-500/20 bg-red-500/5 mt-8 mx-auto max-w-2xl">
         <div className="text-red-400 text-xl font-medium">Error loading product</div>
-        <div className="text-gray-400 mt-2">{error}</div>
+        <div className="text-gray-600 dark:text-gray-500 dark:text-gray-400 mt-2">{error}</div>
       </div>
     );
   }
@@ -157,8 +157,8 @@ export default function ProductDetails() {
 
   if (!product) {
     return (
-      <div className="p-6 text-center glass rounded-2xl border border-white/10 mt-8 mx-auto max-w-2xl">
-        <div className="text-gray-400 text-xl">Product not found</div>
+      <div className="p-6 text-center glass rounded-2xl border border-black/5 dark:border-white/10 mt-8 mx-auto max-w-2xl">
+        <div className="text-gray-600 dark:text-gray-500 dark:text-gray-400 text-xl">Product not found</div>
       </div>
     );
   }
@@ -186,6 +186,7 @@ export default function ProductDetails() {
       "name": product.brand || "HA Store"
     },
     "sku": product._id,
+    "category": product.category,
     "offers": {
       "@type": "Offer",
       "url": window.location.href,
@@ -200,7 +201,20 @@ export default function ProductDetails() {
       "@type": "AggregateRating",
       "ratingValue": product.ratingsAverage,
       "reviewCount": product.ratingsQuantity
-    } : undefined
+    } : undefined,
+    "review": reviews?.length > 0 ? reviews.map(r => ({
+      "@type": "Review",
+      "reviewRating": {
+        "@type": "Rating",
+        "ratingValue": r.rating,
+        "bestRating": "5"
+      },
+      "author": {
+        "@type": "Person",
+        "name": r.user?.name || "Anonymous User"
+      },
+      "reviewBody": r.comment
+    })) : undefined
   };
 
   return (
@@ -250,7 +264,7 @@ export default function ProductDetails() {
                       onError={(e) => {
                         e.target.onerror = null;
                         e.target.style.display = 'none';
-                        e.target.parentElement.innerHTML = '<div class="text-gray-500">Image not available</div>';
+                        e.target.parentElement.innerHTML = '<div class="text-gray-600 dark:text-gray-500">Image not available</div>';
                       }}
                    />
                 ) : (
@@ -260,8 +274,8 @@ export default function ProductDetails() {
                 )}
              </div>
 
-            <button className="absolute top-4 right-4 bg-black/10 dark:bg-white/10 backdrop-blur-md rounded-full p-2.5 shadow-lg opacity-0 group-hover:opacity-100 transition-all hover:bg-black/20 dark:hover:bg-white/20 hover:scale-110">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <button className="absolute top-4 right-4 bg-black/10 dark:bg-black/10 dark:bg-white/10 backdrop-blur-md rounded-full p-2.5 shadow-lg opacity-0 group-hover:opacity-100 transition-all hover:bg-black/20 dark:hover:bg-black/20 dark:bg-white/20 hover:scale-110">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary dark:text-primary dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </button>
@@ -271,11 +285,11 @@ export default function ProductDetails() {
             {/* Video Thumbnail */}
             {product.video && (
                <div 
-                 className={`rounded-2xl p-2 flex items-center justify-center cursor-pointer transition-all ${selectedImage === 'video' ? 'ring-2 ring-cyan-500 bg-white/10' : 'bg-black/20 hover:bg-white/5 border border-white/5'}`}
+                 className={`rounded-2xl p-2 flex items-center justify-center cursor-pointer transition-all ${selectedImage === 'video' ? 'ring-2 ring-cyan-500 bg-black/10 dark:bg-white/10' : 'bg-black/20 hover:bg-black/5 dark:bg-white/5 border border-white/5'}`}
                  onClick={() => setSelectedImage('video')}
                >
                  <div className="w-full h-20 flex items-center justify-center rounded-xl overflow-hidden bg-black/50 relative">
-                    <svg className="w-8 h-8 text-white z-10 opacity-80" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-8 h-8 text-primary dark:text-white z-10 opacity-80" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
                     </svg>
                  </div>
@@ -286,10 +300,10 @@ export default function ProductDetails() {
                product.images.map((img, index) => (
                   <div 
                     key={index}
-                    className={`rounded-2xl p-2 flex items-center justify-center cursor-pointer transition-all ${selectedImage === index ? 'ring-2 ring-purple-500 bg-white/10' : 'bg-black/20 hover:bg-white/5 border border-white/5'}`}
+                    className={`rounded-2xl p-2 flex items-center justify-center cursor-pointer transition-all ${selectedImage === index ? 'ring-2 ring-purple-500 bg-black/10 dark:bg-white/10' : 'bg-black/20 hover:bg-black/5 dark:bg-white/5 border border-white/5'}`}
                     onClick={() => setSelectedImage(index)}
                   >
-                    <div className="w-full h-20 flex items-center justify-center rounded-xl overflow-hidden bg-white/5">
+                    <div className="w-full h-20 flex items-center justify-center rounded-xl overflow-hidden bg-black/5 dark:bg-white/5">
                        <img src={getProductImageUrl(img)} alt={`View ${index + 1}`} className="w-full h-full object-cover" />
                     </div>
                   </div>
@@ -298,10 +312,10 @@ export default function ProductDetails() {
                [...Array(4)].map((_, index) => (
                   <div 
                     key={index}
-                    className={`rounded-2xl p-2 flex items-center justify-center cursor-pointer transition-all ${selectedImage === index ? 'ring-2 ring-purple-500 bg-white/10 dark:bg-white/10' : 'bg-black/5 dark:bg-black/20 hover:bg-black/10 dark:hover:bg-white/5 border border-black/5 dark:border-white/5'}`}
+                    className={`rounded-2xl p-2 flex items-center justify-center cursor-pointer transition-all ${selectedImage === index ? 'ring-2 ring-purple-500 bg-black/10 dark:bg-white/10 dark:bg-black/10 dark:bg-white/10' : 'bg-black/5 dark:bg-black/20 hover:bg-black/10 dark:hover:bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5'}`}
                     onClick={() => setSelectedImage(index)}
                   >
-                    <div className="w-full h-20 flex items-center justify-center rounded-xl overflow-hidden bg-white/50 dark:bg-white/5">
+                    <div className="w-full h-20 flex items-center justify-center rounded-xl overflow-hidden bg-black/5 dark:bg-white/50 dark:bg-black/5 dark:bg-white/5">
                        <svg className="w-8 h-8 text-gray-600 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                        </svg>
@@ -314,15 +328,15 @@ export default function ProductDetails() {
           {/* Social sharing */}
           <div className="flex items-center justify-between glass rounded-2xl p-4 border border-white/5">
             <div className="flex items-center space-x-3">
-              <span className="text-secondary dark:text-gray-400 text-sm font-medium">Share Product:</span>
+              <span className="text-secondary dark:text-gray-600 dark:text-gray-500 dark:text-gray-400 text-sm font-medium">Share Product:</span>
               <div className="flex space-x-2">
-                <button className="bg-blue-600/20 text-blue-400 border border-blue-500/30 rounded-full p-2 hover:bg-blue-600 hover:text-white transition-all">
+                <button className="bg-blue-600/20 text-blue-400 border border-blue-500/30 rounded-full p-2 hover:bg-blue-600 hover:text-primary dark:text-white transition-all">
                   <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                 </button>
-                <button className="bg-sky-500/20 text-sky-400 border border-sky-500/30 rounded-full p-2 hover:bg-sky-500 hover:text-white transition-all">
+                <button className="bg-sky-500/20 text-sky-400 border border-sky-500/30 rounded-full p-2 hover:bg-sky-500 hover:text-primary dark:text-white transition-all">
                   <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
                 </button>
-                <button className="bg-pink-600/20 text-pink-400 border border-pink-500/30 rounded-full p-2 hover:bg-pink-600 hover:text-white transition-all">
+                <button className="bg-pink-600/20 text-pink-400 border border-pink-500/30 rounded-full p-2 hover:bg-pink-600 hover:text-primary dark:text-white transition-all">
                   <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.097.118.112.222.085.343-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001.012.001z"/></svg>
                 </button>
               </div>
@@ -330,9 +344,9 @@ export default function ProductDetails() {
             
             <button 
               onClick={handleAddToWishlist}
-              className={`flex items-center transition-colors group ${isInWishlist ? 'text-pink-500' : 'text-secondary dark:text-gray-400 hover:text-pink-400'}`}
+              className={`flex items-center transition-colors group ${isInWishlist ? 'text-pink-500' : 'text-secondary dark:text-gray-600 dark:text-gray-500 dark:text-gray-400 hover:text-pink-400'}`}
             >
-              <div className={`p-2 rounded-full mr-2 transition-colors ${isInWishlist ? 'bg-pink-500/10' : 'bg-black/5 dark:bg-white/5 group-hover:bg-pink-500/10'}`}>
+              <div className={`p-2 rounded-full mr-2 transition-colors ${isInWishlist ? 'bg-pink-500/10' : 'bg-black/5 dark:bg-black/5 dark:bg-white/5 group-hover:bg-pink-500/10'}`}>
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill={isInWishlist ? "currentColor" : "none"} viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
@@ -378,12 +392,12 @@ export default function ProductDetails() {
                     </svg>
                   ))}
                 </div>
-                <span className="ml-3 text-secondary dark:text-gray-400 font-medium">
-                  {product.ratingsAverage} <span className="text-gray-300 dark:text-gray-600 mx-1">|</span> {product.ratingsQuantity} reviews
+                <span className="ml-3 text-secondary dark:text-gray-600 dark:text-gray-500 dark:text-gray-400 font-medium">
+                  {product.ratingsAverage} <span className="text-gray-600 dark:text-gray-300 dark:text-gray-600 mx-1">|</span> {product.ratingsQuantity} reviews
                 </span>
               </div>
               
-              <div className="mb-8 p-6 bg-white/50 dark:bg-white/5 rounded-2xl border border-white/20 dark:border-white/5">
+              <div className="mb-8 p-6 bg-black/5 dark:bg-white/50 dark:bg-black/5 dark:bg-white/5 rounded-2xl border border-black/10 dark:border-white/20 dark:border-white/5">
                 <div className="flex items-baseline mb-2">
                   <div className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400">
                     {product.discountPercentage > 0 
@@ -394,7 +408,7 @@ export default function ProductDetails() {
                   {product.discountPercentage > 0 && (
                     <>
                       <span className="ml-4 text-xl text-gray-600 line-through">{formatPrice(product.price, product.currency)}</span>
-                      <span className="ml-4 bg-gradient-to-r from-red-500 to-pink-600 text-white text-sm font-bold px-3 py-1 rounded-lg shadow-lg shadow-red-500/20">
+                      <span className="ml-4 bg-gradient-to-r from-red-500 to-pink-600 text-primary dark:text-white text-sm font-bold px-3 py-1 rounded-lg shadow-lg shadow-red-500/20">
                         {product.discountPercentage}% OFF
                       </span>
                     </>
@@ -412,7 +426,7 @@ export default function ProductDetails() {
               </div>
 
               <div className="relative">
-                <p className={`text-secondary dark:text-gray-300 mb-2 leading-relaxed text-lg ${!showFullDescription && product.description?.length > 300 ? 'line-clamp-3' : ''}`}>
+                <p className={`text-secondary dark:text-gray-600 dark:text-gray-300 mb-2 leading-relaxed text-lg ${!showFullDescription && product.description?.length > 300 ? 'line-clamp-3' : ''}`}>
                   {product.description}
                 </p>
                 {product.description?.length > 300 && (
@@ -431,10 +445,10 @@ export default function ProductDetails() {
               
               {/* Desktop Social Sharing */}
               <div className="hidden lg:flex items-center gap-3 mb-8">
-                <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mr-2">Share:</span>
+                <span className="text-xs font-bold text-gray-600 dark:text-gray-500 dark:text-gray-400 uppercase tracking-widest mr-2">Share:</span>
                 <button 
                   onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`, '_blank')}
-                  className="p-2.5 bg-[#1877F2]/10 text-[#1877F2] border border-[#1877F2]/20 rounded-xl hover:bg-[#1877F2] hover:text-white transition-all transform hover:-translate-y-1"
+                  className="p-2.5 bg-[#1877F2]/10 text-[#1877F2] border border-[#1877F2]/20 rounded-xl hover:bg-[#1877F2] hover:text-primary dark:text-white transition-all transform hover:-translate-y-1"
                   title="Share on Facebook"
                 >
                   <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
@@ -443,7 +457,7 @@ export default function ProductDetails() {
                 </button>
                 <button 
                   onClick={() => window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(product.name)}`, '_blank')}
-                  className="p-2.5 bg-[#1DA1F2]/10 text-[#1DA1F2] border border-[#1DA1F2]/20 rounded-xl hover:bg-[#1DA1F2] hover:text-white transition-all transform hover:-translate-y-1"
+                  className="p-2.5 bg-[#1DA1F2]/10 text-[#1DA1F2] border border-[#1DA1F2]/20 rounded-xl hover:bg-[#1DA1F2] hover:text-primary dark:text-white transition-all transform hover:-translate-y-1"
                   title="Share on Twitter"
                 >
                   <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
@@ -452,7 +466,7 @@ export default function ProductDetails() {
                 </button>
                 <button 
                   onClick={() => window.open(`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(window.location.href)}&media=${encodeURIComponent(getProductImageUrl(product.image))}&description=${encodeURIComponent(product.name)}`, '_blank')}
-                  className="p-2.5 bg-[#BD081C]/10 text-[#BD081C] border border-[#BD081C]/20 rounded-xl hover:bg-[#BD081C] hover:text-white transition-all transform hover:-translate-y-1"
+                  className="p-2.5 bg-[#BD081C]/10 text-[#BD081C] border border-[#BD081C]/20 rounded-xl hover:bg-[#BD081C] hover:text-primary dark:text-white transition-all transform hover:-translate-y-1"
                   title="Share on Pinterest"
                 >
                   <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
@@ -461,7 +475,7 @@ export default function ProductDetails() {
                 </button>
                 <button 
                   onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(product.name + " " + window.location.href)}`, '_blank')}
-                  className="p-2.5 bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/20 rounded-xl hover:bg-[#25D366] hover:text-white transition-all transform hover:-translate-y-1"
+                  className="p-2.5 bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/20 rounded-xl hover:bg-[#25D366] hover:text-primary dark:text-white transition-all transform hover:-translate-y-1"
                   title="Share on WhatsApp"
                 >
                   <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
@@ -473,7 +487,7 @@ export default function ProductDetails() {
                     navigator.clipboard.writeText(window.location.href);
                     showToast("Link copied to clipboard!", "success");
                   }}
-                  className="p-2.5 bg-gray-500/10 text-gray-500 border border-gray-500/20 rounded-xl hover:bg-gray-500 hover:text-white transition-all transform hover:-translate-y-1"
+                  className="p-2.5 bg-gray-500/10 text-gray-600 dark:text-gray-500 border border-gray-500/20 rounded-xl hover:bg-gray-500 hover:text-primary dark:text-white transition-all transform hover:-translate-y-1"
                   title="Copy Link"
                 >
                   <Link2 className="w-5 h-5" />
@@ -495,17 +509,17 @@ export default function ProductDetails() {
               <div className="mb-8">
                 <div className="flex items-center mb-6">
                   <label className="mr-6 font-medium text-secondary">Quantity:</label>
-                  <div className="flex items-center bg-black/5 dark:bg-black/40 rounded-xl border border-black/10 dark:border-white/10 p-1">
+                  <div className="flex items-center bg-black/5 dark:bg-black/5 dark:bg-black/40 rounded-xl border border-black/10 dark:border-black/5 dark:border-white/10 p-1">
                     <button
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="w-10 h-10 flex items-center justify-center text-lg font-bold text-primary hover:bg-black/5 dark:hover:bg-white/10 rounded-lg transition-colors"
+                      className="w-10 h-10 flex items-center justify-center text-lg font-bold text-primary hover:bg-black/5 dark:hover:bg-black/10 dark:bg-white/10 rounded-lg transition-colors"
                     >
                       -
                     </button>
                     <span className="w-12 text-center font-medium text-primary">{quantity}</span>
                     <button
                       onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
-                      className="w-10 h-10 flex items-center justify-center text-lg font-bold text-primary hover:bg-black/5 dark:hover:bg-white/10 rounded-lg transition-colors"
+                      className="w-10 h-10 flex items-center justify-center text-lg font-bold text-primary hover:bg-black/5 dark:hover:bg-black/10 dark:bg-white/10 rounded-lg transition-colors"
                     >
                       +
                     </button>
@@ -515,7 +529,7 @@ export default function ProductDetails() {
                 <div className="flex flex-col sm:flex-row gap-4">
                   <button
                     onClick={handleAddToCart}
-                    className="flex-1 bg-primary text-white dark:bg-white dark:text-black py-4 px-6 rounded-xl font-bold hover:opacity-90 transition-all transform hover:-translate-y-1 hover:shadow-lg flex items-center justify-center"
+                    className="flex-1 bg-primary text-primary dark:text-white dark:bg-white dark:text-black py-4 px-6 rounded-xl font-bold hover:opacity-90 transition-all transform hover:-translate-y-1 hover:shadow-lg flex items-center justify-center"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17M17 13v4a2 2 0 01-2 2H9a2 2 0 01-2-2v-4m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
@@ -543,7 +557,7 @@ export default function ProductDetails() {
                            setTimeout(() => navigate('/checkout'), 100);
                         }
                      }}
-                     className="flex-1 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-primary dark:text-white py-4 px-6 rounded-xl font-bold hover:bg-black/10 dark:hover:bg-white/10 transition-all flex items-center justify-center"
+                     className="flex-1 bg-black/5 dark:bg-black/5 dark:bg-white/5 border border-black/10 dark:border-black/5 dark:border-white/10 text-primary dark:text-primary dark:text-white py-4 px-6 rounded-xl font-bold hover:bg-black/10 dark:hover:bg-black/10 dark:bg-white/10 transition-all flex items-center justify-center"
                   >
                     Buy Now
                   </button>
@@ -552,14 +566,14 @@ export default function ProductDetails() {
             )}
             
             {/* Trust badges */}
-            <div className="grid grid-cols-3 gap-4 border-t border-white/10 pt-6">
+            <div className="grid grid-cols-3 gap-4 border-t border-black/5 dark:border-white/10 pt-6">
               <div className="flex flex-col items-center text-center">
                  <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center mb-2 text-green-400">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
                  </div>
-                 <span className="text-xs font-medium text-gray-300">Secure Payment</span>
+                 <span className="text-xs font-medium text-gray-600 dark:text-gray-300">Secure Payment</span>
               </div>
               <div className="flex flex-col items-center text-center">
                  <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center mb-2 text-blue-400">
@@ -567,7 +581,7 @@ export default function ProductDetails() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
                  </div>
-                 <span className="text-xs font-medium text-gray-300">30-Day Returns</span>
+                 <span className="text-xs font-medium text-gray-600 dark:text-gray-300">30-Day Returns</span>
               </div>
               <div className="flex flex-col items-center text-center">
                  <div className="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center mb-2 text-purple-400">
@@ -575,7 +589,7 @@ export default function ProductDetails() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                  </div>
-                 <span className="text-xs font-medium text-gray-300">2-Year Warranty</span>
+                 <span className="text-xs font-medium text-gray-600 dark:text-gray-300">2-Year Warranty</span>
               </div>
             </div>
           </div>
@@ -584,10 +598,10 @@ export default function ProductDetails() {
       
       {/* Product Details Tabs */}
       <div className="glass rounded-3xl p-8 mb-12 shadow-xl">
-          <div className="flex space-x-8 border-b border-gray-200 dark:border-white/10 mb-8 overflow-x-auto">
+          <div className="flex space-x-8 border-b border-gray-200 dark:border-black/5 dark:border-white/10 mb-8 overflow-x-auto">
             <button 
               onClick={() => setActiveTab('description')}
-              className={`pb-4 text-lg font-bold transition-all relative whitespace-nowrap ${activeTab === 'description' ? 'text-primary' : 'text-gray-400 hover:text-secondary'}`}
+              className={`pb-4 text-lg font-bold transition-all relative whitespace-nowrap ${activeTab === 'description' ? 'text-primary' : 'text-gray-600 dark:text-gray-500 dark:text-gray-400 hover:text-secondary'}`}
             >
               Description
               {activeTab === 'description' && (
@@ -596,7 +610,7 @@ export default function ProductDetails() {
             </button>
             <button 
               onClick={() => setActiveTab('specifications')}
-              className={`pb-4 text-lg font-bold transition-all relative whitespace-nowrap ${activeTab === 'specifications' ? 'text-primary' : 'text-gray-400 hover:text-secondary'}`}
+              className={`pb-4 text-lg font-bold transition-all relative whitespace-nowrap ${activeTab === 'specifications' ? 'text-primary' : 'text-gray-600 dark:text-gray-500 dark:text-gray-400 hover:text-secondary'}`}
             >
               Specifications
               {activeTab === 'specifications' && (
@@ -605,7 +619,7 @@ export default function ProductDetails() {
             </button>
             <button 
               onClick={() => setActiveTab('shipping')}
-              className={`pb-4 text-lg font-bold transition-all relative whitespace-nowrap ${activeTab === 'shipping' ? 'text-primary' : 'text-gray-400 hover:text-secondary'}`}
+              className={`pb-4 text-lg font-bold transition-all relative whitespace-nowrap ${activeTab === 'shipping' ? 'text-primary' : 'text-gray-600 dark:text-gray-500 dark:text-gray-400 hover:text-secondary'}`}
             >
               Shipping Info
               {activeTab === 'shipping' && (
@@ -643,7 +657,7 @@ export default function ProductDetails() {
             )}
             {activeTab === 'specifications' && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 animate-fade-in">
-                <div className="bg-white/50 dark:bg-white/5 rounded-2xl p-6">
+                <div className="bg-black/5 dark:bg-white/50 dark:bg-black/5 dark:bg-white/5 rounded-2xl p-6">
                   <h4 className="text-lg font-bold text-primary mb-4 flex items-center">
                     <svg className="w-5 h-5 mr-2 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" /></svg>
                     General
@@ -663,7 +677,7 @@ export default function ProductDetails() {
                     </li>
                   </ul>
                 </div>
-                <div className="bg-white/50 dark:bg-white/5 rounded-2xl p-6">
+                <div className="bg-black/5 dark:bg-white/50 dark:bg-black/5 dark:bg-white/5 rounded-2xl p-6">
                   <h4 className="text-lg font-bold text-primary mb-4 flex items-center">
                     <svg className="w-5 h-5 mr-2 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" /></svg>
                     Dimensions
@@ -690,7 +704,7 @@ export default function ProductDetails() {
               </div>
             )}
             {activeTab === 'shipping' && (
-              <div className="bg-white/50 dark:bg-white/5 rounded-2xl p-8 animate-fade-in">
+              <div className="bg-black/5 dark:bg-white/50 dark:bg-black/5 dark:bg-white/5 rounded-2xl p-8 animate-fade-in">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div>
                         <h4 className="text-lg font-bold text-primary mb-4">Delivery Options</h4>
@@ -739,15 +753,15 @@ export default function ProductDetails() {
       <section className="mt-16 mb-20 px-4 md:px-0">
         <div className="flex flex-col md:flex-row justify-between items-end md:items-center mb-10 gap-4">
           <div className="w-full md:w-auto">
-            <h2 className="text-3xl md:text-4xl font-black text-white mb-3 tracking-tighter uppercase italic">
+            <h2 className="text-3xl md:text-4xl font-black text-primary dark:text-white mb-3 tracking-tighter uppercase italic">
               You May <span className="text-cyan-400">Also Like</span>
             </h2>
             <div className="h-1 w-20 bg-gradient-to-r from-cyan-400 to-purple-600 rounded-full mb-4"></div>
-            <p className="text-secondary dark:text-gray-400 text-sm md:text-base max-w-xl">Curated recommendations based on your viewing history and this product category.</p>
+            <p className="text-secondary dark:text-gray-600 dark:text-gray-500 dark:text-gray-400 text-sm md:text-base max-w-xl">Curated recommendations based on your viewing history and this product category.</p>
           </div>
           <button 
             onClick={() => navigate('/shop')}
-            className="text-xs md:text-sm font-bold text-cyan-500 dark:text-cyan-400 uppercase tracking-widest hover:text-primary dark:hover:text-white transition-colors flex items-center gap-2 group"
+            className="text-xs md:text-sm font-bold text-cyan-500 dark:text-cyan-400 uppercase tracking-widest hover:text-primary dark:hover:text-primary dark:text-white transition-colors flex items-center gap-2 group"
           >
             Show More <span className="group-hover:translate-x-1 transition-transform">→</span>
           </button>
@@ -758,7 +772,7 @@ export default function ProductDetails() {
             {recommendations.map((item) => (
                 <div 
                   key={item._id} 
-                  className="group relative flex flex-col bg-white/5 border border-white/10 rounded-2xl md:rounded-[2rem] overflow-hidden hover:bg-white/10 transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,0,0,0.3)] hover:-translate-y-2 cursor-pointer"
+                  className="group relative flex flex-col bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-2xl md:rounded-[2rem] overflow-hidden hover:bg-black/10 dark:bg-white/10 transition-all duration-500 hover:shadow-[0_20px_40px_rgba(0,0,0,0.3)] hover:-translate-y-2 cursor-pointer"
                   onClick={() => {
                      window.scrollTo({ top: 0, behavior: 'smooth' });
                      navigate(`/product/${item._id}`);
@@ -781,12 +795,12 @@ export default function ProductDetails() {
                     {/* Quick Labels */}
                     <div className="absolute top-3 left-3 z-20 flex flex-col gap-2">
                       {item.discountPercentage > 0 && (
-                        <span className="bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-lg">
+                        <span className="bg-red-500 text-primary dark:text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-lg">
                           -{item.discountPercentage}%
                         </span>
                       )}
                       {item.stock < 5 && item.stock > 0 && (
-                        <span className="bg-orange-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-lg">
+                        <span className="bg-orange-500 text-primary dark:text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-lg">
                           Low Stock
                         </span>
                       )}
@@ -797,13 +811,13 @@ export default function ProductDetails() {
                   <div className="p-4 md:p-6 flex flex-col flex-1">
                     <div className="mb-2">
                       <span className="text-[10px] text-cyan-600 dark:text-cyan-400 font-bold uppercase tracking-widest mb-1 block">{item.brand || 'Premium'}</span>
-                      <h3 className="font-bold text-sm md:text-lg text-primary dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors line-clamp-1">{item.name}</h3>
+                      <h3 className="font-bold text-sm md:text-lg text-primary dark:text-primary dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors line-clamp-1">{item.name}</h3>
                     </div>
 
                     <div className="mt-auto flex items-center justify-between gap-2">
-                      <span className="font-black text-base md:text-2xl text-primary dark:text-white">{formatPrice(item.price)}</span>
+                      <span className="font-black text-base md:text-2xl text-primary dark:text-primary dark:text-white">{formatPrice(item.price)}</span>
                       <button 
-                        className="w-8 h-8 md:w-12 md:h-12 rounded-xl bg-black/5 dark:bg-white/10 flex items-center justify-center text-primary dark:text-white hover:bg-cyan-500 hover:text-black transition-all duration-300 active:scale-95"
+                        className="w-8 h-8 md:w-12 md:h-12 rounded-xl bg-black/5 dark:bg-black/10 dark:bg-white/10 flex items-center justify-center text-primary dark:text-primary dark:text-white hover:bg-cyan-500 hover:text-black transition-all duration-300 active:scale-95"
                         onClick={(e) => {
                             e.stopPropagation();
                             if (item.stock > 0) {
@@ -824,7 +838,7 @@ export default function ProductDetails() {
         ) : (
             <div className="text-center py-20 glass rounded-[2rem] border border-white/5">
                 <div className="text-6xl mb-6 opacity-20">🔍</div>
-                <p className="text-gray-500 text-xl font-medium">Looking for more products...</p>
+                <p className="text-gray-600 dark:text-gray-500 text-xl font-medium">Looking for more products...</p>
             </div>
         )}
       </section>

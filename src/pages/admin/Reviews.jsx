@@ -102,7 +102,7 @@ export default function AdminReviews() {
         {[...Array(5)].map((_, i) => (
           <svg
             key={i}
-            className={`w-4 h-4 ${i < rating ? 'text-yellow-400' : 'text-gray-300'}`}
+            className={`w-4 h-4 ${i < rating ? 'text-yellow-400' : 'text-gray-600 dark:text-gray-300'}`}
             fill="currentColor"
             viewBox="0 0 20 20"
           >
@@ -137,19 +137,19 @@ export default function AdminReviews() {
     }
   };
 
-  if (loading) return <div className="p-8 text-white">Loading reviews...</div>;
+  if (loading) return <div className="p-8 text-primary dark:text-white">Loading reviews...</div>;
 
   return (
     <div className="space-y-6 relative">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Reviews</h1>
-          <p className="mt-1 text-gray-400">Manage customer reviews</p>
+          <h1 className="text-2xl font-bold text-primary dark:text-white">Reviews</h1>
+          <p className="mt-1 text-gray-600 dark:text-gray-500 dark:text-gray-400">Manage customer reviews</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <button 
             onClick={() => setIsAIModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-lg transition-all shadow-lg shadow-purple-500/20 font-bold text-sm"
+            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-primary dark:text-white rounded-lg transition-all shadow-lg shadow-purple-500/20 font-bold text-sm"
           >
             <span className="text-lg">🤖</span>
             AI Review Hub
@@ -161,10 +161,10 @@ export default function AdminReviews() {
               placeholder="Search reviews..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 bg-black/40 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white placeholder-gray-500 text-sm"
+              className="pl-10 pr-4 py-2 bg-black/5 dark:bg-black/40 border border-black/5 dark:border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-primary dark:text-white placeholder-gray-500 text-sm"
             />
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600 dark:text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
@@ -172,7 +172,7 @@ export default function AdminReviews() {
           <select
             value={filterRating}
             onChange={(e) => setFilterRating(e.target.value)}
-            className="bg-black/40 border border-white/10 text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
+            className="bg-black/5 dark:bg-black/40 border border-black/5 dark:border-white/10 text-primary dark:text-white rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
           >
             <option value="all" className="bg-gray-900">All Ratings</option>
             <option value="5" className="bg-gray-900">5 Stars</option>
@@ -185,35 +185,35 @@ export default function AdminReviews() {
       </div>
 
       {/* Reviews Table */}
-      <div className="glass border border-white/10 rounded-xl overflow-hidden">
+      <div className="glass border border-black/5 dark:border-white/10 rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-white/10">
-            <thead className="bg-white/5">
+            <thead className="bg-black/5 dark:bg-white/5">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Product</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Customer</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Rating</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Comment</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-500 dark:text-gray-400 uppercase tracking-wider">Product</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-500 dark:text-gray-400 uppercase tracking-wider">Customer</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-500 dark:text-gray-400 uppercase tracking-wider">Rating</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-500 dark:text-gray-400 uppercase tracking-wider">Comment</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/10">
               {currentReviews.length > 0 ? (
                 currentReviews.map((review) => (
-                  <tr key={review._id} className="hover:bg-white/5 transition-colors">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
+                  <tr key={review._id} className="hover:bg-black/5 dark:bg-white/5 transition-colors">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-primary dark:text-white">
                         <div className="flex items-center">
                             {review.product?.image && <img src={review.product.image} className="w-8 h-8 rounded mr-2 object-cover" alt="" />}
                             {review.product?.name || 'Unknown Product'}
                         </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-500 dark:text-gray-400">
                       <div className="flex items-center gap-2">
                         <img 
                           src={review.isDummy ? review.dummyPhoto : (review.user?.photo || '/default-avatar.png')} 
-                          className="w-8 h-8 rounded-full object-cover border border-white/10" 
+                          className="w-8 h-8 rounded-full object-cover border border-black/5 dark:border-white/10" 
                           alt="" 
                         />
                         <span>{review.isDummy ? (review.dummyName || "Anonymous") : (review.user?.name || 'Unknown User')}</span>
@@ -222,11 +222,11 @@ export default function AdminReviews() {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         {renderStars(review.rating)}
-                        <span className="ml-1 text-sm text-gray-500">({review.rating})</span>
+                        <span className="ml-1 text-sm text-gray-600 dark:text-gray-500">({review.rating})</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-300 max-w-xs truncate">{review.review}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(review.createdAt).toLocaleDateString()}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300 max-w-xs truncate">{review.review}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-500">{new Date(review.createdAt).toLocaleDateString()}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColors[review.status || 'Pending']}`}>
                         {review.status || 'Pending'}
@@ -260,7 +260,7 @@ export default function AdminReviews() {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="7" className="px-6 py-12 text-center text-sm text-gray-500">
+                  <td colSpan="7" className="px-6 py-12 text-center text-sm text-gray-600 dark:text-gray-500">
                     No reviews found
                   </td>
                 </tr>
@@ -301,7 +301,7 @@ export default function AdminReviews() {
                   <button
                     onClick={() => setCurrentPage(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                    className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-600 dark:text-gray-500 hover:bg-gray-50"
                   >
                     <span className="sr-only">Previous</span>
                     <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -315,7 +315,7 @@ export default function AdminReviews() {
                       className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
                         currentPage === i + 1
                           ? "z-10 bg-purple-50 border-purple-500 text-purple-600"
-                          : "bg-white border-gray-300 text-gray-500 hover:bg-gray-50"
+                          : "bg-white border-gray-300 text-gray-600 dark:text-gray-500 hover:bg-gray-50"
                       }`}
                     >
                       {i + 1}
@@ -324,7 +324,7 @@ export default function AdminReviews() {
                   <button
                     onClick={() => setCurrentPage(currentPage + 1)}
                     disabled={currentPage === totalPages}
-                    className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                    className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-600 dark:text-gray-500 hover:bg-gray-50"
                   >
                     <span className="sr-only">Next</span>
                     <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -340,23 +340,23 @@ export default function AdminReviews() {
       {/* AI Review Hub Modal */}
       {isAIModalOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => !isGenerating && setIsAIModalOpen(false)}></div>
-          <div className="relative w-full max-w-xl glass border border-white/10 rounded-3xl overflow-hidden shadow-2xl animate-in zoom-in duration-300">
-            <div className="bg-gradient-to-r from-indigo-900/40 to-purple-900/40 p-6 border-b border-white/10">
-              <h2 className="text-xl font-bold text-white flex items-center gap-2">
+          <div className="absolute inset-0 bg-black/20 dark:bg-black/80 backdrop-blur-md" onClick={() => !isGenerating && setIsAIModalOpen(false)}></div>
+          <div className="relative w-full max-w-xl glass border border-black/5 dark:border-white/10 rounded-3xl overflow-hidden shadow-2xl animate-in zoom-in duration-300">
+            <div className="bg-gradient-to-r from-indigo-900/40 to-purple-900/40 p-6 border-b border-black/5 dark:border-white/10">
+              <h2 className="text-xl font-bold text-primary dark:text-white flex items-center gap-2">
                 <span>🤖</span> AI Review Generation Hub
               </h2>
-              <p className="text-xs text-gray-400 mt-1">Our neural system will generate ultra-realistic reviews for your products.</p>
+              <p className="text-xs text-gray-600 dark:text-gray-500 dark:text-gray-400 mt-1">Our neural system will generate ultra-realistic reviews for your products.</p>
             </div>
             
             <form onSubmit={handleGenerateAIReviews} className="p-6 space-y-5">
               <div>
-                <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Select Product</label>
+                <label className="block text-xs font-bold text-gray-600 dark:text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Select Product</label>
                 <select 
                   required
                   value={selectedProductId}
                   onChange={(e) => setSelectedProductId(e.target.value)}
-                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 transition-all text-sm"
+                  className="w-full bg-black/5 dark:bg-black/40 border border-black/5 dark:border-white/10 rounded-xl px-4 py-3 text-primary dark:text-white focus:outline-none focus:border-purple-500 transition-all text-sm"
                 >
                   <option value="" className="bg-gray-900">Choose a product...</option>
                   {products.map(p => (
@@ -367,30 +367,30 @@ export default function AdminReviews() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Count ({reviewCount})</label>
+                  <label className="block text-xs font-bold text-gray-600 dark:text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Count ({reviewCount})</label>
                   <input 
                     type="range"
                     min="1"
                     max="20"
                     value={reviewCount}
                     onChange={(e) => setReviewCount(parseInt(e.target.value))}
-                    className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-purple-500"
+                    className="w-full h-2 bg-black/10 dark:bg-white/10 rounded-lg appearance-none cursor-pointer accent-purple-500"
                   />
                 </div>
                 <div className="flex items-center justify-center">
-                   <div className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-white font-bold text-lg">
-                      {reviewCount} <span className="text-[10px] text-gray-500 uppercase">Reviews</span>
+                   <div className="px-4 py-2 bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-xl text-primary dark:text-white font-bold text-lg">
+                      {reviewCount} <span className="text-[10px] text-gray-600 dark:text-gray-500 uppercase">Reviews</span>
                    </div>
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Custom Prompt (Optional)</label>
+                <label className="block text-xs font-bold text-gray-600 dark:text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-2">Custom Prompt (Optional)</label>
                 <textarea 
                   value={aiPrompt}
                   onChange={(e) => setAiPrompt(e.target.value)}
                   placeholder="e.g. Make them sound like happy customers from Lahore, using some Roman Urdu and emojis..."
-                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 transition-all text-sm h-24 resize-none"
+                  className="w-full bg-black/5 dark:bg-black/40 border border-black/5 dark:border-white/10 rounded-xl px-4 py-3 text-primary dark:text-white focus:outline-none focus:border-purple-500 transition-all text-sm h-24 resize-none"
                 />
               </div>
 
@@ -399,18 +399,18 @@ export default function AdminReviews() {
                   type="button"
                   onClick={() => setIsAIModalOpen(false)}
                   disabled={isGenerating}
-                  className="flex-1 px-4 py-3 bg-white/5 hover:bg-white/10 text-white rounded-xl transition-all font-bold text-sm disabled:opacity-50"
+                  className="flex-1 px-4 py-3 bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:bg-white/10 text-primary dark:text-white rounded-xl transition-all font-bold text-sm disabled:opacity-50"
                 >
                   Cancel
                 </button>
                 <button 
                   type="submit"
                   disabled={isGenerating || !selectedProductId}
-                  className="flex-[2] px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-xl transition-all font-bold text-sm shadow-lg shadow-purple-500/20 flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="flex-[2] px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-primary dark:text-white rounded-xl transition-all font-bold text-sm shadow-lg shadow-purple-500/20 flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   {isGenerating ? (
                     <>
-                      <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                      <div className="w-4 h-4 border-2 border-black/10 dark:border-white/20 border-t-white rounded-full animate-spin"></div>
                       Generating Neural Feedback...
                     </>
                   ) : (

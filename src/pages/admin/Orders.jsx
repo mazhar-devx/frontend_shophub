@@ -139,13 +139,13 @@ export default function AdminOrders() {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-500 uppercase tracking-wider">Order ID</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-500 uppercase tracking-wider">Customer</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-500 uppercase tracking-wider">Date</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-500 uppercase tracking-wider">Total</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-500 uppercase tracking-wider">Payment</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-500 uppercase tracking-wider">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 dark:text-gray-500 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -153,13 +153,13 @@ export default function AdminOrders() {
                 filteredOrders.map((order) => (
                   <tr key={order._id} className="hover:bg-gray-50 cursor-pointer" onClick={() => setSelectedOrder(order)}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-purple-600">#{order._id.slice(-6)}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-500">
                         {order.user?.name || 'Unknown User'}<br/>
-                        <span className="text-xs text-gray-400">{order.user?.email}</span>
+                        <span className="text-xs text-gray-600 dark:text-gray-500 dark:text-gray-400">{order.user?.email}</span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(order.createdAt).toLocaleDateString()}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-500">{new Date(order.createdAt).toLocaleDateString()}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-800">{formatPrice(order.totalPrice)}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 capitalize">{order.paymentMethod.replace('_', ' ')}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-500 capitalize">{order.paymentMethod.replace('_', ' ')}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColors[order.status || 'Processing'] || statusColors['Processing']}`}>
                         {order.status || 'Processing'}
@@ -180,7 +180,7 @@ export default function AdminOrders() {
                 ))
               ) : (
                 <tr>
-                   <td colSpan="7" className="px-6 py-12 text-center text-gray-500">No orders found matching your criteria.</td>
+                   <td colSpan="7" className="px-6 py-12 text-center text-gray-600 dark:text-gray-500">No orders found matching your criteria.</td>
                 </tr>
               )}
             </tbody>
@@ -190,11 +190,11 @@ export default function AdminOrders() {
 
       {/* Order Details Modal */}
       {selectedOrder && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/10 dark:bg-black/50 backdrop-blur-sm">
            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
               <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50 rounded-t-2xl">
                  <h2 className="text-xl font-bold text-gray-800">Order Details #{selectedOrder._id.slice(-6)}</h2>
-                 <button onClick={() => setSelectedOrder(null)} className="text-gray-400 hover:text-gray-600">
+                 <button onClick={() => setSelectedOrder(null)} className="text-gray-600 dark:text-gray-500 dark:text-gray-400 hover:text-gray-600">
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                  </button>
               </div>
@@ -223,13 +223,13 @@ export default function AdminOrders() {
                     {/* Customer Info */}
                     <div className="space-y-3">
                        <h3 className="font-bold text-gray-900 flex items-center">
-                          <svg className="w-5 h-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                          <svg className="w-5 h-5 mr-2 text-gray-600 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                           Customer Info
                        </h3>
                        <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                          <p className="text-sm text-gray-500">Name</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-500">Name</p>
                           <p className="font-medium text-gray-800">{selectedOrder.user?.name || 'Guest'}</p>
-                          <p className="text-sm text-gray-500 mt-2">Email</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-500 mt-2">Email</p>
                           <p className="font-medium text-gray-800">{selectedOrder.user?.email || 'N/A'}</p>
                        </div>
                     </div>
@@ -237,11 +237,11 @@ export default function AdminOrders() {
                     {/* Shipping Info */}
                     <div className="space-y-3">
                        <h3 className="font-bold text-gray-900 flex items-center">
-                          <svg className="w-5 h-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                          <svg className="w-5 h-5 mr-2 text-gray-600 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                           Shipping Details
                        </h3>
                        <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
-                          <h4 className="text-sm font-medium text-gray-500">Shipping Address</h4>
+                          <h4 className="text-sm font-medium text-gray-600 dark:text-gray-500">Shipping Address</h4>
                           <p className="mt-1 text-sm text-gray-900">{selectedOrder.shippingAddress.address}</p>
                           <p className="text-sm text-gray-900">{selectedOrder.shippingAddress.city}, {selectedOrder.shippingAddress.postalCode}</p>
                           <p className="text-sm text-gray-900">{selectedOrder.shippingAddress.country}</p>
@@ -271,9 +271,9 @@ export default function AdminOrders() {
                        <table className="min-w-full divide-y divide-gray-200">
                           <thead className="bg-gray-50">
                              <tr>
-                                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Product</th>
-                                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Qty</th>
-                                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Price</th>
+                                <th className="px-4 py-2 text-left text-xs font-medium text-gray-600 dark:text-gray-500 uppercase">Product</th>
+                                <th className="px-4 py-2 text-left text-xs font-medium text-gray-600 dark:text-gray-500 uppercase">Qty</th>
+                                <th className="px-4 py-2 text-left text-xs font-medium text-gray-600 dark:text-gray-500 uppercase">Price</th>
                              </tr>
                           </thead>
                           <tbody className="divide-y divide-gray-200 bg-white">

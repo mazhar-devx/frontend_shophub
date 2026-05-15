@@ -1394,45 +1394,70 @@ export default function WatchMe() {
 
   return (
     <div className="fixed inset-0 w-full h-[100dvh] bg-black flex items-center justify-center overflow-hidden">
-      {videos[activeIndex] && (
-        <SEO 
-          title={videos[activeIndex].name}
-          description={videos[activeIndex].description?.substring(0, 160) || "Watch premium short videos and shop the look on ShopHub.pro"}
-          image={getProductImageUrl(videos[activeIndex].thumbnailUrl || videos[activeIndex].videoUrl)}
-          type="video.other"
-          url={`${window.location.origin}/watch-me?v=${videos[activeIndex]._id}`}
-          keywords={`Watch Me, social shopping, ${videos[activeIndex].tags?.join(', ')}, ShopHub.pro`}
-          schema={{
-            "@context": "https://schema.org",
-            "@type": "VideoObject",
-            "name": videos[activeIndex].name,
-            "description": videos[activeIndex].description || "Short video on ShopHub.pro",
-            "thumbnailUrl": [getProductImageUrl(videos[activeIndex].thumbnailUrl || videos[activeIndex].videoUrl)],
-            "uploadDate": videos[activeIndex].createdAt,
-            "contentUrl": getProductImageUrl(videos[activeIndex].videoUrl),
-            "embedUrl": `${window.location.origin}/watch-me?v=${videos[activeIndex]._id}`,
-            "duration": "PT0M30S",
-            "interactionStatistic": [
-              {
-                "@type": "InteractionCounter",
-                "interactionType": "https://schema.org/LikeAction",
-                "userInteractionCount": videos[activeIndex].likes?.length || 0
-              },
-              {
-                "@type": "InteractionCounter",
-                "interactionType": "https://schema.org/CommentAction",
-                "userInteractionCount": videos[activeIndex].comments?.length || 0
-              }
-            ],
-            "author": {
-              "@type": "Person",
-              "name": videos[activeIndex].user?.vendorName || videos[activeIndex].user?.name,
-              "url": `${window.location.origin}/creator/${videos[activeIndex].user?._id}`,
-              "image": getProductImageUrl(videos[activeIndex].user?.photo)
+      {videos[activeIndex] && (() => {
+        const activeVid = videos[activeIndex];
+        const videoSchema = {
+          "@context": "https://schema.org",
+          "@type": "VideoObject",
+          "name": activeVid.name,
+          "description": activeVid.description || "Short video on ShopHub.pro",
+          "thumbnailUrl": [getProductImageUrl(activeVid.thumbnailUrl || activeVid.videoUrl)],
+          "uploadDate": activeVid.createdAt,
+          "contentUrl": getProductImageUrl(activeVid.videoUrl),
+          "embedUrl": `${window.location.origin}/watch-me?v=${activeVid._id}`,
+          "duration": "PT0M30S",
+          "interactionStatistic": [
+            {
+              "@type": "InteractionCounter",
+              "interactionType": "https://schema.org/LikeAction",
+              "userInteractionCount": activeVid.likes?.length || 0
+            },
+            {
+              "@type": "InteractionCounter",
+              "interactionType": "https://schema.org/CommentAction",
+              "userInteractionCount": activeVid.comments?.length || 0
             }
-          }}
-        />
-      )}
+          ],
+          "author": {
+            "@type": "Person",
+            "name": activeVid.user?.vendorName || activeVid.user?.name,
+            "url": `${window.location.origin}/creator/${activeVid.user?._id}`,
+            "image": getProductImageUrl(activeVid.user?.photo)
+          }
+        };
+
+        const schemas = [videoSchema];
+        
+        // If there's a product link, we add a generic Product Schema to let Google know this video features a product
+        if (activeVid.productLink) {
+          schemas.push({
+             "@context": "https://schema.org/",
+             "@type": "Product",
+             "name": `Featured Product in ${activeVid.name}`,
+             "description": `Shop the products featured in this video on ShopHub.pro`,
+             "url": `${window.location.origin}/product/${activeVid.productLink}`,
+             "image": [getProductImageUrl(activeVid.thumbnailUrl || activeVid.videoUrl)]
+          });
+          videoSchema.about = {
+            "@type": "Product",
+            "name": `Featured Product in ${activeVid.name}`,
+            "url": `${window.location.origin}/product/${activeVid.productLink}`
+          };
+        }
+
+        return (
+          <SEO 
+            title={activeVid.name}
+            description={activeVid.description?.substring(0, 160) || "Watch premium short videos and shop the look on ShopHub.pro"}
+            image={getProductImageUrl(activeVid.thumbnailUrl || activeVid.videoUrl)}
+            type="video.other"
+            url={`${window.location.origin}/watch-me?v=${activeVid._id}`}
+            video={getProductImageUrl(activeVid.videoUrl)}
+            keywords={`Watch Me, social shopping, ${activeVid.tags?.join(', ')}, ShopHub.pro`}
+            schema={schemas}
+          />
+        );
+      })()}
 
       {/* Feed Container */}
       <div 

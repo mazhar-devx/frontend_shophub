@@ -91,7 +91,7 @@ export default function AdminProducts() {
       {/* Header Section with Gradient */}
       <div className="bg-gradient-to-r from-purple-600 to-indigo-700 rounded-2xl p-6 shadow-xl">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-          <div className="text-white">
+          <div className="text-primary dark:text-white">
             <h1 className="text-3xl font-bold">Product Management</h1>
             <p className="mt-2 opacity-90">Manage your entire product catalog with ease</p>
           </div>
@@ -102,10 +102,10 @@ export default function AdminProducts() {
                 placeholder="Search products..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-12 pr-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 w-full md:w-64 bg-white bg-opacity-20 backdrop-blur-sm text-white placeholder-white placeholder-opacity-70"
+                className="pl-12 pr-4 py-3 rounded-xl focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 w-full md:w-64 bg-white bg-opacity-20 backdrop-blur-sm text-primary dark:text-white placeholder-white placeholder-opacity-70"
               />
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
@@ -196,12 +196,12 @@ export default function AdminProducts() {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-600 dark:text-gray-500 uppercase tracking-wider">Product</th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-600 dark:text-gray-500 uppercase tracking-wider">Category</th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-600 dark:text-gray-500 uppercase tracking-wider">Price</th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-600 dark:text-gray-500 uppercase tracking-wider">Stock</th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-600 dark:text-gray-500 uppercase tracking-wider">Status</th>
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-600 dark:text-gray-500 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -223,11 +223,11 @@ export default function AdminProducts() {
                         </div>
                         <div>
                           <div className="text-sm font-semibold text-gray-900">{product.name}</div>
-                          <div className="text-sm text-gray-500 truncate max-w-xs">{product.description?.substring(0, 30)}...</div>
+                          <div className="text-sm text-gray-600 dark:text-gray-500 truncate max-w-xs">{product.description?.substring(0, 30)}...</div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 dark:text-gray-500">
                       <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
                         {product.category}
                       </span>
@@ -279,15 +279,15 @@ export default function AdminProducts() {
                 <tr>
                   <td colSpan="6" className="px-6 py-12 text-center">
                     <div className="flex flex-col items-center justify-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-gray-600 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                       </svg>
                       <h3 className="mt-4 text-lg font-medium text-gray-900">No products found</h3>
-                      <p className="mt-1 text-gray-500">Get started by adding a new product.</p>
+                      <p className="mt-1 text-gray-600 dark:text-gray-500">Get started by adding a new product.</p>
                       <div className="mt-6">
                         <Link
                           to="/admin/products/new"
-                          className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                          className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-base font-medium rounded-md text-primary dark:text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" className="-ml-1 mr-3 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -335,7 +335,7 @@ export default function AdminProducts() {
                   <button
                     onClick={() => setCurrentPage(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className="relative inline-flex items-center px-3 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                    className="relative inline-flex items-center px-3 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-600 dark:text-gray-500 hover:bg-gray-50 disabled:opacity-50"
                   >
                     <span className="sr-only">Previous</span>
                     <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -349,7 +349,7 @@ export default function AdminProducts() {
                       className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
                         currentPage === i + 1
                           ? "z-10 bg-purple-50 border-purple-500 text-purple-600"
-                          : "bg-white border-gray-300 text-gray-500 hover:bg-gray-50"
+                          : "bg-white border-gray-300 text-gray-600 dark:text-gray-500 hover:bg-gray-50"
                       }`}
                     >
                       {i + 1}
@@ -358,7 +358,7 @@ export default function AdminProducts() {
                   <button
                     onClick={() => setCurrentPage(currentPage + 1)}
                     disabled={currentPage === totalPages}
-                    className="relative inline-flex items-center px-3 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                    className="relative inline-flex items-center px-3 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-600 dark:text-gray-500 hover:bg-gray-50 disabled:opacity-50"
                   >
                     <span className="sr-only">Next</span>
                     <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">

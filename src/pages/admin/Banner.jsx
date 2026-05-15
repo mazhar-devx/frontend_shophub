@@ -80,9 +80,9 @@ export default function AdminBanner() {
     if (e.target.files && e.target.files[0]) {
       if (type === 'heroImages') {
         const files = Array.from(e.target.files);
-        setHeroImages(files);
+        setHeroImages(prev => [...prev, ...files]);
         const previews = files.map(file => URL.createObjectURL(file));
-        setHeroImagesPreviews(previews);
+        setHeroImagesPreviews(prev => [...prev, ...previews]);
         return;
       }
 
@@ -139,7 +139,7 @@ export default function AdminBanner() {
   };
 
   if (loading) {
-    return <div className="text-white">Loading...</div>;
+    return <div className="text-primary dark:text-white">Loading...</div>;
   }
 
   const currentHeroImage = heroPreview || getProductImageUrl(formData.image);
@@ -149,18 +149,18 @@ export default function AdminBanner() {
     <div className="max-w-7xl mx-auto space-y-8 animate-fade-in-up">
       <div className="flex justify-between items-center">
         <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Banner & Hero Settings</h1>
-            <p className="text-gray-400">Customize the visual appearance of your homepage.</p>
+            <h1 className="text-3xl font-bold text-primary dark:text-white mb-2">Banner & Hero Settings</h1>
+            <p className="text-gray-600 dark:text-gray-500 dark:text-gray-400">Customize the visual appearance of your homepage.</p>
         </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
         
         {/* Main Hero Section */}
-        <section className="glass p-8 rounded-2xl border border-white/10 relative overflow-hidden">
+        <section className="glass p-8 rounded-2xl border border-black/5 dark:border-white/10 relative overflow-hidden">
              <div className="absolute top-0 left-0 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
              
-             <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+             <h2 className="text-xl font-bold text-primary dark:text-white mb-6 flex items-center gap-2">
                 <span className="w-1 h-6 bg-purple-500 rounded-full"></span>
                 Main Hero Banner
              </h2>
@@ -168,74 +168,74 @@ export default function AdminBanner() {
              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-4">
                     <div className="space-y-2">
-                        <label className="text-gray-400 text-sm font-bold ml-1">Main Title</label>
+                        <label className="text-gray-600 dark:text-gray-500 dark:text-gray-400 text-sm font-bold ml-1">Main Title</label>
                         <input 
                             type="text" 
                             name="title"
                             value={formData.title} 
                             onChange={handleChange}
-                            className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 transition-all"
+                            className="w-full bg-black/30 border border-black/5 dark:border-white/10 rounded-xl px-4 py-3 text-primary dark:text-white focus:outline-none focus:border-purple-500 transition-all"
                         />
                     </div>
                     <div className="space-y-2">
-                        <label className="text-gray-400 text-sm font-bold ml-1">Subtitle</label>
+                        <label className="text-gray-600 dark:text-gray-500 dark:text-gray-400 text-sm font-bold ml-1">Subtitle</label>
                         <input 
                             type="text" 
                             name="subtitle"
                             value={formData.subtitle} 
                             onChange={handleChange}
-                            className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 transition-all"
+                            className="w-full bg-black/30 border border-black/5 dark:border-white/10 rounded-xl px-4 py-3 text-primary dark:text-white focus:outline-none focus:border-purple-500 transition-all"
                         />
                     </div>
                     
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <label className="text-gray-400 text-sm font-bold ml-1">Price Tag</label>
+                            <label className="text-gray-600 dark:text-gray-500 dark:text-gray-400 text-sm font-bold ml-1">Price Tag</label>
                             <input 
                                 type="text" 
                                 name="price"
                                 value={formData.price} 
                                 onChange={handleChange}
-                                className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 transition-all"
+                                className="w-full bg-black/30 border border-black/5 dark:border-white/10 rounded-xl px-4 py-3 text-primary dark:text-white focus:outline-none focus:border-purple-500 transition-all"
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-gray-400 text-sm font-bold ml-1">Button Text</label>
+                            <label className="text-gray-600 dark:text-gray-500 dark:text-gray-400 text-sm font-bold ml-1">Button Text</label>
                             <input 
                                 type="text" 
                                 name="buttonText"
                                 value={formData.buttonText} 
                                 onChange={handleChange}
-                                className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 transition-all"
+                                className="w-full bg-black/30 border border-black/5 dark:border-white/10 rounded-xl px-4 py-3 text-primary dark:text-white focus:outline-none focus:border-purple-500 transition-all"
                             />
                         </div>
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-gray-400 text-sm font-bold ml-1">Button Link</label>
+                        <label className="text-gray-600 dark:text-gray-500 dark:text-gray-400 text-sm font-bold ml-1">Button Link</label>
                         <input 
                             type="text" 
                             name="buttonLink"
                             value={formData.buttonLink} 
                             onChange={handleChange}
-                            className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 transition-all"
+                            className="w-full bg-black/30 border border-black/5 dark:border-white/10 rounded-xl px-4 py-3 text-primary dark:text-white focus:outline-none focus:border-purple-500 transition-all"
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-gray-400 text-sm font-bold ml-1">Product URL (Direct Shop)</label>
+                        <label className="text-gray-600 dark:text-gray-500 dark:text-gray-400 text-sm font-bold ml-1">Product URL (Direct Shop)</label>
                         <input 
                             type="text" 
                             name="productUrl"
                             value={formData.productUrl || ''} 
                             onChange={handleChange}
                             placeholder="e.g. /product/645..."
-                            className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 transition-all"
+                            className="w-full bg-black/30 border border-black/5 dark:border-white/10 rounded-xl px-4 py-3 text-primary dark:text-white focus:outline-none focus:border-purple-500 transition-all"
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-gray-400 text-sm font-bold ml-1">Background Image</label>
+                        <label className="text-gray-600 dark:text-gray-500 dark:text-gray-400 text-sm font-bold ml-1">Background Image</label>
                         <div className="flex gap-2">
                             <input 
                                 type="text" 
@@ -243,12 +243,12 @@ export default function AdminBanner() {
                                 value={formData.image} 
                                 onChange={handleChange}
                                 placeholder="Image URL..."
-                                className="flex-1 bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 transition-all"
+                                className="flex-1 bg-black/30 border border-black/5 dark:border-white/10 rounded-xl px-4 py-3 text-primary dark:text-white focus:outline-none focus:border-purple-500 transition-all"
                             />
                             <button 
                                 type="button" 
                                 onClick={() => heroFileRef.current?.click()}
-                                className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl border border-white/10 transition-colors"
+                                className="px-4 py-2 bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:bg-white/20 text-primary dark:text-white rounded-xl border border-black/5 dark:border-white/10 transition-colors"
                             >
                                 📂 Upload
                             </button>
@@ -263,17 +263,14 @@ export default function AdminBanner() {
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-gray-400 text-sm font-bold ml-1">Hero Slideshow (Multiple Images)</label>
-                        <div className="flex gap-2">
-                            <div className="flex-1 text-gray-500 text-xs py-3 px-4 bg-black/20 rounded-xl border border-white/5">
-                                {heroImages.length > 0 ? `${heroImages.length} files selected` : (formData.images?.length || 0) + ' existing images'}
-                            </div>
+                        <label className="text-gray-600 dark:text-gray-500 dark:text-gray-400 text-sm font-bold ml-1">Hero Slideshow (Multiple Images)</label>
+                        <div className="flex gap-2 mb-2">
                             <button 
                                 type="button" 
                                 onClick={() => heroImagesRef.current?.click()}
-                                className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl border border-white/10 transition-colors"
+                                className="px-4 py-2 bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:bg-white/20 text-primary dark:text-white rounded-xl border border-black/5 dark:border-white/10 transition-colors"
                             >
-                                📂 Select
+                                📂 Add Images
                             </button>
                             <input 
                                 type="file" 
@@ -284,10 +281,53 @@ export default function AdminBanner() {
                                 multiple
                             />
                         </div>
+
+                        {/* Existing Images Previews */}
+                        {(formData.images?.length > 0 || heroImagesPreviews.length > 0) && (
+                            <div className="flex flex-wrap gap-2 mt-2">
+                                {formData.images?.map((imgUrl, idx) => (
+                                    <div key={`existing-${idx}`} className="relative w-16 h-16 rounded overflow-hidden border border-black/10 dark:border-white/10 group">
+                                        <img src={getProductImageUrl(imgUrl)} alt="Slider Image" className="w-full h-full object-cover" />
+                                        <button 
+                                            type="button"
+                                            onClick={() => {
+                                                const newImages = [...formData.images];
+                                                newImages.splice(idx, 1);
+                                                setFormData({...formData, images: newImages});
+                                            }}
+                                            className="absolute top-0 right-0 bg-red-500 text-white p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                                        >
+                                            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                                        </button>
+                                    </div>
+                                ))}
+                                {heroImagesPreviews.map((previewUrl, idx) => (
+                                    <div key={`new-${idx}`} className="relative w-16 h-16 rounded overflow-hidden border border-cyan-500 group">
+                                        <img src={previewUrl} alt="New Slider Image" className="w-full h-full object-cover" />
+                                        <button 
+                                            type="button"
+                                            onClick={() => {
+                                                const newPreviews = [...heroImagesPreviews];
+                                                newPreviews.splice(idx, 1);
+                                                setHeroImagesPreviews(newPreviews);
+                                                
+                                                const newFiles = [...heroImages];
+                                                newFiles.splice(idx, 1);
+                                                setHeroImages(newFiles);
+                                            }}
+                                            className="absolute top-0 right-0 bg-red-500 text-white p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                                        >
+                                            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                                        </button>
+                                        <span className="absolute bottom-0 inset-x-0 bg-cyan-500 text-white text-[8px] text-center font-bold">NEW</span>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-gray-400 text-sm font-bold ml-1">Hero Video (Optional)</label>
+                        <label className="text-gray-600 dark:text-gray-500 dark:text-gray-400 text-sm font-bold ml-1">Hero Video (Optional)</label>
                         <div className="flex gap-2">
                              <input 
                                 type="text" 
@@ -295,12 +335,12 @@ export default function AdminBanner() {
                                 value={formData.video || ''} 
                                 onChange={handleChange}
                                 placeholder="Video URL..."
-                                className="flex-1 bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-purple-500 transition-all"
+                                className="flex-1 bg-black/30 border border-black/5 dark:border-white/10 rounded-xl px-4 py-3 text-primary dark:text-white focus:outline-none focus:border-purple-500 transition-all"
                             />
                             <button 
                                 type="button" 
                                 onClick={() => heroVideoRef.current?.click()}
-                                className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl border border-white/10 transition-colors"
+                                className="px-4 py-2 bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:bg-white/20 text-primary dark:text-white rounded-xl border border-black/5 dark:border-white/10 transition-colors"
                             >
                                 🎥 Upload
                             </button>
@@ -316,7 +356,7 @@ export default function AdminBanner() {
                 </div>
 
                 {/* Preview */}
-                <div className="relative rounded-2xl overflow-hidden h-96 border border-white/10 flex items-center justify-center bg-black group">
+                <div className="relative rounded-2xl overflow-hidden h-96 border border-black/5 dark:border-white/10 flex items-center justify-center bg-gray-50 dark:bg-black group">
                     {heroVideoPreview || formData.video ? (
                         <video 
                             src={heroVideoPreview || getProductImageUrl(formData.video)} 
@@ -330,8 +370,8 @@ export default function AdminBanner() {
                     )}
                     
                     <div className="relative z-10 text-center p-6 w-full">
-                        <h2 className="text-3xl font-black text-white mb-2 leading-tight">{formData.title || "Title"}</h2>
-                        <p className="text-gray-300 mb-4 text-sm">{formData.subtitle || "Subtitle"}</p>
+                        <h2 className="text-3xl font-black text-primary dark:text-white mb-2 leading-tight">{formData.title || "Title"}</h2>
+                        <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm">{formData.subtitle || "Subtitle"}</p>
                         {heroImagesPreviews.length > 0 && (
                             <div className="flex justify-center gap-1 mb-4">
                                 {heroImagesPreviews.map((p, i) => (
@@ -339,17 +379,17 @@ export default function AdminBanner() {
                                 ))}
                             </div>
                         )}
-                        <div className="inline-block px-6 py-2 rounded-full border border-white/30 bg-white/10 backdrop-blur-md text-white font-bold mb-4">
+                        <div className="inline-block px-6 py-2 rounded-full border border-white/30 bg-black/10 dark:bg-white/10 backdrop-blur-md text-primary dark:text-white font-bold mb-4">
                             {formData.price || "Price"}
                         </div>
                         <div>
-                             <span className="inline-block text-sm font-bold border-b border-transparent hover:border-white transition-colors cursor-pointer text-white">
+                             <span className="inline-block text-sm font-bold border-b border-transparent hover:border-white transition-colors cursor-pointer text-primary dark:text-white">
                                 {formData.buttonText || "Button"} →
                              </span>
                         </div>
                     </div>
                     
-                    <div className="absolute top-4 right-4 bg-black/50 backdrop-blur px-3 py-1 rounded-lg border border-white/10 text-xs text-gray-400 font-mono">
+                    <div className="absolute top-4 right-4 bg-black/10 dark:bg-black/50 backdrop-blur px-3 py-1 rounded-lg border border-black/5 dark:border-white/10 text-xs text-gray-600 dark:text-gray-500 dark:text-gray-400 font-mono">
                         HERO PREVIEW
                     </div>
                 </div>
@@ -357,8 +397,8 @@ export default function AdminBanner() {
         </section>
 
         {/* Flash Sale Section */}
-        <section className="glass p-8 rounded-2xl border border-white/10 relative overflow-hidden">
-             <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+        <section className="glass p-8 rounded-2xl border border-black/5 dark:border-white/10 relative overflow-hidden">
+             <h2 className="text-xl font-bold text-primary dark:text-white mb-6 flex items-center gap-2">
                 <span className="w-1 h-6 bg-pink-500 rounded-full"></span>
                 Flash Sale Banner
              </h2>
@@ -366,63 +406,63 @@ export default function AdminBanner() {
              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                  <div className="space-y-4">
                     <div className="space-y-2">
-                        <label className="text-gray-400 text-sm font-bold ml-1">Sale Title</label>
+                        <label className="text-gray-600 dark:text-gray-500 dark:text-gray-400 text-sm font-bold ml-1">Sale Title</label>
                         <input 
                             type="text" 
                             name="title"
                             value={flashSaleData.title} 
                             onChange={handleFlashSaleChange}
-                            className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500 transition-all"
+                            className="w-full bg-black/30 border border-black/5 dark:border-white/10 rounded-xl px-4 py-3 text-primary dark:text-white focus:outline-none focus:border-pink-500 transition-all"
                         />
                     </div>
                     <div className="space-y-2">
-                        <label className="text-gray-400 text-sm font-bold ml-1">Subtitle</label>
+                        <label className="text-gray-600 dark:text-gray-500 dark:text-gray-400 text-sm font-bold ml-1">Subtitle</label>
                         <input 
                             type="text" 
                             name="subtitle"
                             value={flashSaleData.subtitle} 
                             onChange={handleFlashSaleChange}
-                            className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500 transition-all"
+                            className="w-full bg-black/30 border border-black/5 dark:border-white/10 rounded-xl px-4 py-3 text-primary dark:text-white focus:outline-none focus:border-pink-500 transition-all"
                         />
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-gray-400 text-sm font-bold ml-1">Product URL (Direct Shop/Cart)</label>
+                        <label className="text-gray-600 dark:text-gray-500 dark:text-gray-400 text-sm font-bold ml-1">Product URL (Direct Shop/Cart)</label>
                         <input 
                             type="text" 
                             name="productUrl"
                             value={flashSaleData.productUrl || ''} 
                             onChange={handleFlashSaleChange}
                             placeholder="e.g. /product/645..."
-                            className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500 transition-all"
+                            className="w-full bg-black/30 border border-black/5 dark:border-white/10 rounded-xl px-4 py-3 text-primary dark:text-white focus:outline-none focus:border-pink-500 transition-all"
                         />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <label className="text-gray-400 text-sm font-bold ml-1">Sale Price</label>
+                            <label className="text-gray-600 dark:text-gray-500 dark:text-gray-400 text-sm font-bold ml-1">Sale Price</label>
                             <input 
                                 type="number" 
                                 name="price"
                                 value={flashSaleData.price} 
                                 onChange={handleFlashSaleChange}
-                                className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500 transition-all"
+                                className="w-full bg-black/30 border border-black/5 dark:border-white/10 rounded-xl px-4 py-3 text-primary dark:text-white focus:outline-none focus:border-pink-500 transition-all"
                             />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-gray-400 text-sm font-bold ml-1">Original Price</label>
+                            <label className="text-gray-600 dark:text-gray-500 dark:text-gray-400 text-sm font-bold ml-1">Original Price</label>
                             <input 
                                 type="number" 
                                 name="originalPrice"
                                 value={flashSaleData.originalPrice} 
                                 onChange={handleFlashSaleChange}
-                                className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500 transition-all"
+                                className="w-full bg-black/30 border border-black/5 dark:border-white/10 rounded-xl px-4 py-3 text-primary dark:text-white focus:outline-none focus:border-pink-500 transition-all"
                             />
                         </div>
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-gray-400 text-sm font-bold ml-1">Product Image</label>
+                        <label className="text-gray-600 dark:text-gray-500 dark:text-gray-400 text-sm font-bold ml-1">Product Image</label>
                         <div className="flex gap-2">
                              <input 
                                 type="text" 
@@ -430,12 +470,12 @@ export default function AdminBanner() {
                                 value={flashSaleData.image} 
                                 onChange={handleFlashSaleChange}
                                 placeholder="Image URL..."
-                                className="flex-1 bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-pink-500 transition-all"
+                                className="flex-1 bg-black/30 border border-black/5 dark:border-white/10 rounded-xl px-4 py-3 text-primary dark:text-white focus:outline-none focus:border-pink-500 transition-all"
                             />
                              <button 
                                 type="button" 
                                 onClick={() => flashSaleFileRef.current?.click()}
-                                className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl border border-white/10 transition-colors"
+                                className="px-4 py-2 bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:bg-white/20 text-primary dark:text-white rounded-xl border border-black/5 dark:border-white/10 transition-colors"
                             >
                                 📂 Upload
                             </button>
@@ -451,7 +491,7 @@ export default function AdminBanner() {
                  </div>
 
                  {/* Preview */}
-                <div className="relative rounded-2xl overflow-hidden h-80 border border-white/10 flex items-center justify-center bg-black group">
+                <div className="relative rounded-2xl overflow-hidden h-80 border border-black/5 dark:border-white/10 flex items-center justify-center bg-gray-50 dark:bg-black group">
                      {currentFlashSaleImage ? (
                         <img src={currentFlashSaleImage} className="absolute inset-0 w-full h-full object-cover opacity-60 transition-transform group-hover:scale-105 duration-700" alt="Preview"/>
                     ) : (
@@ -459,16 +499,16 @@ export default function AdminBanner() {
                     )}
 
                     <div className="relative z-10 p-6 w-full">
-                        <span className="bg-pink-600 text-white text-xs font-bold px-2 py-1 rounded mb-2 inline-block">Flash Sale</span>
-                        <h2 className="text-2xl font-black text-white mb-1">{flashSaleData.title || "Product"}</h2>
-                        <p className="text-gray-300 mb-4 text-sm">{flashSaleData.subtitle || "Offer details"}</p>
+                        <span className="bg-pink-600 text-primary dark:text-white text-xs font-bold px-2 py-1 rounded mb-2 inline-block">Flash Sale</span>
+                        <h2 className="text-2xl font-black text-primary dark:text-white mb-1">{flashSaleData.title || "Product"}</h2>
+                        <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm">{flashSaleData.subtitle || "Offer details"}</p>
                         <div className="flex items-end gap-3">
-                            <span className="text-2xl font-bold text-white">${flashSaleData.price || "0"}</span>
-                            <span className="text-sm text-gray-500 line-through mb-1">${flashSaleData.originalPrice || "0"}</span>
+                            <span className="text-2xl font-bold text-primary dark:text-white">${flashSaleData.price || "0"}</span>
+                            <span className="text-sm text-gray-600 dark:text-gray-500 line-through mb-1">${flashSaleData.originalPrice || "0"}</span>
                         </div>
                     </div>
 
-                    <div className="absolute top-4 right-4 bg-black/50 backdrop-blur px-3 py-1 rounded-lg border border-white/10 text-xs text-gray-400 font-mono">
+                    <div className="absolute top-4 right-4 bg-black/10 dark:bg-black/50 backdrop-blur px-3 py-1 rounded-lg border border-black/5 dark:border-white/10 text-xs text-gray-600 dark:text-gray-500 dark:text-gray-400 font-mono">
                         SALE PREVIEW
                     </div>
                 </div>
@@ -478,7 +518,7 @@ export default function AdminBanner() {
         <div className="flex justify-end pt-4">
              <button 
                type="submit"
-               className="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-xl hover:shadow-[0_0_20px_rgba(236,72,153,0.4)] transition-all transform hover:-translate-y-1 block w-full md:w-auto text-center"
+               className="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-primary dark:text-white font-bold rounded-xl hover:shadow-[0_0_20px_rgba(236,72,153,0.4)] transition-all transform hover:-translate-y-1 block w-full md:w-auto text-center"
              >
                Save All Changes
              </button>

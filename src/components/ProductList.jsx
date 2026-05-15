@@ -19,16 +19,16 @@ function ProductList({ products, loading, error, view = 'grid' }) {
     return (
       <div className="text-center py-12 glass rounded-2xl border border-red-500/20 bg-red-500/5">
         <div className="text-red-400 font-medium text-lg">Error loading products</div>
-        <div className="text-gray-400 mt-2">{error}</div>
+        <div className="text-gray-600 dark:text-gray-500 dark:text-gray-400 mt-2">{error}</div>
       </div>
     );
   }
   
   if (!products || products.length === 0) {
     return (
-      <div className="text-center py-12 glass rounded-2xl border border-white/10">
-        <div className="text-gray-400 text-lg">No products found</div>
-        <p className="text-gray-500 mt-2">Try adjusting your filters</p>
+      <div className="text-center py-12 glass rounded-2xl border border-black/5 dark:border-white/10">
+        <div className="text-gray-600 dark:text-gray-500 dark:text-gray-400 text-lg">No products found</div>
+        <p className="text-gray-600 dark:text-gray-500 mt-2">Try adjusting your filters</p>
       </div>
     );
   }
@@ -40,9 +40,9 @@ function ProductList({ products, loading, error, view = 'grid' }) {
           <Link 
             key={product._id} 
             to={`/product/${product._id}`}
-            className="flex flex-col sm:flex-row items-center bg-[#0a0a0a] border border-white/10 rounded-2xl p-6 hover:shadow-lg transition-all group duration-300"
+            className="flex flex-col sm:flex-row items-center bg-white dark:bg-[#0a0a0a] border border-black/5 dark:border-white/10 rounded-2xl p-6 hover:shadow-lg transition-all group duration-300"
           >
-             <div className="relative w-full sm:w-32 h-32 mb-4 sm:mb-0 sm:mr-6 shrink-0 overflow-hidden rounded-xl bg-black/40">
+             <div className="relative w-full sm:w-32 h-32 mb-4 sm:mb-0 sm:mr-6 shrink-0 overflow-hidden rounded-xl bg-black/5 dark:bg-black/40">
                 {(product.images?.length || product.image) ? (
                   <img src={getProductImageUrl(product.images?.[0] || product.image)} alt={product.name} className="w-full h-full object-cover" />
                 ) : (
@@ -55,8 +55,8 @@ function ProductList({ products, loading, error, view = 'grid' }) {
              </div>
 
             <div className="flex-1 text-center sm:text-left w-full">
-              <h3 className="text-xl font-bold mb-2 text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-cyan-400 group-hover:to-purple-500 transition-all">{product.name}</h3>
-              <p className="text-gray-400 mb-4 text-sm line-clamp-2">{product.description}</p>
+              <h3 className="text-xl font-bold mb-2 text-primary dark:text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-cyan-400 group-hover:to-purple-500 transition-all">{product.name}</h3>
+              <p className="text-gray-600 dark:text-gray-500 dark:text-gray-400 mb-4 text-sm line-clamp-2">{product.description}</p>
               
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-auto">
                 <div className="flex items-center justify-center sm:justify-start mb-4 sm:mb-0">
@@ -71,10 +71,10 @@ function ProductList({ products, loading, error, view = 'grid' }) {
                       </svg>
                     ))}
                   </div>
-                  <span className="text-xs text-gray-500 ml-2">({product.ratingsQuantity} reviews)</span>
+                  <span className="text-xs text-gray-600 dark:text-gray-500 ml-2">({product.ratingsQuantity} reviews)</span>
                 </div>
 
-                <div className="text-2xl font-bold text-white flex flex-col items-end">
+                <div className="text-2xl font-bold text-primary dark:text-white flex flex-col items-end">
                     {product.discountPercentage > 0 && (
                         <span className="text-sm text-red-400 line-through font-medium mb-1">
                             {formatPrice(product.price, product.currency)}
@@ -94,7 +94,7 @@ function ProductList({ products, loading, error, view = 'grid' }) {
   }
   
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
       {products.map((product) => (
         <ProductCard key={product._id} product={product} />
       ))}

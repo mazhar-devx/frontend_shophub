@@ -148,12 +148,12 @@ export default function AddProduct() {
     <div className="max-w-7xl mx-auto animate-fade-in-up">
       <div className="flex items-center justify-between mb-8">
         <div>
-           <h1 className="text-3xl font-bold text-white mb-2">Create New Product</h1>
-           <p className="text-gray-400">Add a new item to your store inventory.</p>
+           <h1 className="text-3xl font-bold text-primary dark:text-white mb-2">Create New Product</h1>
+           <p className="text-gray-600 dark:text-gray-500 dark:text-gray-400">Add a new item to your store inventory.</p>
         </div>
         <button 
           onClick={() => navigate('/admin/products')}
-          className="px-4 py-2 bg-white/5 hover:bg-white/10 text-white rounded-lg border border-white/10 transition-colors"
+          className="px-4 py-2 bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:bg-white/10 text-primary dark:text-white rounded-lg border border-black/5 dark:border-white/10 transition-colors"
         >
           ← Back to Products
         </button>
@@ -162,7 +162,7 @@ export default function AddProduct() {
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Form Section */}
         <div className="lg:w-2/3">
-           <form onSubmit={handleSubmit} className="glass p-8 rounded-2xl border border-white/10 space-y-6 relative overflow-hidden">
+           <form onSubmit={handleSubmit} className="glass p-8 rounded-2xl border border-black/5 dark:border-white/10 space-y-6 relative overflow-hidden">
               {/* Background Glow */}
               <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl -z-10 pointer-events-none"></div>
 
@@ -173,26 +173,26 @@ export default function AddProduct() {
               )}
 
               <div className="space-y-2">
-                 <label className="text-gray-300 text-sm font-bold ml-1">Product Name</label>
+                 <label className="text-gray-600 dark:text-gray-300 text-sm font-bold ml-1">Product Name</label>
                  <input 
                    type="text" 
                    name="name" 
                    value={formData.name} 
                    onChange={handleChange}
                    placeholder="e.g. Wireless Noise-Cancelling Headphones"
-                   className="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                   className="w-full bg-black/30 border border-black/5 dark:border-white/10 rounded-xl p-4 text-primary dark:text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
                  />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-gray-300 text-sm font-bold ml-1">Price</label>
+                    <label className="text-gray-600 dark:text-gray-300 text-sm font-bold ml-1">Price</label>
                     <div className="flex gap-2">
                         <select 
                             name="currency" 
                             value={formData.currency} 
                             onChange={handleChange}
-                            className="bg-black/30 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-cyan-500 transition-all cursor-pointer"
+                            className="bg-black/30 border border-black/5 dark:border-white/10 rounded-xl p-4 text-primary dark:text-white focus:outline-none focus:border-cyan-500 transition-all cursor-pointer"
                         >
                             <option value="PKR">PKR</option>
                             <option value="USD">USD</option>
@@ -208,31 +208,31 @@ export default function AddProduct() {
                           onChange={handleChange}
                           placeholder="e.g. 299.99"
                           step="0.01"
-                          className="flex-1 bg-black/30 border border-white/10 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
+                          className="flex-1 bg-black/30 border border-black/5 dark:border-white/10 rounded-xl p-4 text-primary dark:text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
                         />
                     </div>
                  </div>
                  <div className="space-y-2">
-                    <label className="text-gray-300 text-sm font-bold ml-1">Stock Quantity</label>
+                    <label className="text-gray-600 dark:text-gray-300 text-sm font-bold ml-1">Stock Quantity</label>
                     <input 
                       type="number" 
                       name="countInStock" 
                       value={formData.countInStock} 
                       onChange={handleChange}
                       placeholder="e.g. 100"
-                      className="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
+                      className="w-full bg-black/30 border border-black/5 dark:border-white/10 rounded-xl p-4 text-primary dark:text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
                     />
                  </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <div className="space-y-2">
-                    <label className="text-gray-300 text-sm font-bold ml-1">Category</label>
+                    <label className="text-gray-600 dark:text-gray-300 text-sm font-bold ml-1">Category</label>
                     <select 
                       name="category" 
                       value={formData.category} 
                       onChange={handleChange}
-                      className="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-purple-500 transition-all appearance-none cursor-pointer"
+                      className="w-full bg-black/30 border border-black/5 dark:border-white/10 rounded-xl p-4 text-primary dark:text-white focus:outline-none focus:border-purple-500 transition-all appearance-none cursor-pointer"
                     >
                        <option value="">Select Category</option>
                        {categories.map((cat, index) => (
@@ -249,39 +249,39 @@ export default function AddProduct() {
                              value={formData.customCategory || ''} 
                              onChange={handleChange}
                              placeholder="Enter custom category name..."
-                             className="w-full bg-black/30 border border-purple-500/50 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all shadow-[0_0_15px_rgba(168,85,247,0.15)]"
+                             className="w-full bg-black/30 border border-purple-500/50 rounded-xl p-4 text-primary dark:text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all shadow-[0_0_15px_rgba(168,85,247,0.15)]"
                            />
                         </div>
                      )}
                  </div>
                  <div className="space-y-2">
-                    <label className="text-gray-300 text-sm font-bold ml-1">Brand</label>
+                    <label className="text-gray-600 dark:text-gray-300 text-sm font-bold ml-1">Brand</label>
                     <input 
                       type="text" 
                       name="brand" 
                       value={formData.brand} 
                       onChange={handleChange}
                       placeholder="e.g. Apple, Sony"
-                      className="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                      className="w-full bg-black/30 border border-black/5 dark:border-white/10 rounded-xl p-4 text-primary dark:text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
                     />
                  </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-4 border-b border-white/5">
                  <div className="space-y-4">
-                    <label className="text-gray-300 text-sm font-bold ml-1">Shipping Type</label>
+                    <label className="text-gray-600 dark:text-gray-300 text-sm font-bold ml-1">Shipping Type</label>
                     <div className="flex gap-4">
                         <button 
                             type="button"
                             onClick={() => setFormData({...formData, shippingType: 'free'})}
-                            className={`flex-1 py-3 rounded-xl border transition-all font-bold ${formData.shippingType === 'free' ? 'bg-green-500/20 border-green-500 text-green-400 shadow-[0_0_15px_rgba(34,197,94,0.15)]' : 'bg-black/30 border-white/10 text-gray-500 hover:border-white/20'}`}
+                            className={`flex-1 py-3 rounded-xl border transition-all font-bold ${formData.shippingType === 'free' ? 'bg-green-500/20 border-green-500 text-green-400 shadow-[0_0_15px_rgba(34,197,94,0.15)]' : 'bg-black/30 border-black/5 dark:border-white/10 text-gray-600 dark:text-gray-500 hover:border-black/10 dark:border-white/20'}`}
                         >
                             Free
                         </button>
                         <button 
                             type="button"
                             onClick={() => setFormData({...formData, shippingType: 'paid'})}
-                            className={`flex-1 py-3 rounded-xl border transition-all font-bold ${formData.shippingType === 'paid' ? 'bg-cyan-500/20 border-cyan-500 text-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.15)]' : 'bg-black/30 border-white/10 text-gray-500 hover:border-white/20'}`}
+                            className={`flex-1 py-3 rounded-xl border transition-all font-bold ${formData.shippingType === 'paid' ? 'bg-cyan-500/20 border-cyan-500 text-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.15)]' : 'bg-black/30 border-black/5 dark:border-white/10 text-gray-600 dark:text-gray-500 hover:border-black/10 dark:border-white/20'}`}
                         >
                             Paid
                         </button>
@@ -296,7 +296,7 @@ export default function AddProduct() {
                                 onChange={handleChange}
                                 placeholder="Shipping Cost ($)"
                                 step="0.01"
-                                className="w-full bg-black/30 border border-cyan-500/50 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
+                                className="w-full bg-black/30 border border-cyan-500/50 rounded-xl p-4 text-primary dark:text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
                             />
                         </div>
                     )}
@@ -304,7 +304,7 @@ export default function AddProduct() {
                  <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <label className="text-gray-300 text-sm font-bold ml-1">Tax (%)</label>
+                            <label className="text-gray-600 dark:text-gray-300 text-sm font-bold ml-1">Tax (%)</label>
                             <div className="relative">
                                 <input 
                                     type="number" 
@@ -312,13 +312,13 @@ export default function AddProduct() {
                                     value={formData.taxPercentage} 
                                     onChange={handleChange}
                                     placeholder="0"
-                                    className="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                                    className="w-full bg-black/30 border border-black/5 dark:border-white/10 rounded-xl p-4 text-primary dark:text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
                                 />
-                                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold">%</span>
+                                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-500 font-bold">%</span>
                             </div>
                         </div>
                         <div className="space-y-2">
-                            <label className="text-gray-300 text-sm font-bold ml-1">Discount (%)</label>
+                            <label className="text-gray-600 dark:text-gray-300 text-sm font-bold ml-1">Discount (%)</label>
                             <div className="relative">
                                 <input 
                                     type="number" 
@@ -326,15 +326,15 @@ export default function AddProduct() {
                                     value={formData.discountPercentage} 
                                     onChange={handleChange}
                                     placeholder="0"
-                                    className="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all"
+                                    className="w-full bg-black/30 border border-black/5 dark:border-white/10 rounded-xl p-4 text-primary dark:text-white placeholder-gray-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all"
                                 />
-                                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold">%</span>
+                                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-500 font-bold">%</span>
                             </div>
                         </div>
                     </div>
                  </div>
                <div className="space-y-4">
-                  <label className="text-gray-300 text-sm font-bold ml-1">Dimensions (L x W x H)</label>
+                  <label className="text-gray-600 dark:text-gray-300 text-sm font-bold ml-1">Dimensions (L x W x H)</label>
                   <div className="grid grid-cols-4 gap-4">
                      <input 
                         type="number" 
@@ -342,7 +342,7 @@ export default function AddProduct() {
                         value={formData.length} 
                         onChange={handleChange}
                         placeholder="Length"
-                        className="bg-black/30 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-purple-500 transition-all"
+                        className="bg-black/30 border border-black/5 dark:border-white/10 rounded-xl p-4 text-primary dark:text-white focus:outline-none focus:border-purple-500 transition-all"
                      />
                      <input 
                         type="number" 
@@ -350,7 +350,7 @@ export default function AddProduct() {
                         value={formData.width} 
                         onChange={handleChange}
                         placeholder="Width"
-                        className="bg-black/30 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-purple-500 transition-all"
+                        className="bg-black/30 border border-black/5 dark:border-white/10 rounded-xl p-4 text-primary dark:text-white focus:outline-none focus:border-purple-500 transition-all"
                      />
                      <input 
                         type="number" 
@@ -358,13 +358,13 @@ export default function AddProduct() {
                         value={formData.height} 
                         onChange={handleChange}
                         placeholder="Height"
-                        className="bg-black/30 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-purple-500 transition-all"
+                        className="bg-black/30 border border-black/5 dark:border-white/10 rounded-xl p-4 text-primary dark:text-white focus:outline-none focus:border-purple-500 transition-all"
                      />
                      <select 
                         name="dimensionUnit" 
                         value={formData.dimensionUnit} 
                         onChange={handleChange}
-                        className="bg-black/30 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-purple-500 transition-all"
+                        className="bg-black/30 border border-black/5 dark:border-white/10 rounded-xl p-4 text-primary dark:text-white focus:outline-none focus:border-purple-500 transition-all"
                      >
                         <option value="cm">cm</option>
                         <option value="in">in</option>
@@ -375,7 +375,7 @@ export default function AddProduct() {
             </div>
 
               <div className="space-y-4">
-                 <label className="text-gray-300 text-sm font-bold ml-1">Product Images</label>
+                 <label className="text-gray-600 dark:text-gray-300 text-sm font-bold ml-1">Product Images</label>
                  
                  {/* URL Input */}
                  <div className="flex gap-2">
@@ -385,24 +385,24 @@ export default function AddProduct() {
                        value={formData.imageUrl} 
                        onChange={handleChange}
                         placeholder="Paste image URL here (Optional)..."
-                       className="flex-1 bg-black/30 border border-white/10 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
+                       className="flex-1 bg-black/30 border border-black/5 dark:border-white/10 rounded-xl p-4 text-primary dark:text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all"
                     />
                  </div>
-                 <p className="text-xs text-gray-500 ml-1">Or upload images from your device below</p>
+                 <p className="text-xs text-gray-600 dark:text-gray-500 ml-1">Or upload images from your device below</p>
 
                  {/* File Upload Area */}
                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                      {/* Add Button */}
                     <div 
                         onClick={() => fileInputRef.current?.click()}
-                        className="aspect-square rounded-xl border-2 border-dashed border-white/20 hover:border-purple-500/50 hover:bg-purple-500/5 flex flex-col items-center justify-center cursor-pointer transition-all group"
+                        className="aspect-square rounded-xl border-2 border-dashed border-black/10 dark:border-white/20 hover:border-purple-500/50 hover:bg-purple-500/5 flex flex-col items-center justify-center cursor-pointer transition-all group"
                     >
-                        <div className="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
-                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-400 group-hover:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <div className="h-10 w-10 rounded-full bg-black/5 dark:bg-white/5 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-600 dark:text-gray-500 dark:text-gray-400 group-hover:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                              </svg>
                         </div>
-                        <span className="text-xs text-gray-400 group-hover:text-purple-400">Add Image</span>
+                        <span className="text-xs text-gray-600 dark:text-gray-500 dark:text-gray-400 group-hover:text-purple-400">Add Image</span>
                         <input 
                             type="file" 
                             multiple 
@@ -415,31 +415,31 @@ export default function AddProduct() {
 
                     {/* URL Preview */}
                     {formData.imageUrl && (
-                        <div className="relative aspect-square rounded-xl overflow-hidden border border-white/10 group">
+                        <div className="relative aspect-square rounded-xl overflow-hidden border border-black/5 dark:border-white/10 group">
                             <img src={formData.imageUrl} alt="URL Preview" className="w-full h-full object-cover" />
                             <button 
                                 type="button"
                                 onClick={() => setFormData({...formData, imageUrl: ''})}
-                                className="absolute top-1 right-1 h-6 w-6 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-red-500 transition-colors opacity-0 group-hover:opacity-100"
+                                className="absolute top-1 right-1 h-6 w-6 rounded-full bg-black/10 dark:bg-black/60 text-primary dark:text-white flex items-center justify-center hover:bg-red-500 transition-colors opacity-0 group-hover:opacity-100"
                             >
                                 ×
                             </button>
-                            <span className="absolute bottom-1 left-1 text-[10px] bg-purple-500/80 text-white px-1.5 py-0.5 rounded">URL</span>
+                            <span className="absolute bottom-1 left-1 text-[10px] bg-purple-500/80 text-primary dark:text-white px-1.5 py-0.5 rounded">URL</span>
                         </div>
                     )}
 
                     {/* File Previews */}
                     {previewImages.map((img, idx) => (
-                        <div key={idx} className="relative aspect-square rounded-xl overflow-hidden border border-white/10 group">
+                        <div key={idx} className="relative aspect-square rounded-xl overflow-hidden border border-black/5 dark:border-white/10 group">
                             <img src={img} alt="File Preview" className="w-full h-full object-cover" />
                             <button 
                                 type="button"
                                 onClick={() => removeImage(idx)}
-                                className="absolute top-1 right-1 h-6 w-6 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-red-500 transition-colors opacity-0 group-hover:opacity-100"
+                                className="absolute top-1 right-1 h-6 w-6 rounded-full bg-black/10 dark:bg-black/60 text-primary dark:text-white flex items-center justify-center hover:bg-red-500 transition-colors opacity-0 group-hover:opacity-100"
                             >
                                 ×
                             </button>
-                            <span className="absolute bottom-1 left-1 text-[10px] bg-blue-500/80 text-white px-1.5 py-0.5 rounded">FILE</span>
+                            <span className="absolute bottom-1 left-1 text-[10px] bg-blue-500/80 text-primary dark:text-white px-1.5 py-0.5 rounded">FILE</span>
                         </div>
                     ))}
                  </div>
@@ -447,76 +447,76 @@ export default function AddProduct() {
 
               {/* Product Video Section */}
               <div className="space-y-4 pt-4 border-t border-white/5">
-                 <label className="text-gray-300 text-sm font-bold ml-1">Product Video (Optional)</label>
+                 <label className="text-gray-600 dark:text-gray-300 text-sm font-bold ml-1">Product Video (Optional)</label>
                  
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                       <label className="text-gray-400 text-xs ml-1">Video URL</label>
+                       <label className="text-gray-600 dark:text-gray-500 dark:text-gray-400 text-xs ml-1">Video URL</label>
                        <input 
                           type="text" 
                           name="videoUrl" 
                           value={formData.videoUrl} 
                           onChange={handleChange}
                           placeholder="https://example.com/video.mp4"
-                          className="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition-all"
+                          className="w-full bg-black/30 border border-black/5 dark:border-white/10 rounded-xl p-4 text-primary dark:text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition-all"
                        />
                     </div>
                     <div className="space-y-2">
-                       <label className="text-gray-400 text-xs ml-1">Or Upload Video</label>
+                       <label className="text-gray-600 dark:text-gray-500 dark:text-gray-400 text-xs ml-1">Or Upload Video</label>
                        <input 
                           type="file" 
                           accept="video/*"
                           onChange={handleVideoChange}
-                          className="w-full bg-black/30 border border-white/10 rounded-xl p-3.5 text-white focus:outline-none focus:border-purple-500 transition-all"
+                          className="w-full bg-black/30 border border-black/5 dark:border-white/10 rounded-xl p-3.5 text-primary dark:text-white focus:outline-none focus:border-purple-500 transition-all"
                        />
                        {selectedVideo && <p className="text-xs text-green-400 ml-1">Selected: {selectedVideo.name}</p>}
                     </div>
                  </div>
 
                  <div className="space-y-2 mt-4">
-                    <label className="text-gray-400 text-xs ml-1">Set as Poster?</label>
+                    <label className="text-gray-600 dark:text-gray-500 dark:text-gray-400 text-xs ml-1">Set as Poster?</label>
                     <select 
                        name="posterType" 
                        value={formData.posterType} 
                        onChange={handleChange}
-                       className="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-white focus:outline-none focus:border-purple-500 transition-all"
+                       className="w-full bg-black/30 border border-black/5 dark:border-white/10 rounded-xl p-4 text-primary dark:text-white focus:outline-none focus:border-purple-500 transition-all"
                     >
                        <option value="image">Show Image as Poster</option>
                        <option value="video">Show Video as Poster</option>
                        <option value="none">Show None (Fallback)</option>
                     </select>
-                    <p className="text-xs text-gray-500 ml-1">This determines what shows on the product cards.</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-500 ml-1">This determines what shows on the product cards.</p>
                  </div>
               </div>
 
               <div className="space-y-2">
-                 <label className="text-gray-300 text-sm font-bold ml-1">Description</label>
+                 <label className="text-gray-600 dark:text-gray-300 text-sm font-bold ml-1">Description</label>
                  <textarea
                    name="description" 
                    value={formData.description} 
                    onChange={handleChange}
                    placeholder="Detailed product description..."
                    rows="4"
-                   className="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all resize-none"
+                   className="w-full bg-black/30 border border-black/5 dark:border-white/10 rounded-xl p-4 text-primary dark:text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all resize-none"
                  ></textarea>
               </div>
 
-              <div className="pt-4 border-t border-white/10 flex justify-end gap-4">
+              <div className="pt-4 border-t border-black/5 dark:border-white/10 flex justify-end gap-4">
                  <button 
                    type="button"
                    onClick={() => navigate('/admin/products')}
-                   className="px-6 py-3 text-gray-300 hover:text-white font-medium transition-colors"
+                   className="px-6 py-3 text-gray-600 dark:text-gray-300 hover:text-primary dark:text-white font-medium transition-colors"
                  >
                    Cancel
                  </button>
                  <button 
                    type="submit"
                    disabled={loading}
-                   className="px-8 py-3 bg-gradient-to-r from-purple-600 to-cyan-600 text-white font-bold rounded-xl hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:-translate-y-1"
+                   className="px-8 py-3 bg-gradient-to-r from-purple-600 to-cyan-600 text-primary dark:text-white font-bold rounded-xl hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:-translate-y-1"
                  >
                    {loading ? (
                      <span className="flex items-center">
-                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-primary dark:text-white" fill="none" viewBox="0 0 24 24">
                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
@@ -531,9 +531,9 @@ export default function AddProduct() {
         {/* Live Preview Section */}
         <div className="lg:w-1/3">
            <div className="sticky top-6">
-              <h2 className="text-xl font-bold text-gray-400 mb-4 uppercase tracking-widest text-xs">Live Preview</h2>
+              <h2 className="text-xl font-bold text-gray-600 dark:text-gray-500 dark:text-gray-400 mb-4 uppercase tracking-widest text-xs">Live Preview</h2>
               
-              <div className="glass rounded-2xl overflow-hidden border border-white/10 group relative max-w-sm mx-auto">
+              <div className="glass rounded-2xl overflow-hidden border border-black/5 dark:border-white/10 group relative max-w-sm mx-auto">
                  <div className="relative h-64 w-full bg-gray-900 flex items-center justify-center overflow-hidden">
                     {mainPreview ? (
                         <img src={mainPreview} alt="Preview" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" onError={(e) => e.target.style.display='none'} />
@@ -548,14 +548,14 @@ export default function AddProduct() {
 
                  <div className="p-6">
                     <p className="text-xs text-cyan-400 font-bold uppercase tracking-wider mb-2">{formData.category || 'CATEGORY'}</p>
-                    <h3 className="text-lg font-bold text-white mb-2 leading-tight">
+                    <h3 className="text-lg font-bold text-primary dark:text-white mb-2 leading-tight">
                         {formData.name || 'Product Name'}
                     </h3>
-                    <p className="text-sm text-gray-400 mb-4 line-clamp-2">
+                    <p className="text-sm text-gray-600 dark:text-gray-500 dark:text-gray-400 mb-4 line-clamp-2">
                         {formData.description || 'Product description will appear here...'}
                     </p>
                     
-                    <div className="flex items-center justify-between border-t border-white/10 pt-4">
+                    <div className="flex items-center justify-between border-t border-black/5 dark:border-white/10 pt-4">
                        <div className="flex flex-col items-end">
                            {(formData.discountPercentage > 0) && (
                                <span className="text-xs text-red-400 line-through font-medium mr-1">
@@ -568,7 +568,7 @@ export default function AddProduct() {
                                   {formData.price || '0.00'}
                                </span>
                            )}
-                           <span className="text-2xl font-bold text-white">
+                           <span className="text-2xl font-bold text-primary dark:text-white">
                               {formData.currency === 'PKR' ? 'Rs.' : 
                                formData.currency === 'USD' ? '$' : 
                                formData.currency === 'EUR' ? '€' : 
@@ -580,7 +580,7 @@ export default function AddProduct() {
                                 : (formData.price || '0.00')}
                            </span>
                        </div>
-                       <button className="h-10 w-10 rounded-lg bg-white/10 flex items-center justify-center text-white hover:bg-purple-600 transition-colors">
+                       <button className="h-10 w-10 rounded-lg bg-black/10 dark:bg-white/10 flex items-center justify-center text-primary dark:text-white hover:bg-purple-600 transition-colors">
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                           </svg>
@@ -589,12 +589,12 @@ export default function AddProduct() {
                  </div>
               </div>
               
-              <div className="mt-6 p-4 rounded-xl border border-white/10 bg-white/5">
+              <div className="mt-6 p-4 rounded-xl border border-black/5 dark:border-white/10 bg-black/5 dark:bg-white/5">
                  <div className="flex items-center gap-3 mb-2">
                     <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                    <span className="text-xs text-gray-400 font-mono">STATUS</span>
+                    <span className="text-xs text-gray-600 dark:text-gray-500 dark:text-gray-400 font-mono">STATUS</span>
                  </div>
-                 <p className="text-sm text-gray-300">
+                 <p className="text-sm text-gray-600 dark:text-gray-300">
                     Ready to publish to store. This item will appear immediately after creation.
                  </p>
               </div>

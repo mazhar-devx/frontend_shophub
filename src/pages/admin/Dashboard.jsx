@@ -116,14 +116,14 @@ export default function AdminDashboard() {
     <div className="space-y-8 animate-fade-in-up">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">Dashboard Overview</h1>
-          <p className="mt-1 text-gray-400">Welcome back, Admin</p>
+          <h1 className="text-3xl font-bold text-primary dark:text-white bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">Dashboard Overview</h1>
+          <p className="mt-1 text-gray-600 dark:text-gray-500 dark:text-gray-400">Welcome back, Admin</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-3">
           <button
             onClick={() => fetchData(false)}
             disabled={loading}
-            className="flex items-center px-4 py-3 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all font-bold group"
+            className="flex items-center px-4 py-3 bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-xl hover:bg-black/10 dark:bg-white/10 transition-all font-bold group"
             title="Refresh statistics"
           >
             <span className={`mr-2 ${loading ? 'animate-spin' : 'group-hover:rotate-180 transition-transform duration-500'}`}>🔄</span>
@@ -132,14 +132,14 @@ export default function AdminDashboard() {
           <button
             onClick={handleGoogleSync}
             disabled={syncing}
-            className={`flex items-center px-6 py-3 border border-white/10 rounded-xl transition-all transform hover:-translate-y-1 font-bold group ${syncing ? 'opacity-50 cursor-not-allowed' : 'bg-white/5 hover:bg-white/10'}`}
+            className={`flex items-center px-6 py-3 border border-black/5 dark:border-white/10 rounded-xl transition-all transform hover:-translate-y-1 font-bold group ${syncing ? 'opacity-50 cursor-not-allowed' : 'bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:bg-white/10'}`}
           >
             <span className={`mr-2 ${syncing ? 'animate-spin' : ''}`}>{syncing ? '⏳' : '🔄'}</span>
             {syncing ? 'Syncing...' : 'Sync to Google'}
           </button>
           <Link 
               to="/admin/products/new"
-              className="flex items-center px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-xl shadow-[0_0_20px_rgba(124,58,237,0.4)] transition-all transform hover:-translate-y-1 font-bold group"
+              className="flex items-center px-6 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-primary dark:text-white rounded-xl shadow-[0_0_20px_rgba(124,58,237,0.4)] transition-all transform hover:-translate-y-1 font-bold group"
           >
               <span className="mr-2 text-xl group-hover:rotate-90 transition-transform duration-300">+</span>
               Add New Product
@@ -148,7 +148,7 @@ export default function AdminDashboard() {
       </div>
 
       {lastUpdated && (
-        <div className="flex items-center gap-2 text-[10px] text-gray-500 uppercase tracking-widest font-black animate-fade-in">
+        <div className="flex items-center gap-2 text-[10px] text-gray-600 dark:text-gray-500 uppercase tracking-widest font-black animate-fade-in">
            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
            Last updated: {lastUpdated.toLocaleTimeString()}
         </div>
@@ -165,8 +165,8 @@ export default function AdminDashboard() {
             <span className="text-xs font-bold text-green-400 bg-green-500/10 px-2 py-1 rounded-lg border border-green-500/20">+12%</span>
           </div>
           <div>
-            <p className="text-sm font-medium text-gray-400">Total Products</p>
-            <p className="text-3xl font-bold text-white mt-1">{stats.totalProducts}</p>
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-500 dark:text-gray-400">Total Products</p>
+            <p className="text-3xl font-bold text-primary dark:text-white mt-1">{stats.totalProducts}</p>
           </div>
         </div>
 
@@ -179,8 +179,8 @@ export default function AdminDashboard() {
             <span className="text-xs font-bold text-green-400 bg-green-500/10 px-2 py-1 rounded-lg border border-green-500/20">+5%</span>
           </div>
           <div>
-            <p className="text-sm font-medium text-gray-400">Total Orders</p>
-            <p className="text-3xl font-bold text-white mt-1">{stats.totalOrders}</p>
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-500 dark:text-gray-400">Total Orders</p>
+            <p className="text-3xl font-bold text-primary dark:text-white mt-1">{stats.totalOrders}</p>
           </div>
         </div>
 
@@ -193,8 +193,8 @@ export default function AdminDashboard() {
             <span className="text-xs font-bold text-green-400 bg-green-500/10 px-2 py-1 rounded-lg border border-green-500/20">+18%</span>
           </div>
           <div>
-            <p className="text-sm font-medium text-gray-400">Total Customers</p>
-            <p className="text-3xl font-bold text-white mt-1">{stats.totalCustomers}</p>
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-500 dark:text-gray-400">Total Customers</p>
+            <p className="text-3xl font-bold text-primary dark:text-white mt-1">{stats.totalCustomers}</p>
           </div>
         </div>
 
@@ -207,7 +207,7 @@ export default function AdminDashboard() {
             <span className="text-xs font-bold text-green-400 bg-green-500/10 px-2 py-1 rounded-lg border border-green-500/20">+25%</span>
           </div>
           <div>
-            <p className="text-sm font-medium text-gray-400">Total Revenue</p>
+            <p className="text-sm font-medium text-gray-600 dark:text-gray-500 dark:text-gray-400">Total Revenue</p>
             <p className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 to-yellow-500 mt-1">${stats.totalRevenue.toFixed(2)}</p>
           </div>
         </div>
@@ -217,7 +217,7 @@ export default function AdminDashboard() {
         {/* Recent Orders */}
         <div className="glass border border-white/5 rounded-2xl p-6">
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-white">Recent Orders</h2>
+            <h2 className="text-xl font-bold text-primary dark:text-white">Recent Orders</h2>
             <Link to="/admin/orders" className="text-sm text-purple-400 hover:text-purple-300 font-medium transition-colors">View All</Link>
           </div>
           
@@ -225,18 +225,18 @@ export default function AdminDashboard() {
             <table className="min-w-full">
               <thead>
                 <tr className="border-b border-white/5 text-left">
-                  <th className="px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wider">Order ID</th>
-                  <th className="px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wider">Customer</th>
-                  <th className="px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wider">Amount</th>
-                  <th className="px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
+                  <th className="px-4 py-3 text-xs font-medium text-gray-600 dark:text-gray-500 dark:text-gray-400 uppercase tracking-wider">Order ID</th>
+                  <th className="px-4 py-3 text-xs font-medium text-gray-600 dark:text-gray-500 dark:text-gray-400 uppercase tracking-wider">Customer</th>
+                  <th className="px-4 py-3 text-xs font-medium text-gray-600 dark:text-gray-500 dark:text-gray-400 uppercase tracking-wider">Amount</th>
+                  <th className="px-4 py-3 text-xs font-medium text-gray-600 dark:text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
                 {recentOrders.map((order) => (
-                  <tr key={order.id} className="hover:bg-white/5 transition-colors">
+                  <tr key={order.id} className="hover:bg-black/5 dark:bg-white/5 transition-colors">
                     <td className="px-4 py-4 text-sm font-medium text-purple-300">{order.id}</td>
-                    <td className="px-4 py-4 text-sm text-gray-300">{order.customer}</td>
-                    <td className="px-4 py-4 text-sm text-white font-bold">${order.amount.toFixed(2)}</td>
+                    <td className="px-4 py-4 text-sm text-gray-600 dark:text-gray-300">{order.customer}</td>
+                    <td className="px-4 py-4 text-sm text-primary dark:text-white font-bold">${order.amount.toFixed(2)}</td>
                     <td className="px-4 py-4 text-sm">
                       <span className={`px-3 py-1 rounded-full text-xs font-bold border ${statusColors[order.status]}`}>
                         {order.status}
@@ -252,7 +252,7 @@ export default function AdminDashboard() {
         {/* Recent Products */}
         <div className="glass border border-white/5 rounded-2xl p-6">
            <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-white">New Products</h2>
+            <h2 className="text-xl font-bold text-primary dark:text-white">New Products</h2>
             <Link to="/admin/products" className="text-sm text-purple-400 hover:text-purple-300 font-medium transition-colors">View All</Link>
           </div>
           
@@ -260,25 +260,25 @@ export default function AdminDashboard() {
             <table className="min-w-full">
               <thead>
                 <tr className="border-b border-white/5 text-left">
-                  <th className="px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wider">Product</th>
-                  <th className="px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wider">Price</th>
-                  <th className="px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wider">Stock</th>
-                  <th className="px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
+                  <th className="px-4 py-3 text-xs font-medium text-gray-600 dark:text-gray-500 dark:text-gray-400 uppercase tracking-wider">Product</th>
+                  <th className="px-4 py-3 text-xs font-medium text-gray-600 dark:text-gray-500 dark:text-gray-400 uppercase tracking-wider">Price</th>
+                  <th className="px-4 py-3 text-xs font-medium text-gray-600 dark:text-gray-500 dark:text-gray-400 uppercase tracking-wider">Stock</th>
+                  <th className="px-4 py-3 text-xs font-medium text-gray-600 dark:text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
                 {recentProducts.map((product) => (
-                  <tr key={product.id} className="hover:bg-white/5 transition-colors">
+                  <tr key={product.id} className="hover:bg-black/5 dark:bg-white/5 transition-colors">
                     <td className="px-4 py-4">
                         <div className="flex items-center">
-                            <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center mr-3 text-lg">📦</div>
+                            <div className="w-8 h-8 rounded-lg bg-black/10 dark:bg-white/10 flex items-center justify-center mr-3 text-lg">📦</div>
                             <div>
-                                <div className="text-sm font-medium text-white">{product.name}</div>
-                                <div className="text-xs text-gray-400">{product.category}</div>
+                                <div className="text-sm font-medium text-primary dark:text-white">{product.name}</div>
+                                <div className="text-xs text-gray-600 dark:text-gray-500 dark:text-gray-400">{product.category}</div>
                             </div>
                         </div>
                     </td>
-                    <td className="px-4 py-4 text-sm text-white font-bold">${product.price.toFixed(2)}</td>
+                    <td className="px-4 py-4 text-sm text-primary dark:text-white font-bold">${product.price.toFixed(2)}</td>
                     <td className="px-4 py-4">
                         <span className={`text-xs font-bold px-2 py-1 rounded-lg ${product.stock > 10 ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
                             {product.stock} in stock

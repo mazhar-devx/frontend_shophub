@@ -13,6 +13,7 @@ export default function SEO({
   currency = 'PKR',
   availability,
   schema,
+  video,
   children 
 }) {
   const siteTitle = "ShopHub.pro - Pakistan's Luxury Shopping & Social Hub";
@@ -57,6 +58,8 @@ export default function SEO({
     }
   };
 
+  const schemas = Array.isArray(schema) ? schema : schema ? [schema] : [];
+
   return (
     <Helmet>
       {/* Standard Metadata */}
@@ -83,12 +86,27 @@ export default function SEO({
       {price && <meta property="product:price:currency" content={currency} />}
       {availability && <meta property="product:availability" content={availability} />}
 
+      {/* Video Open Graph */}
+      {video && (
+        <>
+          <meta property="og:video" content={video} />
+          <meta property="og:video:secure_url" content={video} />
+          <meta property="og:video:type" content="video/mp4" />
+          <meta property="og:video:width" content="1080" />
+          <meta property="og:video:height" content="1920" />
+        </>
+      )}
+
       {/* Twitter Cards */}
-      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:card" content={video ? "player" : "summary_large_image"} />
       <meta name="twitter:site" content="@shophub_pro" />
       <meta name="twitter:title" content={metaTitle} />
       <meta name="twitter:description" content={metaDescription} />
       <meta name="twitter:image" content={metaImage} />
+      
+      {video && <meta name="twitter:player" content={metaUrl} />}
+      {video && <meta name="twitter:player:width" content="1080" />}
+      {video && <meta name="twitter:player:height" content="1920" />}
       
       {price && <meta name="twitter:label1" content="Price" />}
       {price && <meta name="twitter:data1" content={`${price} ${currency}`} />}
@@ -96,7 +114,9 @@ export default function SEO({
       {/* Structured Data Scripts */}
       <script type="application/ld+json">{JSON.stringify(baseSchema)}</script>
       <script type="application/ld+json">{JSON.stringify(searchSchema)}</script>
-      {schema && <script type="application/ld+json">{JSON.stringify(schema)}</script>}
+      {schemas.map((s, idx) => (
+        <script key={idx} type="application/ld+json">{JSON.stringify(s)}</script>
+      ))}
 
       {children}
     </Helmet>
@@ -113,6 +133,7 @@ SEO.propTypes = {
   price: PropTypes.string,
   currency: PropTypes.string,
   availability: PropTypes.string,
-  schema: PropTypes.object,
+  schema: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  video: PropTypes.string,
   children: PropTypes.node
 };

@@ -57,7 +57,7 @@ const formatMarkdown = (text) => {
     return text
         .replace(/\*\*(.*?)\*\*/g, '<strong class="text-cyan-300 font-bold">$1</strong>')
         .replace(/\*(.*?)\*/g, '<em class="text-purple-300 italic">$1</em>')
-        .replace(/`(.*?)`/g, '<code class="bg-white/10 px-1.5 py-0.5 rounded text-cyan-400 text-[13px] font-mono">$1</code>')
+        .replace(/`(.*?)`/g, '<code class="bg-black/5 dark:bg-white/10 px-1.5 py-0.5 rounded text-cyan-400 text-[13px] font-mono">$1</code>')
         .replace(/\n/g, '<br/>');
 };
 
@@ -90,7 +90,7 @@ const ProductCard = memo(({ product, onClose }) => {
             onMouseMove={handleMouseMove}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={handleMouseLeave}
-            className="w-[150px] min-[400px]:w-[170px] sm:w-[200px] md:w-[230px] flex-shrink-0 flex flex-col bg-gradient-to-br from-white/[0.08] to-white/[0.02] rounded-2xl md:rounded-[2.5rem] border border-white/10 transition-all duration-500 group/card overflow-hidden relative shadow-2xl snap-start"
+            className="w-[150px] min-[400px]:w-[170px] sm:w-[200px] md:w-[230px] flex-shrink-0 flex flex-col bg-gradient-to-br from-black dark:from-white/[0.08] to-white/[0.02] rounded-2xl md:rounded-[2.5rem] border border-black/5 dark:border-white/10 transition-all duration-500 group/card overflow-hidden relative shadow-2xl snap-start"
             style={{
                 transform: isHovered && window.innerWidth >= 768 ? `perspective(800px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale(1.03)` : "perspective(800px) rotateX(0) rotateY(0) scale(1)",
                 transition: "transform 0.2s ease-out, box-shadow 0.5s ease",
@@ -108,11 +108,11 @@ const ProductCard = memo(({ product, onClose }) => {
             />
 
             <div className="absolute top-2 right-2 md:top-4 md:right-4 z-10 flex flex-col gap-1 md:gap-2 items-end">
-                <div className="bg-cyan-500/90 backdrop-blur-md text-[6px] md:text-[7px] font-black px-1.5 md:px-2.5 py-0.5 md:py-1 rounded-full text-white uppercase tracking-[0.15em] md:tracking-[0.2em] shadow-lg border border-white/20 flex items-center gap-0.5 md:gap-1">
+                <div className="bg-cyan-500/90 backdrop-blur-md text-[6px] md:text-[7px] font-black px-1.5 md:px-2.5 py-0.5 md:py-1 rounded-full text-primary dark:text-white uppercase tracking-[0.15em] md:tracking-[0.2em] shadow-lg border border-black/5 dark:border-white/20 flex items-center gap-0.5 md:gap-1">
                     <svg className="w-2 md:w-2.5 h-2 md:h-2.5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" /></svg>
                     AI Pick
                 </div>
-                <div className="bg-black/60 backdrop-blur-md text-[5px] md:text-[7px] font-black px-1.5 md:px-2 py-0.5 md:py-1 rounded-full text-white uppercase tracking-[0.08em] md:tracking-[0.1em] shadow-lg border border-white/10 flex items-center gap-0.5 md:gap-1">
+                <div className="bg-black/60 backdrop-blur-md text-[5px] md:text-[7px] font-black px-1.5 md:px-2 py-0.5 md:py-1 rounded-full text-primary dark:text-white uppercase tracking-[0.08em] md:tracking-[0.1em] shadow-lg border border-black/5 dark:border-white/10 flex items-center gap-0.5 md:gap-1">
                     <span className="w-1 md:w-1.5 h-1 md:h-1.5 bg-green-500 rounded-full animate-pulse"></span> In Stock
                 </div>
             </div>
@@ -131,25 +131,25 @@ const ProductCard = memo(({ product, onClose }) => {
                 <div className="hidden md:block absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity"></div>
                 {/* Quick view badge - desktop only */}
                 <div className="hidden md:flex absolute bottom-3 left-1/2 -translate-x-1/2 opacity-0 group-hover/card:opacity-100 translate-y-4 group-hover/card:translate-y-0 transition-all duration-300">
-                    <span className="bg-white/20 backdrop-blur-md text-[9px] font-black text-white px-4 py-2 rounded-full uppercase tracking-widest border border-white/20">Quick View</span>
+                    <span className="bg-black/5 dark:bg-white/20 backdrop-blur-md text-[9px] font-black text-primary dark:text-white px-4 py-2 rounded-full uppercase tracking-widest border border-black/5 dark:border-white/20">Quick View</span>
                 </div>
             </div>
 
             <div className="px-3 md:px-5 pb-3 md:pb-5 flex flex-col gap-0.5 md:gap-1">
-                <h4 className="text-white font-black text-[9px] md:text-[11px] leading-tight group-hover/card:text-cyan-400 transition-colors uppercase tracking-tighter line-clamp-2 min-h-[2em] md:min-h-[2.4em] mt-0.5 md:mt-1">{product.name}</h4>
-                <div className="flex items-center justify-between mt-1 md:mt-2 pt-2 md:pt-3 border-t border-white/5">
+                <h4 className="text-primary dark:text-white font-black text-[9px] md:text-[11px] leading-tight group-hover/card:text-cyan-400 transition-colors uppercase tracking-tighter line-clamp-2 min-h-[2em] md:min-h-[2.4em] mt-0.5 md:mt-1">{product.name}</h4>
+                <div className="flex items-center justify-between mt-1 md:mt-2 pt-2 md:pt-3 border-t border-black/5 dark:border-white/5">
                     <div className="flex flex-col">
                         <span className="text-pink-500 font-black text-xs md:text-sm tracking-tighter">{formatPrice(product.price, product.currency)}</span>
                         <span className="text-[6px] md:text-[7px] text-gray-500 font-bold uppercase tracking-widest">Inclusive Price</span>
                     </div>
-                    <div className="flex items-center gap-0.5 md:gap-1 bg-white/5 px-1.5 md:px-2 py-0.5 rounded-full border border-white/5">
+                    <div className="flex items-center gap-0.5 md:gap-1 bg-black/5 dark:bg-white/5 px-1.5 md:px-2 py-0.5 rounded-full border border-black/5 dark:border-white/5">
                         <span className="text-yellow-400 text-[7px] md:text-[8px]">⭐</span>
                         <span className="text-[7px] md:text-[8px] text-gray-300 font-black">{product.ratingsAverage || 5.0}</span>
                     </div>
                 </div>
                 <button
                     onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-                    className="mt-2 md:mt-4 w-full py-2 md:py-3 bg-gradient-to-r from-cyan-600/50 to-purple-600/50 group-hover/card:from-cyan-500 group-hover/card:to-purple-600 text-[8px] md:text-[9px] font-black uppercase tracking-[0.15em] md:tracking-[0.2em] text-white rounded-xl md:rounded-2xl transition-all active:scale-95 shadow-xl border border-white/5"
+                    className="mt-2 md:mt-4 w-full py-2 md:py-3 bg-gradient-to-r from-cyan-600/50 to-purple-600/50 group-hover/card:from-cyan-500 group-hover/card:to-purple-600 text-[8px] md:text-[9px] font-black uppercase tracking-[0.15em] md:tracking-[0.2em] text-primary dark:text-white rounded-xl md:rounded-2xl transition-all active:scale-95 shadow-xl border border-black/5 dark:border-white/5"
                 >
                     Purchase Now
                 </button>
@@ -163,7 +163,7 @@ const VideoCard = memo(({ video, onClose }) => (
     <Link
         to={`/watch-me?v=${video._id}`}
         onClick={onClose}
-        className="w-[110px] min-[400px]:w-[130px] sm:w-[145px] md:w-[160px] flex-shrink-0 aspect-[9/16] flex flex-col bg-black rounded-2xl md:rounded-[2.5rem] border border-white/10 transition-all duration-500 group/vid overflow-hidden relative shadow-2xl snap-start hover:shadow-[0_0_40px_rgba(168,85,247,0.3)] hover:border-purple-500/30"
+        className="w-[110px] min-[400px]:w-[130px] sm:w-[145px] md:w-[160px] flex-shrink-0 aspect-[9/16] flex flex-col bg-gray-100 dark:bg-black rounded-2xl md:rounded-[2.5rem] border border-black/5 dark:border-white/10 transition-all duration-500 group/vid overflow-hidden relative shadow-2xl snap-start hover:shadow-[0_0_40px_rgba(168,85,247,0.3)] hover:border-purple-500/30"
     >
         <img
             src={video.thumbnail || "https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg"}
@@ -173,13 +173,13 @@ const VideoCard = memo(({ video, onClose }) => (
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
         <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/40 group-hover/vid:scale-125 transition-all duration-500 shadow-2xl">
-                <svg className="w-4 h-4 md:w-6 md:h-6 text-white fill-white ml-0.5 md:ml-1" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            <div className="w-10 h-10 md:w-14 md:h-14 rounded-full bg-black/5 dark:bg-white/20 backdrop-blur-md flex items-center justify-center border border-black/5 dark:border-white/40 group-hover/vid:scale-125 transition-all duration-500 shadow-2xl">
+                <svg className="w-4 h-4 md:w-6 md:h-6 text-primary dark:text-white fill-white ml-0.5 md:ml-1" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
             </div>
         </div>
         <div className="absolute bottom-2 md:bottom-4 left-2 md:left-4 right-2 md:right-4">
-            <p className="text-[8px] md:text-[10px] font-black text-white uppercase tracking-wider md:tracking-widest line-clamp-2 drop-shadow-lg">{video.name || "Watch Me"}</p>
-            {video.views && <p className="text-[7px] md:text-[8px] text-gray-400 mt-0.5 md:mt-1 font-bold">{video.views} views</p>}
+            <p className="text-[8px] md:text-[10px] font-black text-primary dark:text-white uppercase tracking-wider md:tracking-widest line-clamp-2 drop-shadow-lg">{video.name || "Watch Me"}</p>
+            {video.views && <p className="text-[7px] md:text-[8px] text-gray-500 dark:text-gray-400 mt-0.5 md:mt-1 font-bold">{video.views} views</p>}
         </div>
     </Link>
 ));
@@ -201,7 +201,7 @@ NeuralParticle.displayName = "NeuralParticle";
 
 const TypingIndicator = memo(() => (
     <div className="flex justify-start animate-fade-in-up">
-        <div className="bg-white/5 border border-white/10 p-3 md:p-5 rounded-2xl md:rounded-[2rem] rounded-tl-none flex flex-col gap-2 md:gap-3 shadow-2xl backdrop-blur-xl relative overflow-hidden">
+        <div className="bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 p-3 md:p-5 rounded-2xl md:rounded-[2rem] rounded-tl-none flex flex-col gap-2 md:gap-3 shadow-2xl backdrop-blur-xl relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 via-purple-500/5 to-cyan-500/5 animate-pulse"></div>
             <div className="flex items-center gap-2 md:gap-3 relative z-10">
                 <div className="flex gap-1 md:gap-1.5">
@@ -763,7 +763,7 @@ export default function AIHelper() {
     const HeaderActionButton = ({ onClick, title, children, className = "" }) => (
         <button
             onClick={onClick}
-            className={`p-2 md:p-2.5 bg-white/[0.04] hover:bg-white/[0.08] rounded-lg md:rounded-xl border border-white/[0.06] transition-all active:scale-90 ${className}`}
+            className={`p-2 md:p-2.5 bg-black/5 dark:bg-black/[0.04] dark:bg-white/[0.04] hover:bg-black/5 dark:bg-black/[0.08] dark:bg-white/[0.08] rounded-lg md:rounded-xl border border-black/5 dark:border-black/[0.06] dark:border-white/[0.06] transition-all active:scale-90 ${className}`}
             title={title}
         >
             {children}
@@ -771,9 +771,9 @@ export default function AIHelper() {
     );
 
     return (
-        <div className="fixed bottom-20 md:bottom-6 right-0 md:right-6 z-[1000] flex flex-col items-end w-auto pointer-events-none group/ai forced-dark">
+        <div className="fixed bottom-20 md:bottom-6 right-0 md:right-6 z-[1000] flex flex-col items-end w-auto pointer-events-none group/ai ">
             <style>{`
-                .forced-dark { color-scheme: dark; }
+                . { color-scheme: dark; }
                 @keyframes scan { from { top: 0; } to { top: 100%; } }
                 @keyframes grid-move { from { background-position: 0 0; } to { background-position: 0 40px; } }
                 @keyframes neuralFloat { 
@@ -845,7 +845,7 @@ export default function AIHelper() {
                     }`}
                 style={{ transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)" }}
             >
-                <div className="bg-[#050508]  border-0 md:border md:border-white/[0.08] md:rounded-[2.5rem] shadow-[0_50px_150px_-20px_rgba(0,0,0,1),0_0_80px_-20px_rgba(34,211,238,0.08)] overflow-hidden flex flex-col h-[100dvh] md:h-[720px] relative safe-bottom safe-left safe-right">
+                <div className="bg-gray-50 dark:bg-[#050508]  border-0 md:border md:border-black/5 dark:border-black/[0.08] dark:border-white/[0.08] md:rounded-[2.5rem] shadow-[0_50px_150px_-20px_rgba(0,0,0,1),0_0_80px_-20px_rgba(34,211,238,0.08)] overflow-hidden flex flex-col h-[100dvh] md:h-[720px] relative safe-bottom safe-left safe-right">
                     {/* ─── Neural Grid Background ─── */}
                     <div
                         className="absolute inset-0 opacity-[0.04] md:opacity-[0.06] pointer-events-none"
@@ -866,12 +866,12 @@ export default function AIHelper() {
                     <div className="absolute bottom-0 right-1/4 w-1/2 h-1/3 bg-purple-500/[0.02] md:bg-purple-500/[0.03] rounded-full blur-[100px] pointer-events-none" />
 
                     {/* ─── Header ─── */}
-                    <div className="relative z-10 bg-[#050508]/90 backdrop-blur-2xl border-b border-white/[0.06]">
+                    <div className="relative z-10 bg-gray-50 dark:bg-[#050508]/90 backdrop-blur-2xl border-b border-black/5 dark:border-black/[0.06] dark:border-white/[0.06]">
                         <div className="px-3 md:px-5 py-3 md:py-5 md:pb-4 flex items-center justify-between gap-2">
                             <div className="flex items-center gap-2.5 md:gap-4 min-w-0">
                                 <div className="relative group flex-shrink-0">
                                     <div className="absolute -inset-1 md:-inset-1.5 bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-600 rounded-xl md:rounded-2xl blur-lg opacity-50 md:opacity-60 group-hover:opacity-100 transition duration-1000" />
-                                    <div className="relative w-10 h-10 md:w-[52px] md:h-[52px] rounded-xl md:rounded-2xl bg-black border border-white/20 flex items-center justify-center shadow-2xl overflow-hidden">
+                                    <div className="relative w-10 h-10 md:w-[52px] md:h-[52px] rounded-xl md:rounded-2xl bg-gray-100 dark:bg-black border border-black/5 dark:border-white/20 flex items-center justify-center shadow-2xl overflow-hidden">
                                         <svg className="w-6 h-6 md:w-8 md:h-8 text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.9)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                             <path d="M12 2a10 10 0 0 0-10 10c0 5.52 4.48 10 10 10s10-4.48 10-10A10 10 0 0 0 12 2z" />
                                             <path d="M12 6v6l4 2" />
@@ -881,12 +881,12 @@ export default function AIHelper() {
                                     </div>
                                 </div>
                                 <div className="min-w-0">
-                                    <h3 className="text-white font-black text-sm md:text-lg leading-tight tracking-tighter uppercase italic bg-clip-text text-transparent bg-gradient-to-r from-white via-cyan-200 to-indigo-300 truncate">
+                                    <h3 className="text-primary dark:text-white font-black text-sm md:text-lg leading-tight tracking-tighter uppercase italic bg-clip-text text-transparent bg-gradient-to-r from-black dark:from-white via-cyan-200 to-indigo-300 truncate">
                                         HA DEEP BRAIN
                                     </h3>
                                     <div className="flex items-center gap-1.5 md:gap-2 mt-0.5">
                                         <div className={`w-1.5 h-1.5 ${statusConfig[connectionStatus].color} rounded-full ${statusConfig[connectionStatus].glow}`} />
-                                        <span className="text-[7px] md:text-[8px] text-gray-400 font-black uppercase tracking-[0.15em] md:tracking-[0.25em]">{statusConfig[connectionStatus].text}</span>
+                                        <span className="text-[7px] md:text-[8px] text-gray-500 dark:text-gray-400 font-black uppercase tracking-[0.15em] md:tracking-[0.25em]">{statusConfig[connectionStatus].text}</span>
                                         <span className="text-[7px] text-gray-600 font-bold hidden sm:inline">•</span>
                                         <span className="text-[7px] md:text-[8px] text-gray-600 font-black uppercase tracking-widest hidden sm:inline">{NEURAL_VERSION}</span>
                                     </div>
@@ -897,25 +897,25 @@ export default function AIHelper() {
                             <div className="hidden md:flex gap-1.5">
                                 <HeaderActionButton onClick={() => setSoundEnabled((p) => !p)} title={soundEnabled ? "Mute sounds" : "Enable sounds"}>
                                     {soundEnabled ? (
-                                        <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072M17.95 6.05a8 8 0 010 11.9M6.5 8.8H4a1 1 0 00-1 1v4.4a1 1 0 001 1h2.5l4.1 3.7a.5.5 0 00.8-.4V5.5a.5.5 0 00-.8-.4L6.5 8.8z" /></svg>
+                                        <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072M17.95 6.05a8 8 0 010 11.9M6.5 8.8H4a1 1 0 00-1 1v4.4a1 1 0 001 1h2.5l4.1 3.7a.5.5 0 00.8-.4V5.5a.5.5 0 00-.8-.4L6.5 8.8z" /></svg>
                                     ) : (
                                         <svg className="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" /></svg>
                                     )}
                                 </HeaderActionButton>
                                 <HeaderActionButton onClick={() => setShowSearch((p) => !p)} title="Search (Ctrl+K)">
-                                    <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                                    <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                                 </HeaderActionButton>
                                 <HeaderActionButton onClick={exportChat} title="Export chat">
-                                    <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                                    <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                                 </HeaderActionButton>
                                 <HeaderActionButton onClick={clearHistory} title="Format Memory" className="hover:bg-red-500/20">
-                                    <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                                    <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                                 </HeaderActionButton>
                                 <HeaderActionButton onClick={() => setIsMinimized(true)} title="Minimize">
-                                    <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" /></svg>
+                                    <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" /></svg>
                                 </HeaderActionButton>
                                 <HeaderActionButton onClick={() => setIsOpen(false)} title="Close">
-                                    <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
+                                    <svg className="w-4 h-4 text-primary dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
                                 </HeaderActionButton>
                             </div>
 
@@ -923,26 +923,26 @@ export default function AIHelper() {
                             <div className="flex md:hidden gap-1 items-center">
                                 <button
                                     onClick={() => setShowSearch((p) => !p)}
-                                    className="p-2 bg-white/[0.04] rounded-lg border border-white/[0.06] active:scale-90 transition-all"
+                                    className="p-2 bg-black/5 dark:bg-black/[0.04] dark:bg-white/[0.04] rounded-lg border border-black/5 dark:border-black/[0.06] dark:border-white/[0.06] active:scale-90 transition-all"
                                 >
-                                    <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                                    <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
                                 </button>
 
                                 {/* More Menu */}
                                 <div ref={headerMenuRef} className="relative">
                                     <button
                                         onClick={() => setShowHeaderMenu((p) => !p)}
-                                        className="p-2 bg-white/[0.04] rounded-lg border border-white/[0.06] active:scale-90 transition-all"
+                                        className="p-2 bg-black/5 dark:bg-black/[0.04] dark:bg-white/[0.04] rounded-lg border border-black/5 dark:border-black/[0.06] dark:border-white/[0.06] active:scale-90 transition-all"
                                     >
-                                        <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" /></svg>
+                                        <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" /></svg>
                                     </button>
 
                                     {/* Dropdown */}
                                     {showHeaderMenu && (
-                                        <div className="absolute right-0 top-full mt-2 w-52 bg-[#0d0d15]/98 backdrop-blur-2xl border border-white/[0.1] rounded-2xl shadow-2xl overflow-hidden z-50 animate-fade-in-up">
+                                        <div className="absolute right-0 top-full mt-2 w-52 bg-white dark:bg-[#0d0d15]/98 backdrop-blur-2xl border border-black/5 dark:border-black/[0.1] dark:border-white/[0.1] rounded-2xl shadow-2xl overflow-hidden z-50 animate-fade-in-up">
                                             <button
                                                 onClick={() => { setSoundEnabled((p) => !p); setShowHeaderMenu(false); }}
-                                                className="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/[0.06] transition-colors text-left"
+                                                className="w-full flex items-center gap-3 px-4 py-3 hover:bg-black/5 dark:bg-black/[0.06] dark:bg-white/[0.06] transition-colors text-left"
                                             >
                                                 {soundEnabled ? (
                                                     <svg className="w-4 h-4 text-cyan-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072M17.95 6.05a8 8 0 010 11.9M6.5 8.8H4a1 1 0 00-1 1v4.4a1 1 0 001 1h2.5l4.1 3.7a.5.5 0 00.8-.4V5.5a.5.5 0 00-.8-.4L6.5 8.8z" /></svg>
@@ -953,9 +953,9 @@ export default function AIHelper() {
                                             </button>
                                             <button
                                                 onClick={() => { exportChat(); setShowHeaderMenu(false); }}
-                                                className="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/[0.06] transition-colors text-left"
+                                                className="w-full flex items-center gap-3 px-4 py-3 hover:bg-black/5 dark:bg-black/[0.06] dark:bg-white/[0.06] transition-colors text-left"
                                             >
-                                                <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                                                <svg className="w-4 h-4 text-gray-500 dark:text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
                                                 <span className="text-xs text-gray-300 font-semibold">Export Chat</span>
                                             </button>
                                             <button
@@ -965,12 +965,12 @@ export default function AIHelper() {
                                                 <svg className="w-4 h-4 text-red-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                                                 <span className="text-xs text-red-400 font-semibold">Clear History</span>
                                             </button>
-                                            <div className="border-t border-white/[0.06]"></div>
+                                            <div className="border-t border-black/5 dark:border-black/[0.06] dark:border-white/[0.06]"></div>
                                             <button
                                                 onClick={() => { setIsMinimized(true); setShowHeaderMenu(false); }}
-                                                className="w-full flex items-center gap-3 px-4 py-3 hover:bg-white/[0.06] transition-colors text-left"
+                                                className="w-full flex items-center gap-3 px-4 py-3 hover:bg-black/5 dark:bg-black/[0.06] dark:bg-white/[0.06] transition-colors text-left"
                                             >
-                                                <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" /></svg>
+                                                <svg className="w-4 h-4 text-gray-500 dark:text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" /></svg>
                                                 <span className="text-xs text-gray-300 font-semibold">Minimize</span>
                                             </button>
                                         </div>
@@ -979,9 +979,9 @@ export default function AIHelper() {
 
                                 <button
                                     onClick={() => setIsOpen(false)}
-                                    className="p-2 bg-white/[0.04] rounded-lg border border-white/[0.06] active:scale-90 transition-all"
+                                    className="p-2 bg-black/5 dark:bg-black/[0.04] dark:bg-white/[0.04] rounded-lg border border-black/5 dark:border-black/[0.06] dark:border-white/[0.06] active:scale-90 transition-all"
                                 >
-                                    <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
+                                    <svg className="w-4 h-4 text-primary dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
                                 </button>
                             </div>
                         </div>
@@ -996,11 +996,11 @@ export default function AIHelper() {
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
                                         placeholder="Search messages..."
-                                        className="w-full bg-white/[0.06] border border-white/[0.08] rounded-xl pl-10 md:pl-11 pr-4 py-2.5 text-sm text-white focus:border-cyan-500/50 outline-none transition-all placeholder-gray-600 input-glow"
+                                        className="w-full bg-white dark:bg-black/5 dark:bg-black/[0.06] dark:bg-white/[0.06] border border-black/5 dark:border-black/[0.08] dark:border-white/[0.08] rounded-xl pl-10 md:pl-11 pr-4 py-2.5 text-sm text-primary dark:text-white focus:border-cyan-500/50 outline-none transition-all placeholder-gray-400 dark:placeholder-gray-600 input-glow"
                                         autoFocus
                                     />
                                     {searchQuery && (
-                                        <button onClick={() => setSearchQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white transition-colors">
+                                        <button onClick={() => setSearchQuery("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-primary dark:text-white transition-colors">
                                             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                                         </button>
                                     )}
@@ -1026,7 +1026,7 @@ export default function AIHelper() {
                                 <div className="flex items-center gap-2.5 md:gap-4 mb-3 md:mb-4">
                                     <div className="w-9 h-9 md:w-11 md:h-11 rounded-xl md:rounded-2xl bg-gradient-to-br from-green-500 to-emerald-700 flex items-center justify-center text-lg md:text-xl shadow-xl border border-green-400/30 flex-shrink-0">👨‍💼</div>
                                     <div className="min-w-0">
-                                        <h4 className="text-white font-black text-xs md:text-sm uppercase tracking-tight truncate">Direct Support — Asad</h4>
+                                        <h4 className="text-primary dark:text-white font-black text-xs md:text-sm uppercase tracking-tight truncate">Direct Support — Asad</h4>
                                         <p className="text-[7px] md:text-[8px] text-green-400 font-bold uppercase tracking-[0.15em] md:tracking-[0.2em] flex items-center gap-1 md:gap-1.5">
                                             <span className="w-1 md:w-1.5 h-1 md:h-1.5 bg-green-400 rounded-full animate-pulse" />
                                             Available Now
@@ -1034,18 +1034,18 @@ export default function AIHelper() {
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-2 gap-2 md:gap-2.5 mb-3 md:mb-4">
-                                    <div className="bg-white/[0.04] border border-white/[0.05] rounded-lg md:rounded-xl p-2 md:p-2.5 flex flex-col items-center gap-0.5 hover:bg-white/[0.06] transition-colors">
+                                    <div className="bg-black/5 dark:bg-black/[0.04] dark:bg-white/[0.04] border border-black/5 dark:border-white/[0.05] rounded-lg md:rounded-xl p-2 md:p-2.5 flex flex-col items-center gap-0.5 hover:bg-black/5 dark:bg-black/[0.06] dark:bg-white/[0.06] transition-colors">
                                         <span className="text-[9px] md:text-[10px] font-black text-purple-400 uppercase">JazzCash</span>
                                         <span className="text-[6px] md:text-[7px] text-gray-600 font-bold uppercase tracking-widest">Secure Pay</span>
                                     </div>
-                                    <div className="bg-white/[0.04] border border-white/[0.05] rounded-lg md:rounded-xl p-2 md:p-2.5 flex flex-col items-center gap-0.5 hover:bg-white/[0.06] transition-colors">
+                                    <div className="bg-black/5 dark:bg-black/[0.04] dark:bg-white/[0.04] border border-black/5 dark:border-white/[0.05] rounded-lg md:rounded-xl p-2 md:p-2.5 flex flex-col items-center gap-0.5 hover:bg-black/5 dark:bg-black/[0.06] dark:bg-white/[0.06] transition-colors">
                                         <span className="text-[9px] md:text-[10px] font-black text-green-400 uppercase">EasyPaisa</span>
                                         <span className="text-[6px] md:text-[7px] text-gray-600 font-bold uppercase tracking-widest">Instant Pay</span>
                                     </div>
                                 </div>
                                 <button
                                     onClick={() => window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_WELCOME)}`, "_blank")}
-                                    className="w-full bg-gradient-to-br from-green-500 to-emerald-700 text-white font-black text-[10px] md:text-[11px] py-3 md:py-3.5 rounded-xl md:rounded-2xl shadow-xl hover:shadow-green-500/25 transition-all transform hover:-translate-y-0.5 active:scale-[0.98] flex items-center justify-center gap-2 md:gap-2.5 border border-green-400/20"
+                                    className="w-full bg-gradient-to-br from-green-500 to-emerald-700 text-primary dark:text-white font-black text-[10px] md:text-[11px] py-3 md:py-3.5 rounded-xl md:rounded-2xl shadow-xl hover:shadow-green-500/25 transition-all transform hover:-translate-y-0.5 active:scale-[0.98] flex items-center justify-center gap-2 md:gap-2.5 border border-green-400/20"
                                 >
                                     <svg className="w-3.5 h-3.5 md:w-4 md:h-4" fill="currentColor" viewBox="0 0 24 24">
                                         <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.446 4.432-9.877 9.888-9.877 2.642 0 5.126 1.029 6.99 2.896a9.832 9.832 0 012.884 7.001c-.002 5.45-4.433 9.88-9.886 9.88M12 2a10.884 10.884 0 00-7.726 3.195C2.41 7.061 1.096 9.544 1.096 12.19c0 2.083.541 4.117 1.571 5.91L1 23l5.034-1.319a10.84 10.84 0 00 5.965 1.761h.004c11.967 0 21.685-9.718 21.685-21.685 0-5.712-2.228-11.082-6.273-15.127A21.536 21.536 0 0012 2.001z" />
@@ -1063,8 +1063,8 @@ export default function AIHelper() {
                             >
                                 <div
                                     className={`message-bubble relative max-w-[92%] md:max-w-[88%] p-3 md:p-4 rounded-2xl md:rounded-[1.8rem] shadow-2xl transition-all duration-300 ${msg.role === "user"
-                                        ? "bg-gradient-to-br from-cyan-600 to-indigo-700 text-white rounded-tr-sm md:rounded-tr-none border border-white/10"
-                                        : `bg-white/[0.04] border border-white/[0.08] text-cyan-50 rounded-tl-sm md:rounded-tl-none backdrop-blur-xl ${msg.isError ? "border-red-500/20 bg-red-500/[0.04]" : ""}`
+                                        ? "bg-gradient-to-br from-cyan-600 to-indigo-700 text-primary dark:text-white rounded-tr-sm md:rounded-tr-none border border-black/5 dark:border-white/10"
+                                        : `bg-black/5 dark:bg-black/[0.04] dark:bg-white/[0.04] border border-black/5 dark:border-black/[0.08] dark:border-white/[0.08] text-gray-800 dark:text-cyan-50 rounded-tl-sm md:rounded-tl-none backdrop-blur-xl ${msg.isError ? "border-red-500/20 bg-red-500/[0.04]" : ""}`
                                         }`}
                                 >
                                     {renderMessage(msg)}
@@ -1073,7 +1073,7 @@ export default function AIHelper() {
                                     <div className="absolute -bottom-2 right-2 opacity-0 group-hover/msg:opacity-100 transition-all duration-200 hidden md:flex gap-1 translate-y-1 group-hover/msg:translate-y-0">
                                         <button
                                             onClick={() => copyMessage(msg.content)}
-                                            className="p-1.5 bg-black/80 backdrop-blur-md rounded-lg border border-white/10 text-gray-400 hover:text-white transition-colors"
+                                            className="p-1.5 bg-black/80 backdrop-blur-md rounded-lg border border-black/5 dark:border-white/10 text-gray-500 dark:text-gray-400 hover:text-primary dark:text-white transition-colors"
                                             title="Copy"
                                         >
                                             <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
@@ -1082,13 +1082,13 @@ export default function AIHelper() {
                                             <>
                                                 <button
                                                     onClick={() => toggleReaction(msg.id, "👍")}
-                                                    className={`p-1.5 bg-black/80 backdrop-blur-md rounded-lg border border-white/10 transition-colors ${(msg.reactions || []).some((r) => r.emoji === "👍") ? "text-cyan-400 border-cyan-500/30" : "text-gray-400 hover:text-white"}`}
+                                                    className={`p-1.5 bg-black/80 backdrop-blur-md rounded-lg border border-black/5 dark:border-white/10 transition-colors ${(msg.reactions || []).some((r) => r.emoji === "👍") ? "text-cyan-400 border-cyan-500/30" : "text-gray-500 dark:text-gray-400 hover:text-primary dark:text-white"}`}
                                                 >
                                                     <span className="text-[10px]">👍</span>
                                                 </button>
                                                 <button
                                                     onClick={() => toggleReaction(msg.id, "👎")}
-                                                    className={`p-1.5 bg-black/80 backdrop-blur-md rounded-lg border border-white/10 transition-colors ${(msg.reactions || []).some((r) => r.emoji === "👎") ? "text-red-400 border-red-500/30" : "text-gray-400 hover:text-white"}`}
+                                                    className={`p-1.5 bg-black/80 backdrop-blur-md rounded-lg border border-black/5 dark:border-white/10 transition-colors ${(msg.reactions || []).some((r) => r.emoji === "👎") ? "text-red-400 border-red-500/30" : "text-gray-500 dark:text-gray-400 hover:text-primary dark:text-white"}`}
                                                 >
                                                     <span className="text-[10px]">👎</span>
                                                 </button>
@@ -1097,10 +1097,10 @@ export default function AIHelper() {
                                     </div>
 
                                     {/* Mobile: Always-visible copy + reactions for assistant */}
-                                    <div className="flex md:hidden items-center gap-1.5 mt-2 pt-1.5 border-t border-white/5">
+                                    <div className="flex md:hidden items-center gap-1.5 mt-2 pt-1.5 border-t border-black/5 dark:border-white/5">
                                         <button
                                             onClick={() => copyMessage(msg.content)}
-                                            className="p-1 bg-white/5 rounded-md text-gray-500 active:text-white active:bg-white/10 transition-colors"
+                                            className="p-1 bg-black/5 dark:bg-white/5 rounded-md text-gray-500 active:text-primary dark:text-white active:bg-black/5 dark:bg-white/10 transition-colors"
                                         >
                                             <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
                                         </button>
@@ -1108,13 +1108,13 @@ export default function AIHelper() {
                                             <>
                                                 <button
                                                     onClick={() => toggleReaction(msg.id, "👍")}
-                                                    className={`p-1 bg-white/5 rounded-md transition-colors ${(msg.reactions || []).some((r) => r.emoji === "👍") ? "text-cyan-400 bg-cyan-500/10" : "text-gray-500 active:text-white"}`}
+                                                    className={`p-1 bg-black/5 dark:bg-white/5 rounded-md transition-colors ${(msg.reactions || []).some((r) => r.emoji === "👍") ? "text-cyan-400 bg-cyan-500/10" : "text-gray-500 active:text-primary dark:text-white"}`}
                                                 >
                                                     <span className="text-[10px]">👍</span>
                                                 </button>
                                                 <button
                                                     onClick={() => toggleReaction(msg.id, "👎")}
-                                                    className={`p-1 bg-white/5 rounded-md transition-colors ${(msg.reactions || []).some((r) => r.emoji === "👎") ? "text-red-400 bg-red-500/10" : "text-gray-500 active:text-white"}`}
+                                                    className={`p-1 bg-black/5 dark:bg-white/5 rounded-md transition-colors ${(msg.reactions || []).some((r) => r.emoji === "👎") ? "text-red-400 bg-red-500/10" : "text-gray-500 active:text-primary dark:text-white"}`}
                                                 >
                                                     <span className="text-[10px]">👎</span>
                                                 </button>
@@ -1126,7 +1126,7 @@ export default function AIHelper() {
                                     {(msg.reactions || []).length > 0 && (
                                         <div className="flex gap-1 mt-1.5 md:mt-2">
                                             {msg.reactions.map((r, ri) => (
-                                                <span key={ri} className="bg-white/10 text-[9px] md:text-[10px] px-1.5 py-0.5 rounded-full">{r.emoji}</span>
+                                                <span key={ri} className="bg-black/5 dark:bg-white/10 text-[9px] md:text-[10px] px-1.5 py-0.5 rounded-full">{r.emoji}</span>
                                             ))}
                                         </div>
                                     )}
@@ -1137,7 +1137,7 @@ export default function AIHelper() {
                         {/* Streaming Message */}
                         {streamingMessage && (
                             <div className="flex justify-start animate-fade-in">
-                                <div className="bg-white/[0.04] border border-white/[0.08] p-3 md:p-4 rounded-2xl md:rounded-[1.8rem] rounded-tl-sm md:rounded-tl-none text-cyan-50 shadow-2xl backdrop-blur-xl max-w-[92%] md:max-w-[88%]">
+                                <div className="bg-black/5 dark:bg-black/[0.04] dark:bg-white/[0.04] border border-black/5 dark:border-black/[0.08] dark:border-white/[0.08] p-3 md:p-4 rounded-2xl md:rounded-[1.8rem] rounded-tl-sm md:rounded-tl-none text-gray-800 dark:text-cyan-50 shadow-2xl backdrop-blur-xl max-w-[92%] md:max-w-[88%]">
                                     <div
                                         className="text-[13px] md:text-[15px] leading-relaxed"
                                         dangerouslySetInnerHTML={{ __html: formatMarkdown(streamingMessage) }}
@@ -1154,7 +1154,7 @@ export default function AIHelper() {
                     </div>
 
                     {/* ─── Quick Suggestions ─── */}
-                    <div className="px-3 md:px-5 py-2 md:py-2.5 bg-[#050508]/80 backdrop-blur-md flex gap-1.5 md:gap-2 overflow-x-auto no-scrollbar pointer-events-auto relative z-10 border-t border-white/[0.04]">
+                    <div className="px-3 md:px-5 py-2 md:py-2.5 bg-gray-50 dark:bg-[#050508]/80 backdrop-blur-md flex gap-1.5 md:gap-2 overflow-x-auto no-scrollbar pointer-events-auto relative z-10 border-t border-black/5 dark:border-white/[0.04]">
                         {currentSuggestions.map((text) => (
                             <button
                                 key={text}
@@ -1162,7 +1162,7 @@ export default function AIHelper() {
                                     setInput(text);
                                     setTimeout(() => handleSendMessage(), 50);
                                 }}
-                                className="whitespace-nowrap px-2.5 md:px-3.5 py-1 md:py-1.5 bg-white/[0.04] hover:bg-cyan-500/[0.12] border border-white/[0.08] hover:border-cyan-500/20 rounded-full text-[8px] md:text-[9px] font-black text-gray-400 hover:text-cyan-400 uppercase tracking-[0.1em] md:tracking-[0.15em] transition-all active:scale-95 flex-shrink-0"
+                                className="whitespace-nowrap px-2.5 md:px-3.5 py-1 md:py-1.5 bg-black/5 dark:bg-black/[0.04] dark:bg-white/[0.04] hover:bg-cyan-500/[0.12] border border-black/5 dark:border-black/[0.08] dark:border-white/[0.08] hover:border-cyan-500/20 rounded-full text-[8px] md:text-[9px] font-black text-gray-500 dark:text-gray-400 hover:text-cyan-400 uppercase tracking-[0.1em] md:tracking-[0.15em] transition-all active:scale-95 flex-shrink-0"
                             >
                                 {text}
                             </button>
@@ -1172,7 +1172,7 @@ export default function AIHelper() {
                     {/* ─── Input Area ─── */}
                     <form
                         onSubmit={handleSendMessage}
-                        className="px-3 md:px-5 py-3 md:py-4 bg-[#08080c]/90 backdrop-blur-2xl border-t border-white/[0.06] flex gap-2 md:gap-2.5 pointer-events-auto relative z-10 safe-bottom"
+                        className="px-3 md:px-5 py-3 md:py-4 bg-[#08080c]/90 backdrop-blur-2xl border-t border-black/5 dark:border-black/[0.06] dark:border-white/[0.06] flex gap-2 md:gap-2.5 pointer-events-auto relative z-10 safe-bottom"
                     >
                         {/* Voice Input */}
                         <button
@@ -1180,7 +1180,7 @@ export default function AIHelper() {
                             onClick={toggleVoice}
                             className={`w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center transition-all active:scale-90 border flex-shrink-0 ${isListening
                                 ? "bg-red-500/20 border-red-500/30 text-red-400 animate-pulse shadow-[0_0_20px_rgba(239,68,68,0.2)]"
-                                : "bg-white/[0.04] border-white/[0.06] text-gray-500 hover:text-cyan-400 hover:border-cyan-500/20"
+                                : "bg-black/5 dark:bg-black/[0.04] dark:bg-white/[0.04] border-black/5 dark:border-black/[0.06] dark:border-white/[0.06] text-gray-500 hover:text-cyan-400 hover:border-cyan-500/20"
                                 }`}
                             title={isListening ? "Stop listening" : "Voice input"}
                         >
@@ -1195,14 +1195,14 @@ export default function AIHelper() {
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             placeholder="Ask Deep Brain anything..."
-                            className="flex-1 min-w-0 bg-white/[0.04] border border-white/[0.06] rounded-xl md:rounded-2xl px-3.5 md:px-5 py-2.5 md:py-3.5 text-[13px] md:text-sm text-white focus:border-cyan-500/40 outline-none transition-all placeholder-gray-600 input-glow"
+                            className="flex-1 min-w-0 bg-white dark:bg-black/5 dark:bg-black/[0.04] dark:bg-white/[0.04] border border-black/5 dark:border-black/[0.06] dark:border-white/[0.06] rounded-xl md:rounded-2xl px-3.5 md:px-5 py-2.5 md:py-3.5 text-[13px] md:text-sm text-primary dark:text-white focus:border-cyan-500/40 outline-none transition-all placeholder-gray-400 dark:placeholder-gray-600 input-glow"
                             disabled={isLoading}
                         />
 
                         <button
                             type="submit"
                             disabled={isLoading || !input.trim()}
-                            className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-gradient-to-br from-cyan-600 via-indigo-600 to-purple-700 flex items-center justify-center text-white hover:scale-105 transition-all shadow-[0_0_25px_rgba(124,58,237,0.25)] active:scale-95 disabled:opacity-30 disabled:hover:scale-100 group/btn flex-shrink-0"
+                            className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-gradient-to-br from-cyan-600 via-indigo-600 to-purple-700 flex items-center justify-center text-primary dark:text-white hover:scale-105 transition-all shadow-[0_0_25px_rgba(124,58,237,0.25)] active:scale-95 disabled:opacity-30 disabled:hover:scale-100 group/btn flex-shrink-0"
                         >
                             <svg className="w-4 h-4 md:w-5 md:h-5 transform rotate-90 group-hover/btn:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
@@ -1227,11 +1227,11 @@ export default function AIHelper() {
             >
                 <button
                     onClick={() => setIsMinimized(false)}
-                    className="w-full bg-[#050508]/95 backdrop-blur-2xl border border-white/[0.08] rounded-xl md:rounded-2xl px-4 md:px-5 py-3 md:py-3.5 flex items-center justify-between shadow-2xl hover:border-cyan-500/20 transition-all"
+                    className="w-full bg-gray-50 dark:bg-[#050508]/95 backdrop-blur-2xl border border-black/5 dark:border-black/[0.08] dark:border-white/[0.08] rounded-xl md:rounded-2xl px-4 md:px-5 py-3 md:py-3.5 flex items-center justify-between shadow-2xl hover:border-cyan-500/20 transition-all"
                 >
                     <div className="flex items-center gap-2.5 md:gap-3">
                         <div className="w-2 h-2 md:w-2 md:h-2 bg-green-500 rounded-full animate-pulse" />
-                        <span className="text-[10px] md:text-[11px] text-white font-black uppercase tracking-wider">Deep Brain Active</span>
+                        <span className="text-[10px] md:text-[11px] text-primary dark:text-white font-black uppercase tracking-wider">Deep Brain Active</span>
                     </div>
                     <div className="flex items-center gap-2 md:gap-3">
                         {streamingMessage && <span className="text-[8px] md:text-[9px] text-cyan-400 font-bold animate-pulse">Typing...</span>}
@@ -1268,8 +1268,8 @@ export default function AIHelper() {
                 {/* Main Sphere */}
                 <div
                     className={`relative w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-full transition-all duration-500 flex items-center justify-center overflow-hidden ${isOpen
-                        ? "bg-white/[0.06] backdrop-blur-2xl border border-white/[0.12]"
-                        : "bg-gradient-to-br from-[#0a0a1a] via-[#0f0f2a] to-[#050510] border-2 border-white/[0.08] group-hover:border-cyan-400/30 shadow-[0_0_60px_rgba(34,211,238,0.15)]"
+                        ? "bg-black/5 dark:bg-black/[0.06] dark:bg-white/[0.06] backdrop-blur-2xl border border-black/5 dark:border-white/[0.12]"
+                        : "bg-gradient-to-br from-[#0a0a1a] via-[#0f0f2a] to-[#050510] border-2 border-black/5 dark:border-black/[0.08] dark:border-white/[0.08] group-hover:border-cyan-400/30 shadow-[0_0_60px_rgba(34,211,238,0.15)]"
                     }`}
                 >
                     {/* Inner Glow */}
@@ -1287,7 +1287,7 @@ export default function AIHelper() {
                     )}
 
                     {isOpen ? (
-                        <svg className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 text-white/80 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 text-gray-800/80 dark:text-white/80 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
                         </svg>
                     ) : (
@@ -1304,7 +1304,7 @@ export default function AIHelper() {
 
                 {/* Unread Badge */}
                 {unreadCount > 0 && !isOpen && (
-                    <div className="absolute -top-1 -right-1 min-w-[18px] h-[18px] md:min-w-[20px] md:h-[20px] bg-gradient-to-r from-pink-500 to-red-500 rounded-full flex items-center justify-center text-[8px] md:text-[9px] font-black text-white shadow-[0_0_15px_rgba(236,72,153,0.5)] border-2 border-[#050508] animate-bounce">
+                    <div className="absolute -top-1 -right-1 min-w-[18px] h-[18px] md:min-w-[20px] md:h-[20px] bg-gradient-to-r from-pink-500 to-red-500 rounded-full flex items-center justify-center text-[8px] md:text-[9px] font-black text-primary dark:text-white shadow-[0_0_15px_rgba(236,72,153,0.5)] border-2 border-[#050508] animate-bounce">
                         {unreadCount > 9 ? "9+" : unreadCount}
                     </div>
                 )}

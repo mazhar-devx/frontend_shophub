@@ -65,16 +65,16 @@ export default function ProductFilter({ onFilterChange }) {
       {/* Mobile filter dialog */}
       {isMobileFiltersOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
-          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={toggleMobileFilters} />
+          <div className="absolute inset-0 bg-black/50 dark:bg-black/80 backdrop-blur-sm" onClick={toggleMobileFilters} />
           
           <div className="absolute inset-y-0 left-0 max-w-full flex">
             <div className="relative w-screen max-w-xs">
-              <div className="h-full flex flex-col glass border-r border-white/10 shadow-2xl animate-fade-in-right">
-                <div className="p-6 border-b border-white/10 flex items-center justify-between">
-                  <h2 className="text-xl font-bold text-white">Filters</h2>
+              <div className="h-full flex flex-col bg-white dark:bg-[#0a0a0a] glass border-r border-black/5 dark:border-white/10 shadow-2xl animate-fade-in-right">
+                <div className="p-6 border-b border-black/5 dark:border-white/10 flex items-center justify-between">
+                  <h2 className="text-xl font-bold text-primary dark:text-white">Filters</h2>
                   <button
                     type="button"
-                    className="-m-2 p-2 text-gray-400 hover:text-white transition-colors"
+                    className="-m-2 p-2 text-gray-500 dark:text-gray-400 hover:text-primary dark:text-white transition-colors"
                     onClick={toggleMobileFilters}
                   >
                     <span className="sr-only">Close panel</span>
@@ -87,7 +87,7 @@ export default function ProductFilter({ onFilterChange }) {
                 <div className="flex-1 overflow-y-auto p-6 space-y-8">
                   {/* Category filter */}
                   <div>
-                    <h3 className="text-md font-bold text-white mb-4 uppercase tracking-wider text-xs">Category</h3>
+                    <h3 className="text-md font-bold text-primary dark:text-white mb-4 uppercase tracking-wider text-xs">Category</h3>
                     <div className="space-y-3">
                       {categories.map((category) => (
                         <div key={category.id} className="flex items-center group">
@@ -98,12 +98,12 @@ export default function ProductFilter({ onFilterChange }) {
                                type="radio"
                                checked={filters.category === category.id}
                                onChange={() => handleFilterChange("category", category.id)}
-                               className="h-4 w-4 border-gray-600 bg-black/40 text-purple-600 focus:ring-purple-500 focus:ring-offset-black transition-all cursor-pointer"
+                               className="h-4 w-4 border-gray-600 bg-black/5 dark:bg-black/40 text-purple-600 focus:ring-purple-500 focus:ring-offset-black transition-all cursor-pointer"
                              />
                           </div>
                           <label
                             htmlFor={`mobile-category-${category.id}`}
-                            className={`ml-3 text-sm cursor-pointer transition-colors ${filters.category === category.id ? 'text-cyan-400 font-medium' : 'text-gray-400 group-hover:text-white'}`}
+                            className={`ml-3 text-sm cursor-pointer transition-colors ${filters.category === category.id ? 'text-cyan-400 font-medium' : 'text-gray-500 dark:text-gray-400 group-hover:text-primary dark:text-white'}`}
                           >
                             {category.name}
                           </label>
@@ -114,10 +114,10 @@ export default function ProductFilter({ onFilterChange }) {
                   
                   {/* Price filter */}
                   <div>
-                    <h3 className="text-md font-bold text-white mb-4 uppercase tracking-wider text-xs">Price Range</h3>
+                    <h3 className="text-md font-bold text-primary dark:text-white mb-4 uppercase tracking-wider text-xs">Price Range</h3>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label htmlFor="mobile-min-price" className="block text-xs font-medium text-gray-400 mb-1">
+                        <label htmlFor="mobile-min-price" className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
                           Min
                         </label>
                         <input
@@ -125,12 +125,12 @@ export default function ProductFilter({ onFilterChange }) {
                           id="mobile-min-price"
                           value={filters.minPrice}
                           onChange={(e) => handlePriceChange("minPrice", e.target.value)}
-                          className="block w-full bg-white/5 border border-white/10 rounded-lg py-2 px-3 text-white placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
+                          className="block w-full bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-lg py-2 px-3 text-primary dark:text-white placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
                           placeholder="0"
                         />
                       </div>
                       <div>
-                        <label htmlFor="mobile-max-price" className="block text-xs font-medium text-gray-400 mb-1">
+                        <label htmlFor="mobile-max-price" className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
                           Max
                         </label>
                         <input
@@ -138,7 +138,7 @@ export default function ProductFilter({ onFilterChange }) {
                           id="mobile-max-price"
                           value={filters.maxPrice}
                           onChange={(e) => handlePriceChange("maxPrice", e.target.value)}
-                          className="block w-full bg-white/5 border border-white/10 rounded-lg py-2 px-3 text-white placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
+                          className="block w-full bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-lg py-2 px-3 text-primary dark:text-white placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
                           placeholder="1000"
                         />
                       </div>
@@ -147,7 +147,7 @@ export default function ProductFilter({ onFilterChange }) {
                   
                   {/* Rating filter */}
                   <div>
-                    <h3 className="text-md font-bold text-white mb-4 uppercase tracking-wider text-xs">Rating</h3>
+                    <h3 className="text-md font-bold text-primary dark:text-white mb-4 uppercase tracking-wider text-xs">Rating</h3>
                     <div className="space-y-3">
                       {ratingOptions.map((rating) => (
                         <div key={rating.id} className="flex items-center group">
@@ -157,11 +157,11 @@ export default function ProductFilter({ onFilterChange }) {
                             type="radio"
                             checked={filters.rating === rating.id}
                             onChange={() => handleFilterChange("rating", rating.id)}
-                            className="h-4 w-4 border-gray-600 bg-black/40 text-purple-600 focus:ring-purple-500 focus:ring-offset-black transition-all cursor-pointer"
+                            className="h-4 w-4 border-gray-600 bg-black/5 dark:bg-black/40 text-purple-600 focus:ring-purple-500 focus:ring-offset-black transition-all cursor-pointer"
                           />
                           <label
                             htmlFor={`mobile-rating-${rating.id}`}
-                            className={`ml-3 text-sm cursor-pointer transition-colors ${filters.rating === rating.id ? 'text-cyan-400 font-medium' : 'text-gray-400 group-hover:text-white'}`}
+                            className={`ml-3 text-sm cursor-pointer transition-colors ${filters.rating === rating.id ? 'text-cyan-400 font-medium' : 'text-gray-500 dark:text-gray-400 group-hover:text-primary dark:text-white'}`}
                           >
                             {rating.name}
                           </label>
@@ -172,7 +172,7 @@ export default function ProductFilter({ onFilterChange }) {
                   
                   {/* Brand filter */}
                   <div>
-                    <h3 className="text-md font-bold text-white mb-4 uppercase tracking-wider text-xs">Brand</h3>
+                    <h3 className="text-md font-bold text-primary dark:text-white mb-4 uppercase tracking-wider text-xs">Brand</h3>
                     <div className="space-y-3">
                       {brandOptions.map((brand) => (
                         <div key={brand.id} className="flex items-center group">
@@ -182,11 +182,11 @@ export default function ProductFilter({ onFilterChange }) {
                             type="radio"
                             checked={filters.brand === brand.id}
                             onChange={() => handleFilterChange("brand", brand.id)}
-                            className="h-4 w-4 border-gray-600 bg-black/40 text-purple-600 focus:ring-purple-500 focus:ring-offset-black transition-all cursor-pointer"
+                            className="h-4 w-4 border-gray-600 bg-black/5 dark:bg-black/40 text-purple-600 focus:ring-purple-500 focus:ring-offset-black transition-all cursor-pointer"
                           />
                           <label
                             htmlFor={`mobile-brand-${brand.id}`}
-                            className={`ml-3 text-sm cursor-pointer transition-colors ${filters.brand === brand.id ? 'text-cyan-400 font-medium' : 'text-gray-400 group-hover:text-white'}`}
+                            className={`ml-3 text-sm cursor-pointer transition-colors ${filters.brand === brand.id ? 'text-cyan-400 font-medium' : 'text-gray-500 dark:text-gray-400 group-hover:text-primary dark:text-white'}`}
                           >
                             {brand.name}
                           </label>
@@ -197,7 +197,7 @@ export default function ProductFilter({ onFilterChange }) {
                   
                   {/* Sort by */}
                   <div>
-                    <h3 className="text-md font-bold text-white mb-4 uppercase tracking-wider text-xs">Sort By</h3>
+                    <h3 className="text-md font-bold text-primary dark:text-white mb-4 uppercase tracking-wider text-xs">Sort By</h3>
                     <div className="space-y-3">
                       {sortOptions.map((option) => (
                         <div key={option.id} className="flex items-center group">
@@ -207,11 +207,11 @@ export default function ProductFilter({ onFilterChange }) {
                             type="radio"
                             checked={filters.sortBy === option.id}
                             onChange={() => handleFilterChange("sortBy", option.id)}
-                            className="h-4 w-4 border-gray-600 bg-black/40 text-purple-600 focus:ring-purple-500 focus:ring-offset-black transition-all cursor-pointer"
+                            className="h-4 w-4 border-gray-600 bg-black/5 dark:bg-black/40 text-purple-600 focus:ring-purple-500 focus:ring-offset-black transition-all cursor-pointer"
                           />
                           <label
                             htmlFor={`mobile-sort-${option.id}`}
-                            className={`ml-3 text-sm cursor-pointer transition-colors ${filters.sortBy === option.id ? 'text-cyan-400 font-medium' : 'text-gray-400 group-hover:text-white'}`}
+                            className={`ml-3 text-sm cursor-pointer transition-colors ${filters.sortBy === option.id ? 'text-cyan-400 font-medium' : 'text-gray-500 dark:text-gray-400 group-hover:text-primary dark:text-white'}`}
                           >
                             {option.name}
                           </label>
@@ -221,10 +221,10 @@ export default function ProductFilter({ onFilterChange }) {
                   </div>
                 </div>
                 
-                <div className="border-t border-white/10 p-6">
+                <div className="border-t border-black/5 dark:border-white/10 p-6">
                   <button
                     type="button"
-                    className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg hover:shadow-purple-500/20 hover:-translate-y-0.5 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black focus:ring-purple-500"
+                    className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-primary dark:text-white font-bold py-3 px-4 rounded-xl shadow-lg hover:shadow-purple-500/20 hover:-translate-y-0.5 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black focus:ring-purple-500"
                     onClick={toggleMobileFilters}
                   >
                     Apply Filters
@@ -241,7 +241,7 @@ export default function ProductFilter({ onFilterChange }) {
         <div className="space-y-8">
           {/* Category filter */}
           <div>
-            <h3 className="text-md font-bold text-white mb-4 uppercase tracking-wider text-xs">Category</h3>
+            <h3 className="text-md font-bold text-primary dark:text-white mb-4 uppercase tracking-wider text-xs">Category</h3>
             <div className="space-y-3">
               {categories.map((category) => (
                 <div key={category.id} className="flex items-center group">
@@ -251,11 +251,11 @@ export default function ProductFilter({ onFilterChange }) {
                     type="radio"
                     checked={filters.category === category.id}
                     onChange={() => handleFilterChange("category", category.id)}
-                    className="h-4 w-4 border-gray-600 bg-black/40 text-purple-600 focus:ring-purple-500 focus:ring-offset-black transition-all cursor-pointer"
+                    className="h-4 w-4 border-gray-600 bg-black/5 dark:bg-black/40 text-purple-600 focus:ring-purple-500 focus:ring-offset-black transition-all cursor-pointer"
                   />
                   <label
                     htmlFor={`category-${category.id}`}
-                    className={`ml-3 text-sm cursor-pointer transition-colors ${filters.category === category.id ? 'text-cyan-400 font-medium' : 'text-gray-400 group-hover:text-white'}`}
+                    className={`ml-3 text-sm cursor-pointer transition-colors ${filters.category === category.id ? 'text-cyan-400 font-medium' : 'text-gray-500 dark:text-gray-400 group-hover:text-primary dark:text-white'}`}
                   >
                     {category.name}
                   </label>
@@ -266,10 +266,10 @@ export default function ProductFilter({ onFilterChange }) {
           
           {/* Price filter */}
           <div>
-            <h3 className="text-md font-bold text-white mb-4 uppercase tracking-wider text-xs">Price Range</h3>
+            <h3 className="text-md font-bold text-primary dark:text-white mb-4 uppercase tracking-wider text-xs">Price Range</h3>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label htmlFor="min-price" className="block text-xs font-medium text-gray-400 mb-1">
+                <label htmlFor="min-price" className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
                   Min
                 </label>
                 <input
@@ -277,12 +277,12 @@ export default function ProductFilter({ onFilterChange }) {
                   id="min-price"
                   value={filters.minPrice}
                   onChange={(e) => handlePriceChange("minPrice", e.target.value)}
-                  className="block w-full bg-white/5 border border-white/10 rounded-lg py-2 px-3 text-white placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
+                  className="block w-full bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-lg py-2 px-3 text-primary dark:text-white placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
                   placeholder="0"
                 />
               </div>
               <div>
-                <label htmlFor="max-price" className="block text-xs font-medium text-gray-400 mb-1">
+                <label htmlFor="max-price" className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
                   Max
                 </label>
                 <input
@@ -290,7 +290,7 @@ export default function ProductFilter({ onFilterChange }) {
                   id="max-price"
                   value={filters.maxPrice}
                   onChange={(e) => handlePriceChange("maxPrice", e.target.value)}
-                  className="block w-full bg-white/5 border border-white/10 rounded-lg py-2 px-3 text-white placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
+                  className="block w-full bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-lg py-2 px-3 text-primary dark:text-white placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
                   placeholder="1000"
                 />
               </div>
@@ -299,7 +299,7 @@ export default function ProductFilter({ onFilterChange }) {
           
           {/* Rating filter */}
           <div>
-            <h3 className="text-md font-bold text-white mb-4 uppercase tracking-wider text-xs">Rating</h3>
+            <h3 className="text-md font-bold text-primary dark:text-white mb-4 uppercase tracking-wider text-xs">Rating</h3>
             <div className="space-y-3">
               {ratingOptions.map((rating) => (
                 <div key={rating.id} className="flex items-center group">
@@ -309,11 +309,11 @@ export default function ProductFilter({ onFilterChange }) {
                     type="radio"
                     checked={filters.rating === rating.id}
                     onChange={() => handleFilterChange("rating", rating.id)}
-                    className="h-4 w-4 border-gray-600 bg-black/40 text-purple-600 focus:ring-purple-500 focus:ring-offset-black transition-all cursor-pointer"
+                    className="h-4 w-4 border-gray-600 bg-black/5 dark:bg-black/40 text-purple-600 focus:ring-purple-500 focus:ring-offset-black transition-all cursor-pointer"
                   />
                   <label
                     htmlFor={`rating-${rating.id}`}
-                    className={`ml-3 text-sm cursor-pointer transition-colors ${filters.rating === rating.id ? 'text-cyan-400 font-medium' : 'text-gray-400 group-hover:text-white'}`}
+                    className={`ml-3 text-sm cursor-pointer transition-colors ${filters.rating === rating.id ? 'text-cyan-400 font-medium' : 'text-gray-500 dark:text-gray-400 group-hover:text-primary dark:text-white'}`}
                   >
                     {rating.name}
                   </label>
@@ -324,7 +324,7 @@ export default function ProductFilter({ onFilterChange }) {
           
           {/* Brand filter */}
           <div>
-            <h3 className="text-md font-bold text-white mb-4 uppercase tracking-wider text-xs">Brand</h3>
+            <h3 className="text-md font-bold text-primary dark:text-white mb-4 uppercase tracking-wider text-xs">Brand</h3>
             <div className="space-y-3">
               {brandOptions.map((brand) => (
                 <div key={brand.id} className="flex items-center group">
@@ -334,11 +334,11 @@ export default function ProductFilter({ onFilterChange }) {
                     type="radio"
                     checked={filters.brand === brand.id}
                     onChange={() => handleFilterChange("brand", brand.id)}
-                    className="h-4 w-4 border-gray-600 bg-black/40 text-purple-600 focus:ring-purple-500 focus:ring-offset-black transition-all cursor-pointer"
+                    className="h-4 w-4 border-gray-600 bg-black/5 dark:bg-black/40 text-purple-600 focus:ring-purple-500 focus:ring-offset-black transition-all cursor-pointer"
                   />
                   <label
                     htmlFor={`brand-${brand.id}`}
-                    className={`ml-3 text-sm cursor-pointer transition-colors ${filters.brand === brand.id ? 'text-cyan-400 font-medium' : 'text-gray-400 group-hover:text-white'}`}
+                    className={`ml-3 text-sm cursor-pointer transition-colors ${filters.brand === brand.id ? 'text-cyan-400 font-medium' : 'text-gray-500 dark:text-gray-400 group-hover:text-primary dark:text-white'}`}
                   >
                     {brand.name}
                   </label>
@@ -349,7 +349,7 @@ export default function ProductFilter({ onFilterChange }) {
           
           {/* Sort by */}
           <div>
-            <h3 className="text-md font-bold text-white mb-4 uppercase tracking-wider text-xs">Sort By</h3>
+            <h3 className="text-md font-bold text-primary dark:text-white mb-4 uppercase tracking-wider text-xs">Sort By</h3>
             <div className="space-y-3">
               {sortOptions.map((option) => (
                 <div key={option.id} className="flex items-center group">
@@ -359,11 +359,11 @@ export default function ProductFilter({ onFilterChange }) {
                     type="radio"
                     checked={filters.sortBy === option.id}
                     onChange={() => handleFilterChange("sortBy", option.id)}
-                    className="h-4 w-4 border-gray-600 bg-black/40 text-purple-600 focus:ring-purple-500 focus:ring-offset-black transition-all cursor-pointer"
+                    className="h-4 w-4 border-gray-600 bg-black/5 dark:bg-black/40 text-purple-600 focus:ring-purple-500 focus:ring-offset-black transition-all cursor-pointer"
                   />
                   <label
                     htmlFor={`sort-${option.id}`}
-                    className={`ml-3 text-sm cursor-pointer transition-colors ${filters.sortBy === option.id ? 'text-cyan-400 font-medium' : 'text-gray-400 group-hover:text-white'}`}
+                    className={`ml-3 text-sm cursor-pointer transition-colors ${filters.sortBy === option.id ? 'text-cyan-400 font-medium' : 'text-gray-500 dark:text-gray-400 group-hover:text-primary dark:text-white'}`}
                   >
                     {option.name}
                   </label>

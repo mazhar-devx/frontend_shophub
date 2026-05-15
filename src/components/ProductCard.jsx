@@ -33,27 +33,27 @@ export default function ProductCard({ product }) {
         {/* Image Container */}
         <div className="relative pt-[115%] overflow-hidden bg-gray-50/50 dark:bg-gray-900/40">
            {/* Badges */}
-           <div className="absolute top-5 left-5 z-20 flex flex-col gap-2">
+           <div className="absolute top-3 left-3 sm:top-5 sm:left-5 z-20 flex flex-col gap-1.5 sm:gap-2">
                {isNew && (
-                   <span className="px-4 py-1.5 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-[9px] font-black uppercase tracking-[0.15em] rounded-full shadow-lg">
+                   <span className="px-2 py-1 sm:px-4 sm:py-1.5 bg-gradient-to-r from-indigo-500 to-purple-500 text-white text-[8px] sm:text-[9px] font-black uppercase tracking-[0.15em] rounded-full shadow-lg">
                        New
                    </span>
                )}
                {product.price > 500 && (
-                   <span className="px-4 py-1.5 bg-white/90 dark:bg-purple-500/90 border border-gray-100 dark:border-purple-400/30 text-indigo-600 dark:text-white text-[9px] font-black uppercase tracking-[0.15em] rounded-full shadow-lg backdrop-blur-md">
+                   <span className="px-2 py-1 sm:px-4 sm:py-1.5 bg-white/90 dark:bg-purple-500/90 border border-gray-100 dark:border-purple-400/30 text-indigo-600 dark:text-white text-[8px] sm:text-[9px] font-black uppercase tracking-[0.15em] rounded-full shadow-lg backdrop-blur-md">
                        Premium
                    </span>
                )}
                {product.video && (
-                    <span className="px-4 py-1.5 bg-pink-500/90 text-white text-[9px] font-black uppercase tracking-[0.15em] rounded-full shadow-lg backdrop-blur-md flex items-center gap-1.5">
-                        <Play className="w-2.5 h-2.5 fill-current" />
+                    <span className="px-2 py-1 sm:px-4 sm:py-1.5 bg-pink-500/90 text-white text-[8px] sm:text-[9px] font-black uppercase tracking-[0.15em] rounded-full shadow-lg backdrop-blur-md flex items-center gap-1 sm:gap-1.5">
+                        <Play className="w-2 h-2 sm:w-2.5 sm:h-2.5 fill-current" />
                         Video
                     </span>
                )}
            </div>
 
-           <div className="absolute top-5 right-5 z-20">
-                <span className="bg-black/10 dark:bg-black/60 backdrop-blur-md border border-white/20 text-[9px] font-black px-4 py-1.5 rounded-full uppercase tracking-[0.15em] text-primary dark:text-white">
+           <div className="absolute top-3 right-3 sm:top-5 sm:right-5 z-20 max-w-[50%]">
+                <span className="bg-black/10 dark:bg-black/60 backdrop-blur-md border border-white/20 text-[7px] sm:text-[9px] font-black px-2 py-1 sm:px-4 sm:py-1.5 rounded-full uppercase tracking-[0.15em] text-primary dark:text-white truncate block">
                     {product.category}
                 </span>
            </div>
@@ -119,35 +119,35 @@ export default function ProductCard({ product }) {
         </div>
         
         {/* Content */}
-        <div className="p-8 flex flex-col flex-grow relative z-10 bg-white dark:bg-transparent">
-          <h3 className="font-bold text-xl text-primary dark:text-white mb-3 leading-tight group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-all duration-300 line-clamp-1 tracking-tight">
+        <div className="p-4 sm:p-6 md:p-8 flex flex-col flex-grow relative z-10 bg-white dark:bg-transparent">
+          <h3 className="font-bold text-sm sm:text-base md:text-xl text-primary dark:text-white mb-1.5 sm:mb-3 leading-tight group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-all duration-300 line-clamp-1 tracking-tight">
             {product.name}
           </h3>
           
-          <div className="flex items-center mb-5">
+          <div className="flex flex-col xl:flex-row xl:items-center mb-3 sm:mb-5 gap-1 xl:gap-3">
              {product.ratingsQuantity > 0 ? (
                   <>
-                     <div className="flex text-yellow-400 text-xs gap-0.5">
+                     <div className="flex text-yellow-400 text-[10px] sm:text-xs gap-0.5">
                          {[...Array(5)].map((_, i) => (
-                         <svg key={i} className={`w-3.5 h-3.5 ${i < Math.floor(product.ratingsAverage) ? 'fill-current' : 'text-gray-200 dark:text-gray-700 fill-current'}`} viewBox="0 0 20 20">
+                         <svg key={i} className={`w-3 h-3 sm:w-3.5 sm:h-3.5 ${i < Math.floor(product.ratingsAverage) ? 'fill-current' : 'text-gray-200 dark:text-gray-700 fill-current'}`} viewBox="0 0 20 20">
                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                          </svg>
                          ))}
                      </div>
-                     <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest ml-3">{product.ratingsAverage} ({product.ratingsQuantity})</span>
+                     <span className="text-[8px] sm:text-[10px] text-gray-400 font-bold uppercase tracking-widest">{product.ratingsAverage} ({product.ratingsQuantity})</span>
                   </>
              ) : (
-                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">No reviews</span>
+                <span className="text-[8px] sm:text-[10px] text-gray-400 font-bold uppercase tracking-widest">No reviews</span>
              )}
           </div>
           
-          <div className="mt-auto flex justify-between items-end border-t border-gray-100 dark:border-white/5 pt-6">
+          <div className="mt-auto flex justify-between items-end border-t border-gray-100 dark:border-white/5 pt-3 sm:pt-4 md:pt-6">
              <div className="flex flex-col">
-                <span className="text-[10px] text-gray-400 uppercase tracking-[0.2em] font-black mb-1.5">Price</span>
-                <div className="text-2xl font-black text-primary dark:text-white tracking-tighter">
+                <span className="text-[8px] sm:text-[10px] text-gray-400 uppercase tracking-[0.2em] font-black mb-1 sm:mb-1.5">Price</span>
+                <div className="text-sm sm:text-lg md:text-2xl font-black text-primary dark:text-white tracking-tighter">
                      {product.discountPercentage > 0 ? (
                         <div className="flex flex-col leading-none">
-                            <span className="text-[10px] text-red-500 line-through font-bold mb-1">
+                            <span className="text-[9px] sm:text-[10px] text-red-500 line-through font-bold mb-0.5 sm:mb-1">
                                 {formatPrice(product.price, product.currency)}
                             </span>
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">
@@ -163,9 +163,9 @@ export default function ProductCard({ product }) {
              <button 
                onClick={handleAddToCart}
                aria-label={`Quick add ${product.name} to cart`}
-               className="h-10 w-10 bg-gray-50 dark:bg-white/5 rounded-2xl flex items-center justify-center text-gray-400 hover:bg-indigo-600 hover:text-white transition-all duration-300 group/btn shadow-inner"
+               className="h-8 w-8 sm:h-10 sm:w-10 bg-gray-50 dark:bg-white/5 rounded-xl sm:rounded-2xl flex items-center justify-center text-gray-400 hover:bg-indigo-600 hover:text-white transition-all duration-300 group/btn shadow-inner shrink-0 ml-2"
              >
-               <svg className="w-5 h-5 transform group-hover/btn:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+               <svg className="w-4 h-4 sm:w-5 sm:h-5 transform group-hover/btn:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
              </button>
           </div>
         </div>

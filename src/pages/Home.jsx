@@ -17,6 +17,7 @@ import GoogleAd from "../components/GoogleAd";
 import CategoryGrid from "../components/CategoryGrid";
 import ProductSlider from "../components/ProductSlider";
 import { toast } from "react-hot-toast";
+import { motion, AnimatePresence } from "framer-motion";
 
 /* ═══════════════════════════════════════════════
    PERFORMANCE HOOKS — Zero Dependencies
@@ -232,14 +233,36 @@ export default function Home() {
   const [heroReady, setHeroReady] = useState(false);
   const [heroIndex, setHeroIndex] = useState(0);
   const progress = useProgress();
+  const [isAtTop, setIsAtTop] = useState(true);
+  const catScrollRef = useRef(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsAtTop(window.scrollY < 50);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   /* ── Hero Slideshow Logic ── */
   useEffect(() => {
     if (settings?.images?.length > 1) {
       const interval = setInterval(() => {
         setHeroIndex((prev) => (prev + 1) % settings.images.length);
-      }, 10000);
+      }, 30000);
       return () => clearInterval(interval);
+    }
+  }, [settings?.images]);
+
+  const nextHeroImage = useCallback(() => {
+    if (settings?.images?.length > 1) {
+      setHeroIndex((prev) => (prev + 1) % settings.images.length);
+    }
+  }, [settings?.images]);
+
+  const prevHeroImage = useCallback(() => {
+    if (settings?.images?.length > 1) {
+      setHeroIndex((prev) => (prev === 0 ? settings.images.length - 1 : prev - 1));
     }
   }, [settings?.images]);
 
@@ -321,7 +344,7 @@ export default function Home() {
         title: `Popular in ${catName}`,
         exploreText: `Shop all ${catName}`,
         exploreLink: `/products?category=${catName}`,
-        categories: catProducts.slice(0, 4).map(p => ({
+        categories: catProducts.slice(0, 20).map(p => ({
           name: p.name,
           image: getProductImageUrl(p.images?.[0] || p.image),
           link: `/product/${p._id}`
@@ -456,7 +479,7 @@ export default function Home() {
           <Particles />
 
           <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-0 md:pt-20">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-8 items-center">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-0 md:gap-8 items-center">
 
               {/* ── Left: Text ── */}
               <div className="flex flex-col items-center md:items-start text-center md:text-left z-10">
@@ -550,7 +573,7 @@ export default function Home() {
 
               {/* ── Right: Visual ── */}
               <div
-                className="relative w-full aspect-square md:aspect-auto md:h-[600px] flex items-center justify-center"
+                className="relative w-full h-auto md:h-[600px] flex items-center justify-center mt-0"
                 style={{
                   opacity: heroReady ? 1 : 0,
                   transform: heroReady ? "none" : "translateY(44px) scale(0.96)",
@@ -558,7 +581,7 @@ export default function Home() {
                   willChange: heroReady ? "auto" : "opacity, transform",
                 }}
               >
-                <div className="relative w-full h-[400px] md:h-[600px] max-w-lg md:max-w-none flex items-center justify-center mt-12 md:mt-0">
+                <div className="relative w-full h-[280px] sm:h-[400px] md:h-[600px] max-w-lg md:max-w-none flex items-center justify-center">
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] md:w-[480px] md:h-[480px] bg-gradient-to-tr from-cyan-200/40 to-purple-200/40 dark:from-cyan-900/25 dark:to-purple-900/25 rounded-full blur-[90px]" />
                   
                   {settings?.video ? (
@@ -569,21 +592,48 @@ export default function Home() {
                       onError={handleImgError}
                     />
                   ) : (
-                    <img
-                      key={heroImg}
-                      src={heroImg}
-                      alt="Premium product"
-                      className="w-[85%] h-[85%] object-contain relative z-10 transition-all duration-1000 ease-out hover:scale-[1.05] animate-fade-in"
-                      loading="eager"
-                      fetchpriority="high"
-                      decoding="sync"
-                      onError={handleImgError}
-                    />
+                    <div className="relative w-full h-full flex items-center justify-center group/slider">
+                      <AnimatePresence mode="wait">
+                        <motion.img
+                          key={heroIndex}
+                          initial={{ opacity: 0, filter: "blur(10px)", scale: 0.95 }}
+                          animate={{ opacity: 1, filter: "blur(0px)", scale: 1 }}
+                          exit={{ opacity: 0, filter: "blur(10px)", scale: 1.05 }}
+                          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                          src={heroImg}
+                          alt="Premium product"
+                          className="w-[85%] h-[85%] object-contain relative z-10 hover:scale-[1.02] transition-transform duration-1000"
+                          loading="eager"
+                          fetchpriority="high"
+                          decoding="sync"
+                          onError={handleImgError}
+                        />
+                      </AnimatePresence>
+                      
+                      {settings?.images?.length > 1 && (
+                        <>
+                          <button 
+                            onClick={prevHeroImage}
+                            className="absolute left-2 md:-left-4 z-20 w-8 h-8 md:w-10 md:h-10 rounded-full bg-black/5 dark:bg-white/10 backdrop-blur-md border border-black/10 dark:border-white/10 flex items-center justify-center text-primary dark:text-white opacity-0 group-hover/slider:opacity-100 transition-all duration-300 hover:bg-black/10 dark:hover:bg-white/20 hover:scale-110"
+                            aria-label="Previous image"
+                          >
+                            <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" /></svg>
+                          </button>
+                          <button 
+                            onClick={nextHeroImage}
+                            className="absolute right-2 md:-right-4 z-20 w-8 h-8 md:w-10 md:h-10 rounded-full bg-black/5 dark:bg-white/10 backdrop-blur-md border border-black/10 dark:border-white/10 flex items-center justify-center text-primary dark:text-white opacity-0 group-hover/slider:opacity-100 transition-all duration-300 hover:bg-black/10 dark:hover:bg-white/20 hover:scale-110"
+                            aria-label="Next image"
+                          >
+                            <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" /></svg>
+                          </button>
+                        </>
+                      )}
+                    </div>
                   )}
                 </div>
 
                 {/* Floating Badge */}
-                <div className="absolute bottom-10 right-4 md:right-10 md:bottom-20 z-20 anim-float">
+                <div className="absolute -bottom-2 right-0 sm:bottom-10 sm:right-6 md:right-10 md:bottom-20 z-20 anim-float scale-[0.85] sm:scale-100 origin-bottom-right">
                   <div className="bg-white/80 dark:bg-black/60 backdrop-blur-2xl px-6 py-4 rounded-3xl border border-black/[0.035] dark:border-white/[0.06] flex items-center gap-4 hover:scale-105 transition-transform duration-500 cursor-default shadow-[0_8px_32px_rgba(0,0,0,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
                     <div className="h-12 w-12 rounded-2xl bg-gradient-to-tr from-cyan-400 to-purple-500 flex items-center justify-center text-xl font-bold text-white shadow-lg shadow-cyan-500/20">
                       %
@@ -602,42 +652,28 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Scroll Hint */}
+          {/* Beautiful Interactive Scroll Down Button */}
           <div
-            className="absolute bottom-0 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none"
-            style={{
-              opacity: heroReady ? 0.3 : 0,
-              transition: "opacity 1s ease 1.5s",
-            }}
+            className={`absolute bottom-2 md:bottom-8 left-1/2 -translate-x-1/2 z-30 transition-all duration-700 ease-in-out ${isAtTop && heroReady ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}
           >
-            <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-secondary dark:text-gray-500">
-              Scroll
-            </span>
-            <div className="w-px h-8 bg-gradient-to-b from-gray-400 to-transparent animate-pulse" />
+            <button
+              onClick={() => window.scrollTo({ top: window.innerHeight * 0.8, behavior: 'smooth' })}
+              className="flex flex-col items-center gap-3 group cursor-pointer"
+              aria-label="Scroll down to explore"
+            >
+              <div className="bg-white/80 dark:bg-black/60 backdrop-blur-xl border border-black/[0.05] dark:border-white/[0.1] p-3 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.5)] group-hover:scale-110 group-hover:-translate-y-1 group-active:scale-95 transition-all duration-300">
+                <svg className="w-5 h-5 text-cyan-600 dark:text-cyan-400 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                </svg>
+              </div>
+              <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] text-secondary dark:text-gray-500 group-hover:text-primary dark:group-hover:text-white transition-colors duration-300">
+                Scroll to Explore
+              </span>
+            </button>
           </div>
         </section>
 
-        {/* ═══════════ STATS ═══════════ */}
-        <Reveal className="mb-20 md:mb-28">
-          <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
-              {STATS.map((s) => (
-                <div
-                  key={s.l}
-                  className="text-center p-5 md:p-8 rounded-3xl bg-white/50 dark:bg-white/[0.015] border border-black/[0.035] dark:border-white/[0.035] backdrop-blur-sm hover:bg-white/80 dark:hover:bg-white/[0.03] transition-all duration-500 group cursor-default"
-                  style={{ contain: "layout style paint" }}
-                >
-                  <div className="text-3xl md:text-5xl font-black text-primary dark:text-white tracking-tight mb-1.5 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors duration-500">
-                    <CountUp target={s.v} suffix={s.s} />
-                  </div>
-                  <p className="text-[10px] md:text-xs uppercase tracking-[0.16em] font-bold text-secondary dark:text-gray-500">
-                    {s.l}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </Reveal>
+        {/* Stats moved to Newsletter section */}
 
         {/* ── Banner Ad ── */}
         <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 mb-20 md:mb-28">
@@ -721,7 +757,7 @@ export default function Home() {
               </h2>
             </div>
           </div>
-          <Stagger className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" gap={70}>
+          <Stagger className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6" gap={70}>
             {finalTrend.map((p) => (
               <ProductCard key={p._id || p.id} product={p} />
             ))}
@@ -738,31 +774,61 @@ export default function Home() {
               Shop by Category
             </h2>
           </div>
-          <Stagger className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4" gap={50}>
-            {CATS.map((c) => (
-              <Link
-                key={c.id}
-                to={`/products?category=${c.id}`}
-                className="group relative h-32 md:h-36 rounded-2xl overflow-hidden bg-white dark:bg-white/[0.015] border border-black/[0.05] dark:border-white/[0.05] hover:border-transparent dark:hover:border-transparent transition-all duration-500 hover:-translate-y-1.5 shadow-sm hover:shadow-xl"
-                style={{ contain: "layout style paint" }}
-              >
-                <div
-                  className={`absolute inset-0 bg-gradient-to-br ${c.g} opacity-0 group-hover:opacity-[0.06] dark:group-hover:opacity-[0.12] transition-opacity duration-500`}
-                />
-                <div
-                  className={`absolute -inset-px rounded-2xl bg-gradient-to-br ${c.g} opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 blur-sm`}
-                />
-                <div className="flex flex-col items-center justify-center h-full relative z-10">
-                  <span className="text-3xl md:text-4xl mb-3 grayscale-[40%] group-hover:grayscale-0 transition-all duration-500 transform group-hover:scale-110 group-hover:-rotate-3 drop-shadow-sm">
-                    {c.icon}
-                  </span>
-                  <h3 className="text-xs md:text-sm font-bold text-secondary dark:text-gray-500 group-hover:text-primary dark:group-hover:text-white transition-colors duration-300 tracking-tight">
-                    {c.name}
-                  </h3>
-                </div>
-              </Link>
-            ))}
-          </Stagger>
+          <div className="relative group/catslider px-2">
+            <button
+              onClick={() => {
+                if(catScrollRef.current) catScrollRef.current.scrollBy({ left: -300, behavior: 'smooth' })
+              }}
+              aria-label="Scroll left"
+              className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 md:-translate-x-6 z-20 w-10 h-10 md:w-12 md:h-12 bg-white dark:bg-black border border-black/[0.05] dark:border-white/[0.05] rounded-full flex items-center justify-center text-primary dark:text-white shadow-xl opacity-0 group-hover/catslider:opacity-100 hover:scale-110 active:scale-95 transition-all duration-300 pointer-events-auto"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            
+            <div 
+              ref={catScrollRef}
+              className="flex gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory scrollbar-hide no-scrollbar pb-6 pt-2 px-1"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
+              {CATS.map((c) => (
+                <Link
+                  key={c.id}
+                  to={`/products?category=${c.id}`}
+                  className="flex-shrink-0 w-32 md:w-44 snap-start group relative h-32 md:h-40 rounded-2xl md:rounded-[2rem] overflow-hidden bg-white dark:bg-white/[0.015] border border-black/[0.05] dark:border-white/[0.05] hover:border-transparent dark:hover:border-transparent transition-all duration-500 hover:-translate-y-2 shadow-sm hover:shadow-2xl"
+                  style={{ contain: "layout style paint" }}
+                >
+                  <div
+                    className={`absolute inset-0 bg-gradient-to-br ${c.g} opacity-0 group-hover:opacity-[0.06] dark:group-hover:opacity-[0.12] transition-opacity duration-500`}
+                  />
+                  <div
+                    className={`absolute -inset-px rounded-2xl md:rounded-[2rem] bg-gradient-to-br ${c.g} opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10 blur-md`}
+                  />
+                  <div className="flex flex-col items-center justify-center h-full relative z-10 p-2 text-center">
+                    <span className="text-4xl md:text-5xl mb-3 grayscale-[40%] group-hover:grayscale-0 transition-all duration-500 transform group-hover:scale-110 group-hover:-rotate-3 drop-shadow-md">
+                      {c.icon}
+                    </span>
+                    <h3 className="text-xs md:text-sm font-bold text-secondary dark:text-gray-500 group-hover:text-primary dark:group-hover:text-white transition-colors duration-300 tracking-tight">
+                      {c.name}
+                    </h3>
+                  </div>
+                </Link>
+              ))}
+            </div>
+
+            <button
+              onClick={() => {
+                if(catScrollRef.current) catScrollRef.current.scrollBy({ left: 300, behavior: 'smooth' })
+              }}
+              aria-label="Scroll right"
+              className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 md:translate-x-6 z-20 w-10 h-10 md:w-12 md:h-12 bg-white dark:bg-black border border-black/[0.05] dark:border-white/[0.05] rounded-full flex items-center justify-center text-primary dark:text-white shadow-xl opacity-0 group-hover/catslider:opacity-100 hover:scale-110 active:scale-95 transition-all duration-300 pointer-events-auto"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
         </Reveal>
 
         {/* ═══════════ FLASH SALE ═══════════ */}
@@ -939,6 +1005,24 @@ export default function Home() {
                   Subscribe
                 </button>
               </form>
+
+              {/* ═══════════ STATS ═══════════ */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 mt-16 md:mt-20">
+                {STATS.map((s) => (
+                  <div
+                    key={s.l}
+                    className="text-center p-5 md:p-8 rounded-3xl bg-white/50 dark:bg-white/[0.015] border border-black/[0.035] dark:border-white/[0.035] backdrop-blur-sm hover:bg-white/80 dark:hover:bg-white/[0.03] transition-all duration-500 group cursor-default"
+                    style={{ contain: "layout style paint" }}
+                  >
+                    <div className="text-3xl md:text-5xl font-black text-primary dark:text-white tracking-tight mb-1.5 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors duration-500">
+                      <CountUp target={s.v} suffix={s.s} />
+                    </div>
+                    <p className="text-[10px] md:text-xs uppercase tracking-[0.16em] font-bold text-secondary dark:text-gray-500">
+                      {s.l}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
           </section>
         </Reveal>

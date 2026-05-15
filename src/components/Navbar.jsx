@@ -501,13 +501,13 @@ export default function Navbar() {
                       initial={{ opacity: 0, y: 10, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      className="absolute right-0 mt-4 w-64 glass border border-white/10 rounded-3xl shadow-2xl py-2 z-50 origin-top-right overflow-hidden"
+                      className="absolute right-0 mt-4 w-64 glass border border-black/5 dark:border-white/10 bg-white/90 dark:bg-black/60 rounded-3xl shadow-2xl py-2 z-50 origin-top-right overflow-hidden"
                     >
-                      <div className="px-5 py-4 border-b border-white/5 bg-white/5 flex items-center gap-3">
-                        <img src={getProductImageUrl(user?.photo) || DEFAULT_AVATAR} className="w-10 h-10 rounded-full object-cover border border-white/10" />
+                      <div className="px-5 py-4 border-b border-black/5 dark:border-white/5 bg-gray-50 dark:bg-white/5 flex items-center gap-3">
+                        <img src={getProductImageUrl(user?.photo) || DEFAULT_AVATAR} className="w-10 h-10 rounded-full object-cover border border-black/5 dark:border-white/10" />
                         <div className="overflow-hidden">
-                           <p className="text-white font-bold truncate text-sm">{user?.role === 'admin' ? (user?.vendorName || user?.name) : user?.name}</p>
-                           <p className="text-[10px] text-cyan-400 truncate uppercase font-bold tracking-widest">{user?.email}</p>
+                           <p className="text-primary dark:text-white font-bold truncate text-sm">{user?.role === 'admin' ? (user?.vendorName || user?.name) : user?.name}</p>
+                           <p className="text-[10px] text-cyan-600 dark:text-cyan-400 truncate uppercase font-bold tracking-widest">{user?.email}</p>
                         </div>
                       </div>
                       <div className="py-2">
@@ -517,20 +517,20 @@ export default function Navbar() {
                            { to: '/wishlist', label: 'Wishlist', icon: <Heart className="w-4 h-4" /> },
                            { to: '/settings', label: 'Settings', icon: <Settings className="w-4 h-4" /> },
                          ].map(item => (
-                           <Link key={item.to} to={item.to} onClick={toggleUserMenu} className="flex items-center px-5 py-3 text-sm text-gray-400 hover:bg-white/5 hover:text-white transition-colors gap-3">
+                           <Link key={item.to} to={item.to} onClick={toggleUserMenu} className="flex items-center px-5 py-3 text-sm text-gray-600 dark:text-gray-400 hover:bg-black/5 dark:hover:bg-white/5 hover:text-primary dark:hover:text-white transition-colors gap-3">
                              {item.icon} {item.label}
                            </Link>
                          ))}
                       </div>
                       {user?.role === 'admin' && (
-                        <div className="border-y border-white/5 py-2 bg-purple-500/10">
-                          <Link to="/admin/dashboard" onClick={toggleUserMenu} className="flex items-center px-5 py-3 text-sm text-purple-300 hover:text-white font-bold gap-3">
+                        <div className="border-y border-black/5 dark:border-white/5 py-2 bg-purple-50 dark:bg-purple-500/10">
+                          <Link to="/admin/dashboard" onClick={toggleUserMenu} className="flex items-center px-5 py-3 text-sm text-purple-600 dark:text-purple-300 hover:text-purple-700 dark:hover:text-white font-bold gap-3">
                             <LayoutGrid className="w-4 h-4" /> Admin Panel
                           </Link>
                         </div>
                       )}
                       <div className="pt-1">
-                         <button onClick={() => { handleLogout(); toggleUserMenu(); }} className="flex items-center w-full px-5 py-4 text-sm text-red-400 hover:bg-red-500/10 transition-colors gap-3 font-bold">
+                         <button onClick={() => { handleLogout(); toggleUserMenu(); }} className="flex items-center w-full px-5 py-4 text-sm text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors gap-3 font-bold">
                            <LogOut className="w-4 h-4" /> Logout
                          </button>
                       </div>
