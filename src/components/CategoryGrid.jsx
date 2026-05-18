@@ -37,10 +37,10 @@ export default function CategoryGrid({ title, categories, exploreLink, exploreTe
       
       <div className="relative flex-grow">
         {/* Invisible placeholder to define fluid height without collapsing */}
-        <div className="grid grid-cols-2 gap-4 invisible pointer-events-none" aria-hidden="true">
+        <div className={`grid gap-4 invisible pointer-events-none ${Math.min(4, categories?.length || 0) === 1 ? 'grid-cols-1' : 'grid-cols-2'}`} aria-hidden="true">
           {Array.from({ length: Math.min(4, categories?.length || 0) }).map((_, idx) => (
-            <div key={idx} className="flex flex-col gap-2">
-              <div className="pt-[100%]" />
+            <div key={idx} className={`flex flex-col gap-2 ${Math.min(4, categories?.length || 0) === 3 && idx === 0 ? 'col-span-2' : ''}`}>
+              <div className={Math.min(4, categories?.length || 0) === 1 ? 'pt-[100%]' : Math.min(4, categories?.length || 0) === 3 && idx === 0 ? 'pt-[50%]' : 'pt-[100%]'} />
               <span className="text-[11px] uppercase tracking-tight truncate">&nbsp;</span>
             </div>
           ))}
@@ -54,15 +54,21 @@ export default function CategoryGrid({ title, categories, exploreLink, exploreTe
             animate={{ opacity: 1, filter: "blur(0px)" }}
             exit={{ opacity: 0, filter: "blur(4px)" }}
             transition={{ duration: 0.6, ease: "easeInOut" }}
-            className="grid grid-cols-2 gap-4 absolute inset-0"
+            className={`grid gap-4 absolute inset-0 ${
+              currentItems.length === 1 ? 'grid-cols-1' : 'grid-cols-2'
+            }`}
           >
             {currentItems.map((cat, idx) => (
               <Link 
                 key={`${page}-${idx}`} 
                 to={cat.link}
-                className="flex flex-col gap-2 group/item"
+                className={`flex flex-col gap-2 group/item ${
+                  currentItems.length === 3 && idx === 0 ? 'col-span-2 aspect-[2/1] flex-row' : ''
+                }`}
               >
-                <div className="relative pt-[100%] rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-900/50 border border-black/[0.03] dark:border-white/[0.03]">
+                <div className={`relative rounded-2xl overflow-hidden bg-gray-100 dark:bg-gray-900/50 border border-black/[0.03] dark:border-white/[0.03] ${
+                  currentItems.length === 3 && idx === 0 ? 'w-1/2 h-full' : 'pt-[100%]'
+                }`}>
                   <img 
                     src={cat.image} 
                     alt={cat.name}
@@ -70,9 +76,11 @@ export default function CategoryGrid({ title, categories, exploreLink, exploreTe
                   />
                   <div className="absolute inset-0 bg-black/0 group-hover/item:bg-black/10 dark:group-hover/item:bg-black/30 transition-colors duration-500" />
                 </div>
-                <span className="text-[11px] font-bold text-secondary dark:text-gray-400 group-hover/item:text-cyan-600 dark:group-hover/item:text-cyan-400 transition-colors uppercase tracking-tight truncate">
-                  {cat.name}
-                </span>
+                <div className={currentItems.length === 3 && idx === 0 ? 'flex flex-col justify-center flex-1 px-4' : ''}>
+                  <span className="text-[11px] font-bold text-secondary dark:text-gray-400 group-hover/item:text-cyan-600 dark:group-hover/item:text-cyan-400 transition-colors uppercase tracking-tight truncate">
+                    {cat.name}
+                  </span>
+                </div>
               </Link>
             ))}
           </motion.div>

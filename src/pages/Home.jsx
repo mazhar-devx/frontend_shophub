@@ -442,18 +442,39 @@ export default function Home() {
         title="Pakistan's #1 Luxury Shopping & Social Marketplace"
         description="ShopHub.pro - Experience ultra-premium electronics, fashion, and social video shopping. Discover the latest trends with fast 24h delivery across Pakistan."
         keywords="ShopHub.pro, luxury shopping Pakistan, online electronics store, social commerce Pakistan, video shopping app, premium fashion marketplace"
-        schema={{
-          "@context": "https://schema.org",
-          "@type": "WebSite",
-          "name": "ShopHub.pro",
-          "alternateName": ["ShopHub", "Shop Hub"],
-          "url": "https://www.shophub.pro",
-          "potentialAction": {
-            "@type": "SearchAction",
-            "target": "https://www.shophub.pro/products?search={search_term_string}",
-            "query-input": "required name=search_term_string"
+        schema={[
+          {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "ShopHub.pro",
+            "alternateName": ["ShopHub", "Shop Hub"],
+            "url": "https://www.shophub.pro",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": "https://www.shophub.pro/products?search={search_term_string}",
+              "query-input": "required name=search_term_string"
+            }
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "ShopHub.pro",
+            "url": "https://www.shophub.pro",
+            "logo": "https://www.shophub.pro/logo.png",
+            "sameAs": [
+              "https://www.facebook.com/shophubpro",
+              "https://www.instagram.com/shophubpro",
+              "https://twitter.com/shophubpro"
+            ],
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "telephone": "+92-300-1234567",
+              "contactType": "customer service",
+              "areaServed": "PK",
+              "availableLanguage": ["English", "Urdu"]
+            }
           }
-        }}
+        ]}
       />
 
       {/* ── Scroll Progress Bar ── */}

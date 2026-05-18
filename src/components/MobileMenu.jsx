@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useUIStore } from "../zustand/uiStore";
 import { useSelector } from "react-redux";
 import { getProductImageUrl } from "../utils/constants";
-import { X, LayoutGrid, ShoppingCart, Package, Flame, Play, LogOut, ChevronRight, User, LogIn, UserPlus } from "lucide-react";
+import { X, LayoutGrid, ShoppingCart, Package, Flame, Play, LogOut, ChevronRight, User, LogIn, UserPlus, BookOpen } from "lucide-react";
 
 export default function MobileMenu() {
   const { isMenuOpen, toggleMenu } = useUIStore();
@@ -77,6 +77,7 @@ export default function MobileMenu() {
                    { label: 'Categories', path: '/categories', icon: <Package className="w-5 h-5" /> },
                    { label: 'Flash Deals', path: '/deals', icon: <Flame className="w-5 h-5" />, special: true },
                    { label: 'Watch Me', path: '/watch-me', icon: <Play className="w-5 h-5" />, watch: true },
+                   { label: 'Journal', path: '/blog', icon: <BookOpen className="w-5 h-5" /> },
                  ].map((item) => (
                    <Link 
                      key={item.label}
