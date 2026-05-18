@@ -11,5 +11,14 @@ export default defineConfig({
   build: {
     cssCodeSplit: true,
     chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-redux': ['@reduxjs/toolkit', 'react-redux'],
+          'vendor-ui': ['framer-motion', 'lucide-react', 'react-hot-toast', 'react-helmet-async']
+        }
+      }
+    }
   }
 })

@@ -57,6 +57,8 @@ const HelpCenter = lazy(() => import("./pages/info/HelpCenter"));
 const ShippingReturns = lazy(() => import("./pages/info/ShippingReturns"));
 const SizeGuide = lazy(() => import("./pages/info/SizeGuide"));
 const ContactUs = lazy(() => import("./pages/info/ContactUs"));
+const Blog = lazy(() => import("./pages/Blog"));
+const BlogPost = lazy(() => import("./pages/BlogPost"));
 
 // Admin Pages Lazy Load
 const AdminDashboard = lazy(() => import("./pages/admin/Dashboard"));
@@ -176,6 +178,8 @@ function AppContent() {
                   <Route path="shipping-returns" element={<ShippingReturns />} />
                   <Route path="size-guide" element={<SizeGuide />} />
                   <Route path="contact-us" element={<ContactUs />} />
+                  <Route path="blog" element={<Blog />} />
+                  <Route path="blog/:slug" element={<BlogPost />} />
                 </Routes>
               </Suspense>
             </main>

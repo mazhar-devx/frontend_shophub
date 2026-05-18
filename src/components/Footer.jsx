@@ -101,6 +101,7 @@ export default function Footer() {
                       links: [
                         { name: "About Us", path: "/about-us" },
                         { name: "Careers", path: "/careers" },
+                        { name: "Journal", path: "/blog" },
                         { name: "Privacy Policy", path: "/privacy-policy" },
                         { name: "Terms of Service", path: "/terms-of-service" }
                       ] 

@@ -224,6 +224,7 @@ export default function Navbar() {
               {[
                 { label: 'Home', path: '/' },
                 { label: 'Shop', path: '/products' },
+                { label: 'Blog', path: '/blog' },
               ].map((item) => (
                 <Link 
                   key={item.label}
@@ -314,6 +315,7 @@ export default function Navbar() {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={() => setShowSearchModal(true)}
+              aria-label="Open search"
               className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/10 text-primary dark:text-white transition-all group"
             >
                <Search className="h-5 w-5 group-hover:text-cyan-500 transition-colors" />
@@ -325,6 +327,7 @@ export default function Navbar() {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setIsLangMenuOpen(!isLangMenuOpen)}
+                aria-label="Change language"
                 className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/10 text-primary dark:text-white transition-all gap-1"
               >
                   <span className="text-xs font-black uppercase">{currentLang}</span>
@@ -423,6 +426,7 @@ export default function Navbar() {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setIsThemeMenuOpen(!isThemeMenuOpen)}
+                aria-label="Toggle theme"
                 className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/10 text-primary dark:text-white transition-all"
               >
                   {theme === 'light' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
@@ -460,6 +464,7 @@ export default function Navbar() {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               onClick={toggleCart}
+              aria-label="Open cart"
               className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/10 text-primary dark:text-white transition-all group"
             >
               <ShoppingCart className="h-5 w-5" />
@@ -490,6 +495,7 @@ export default function Navbar() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={toggleUserMenu}
+                  aria-label="Open user menu"
                   className="flex items-center gap-2 p-[2px] rounded-full border border-transparent hover:border-cyan-500/50 transition-all bg-gradient-to-br from-purple-500/20 to-cyan-500/20"
                 >
                    <div className="w-8 h-8 rounded-full overflow-hidden bg-black relative">
@@ -550,6 +556,7 @@ export default function Navbar() {
             <motion.button 
               whileTap={{ scale: 0.9 }}
               onClick={toggleMenu}
+              aria-label="Open mobile menu"
               className="md:hidden w-9 h-9 rounded-full flex flex-col items-center justify-center gap-1.5 hover:bg-black/5 dark:hover:bg-white/10"
             >
               <motion.span 
@@ -599,7 +606,7 @@ export default function Navbar() {
                   />
                   <div className="flex items-center gap-3 ml-4">
                      <span className="hidden sm:inline-block px-2 py-1 bg-black/5 dark:bg-white/5 rounded text-[10px] font-black text-gray-400 border border-black/5 dark:border-white/5">ESC</span>
-                     <button type="button" onClick={() => setShowSearchModal(false)} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-gray-500">
+                     <button type="button" aria-label="Close search" onClick={() => setShowSearchModal(false)} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-gray-500">
                        <X className="w-4 h-4" />
                      </button>
                   </div>

@@ -28,6 +28,7 @@ export default function MobileMenu() {
                 <h2 className="text-sm font-black text-gray-500 uppercase tracking-[0.2em]">Account</h2>
                 <button
                   onClick={toggleMenu}
+                  aria-label="Close mobile menu"
                   className="w-10 h-10 rounded-full bg-black/5 dark:bg-white/5 flex items-center justify-center text-primary dark:text-white hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
                 >
                   <X className="w-5 h-5" />

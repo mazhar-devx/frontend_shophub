@@ -90,6 +90,7 @@ export default function SearchBar() {
               toggleSearch();
               dispatch(clearSuggestions());
             }}
+            aria-label="Close search"
             className="p-2 text-gray-400 hover:text-white transition-colors bg-white/5 hover:bg-white/10 rounded-full"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -47,6 +47,7 @@ export default function CartSidebar() {
                   type="button"
                   className="-m-2 p-2 text-gray-400 hover:text-white transition-colors"
                   onClick={toggleCart}
+                  aria-label="Close cart"
                 >
                   <span className="sr-only">Close panel</span>
                   <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -95,6 +96,7 @@ export default function CartSidebar() {
                               <div className="flex items-center bg-white/5 rounded-lg border border-white/10">
                                 <button
                                   onClick={() => handleDecreaseQuantity(item.id)}
+                                  aria-label="Decrease quantity"
                                   className="px-3 py-1 text-gray-400 hover:text-white hover:bg-white/10 rounded-l-lg transition-colors"
                                 >
                                   -
@@ -102,6 +104,7 @@ export default function CartSidebar() {
                                 <span className="px-2 py-1 text-white font-mono">{item.quantity}</span>
                                 <button
                                   onClick={() => handleIncreaseQuantity(item.id)}
+                                  aria-label="Increase quantity"
                                   className={`px-3 py-1 text-gray-400 rounded-r-lg transition-colors ${item.quantity >= item.stock ? 'opacity-50 cursor-not-allowed' : 'hover:text-white hover:bg-white/10'}`}
                                   disabled={item.quantity >= item.stock}
                                 >
@@ -111,6 +114,7 @@ export default function CartSidebar() {
                               
                               <button
                                 type="button"
+                                aria-label="Remove item"
                                 className="font-medium text-red-500 hover:text-red-400 transition-colors"
                                 onClick={() => handleRemoveFromCart(item.id)}
                               >
