@@ -51,6 +51,8 @@ export default function AdminLayout() {
     { name: 'Dashboard', path: '/admin/dashboard', icon: '📊' },
     { name: 'Products', path: '/admin/products', icon: '📦' },
     { name: 'Add Product', path: '/admin/products/new', icon: '➕' },
+    { name: 'Add Expensive Item', path: '/admin/products/expensive/new', icon: '💎' },
+    { name: 'Add Website', path: '/admin/products/website/new', icon: '🌐' },
     { name: 'Orders', path: '/admin/orders', icon: '🛍️' },
     { name: 'Customers', path: '/admin/customers', icon: '👥' },
     { name: 'Reviews', path: '/admin/reviews', icon: '⭐' },

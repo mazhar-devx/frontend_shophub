@@ -272,6 +272,8 @@ export default function Navbar() {
                             {[
                               { name: 'Electronics', path: '/products?category=electronics', icon: '💻', color: 'bg-blue-500/10 text-blue-500' },
                               { name: 'Fashion', path: '/products?category=clothing', icon: '👕', color: 'bg-pink-500/10 text-pink-500' },
+                              { name: 'Digital Businesses', path: '/products?category=website', icon: '🌐', color: 'bg-indigo-500/10 text-indigo-500' },
+                              { name: 'Luxury Assets', path: '/products?category=luxury', icon: '💎', color: 'bg-purple-500/10 text-purple-500' },
                               { name: 'Home & Living', path: '/products?category=home', icon: '🏠', color: 'bg-orange-500/10 text-orange-500' },
                               { name: 'Sports', path: '/products?category=sports', icon: '⚽', color: 'bg-green-500/10 text-green-500' },
                             ].map(cat => (

@@ -62,6 +62,8 @@ const ContactUs = lazy(() => import("./pages/info/ContactUs"));
 const AdminDashboard = lazy(() => import("./pages/admin/Dashboard"));
 const AdminProducts = lazy(() => import("./pages/admin/Products"));
 const AddProduct = lazy(() => import("./pages/admin/AddProduct"));
+const AddExpensiveProduct = lazy(() => import("./pages/admin/AddExpensiveProduct"));
+const AddWebsiteForSale = lazy(() => import("./pages/admin/AddWebsiteForSale"));
 const EditProduct = lazy(() => import("./pages/admin/EditProduct"));
 const AdminOrders = lazy(() => import("./pages/admin/Orders"));
 const AdminCustomers = lazy(() => import("./pages/admin/Customers"));
@@ -199,6 +201,8 @@ function AppContent() {
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="products" element={<AdminProducts />} />
           <Route path="products/new" element={<AddProduct />} />
+          <Route path="products/expensive/new" element={<AddExpensiveProduct />} />
+          <Route path="products/website/new" element={<AddWebsiteForSale />} />
           <Route path="products/:id" element={<EditProduct />} />
           <Route path="orders" element={<AdminOrders />} />
           <Route path="customers" element={<AdminCustomers />} />

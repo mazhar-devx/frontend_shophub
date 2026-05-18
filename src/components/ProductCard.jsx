@@ -39,8 +39,16 @@ export default function ProductCard({ product }) {
                        New
                    </span>
                )}
-               {product.price > 500 && (
-                   <span className="px-2 py-1 sm:px-4 sm:py-1.5 bg-white/90 dark:bg-purple-500/90 border border-gray-100 dark:border-purple-400/30 text-indigo-600 dark:text-white text-[8px] sm:text-[9px] font-black uppercase tracking-[0.15em] rounded-full shadow-lg backdrop-blur-md">
+               {product.isWebsite ? (
+                   <span className="px-2 py-1 sm:px-4 sm:py-1.5 bg-white/90 dark:bg-indigo-500/90 border border-gray-100 dark:border-indigo-400/30 text-indigo-600 dark:text-white text-[8px] sm:text-[9px] font-black uppercase tracking-[0.15em] rounded-full shadow-lg backdrop-blur-md">
+                       Website
+                   </span>
+               ) : product.isExpensive ? (
+                   <span className="px-2 py-1 sm:px-4 sm:py-1.5 bg-white/90 dark:bg-purple-500/90 border border-gray-100 dark:border-purple-400/30 text-purple-600 dark:text-white text-[8px] sm:text-[9px] font-black uppercase tracking-[0.15em] rounded-full shadow-lg backdrop-blur-md">
+                       Luxury
+                   </span>
+               ) : product.price > 500 && (
+                   <span className="px-2 py-1 sm:px-4 sm:py-1.5 bg-white/90 dark:bg-cyan-500/90 border border-gray-100 dark:border-cyan-400/30 text-cyan-600 dark:text-white text-[8px] sm:text-[9px] font-black uppercase tracking-[0.15em] rounded-full shadow-lg backdrop-blur-md">
                        Premium
                    </span>
                )}
@@ -99,14 +107,25 @@ export default function ProductCard({ product }) {
            
            {/* Overlay Actions */}
            <div className="absolute inset-0 bg-white/40 dark:bg-black/60 opacity-0 group-hover:opacity-100 backdrop-blur-[4px] transition-all duration-500 flex items-center justify-center gap-4 z-20">
-               <button 
-                  onClick={handleAddToCart}
-                  className="bg-white dark:bg-indigo-600 text-black dark:text-white p-4 rounded-full hover:bg-indigo-600 hover:text-white transition-all duration-300 transform translate-y-8 group-hover:translate-y-0 hover:scale-110 shadow-xl border border-gray-100 dark:border-indigo-400/50"
-               >
-                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                   </svg>
-               </button>
+               {(product.isWebsite || product.isExpensive) ? (
+                   <div 
+                      className="bg-white dark:bg-purple-600 text-black dark:text-white p-4 rounded-full hover:bg-purple-600 hover:text-white transition-all duration-300 transform translate-y-8 group-hover:translate-y-0 hover:scale-110 shadow-xl border border-gray-100 dark:border-purple-400/50"
+                   >
+                       <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                       </svg>
+                   </div>
+               ) : (
+                   <button 
+                      onClick={handleAddToCart}
+                      className="bg-white dark:bg-indigo-600 text-black dark:text-white p-4 rounded-full hover:bg-indigo-600 hover:text-white transition-all duration-300 transform translate-y-8 group-hover:translate-y-0 hover:scale-110 shadow-xl border border-gray-100 dark:border-indigo-400/50"
+                   >
+                       <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                       </svg>
+                   </button>
+               )}
                 <div 
                    className="bg-white/90 dark:bg-white/10 backdrop-blur-xl text-black dark:text-white p-4 rounded-full hover:bg-white hover:text-black transition-all duration-300 transform translate-y-8 group-hover:translate-y-0 hover:scale-110 border border-gray-200 dark:border-white/30"
                 >
@@ -160,13 +179,22 @@ export default function ProductCard({ product }) {
                 </div>
              </div>
              
-             <button 
-               onClick={handleAddToCart}
-               aria-label={`Quick add ${product.name} to cart`}
-               className="h-8 w-8 sm:h-10 sm:w-10 bg-gray-50 dark:bg-white/5 rounded-xl sm:rounded-2xl flex items-center justify-center text-gray-400 hover:bg-indigo-600 hover:text-white transition-all duration-300 group/btn shadow-inner shrink-0 ml-2"
-             >
-               <svg className="w-4 h-4 sm:w-5 sm:h-5 transform group-hover/btn:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
-             </button>
+             {(product.isWebsite || product.isExpensive) ? (
+                 <div 
+                   aria-label={`View details for ${product.name}`}
+                   className="h-8 w-8 sm:h-10 sm:w-10 bg-gray-50 dark:bg-white/5 rounded-xl sm:rounded-2xl flex items-center justify-center text-gray-400 hover:bg-purple-600 hover:text-white transition-all duration-300 group/btn shadow-inner shrink-0 ml-2"
+                 >
+                   <svg className="w-4 h-4 sm:w-5 sm:h-5 transform group-hover/btn:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                 </div>
+             ) : (
+                 <button 
+                   onClick={handleAddToCart}
+                   aria-label={`Quick add ${product.name} to cart`}
+                   className="h-8 w-8 sm:h-10 sm:w-10 bg-gray-50 dark:bg-white/5 rounded-xl sm:rounded-2xl flex items-center justify-center text-gray-400 hover:bg-indigo-600 hover:text-white transition-all duration-300 group/btn shadow-inner shrink-0 ml-2"
+                 >
+                   <svg className="w-4 h-4 sm:w-5 sm:h-5 transform group-hover/btn:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+                 </button>
+             )}
           </div>
         </div>
       </div>
