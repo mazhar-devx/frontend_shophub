@@ -773,7 +773,6 @@ export default function AIHelper() {
     return (
         <div className="fixed bottom-20 md:bottom-6 right-0 md:right-6 z-[1000] flex flex-col items-end w-auto pointer-events-none group/ai ">
             <style>{`
-                . { color-scheme: dark; }
                 @keyframes scan { from { top: 0; } to { top: 100%; } }
                 @keyframes grid-move { from { background-position: 0 0; } to { background-position: 0 40px; } }
                 @keyframes neuralFloat { 
@@ -1063,7 +1062,7 @@ export default function AIHelper() {
                             >
                                 <div
                                     className={`message-bubble relative max-w-[92%] md:max-w-[88%] p-3 md:p-4 rounded-2xl md:rounded-[1.8rem] shadow-2xl transition-all duration-300 ${msg.role === "user"
-                                        ? "bg-gradient-to-br from-cyan-600 to-indigo-700 text-primary dark:text-white rounded-tr-sm md:rounded-tr-none border border-black/5 dark:border-white/10"
+                                        ? "bg-gradient-to-br from-cyan-600 to-indigo-700 text-white rounded-tr-sm md:rounded-tr-none border border-black/5 dark:border-white/10"
                                         : `bg-black/5 dark:bg-black/[0.04] dark:bg-white/[0.04] border border-black/5 dark:border-black/[0.08] dark:border-white/[0.08] text-gray-800 dark:text-cyan-50 rounded-tl-sm md:rounded-tl-none backdrop-blur-xl ${msg.isError ? "border-red-500/20 bg-red-500/[0.04]" : ""}`
                                         }`}
                                 >
@@ -1172,7 +1171,7 @@ export default function AIHelper() {
                     {/* ─── Input Area ─── */}
                     <form
                         onSubmit={handleSendMessage}
-                        className="px-3 md:px-5 py-3 md:py-4 bg-[#08080c]/90 backdrop-blur-2xl border-t border-black/5 dark:border-black/[0.06] dark:border-white/[0.06] flex gap-2 md:gap-2.5 pointer-events-auto relative z-10 safe-bottom"
+                        className="px-3 md:px-5 py-3 md:py-4 bg-white/90 dark:bg-[#08080c]/90 backdrop-blur-2xl border-t border-black/5 dark:border-black/[0.06] dark:border-white/[0.06] flex gap-2 md:gap-2.5 pointer-events-auto relative z-10 safe-bottom"
                     >
                         {/* Voice Input */}
                         <button
@@ -1269,7 +1268,7 @@ export default function AIHelper() {
                 <div
                     className={`relative w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-full transition-all duration-500 flex items-center justify-center overflow-hidden ${isOpen
                         ? "bg-black/5 dark:bg-black/[0.06] dark:bg-white/[0.06] backdrop-blur-2xl border border-black/5 dark:border-white/[0.12]"
-                        : "bg-gradient-to-br from-[#0a0a1a] via-[#0f0f2a] to-[#050510] border-2 border-black/5 dark:border-black/[0.08] dark:border-white/[0.08] group-hover:border-cyan-400/30 shadow-[0_0_60px_rgba(34,211,238,0.15)]"
+                        : "bg-gradient-to-br from-white via-gray-50 to-gray-100 dark:from-[#0a0a1a] dark:via-[#0f0f2a] dark:to-[#050510] border-2 border-black/5 dark:border-black/[0.08] dark:border-white/[0.08] group-hover:border-cyan-400/30 shadow-[0_0_60px_rgba(34,211,238,0.15)]"
                     }`}
                 >
                     {/* Inner Glow */}
@@ -1304,7 +1303,7 @@ export default function AIHelper() {
 
                 {/* Unread Badge */}
                 {unreadCount > 0 && !isOpen && (
-                    <div className="absolute -top-1 -right-1 min-w-[18px] h-[18px] md:min-w-[20px] md:h-[20px] bg-gradient-to-r from-pink-500 to-red-500 rounded-full flex items-center justify-center text-[8px] md:text-[9px] font-black text-primary dark:text-white shadow-[0_0_15px_rgba(236,72,153,0.5)] border-2 border-[#050508] animate-bounce">
+                    <div className="absolute -top-1 -right-1 min-w-[18px] h-[18px] md:min-w-[20px] md:h-[20px] bg-gradient-to-r from-pink-500 to-red-500 rounded-full flex items-center justify-center text-[8px] md:text-[9px] font-black text-white shadow-[0_0_15px_rgba(236,72,153,0.5)] border-2 border-white dark:border-[#050508] animate-bounce">
                         {unreadCount > 9 ? "9+" : unreadCount}
                     </div>
                 )}
