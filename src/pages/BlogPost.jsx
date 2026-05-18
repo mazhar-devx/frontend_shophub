@@ -1,7 +1,11 @@
 import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { ArrowLeft, Calendar, Clock, User, Share2, Facebook, Twitter, Linkedin } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, User, Share2 } from "lucide-react";
 import { motion } from "framer-motion";
+
+const FacebookIcon = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>;
+const TwitterIcon = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>;
+const LinkedinIcon = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>;
 
 export default function BlogPost() {
   const { slug } = useParams();
@@ -155,9 +159,9 @@ export default function BlogPost() {
                    Share Post
                 </span>
                 <div className="w-[1px] h-12 bg-black/10 dark:bg-white/10 my-2"></div>
-                <button aria-label="Share on Facebook" className="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#1877F2] transition-colors"><Facebook className="w-4 h-4" /></button>
-                <button aria-label="Share on Twitter" className="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#1DA1F2] transition-colors"><Twitter className="w-4 h-4" /></button>
-                <button aria-label="Share on LinkedIn" className="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#0A66C2] transition-colors"><Linkedin className="w-4 h-4" /></button>
+                <button aria-label="Share on Facebook" className="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#1877F2] transition-colors"><FacebookIcon className="w-4 h-4" /></button>
+                <button aria-label="Share on Twitter" className="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#1DA1F2] transition-colors"><TwitterIcon className="w-4 h-4" /></button>
+                <button aria-label="Share on LinkedIn" className="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#0A66C2] transition-colors"><LinkedinIcon className="w-4 h-4" /></button>
              </div>
           </div>
 
@@ -169,8 +173,8 @@ export default function BlogPost() {
             <div className="lg:hidden mt-12 pt-8 border-t border-black/5 dark:border-white/5 flex items-center justify-between">
                <span className="font-bold text-primary dark:text-white flex items-center gap-2"><Share2 className="w-5 h-5" /> Share this post</span>
                <div className="flex gap-2">
-                  <button aria-label="Share on Facebook" className="w-10 h-10 rounded-full flex items-center justify-center bg-black/5 dark:bg-white/5 text-primary dark:text-white"><Facebook className="w-4 h-4" /></button>
-                  <button aria-label="Share on Twitter" className="w-10 h-10 rounded-full flex items-center justify-center bg-black/5 dark:bg-white/5 text-primary dark:text-white"><Twitter className="w-4 h-4" /></button>
+                  <button aria-label="Share on Facebook" className="w-10 h-10 rounded-full flex items-center justify-center bg-black/5 dark:bg-white/5 text-primary dark:text-white"><FacebookIcon className="w-4 h-4" /></button>
+                  <button aria-label="Share on Twitter" className="w-10 h-10 rounded-full flex items-center justify-center bg-black/5 dark:bg-white/5 text-primary dark:text-white"><TwitterIcon className="w-4 h-4" /></button>
                </div>
             </div>
           </div>
