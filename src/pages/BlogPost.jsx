@@ -1,7 +1,9 @@
 import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { ArrowLeft, Calendar, Clock, User, Share2 } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, User, Share2, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import api from "../services/api";
 
 const FacebookIcon = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>;
 const TwitterIcon = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>;
@@ -9,40 +11,40 @@ const LinkedinIcon = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" 
 
 export default function BlogPost() {
   const { slug } = useParams();
-  
-  // Dummy data. In a real app, you would fetch this based on the slug.
-  const post = {
-    id: slug,
-    title: slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
-    content: `
-      <p class="lead">Welcome to our comprehensive guide. Whether you're an audiophile looking for the next best thing or a student trying to focus in a noisy dorm, finding the right gear is crucial.</p>
-      
-      <h2>The Importance of Quality</h2>
-      <p>When you invest in premium products, you're not just paying for a brand name. You're paying for durability, advanced engineering, and an experience that cheaper alternatives simply can't match.</p>
-      
-      <blockquote>"The bitterness of poor quality remains long after the sweetness of low price is forgotten."</blockquote>
-      
-      <h2>What to Look For</h2>
-      <ul>
-        <li><strong>Build Quality:</strong> Are the materials premium? Does it feel sturdy?</li>
-        <li><strong>Battery Life:</strong> Nobody wants their device dying halfway through the day.</li>
-        <li><strong>Comfort:</strong> If you're using it for hours, ergonomics matter.</li>
-      </ul>
-      
-      <h2>Our Top Recommendations</h2>
-      <p>After testing dozens of products in this category, we've narrowed it down to our absolute favorites. These models consistently outperformed the competition in our rigorous testing methodology.</p>
-      
-      <p>Stay tuned for our upcoming deep-dive reviews where we break down each of these models in painstaking detail.</p>
-    `,
-    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=2070&auto=format&fit=crop",
-    category: "Tech Guide",
-    author: "Alex Rivers",
-    date: "May 18, 2026",
-    readTime: "5 min read",
-    seoDescription: "A comprehensive guide and review covering the most important aspects you need to know before making your next purchase."
-  };
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Structured Data (JSON-LD) for SEO
+  useEffect(() => {
+    const fetchBlog = async () => {
+      try {
+        const res = await api.get(`/blogs/${slug}`);
+        setPost(res.data.data.blog);
+      } catch (err) {
+        console.error("Failed to fetch blog:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBlog();
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white dark:bg-[#050505] pt-24 pb-20 flex justify-center items-center">
+        <Loader2 className="w-12 h-12 animate-spin text-cyan-500" />
+      </div>
+    );
+  }
+
+  if (!post) {
+    return (
+      <div className="min-h-screen bg-white dark:bg-[#050505] pt-24 pb-20 flex flex-col justify-center items-center">
+        <h2 className="text-3xl font-black text-primary dark:text-white mb-4">Blog Post Not Found</h2>
+        <Link to="/blog" className="text-cyan-500 hover:underline">Return to Journal</Link>
+      </div>
+    );
+  }
+
   const schemaOrgJSONLD = {
     "@context": "http://schema.org",
     "@type": "BlogPosting",
@@ -54,8 +56,8 @@ export default function BlogPost() {
     "image": [
       post.image
     ],
-    "datePublished": "2026-05-18T08:00:00+08:00",
-    "dateModified": "2026-05-18T09:20:00+08:00",
+    "datePublished": post.createdAt,
+    "dateModified": post.updatedAt,
     "author": {
       "@type": "Person",
       "name": post.author
@@ -127,7 +129,7 @@ export default function BlogPost() {
                <User className="w-4 h-4" /> {post.author}
             </span>
             <span className="flex items-center gap-2">
-               <Calendar className="w-4 h-4" /> {post.date}
+               <Calendar className="w-4 h-4" /> {new Date(post.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
             </span>
             <span className="flex items-center gap-2">
                <Clock className="w-4 h-4" /> {post.readTime}
