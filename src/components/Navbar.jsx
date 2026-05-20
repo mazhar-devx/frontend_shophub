@@ -214,7 +214,7 @@ export default function Navbar() {
              >
                 <img src="/logo.png" alt="Logo" className="w-full h-full object-cover dark:invert-0 invert" />
              </motion.div>
-             <span className={`font-black tracking-tighter text-primary dark:text-white uppercase transition-all duration-300 ${scrolled ? 'text-lg md:text-xl' : 'text-xl sm:text-2xl'} group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-cyan-500 group-hover:to-purple-500`}>
+             <span className={`font-black tracking-tighter text-primary dark:text-white uppercase transition-all duration-300 ${scrolled ? 'text-xs min-[360px]:text-sm sm:text-base md:text-xl' : 'text-sm min-[360px]:text-base sm:text-lg md:text-2xl'} group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-cyan-500 group-hover:to-purple-500`}>
                HA Store
              </span>
           </Link>
@@ -322,7 +322,7 @@ export default function Navbar() {
             </motion.button>
             
             {/* Language Selector */}
-            <div className="relative" ref={langRef}>
+            <div className="relative hidden sm:inline-block" ref={langRef}>
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
@@ -421,7 +421,7 @@ export default function Navbar() {
             </div>
 
             {/* Theme Switcher */}
-            <div className="relative" ref={themeRef}>
+            <div className="relative hidden min-[480px]:inline-block" ref={themeRef}>
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}

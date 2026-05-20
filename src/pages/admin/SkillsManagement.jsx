@@ -7,6 +7,8 @@ import {
   CheckCircle, XCircle, BookOpen, Users, Send, AlertTriangle, Image, Paperclip
 } from "lucide-react";
 import { skillsDb } from "../../utils/skillsDb";
+import api from "../../services/api";
+import { getProductImageUrl } from "../../utils/constants";
 
 export default function SkillsManagement() {
   const { user } = useSelector((state) => state.auth);
@@ -51,40 +53,91 @@ export default function SkillsManagement() {
   const [academicUrl, setAcademicUrl] = useState("");
 
   useEffect(() => {
-    const list = skillsDb.getStudents();
-    setStudents(list);
-    if (list.length > 0) {
-      setSelectedStudent(list[0]);
-    }
+    const fetchUsers = async () => {
+      try {
+        const response = await api.get("/users/customers-stats");
+        if (response.data.status === 'success') {
+          const allUsers = response.data.data.users || [];
+          const filtered = allUsers.filter(u => {
+            const n = u.name?.toLowerCase().trim();
+            const e = u.email?.toLowerCase().trim();
+            return n !== 'mazhar.devx' && e !== 'mazhar.devx';
+          });
+          
+          filtered.forEach(u => {
+            const avatarUrl = getProductImageUrl(u.photo) || `https://ui-avatars.com/api/?name=${encodeURIComponent(u.name)}&background=random`;
+            skillsDb.registerStudent(u.name, u.email, avatarUrl);
+          });
+        }
+      } catch (err) {
+        console.error("Failed to fetch real users for control panel:", err);
+      } finally {
+        const list = skillsDb.getStudents();
+        setStudents(list);
+        if (list.length > 0) {
+          setSelectedStudent(list[0]);
+        }
+      }
+    };
+
+    fetchUsers();
   }, []);
 
   useEffect(() => {
     if (selectedStudent) {
-      const data = skillsDb.getStudentData(selectedStudent.name);
+      const data = skillsDb.getStudentData(selectedStudent.email);
       setStudentData(data);
     }
   }, [selectedStudent, activeTab]);
 
   const reloadData = () => {
     if (selectedStudent) {
-      setStudentData(skillsDb.getStudentData(selectedStudent.name));
+      setStudentData(skillsDb.getStudentData(selectedStudent.email));
     }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 4 * 1024 * 1024) {
+      alert("File is too large. Please select an image or video under 4MB.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setFileUrl(reader.result);
+      if (file.type.startsWith("video/")) {
+        setFileType("Video");
+      } else {
+        setFileType("Image");
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleClearFile = () => {
+    setFileUrl("");
+    setFileType("Image");
+    const fileInput = document.getElementById("admin-file-upload");
+    if (fileInput) fileInput.value = "";
   };
 
   const handleSendMessage = (e) => {
     e.preventDefault();
     if (!messageText.trim() && !fileUrl.trim()) return;
     
-    skillsDb.addMessage(selectedStudent.name, "admin", messageText, fileUrl ? fileType : null, fileUrl || null);
+    skillsDb.addMessage(selectedStudent.email, "admin", messageText, fileUrl ? fileType : null, fileUrl || null);
     setMessageText("");
-    setFileUrl("");
+    handleClearFile();
     reloadData();
   };
 
   const handleCreateLiveClass = (e) => {
     e.preventDefault();
     if (!liveTopic || !liveTime) return;
-    skillsDb.addLiveClass(selectedStudent.name, liveTopic, liveTime, liveUrl || "https://zoom.us");
+    skillsDb.addLiveClass(selectedStudent.email, liveTopic, liveTime, liveUrl || "https://zoom.us");
     setLiveTopic("");
     setLiveTime("");
     setLiveUrl("");
@@ -95,7 +148,7 @@ export default function SkillsManagement() {
   const handleAssignHomework = (e) => {
     e.preventDefault();
     if (!homeworkTitle) return;
-    skillsDb.addHomework(selectedStudent.name, homeworkTitle, homeworkDesc);
+    skillsDb.addHomework(selectedStudent.email, homeworkTitle, homeworkDesc);
     setHomeworkTitle("");
     setHomeworkDesc("");
     reloadData();
@@ -105,7 +158,7 @@ export default function SkillsManagement() {
   const handleAddFee = (e) => {
     e.preventDefault();
     if (!feeAmount) return;
-    skillsDb.addFeeRecord(selectedStudent.name, feeMonth, feeAmount, feeStatus);
+    skillsDb.addFeeRecord(selectedStudent.email, feeMonth, feeAmount, feeStatus);
     setFeeAmount("");
     reloadData();
     alert("Fee record added!");
@@ -114,7 +167,7 @@ export default function SkillsManagement() {
   const handleAddAcademic = (e) => {
     e.preventDefault();
     if (!academicTitle) return;
-    skillsDb.addAcademicAttachment(selectedStudent.name, academicTitle, academicType, academicUrl || "#");
+    skillsDb.addAcademicAttachment(selectedStudent.email, academicTitle, academicType, academicUrl || "#");
     setAcademicTitle("");
     setAcademicUrl("");
     reloadData();
@@ -126,7 +179,7 @@ export default function SkillsManagement() {
       r.id === reqId ? { ...r, status: decision } : r
     );
     const updated = { ...studentData, leaveRequests: updatedLeaves };
-    skillsDb.saveStudentData(selectedStudent.name, updated);
+    skillsDb.saveStudentData(selectedStudent.email, updated);
     reloadData();
   };
 
@@ -260,7 +313,30 @@ export default function SkillsManagement() {
 
                      {/* Sender controls */}
                      <form onSubmit={handleSendMessage} className="space-y-4 bg-black/20 p-4 rounded-2xl border border-white/5">
-                        <div className="flex gap-2">
+                        {/* File preview if exists */}
+                        {fileUrl && (
+                          <div className="relative inline-block border border-white/15 rounded-xl overflow-hidden bg-black/40 p-2 max-w-xs animate-in fade-in zoom-in-95 duration-200">
+                            {fileType === "Image" ? (
+                              <img src={fileUrl} alt="Preview" className="max-h-24 rounded-lg object-cover" />
+                            ) : (
+                              <video src={fileUrl} className="max-h-24 rounded-lg" controls />
+                            )}
+                            <button
+                              type="button"
+                              onClick={handleClearFile}
+                              className="absolute top-1 right-1 p-1 bg-black/75 hover:bg-red-500/80 rounded-full text-white transition-all cursor-pointer"
+                              title="Remove file"
+                            >
+                              <XCircle className="w-4 h-4" />
+                            </button>
+                            <div className="mt-1 text-[10px] text-gray-400 font-bold px-1 flex items-center gap-1">
+                              {fileType === "Image" ? <Image className="w-3 h-3 text-cyan-400" /> : <Video className="w-3 h-3 text-purple-400" />}
+                              Selected {fileType}
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="flex gap-2 items-center">
                           <input 
                             type="text" 
                             placeholder="Type a direct message to this student..." 
@@ -268,30 +344,21 @@ export default function SkillsManagement() {
                             onChange={e => setMessageText(e.target.value)}
                             className="flex-1 px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:border-cyan-400"
                           />
-                          <button type="submit" className="p-3 bg-cyan-500 hover:bg-cyan-600 text-white rounded-xl font-bold transition-colors">
+                          
+                          <label className="p-3 bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white rounded-xl font-bold cursor-pointer transition-all border border-white/10 flex items-center justify-center">
+                            <Paperclip className="w-5 h-5" />
+                            <input
+                              type="file"
+                              id="admin-file-upload"
+                              accept="image/*,video/*"
+                              onChange={handleFileChange}
+                              className="hidden"
+                            />
+                          </label>
+
+                          <button type="submit" className="p-3 bg-cyan-500 hover:bg-cyan-600 text-white rounded-xl font-bold transition-colors cursor-pointer flex items-center justify-center">
                             <Send className="w-5 h-5" />
                           </button>
-                        </div>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 border-t border-white/5 pt-3">
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs text-gray-400">Media Type:</span>
-                            <select 
-                              value={fileType} 
-                              onChange={e => setFileType(e.target.value)}
-                              className="px-2 py-1 bg-white/5 border border-white/10 rounded text-xs text-white"
-                            >
-                              <option value="Image">📸 Image</option>
-                              <option value="Video">🎥 Video</option>
-                            </select>
-                          </div>
-                          <input 
-                            type="text" 
-                            placeholder="Attach media URL (optional)" 
-                            value={fileUrl}
-                            onChange={e => setFileUrl(e.target.value)}
-                            className="col-span-2 px-3 py-1 bg-white/5 border border-white/10 rounded text-xs text-white focus:outline-none"
-                          />
                         </div>
                      </form>
                   </motion.div>

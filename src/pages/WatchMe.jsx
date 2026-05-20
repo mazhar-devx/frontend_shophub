@@ -684,24 +684,24 @@ const VideoCard = memo(({ video, isActive, isNext, isGlobalMuted, setIsGlobalMut
       </div>
 
       {/* Bottom Info */}
-      <div className="absolute left-4 bottom-8 right-16 z-20 pointer-events-none flex flex-col items-start">
+      <div className="absolute left-4 bottom-4 min-[360px]:bottom-6 md:bottom-8 right-16 z-20 pointer-events-none flex flex-col items-start">
          {video.productLink && (
            <a 
              href={video.productLink} 
              target="_blank" 
              rel="noreferrer"
-             className="mb-4 pointer-events-auto flex items-center gap-2 bg-white/95 dark:bg-[#1a1a1a]/95 backdrop-blur-md text-black dark:text-white px-4 py-2.5 rounded-2xl font-black shadow-2xl hover:scale-105 transition-transform border border-black/5 dark:border-white/10 group"
+             className="mb-3 md:mb-4 pointer-events-auto flex items-center gap-1.5 md:gap-2 bg-white/95 dark:bg-[#1a1a1a]/95 backdrop-blur-md text-black dark:text-white px-3 py-1.5 md:px-4 md:py-2.5 rounded-xl md:rounded-2xl font-black shadow-2xl hover:scale-105 transition-transform border border-black/5 dark:border-white/10 group"
            >
-             <ShoppingCart className="w-5 h-5 text-pink-500 group-hover:-translate-y-1 transition-transform" />
-             <span className="text-sm uppercase tracking-widest">Shop Item</span>
+             <ShoppingCart className="w-4 h-4 md:w-5 md:h-5 text-pink-500 group-hover:-translate-y-1 transition-transform" />
+             <span className="text-[10px] md:text-sm uppercase tracking-widest">Shop Item</span>
            </a>
          )}
          <Link to={`/creator/${video.user?._id}`} className="pointer-events-auto">
-            <h3 className="text-white font-bold text-lg mb-2 hover:underline inline-block">@{video.user?.vendorName || video.user?.name}</h3>
+            <h3 className="text-white font-bold text-sm md:text-lg mb-1 md:mb-2 hover:underline inline-block">@{video.user?.vendorName || video.user?.name}</h3>
          </Link>
           <p 
             onClick={() => setShowFullDescription(!showFullDescription)}
-            className={`text-white/90 text-sm mb-3 cursor-pointer pointer-events-auto transition-all ${showFullDescription ? '' : 'line-clamp-2'}`}
+            className={`text-white/90 text-xs md:text-sm mb-2 md:mb-3 cursor-pointer pointer-events-auto transition-all ${showFullDescription ? '' : 'line-clamp-2'}`}
           >
             {video.description}
             {!showFullDescription && video.description?.length > 100 && (
@@ -717,7 +717,7 @@ const VideoCard = memo(({ video, isActive, isNext, isGlobalMuted, setIsGlobalMut
                  href={url} 
                  target="_blank" 
                  rel="noreferrer"
-                 className="pointer-events-auto px-3 py-1.5 bg-cyan-500/20 backdrop-blur-md border border-cyan-500/30 rounded-lg text-[10px] font-black text-cyan-400 uppercase tracking-widest flex items-center gap-2 hover:bg-cyan-500/40 transition-all"
+                 className="pointer-events-auto px-2 py-1 bg-cyan-500/20 backdrop-blur-md border border-cyan-500/30 rounded-lg text-[9px] md:text-[10px] font-black text-cyan-400 uppercase tracking-widest flex items-center gap-1.5 md:gap-2 hover:bg-cyan-500/40 transition-all"
                >
                   <Globe className="w-3 h-3" /> Visit Site
                </a>
@@ -728,14 +728,14 @@ const VideoCard = memo(({ video, isActive, isNext, isGlobalMuted, setIsGlobalMut
               <button 
                 key={tag} 
                 onClick={(e) => { e.stopPropagation(); onTagClick(tag); }}
-                className="text-white font-black text-sm italic hover:text-pink-400 hover:underline cursor-pointer pointer-events-auto bg-black/30 px-2 py-0.5 rounded-md backdrop-blur-sm"
+                className="text-white font-black text-xs md:text-sm italic hover:text-pink-400 hover:underline cursor-pointer pointer-events-auto bg-black/30 px-1.5 py-0.5 rounded-md backdrop-blur-sm"
               >
                 #{tag}
               </button>
             ))}
          </div>
-          <Link to={`/sound/${video.soundId || video._id}`} className="flex items-center gap-2 text-white/80 pointer-events-auto hover:text-white group w-full overflow-hidden">
-            <Music2 className="w-4 h-4 group-hover:text-pink-500 shrink-0" />
+          <Link to={`/sound/${video.soundId || video._id}`} className="flex items-center gap-1.5 md:gap-2 text-white/80 pointer-events-auto hover:text-white group w-full overflow-hidden">
+            <Music2 className="w-3.5 h-3.5 md:w-4 md:h-4 group-hover:text-pink-500 shrink-0" />
             <div className="flex whitespace-nowrap overflow-hidden relative h-5 flex-1">
               <motion.div 
                 animate={{ x: [0, "-100%"] }}
@@ -1539,50 +1539,49 @@ export default function WatchMe() {
       </div>
 
       {/* Floating Header */}
-      <div className="absolute top-0 left-0 right-0 p-3 md:p-6 flex items-start justify-between z-[100] pointer-events-none gap-1">
+      <div className="absolute top-0 left-0 right-0 p-2 md:p-4 flex items-start justify-between z-[100] pointer-events-none gap-1">
          {/* Top Left: Back to Home & Mute */}
          <div className="flex gap-1 md:gap-2 pointer-events-auto shrink-0">
            <Link 
              to="/" 
-             className="p-2 md:p-3 bg-black/40 backdrop-blur-xl rounded-2xl text-white hover:bg-black/60 transition-all flex items-center gap-2 group shadow-2xl border border-white/10"
+             className="p-2 bg-black/40 backdrop-blur-xl rounded-2xl text-white hover:bg-black/60 transition-all flex items-center gap-2 group shadow-2xl border border-white/10"
            >
-              <ChevronLeft className="w-4 h-4 md:w-6 md:h-6 group-hover:-translate-x-1 transition-transform" />
-              <span className="text-xs font-black uppercase tracking-widest hidden lg:inline">Store</span>
+              <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
            </Link>
            <button 
              onClick={() => setIsGlobalMuted(!isGlobalMuted)} 
-             className="p-2 md:p-3 bg-black/40 backdrop-blur-xl rounded-2xl text-white hover:bg-black/60 transition-all flex items-center justify-center shadow-2xl border border-white/10"
+             className="p-2 bg-black/40 backdrop-blur-xl rounded-2xl text-white hover:bg-black/60 transition-all flex items-center justify-center shadow-2xl border border-white/10"
            >
-             {isGlobalMuted ? <VolumeX className="w-4 h-4 md:w-6 md:h-6" /> : <Volume2 className="w-4 h-4 md:w-6 md:h-6" />}
+             {isGlobalMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
            </button>
          </div>
 
          {/* Top Center: Tabs */}
          {routeTag ? (
-            <div className="flex items-center gap-2 md:gap-4 pointer-events-auto bg-black/20 backdrop-blur-md px-3 py-1.5 md:px-6 md:py-3 rounded-full border border-white/5 shrink-0 mx-1">
+            <div className="flex items-center gap-2 pointer-events-auto bg-black/20 backdrop-blur-md px-4 py-2 rounded-full border border-white/5 shrink-0 mx-1">
                <button onClick={() => navigate('/watch-me')} className="text-white hover:text-pink-500 transition-colors">
-                 <ChevronLeft className="w-4 h-4 md:w-5 md:h-5" />
+                 <ChevronLeft className="w-4 h-4" />
                </button>
-               <span className="text-[10px] md:text-sm font-black text-white uppercase tracking-tighter">#{routeTag}</span>
+               <span className="text-xs font-black text-white uppercase tracking-tighter">#{routeTag}</span>
             </div>
          ) : (
-             <div className="flex flex-col items-center gap-4">
-                <div className="flex items-center gap-4 px-4 py-2 bg-black/40 backdrop-blur-xl rounded-full border border-white/10 shadow-2xl pointer-events-auto">
+             <div className="flex flex-col items-center gap-2">
+                <div className="flex items-center gap-3 px-3 py-1.5 bg-black/40 backdrop-blur-xl rounded-full border border-white/10 shadow-2xl pointer-events-auto">
                    <button 
                      onClick={() => {
                        if (!isAuthenticated) return alert("Please login to see Following feed");
                        setFeedType("following");
                      }}
-                     className={`text-[10px] md:text-sm font-black transition-all ${feedType === "following" ? 'text-white' : 'text-white/50 hover:text-white'} uppercase tracking-tighter`}
+                     className={`text-[10px] font-black transition-all ${feedType === "following" ? 'text-white' : 'text-white/50 hover:text-white'} uppercase tracking-tighter`}
                    >
                      Following
                    </button>
-                   <span className="w-1 h-1 rounded-full bg-white/30" />
+                   <span className="w-0.5 h-0.5 rounded-full bg-white/30" />
                    <button 
                      onClick={() => {
                        setFeedType("foryou");
                      }}
-                     className={`text-[10px] md:text-sm font-black transition-all ${feedType === "foryou" ? 'text-white' : 'text-white/50 hover:text-white'} uppercase tracking-tighter`}
+                     className={`text-[10px] font-black transition-all ${feedType === "foryou" ? 'text-white' : 'text-white/50 hover:text-white'} uppercase tracking-tighter`}
                    >
                      For You
                    </button>
@@ -1593,7 +1592,7 @@ export default function WatchMe() {
                    <motion.div 
                      initial={{ opacity: 0, y: -10 }}
                      animate={{ opacity: 1, y: 0 }}
-                     className="flex gap-2 overflow-x-auto no-scrollbar max-w-[90vw] px-2 pointer-events-auto justify-center"
+                     className="hidden sm:flex gap-2 overflow-x-auto no-scrollbar max-w-[90vw] px-2 pointer-events-auto justify-center"
                    >
                       {displayProductVideos.map((v, i) => (
                          <button 

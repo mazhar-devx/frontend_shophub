@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { MessageSquare, Send, Paperclip } from "lucide-react";
+import { MessageSquare, Send, Paperclip, XCircle, Image, Video } from "lucide-react";
 import { skillsDb } from "../../utils/skillsDb";
 
 export default function Messages() {
   const { user } = useSelector((state) => state.auth);
-  const username = user?.name || "Ali Khan";
+  const studentKey = user?.email || user?.name || "ali@example.com";
 
   const [loading, setLoading] = useState(true);
   const [messages, setMessages] = useState([]);
@@ -14,10 +14,9 @@ export default function Messages() {
   const [text, setText] = useState("");
   const [fileUrl, setFileUrl] = useState("");
   const [fileType, setFileType] = useState("Image");
-  const [showFileForm, setShowFileForm] = useState(false);
 
   const loadMessages = () => {
-    const data = skillsDb.getStudentData(username);
+    const data = skillsDb.getStudentData(studentKey);
     if (data && data.messages) {
       setMessages(data.messages);
     }
@@ -26,16 +25,43 @@ export default function Messages() {
   useEffect(() => {
     loadMessages();
     setLoading(false);
-  }, [username]);
+  }, [studentKey]);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size > 4 * 1024 * 1024) {
+      alert("File is too large. Please select an image or video under 4MB.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setFileUrl(reader.result);
+      if (file.type.startsWith("video/")) {
+        setFileType("Video");
+      } else {
+        setFileType("Image");
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleClearFile = () => {
+    setFileUrl("");
+    setFileType("Image");
+    const fileInput = document.getElementById("student-file-upload");
+    if (fileInput) fileInput.value = "";
+  };
 
   const handleSend = (e) => {
     e.preventDefault();
     if (!text.trim() && !fileUrl.trim()) return;
     
-    skillsDb.addMessage(username, "student", text, fileUrl ? fileType : null, fileUrl || null);
+    skillsDb.addMessage(studentKey, "student", text, fileUrl ? fileType : null, fileUrl || null);
     setText("");
-    setFileUrl("");
-    setShowFileForm(false);
+    handleClearFile();
     loadMessages();
   };
 
@@ -91,37 +117,41 @@ export default function Messages() {
 
         {/* Sender Controls */}
         <form onSubmit={handleSend} className="space-y-4 border-t border-gray-100 dark:border-white/10 pt-4">
-           {showFileForm && (
-             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-gray-50 dark:bg-black/20 p-3 rounded-xl border border-gray-100 dark:border-white/5">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-gray-400">Media:</span>
-                  <select 
-                    value={fileType} 
-                    onChange={e => setFileType(e.target.value)}
-                    className="px-2 py-1 bg-white/5 dark:bg-white/10 border border-gray-200 dark:border-white/10 rounded text-xs text-primary dark:text-white"
-                  >
-                    <option value="Image">📸 Image</option>
-                    <option value="Video">🎥 Video</option>
-                  </select>
-                </div>
-                <input 
-                  type="text" 
-                  placeholder="Paste URL (mock upload)" 
-                  value={fileUrl}
-                  onChange={e => setFileUrl(e.target.value)}
-                  className="col-span-2 px-3 py-1 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded text-xs text-primary dark:text-white focus:outline-none"
-                />
+           {/* File preview if exists */}
+           {fileUrl && (
+             <div className="relative inline-block border border-white/15 rounded-xl overflow-hidden bg-black/40 p-2 max-w-xs animate-in fade-in zoom-in-95 duration-200">
+               {fileType === "Image" ? (
+                 <img src={fileUrl} alt="Preview" className="max-h-24 rounded-lg object-cover" />
+               ) : (
+                 <video src={fileUrl} className="max-h-24 rounded-lg" controls />
+               )}
+               <button
+                 type="button"
+                 onClick={handleClearFile}
+                 className="absolute top-1 right-1 p-1 bg-black/75 hover:bg-red-500/80 rounded-full text-white transition-all cursor-pointer"
+                 title="Remove file"
+               >
+                 <XCircle className="w-4 h-4" />
+               </button>
+               <div className="mt-1 text-[10px] text-gray-400 font-bold px-1 flex items-center gap-1">
+                 {fileType === "Image" ? <Image className="w-3 h-3 text-cyan-400" /> : <Video className="w-3 h-3 text-purple-400" />}
+                 Selected {fileType}
+               </div>
              </div>
            )}
-           
-           <div className="flex gap-2">
-              <button 
-                type="button" 
-                onClick={() => setShowFileForm(!showFileForm)}
-                className={`p-3 border rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 transition-colors ${showFileForm ? 'border-cyan-500 text-cyan-500' : 'border-gray-200 dark:border-white/10 text-gray-400'}`}
-              >
+
+           <div className="flex gap-2 items-center">
+              <label className="p-3 bg-white/5 hover:bg-white/10 text-gray-400 dark:text-gray-300 hover:text-primary dark:hover:text-white rounded-xl font-bold cursor-pointer transition-all border border-gray-200 dark:border-white/10 flex items-center justify-center">
                  <Paperclip className="w-5 h-5" />
-              </button>
+                 <input
+                   type="file"
+                   id="student-file-upload"
+                   accept="image/*,video/*"
+                   onChange={handleFileChange}
+                   className="hidden"
+                 />
+              </label>
+
               <input 
                 type="text" 
                 placeholder="Type a message to your supervisor (mazhar.devx)..." 
@@ -129,7 +159,8 @@ export default function Messages() {
                 onChange={e => setText(e.target.value)}
                 className="flex-1 px-4 py-3 bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-xl text-primary dark:text-white text-sm focus:outline-none focus:border-cyan-500"
               />
-              <button type="submit" className="p-3 bg-cyan-500 hover:bg-cyan-600 text-white rounded-xl font-bold transition-colors">
+
+              <button type="submit" className="p-3 bg-cyan-500 hover:bg-cyan-600 text-white rounded-xl font-bold transition-colors cursor-pointer flex items-center justify-center">
                 <Send className="w-5 h-5" />
               </button>
            </div>

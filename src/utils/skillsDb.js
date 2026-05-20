@@ -5,7 +5,7 @@ const DEFAULT_STUDENTS = [
 ];
 
 const INITIAL_DB = {
-  "Ali Khan": {
+  "ali@example.com": {
     academic: [],
     liveClasses: [],
     leaveRequests: [],
@@ -14,7 +14,7 @@ const INITIAL_DB = {
     messages: [],
     supervision: { remarks: "No remarks yet", grade: "N/A" }
   },
-  "Sara Ahmed": {
+  "sara@example.com": {
     academic: [],
     liveClasses: [],
     leaveRequests: [],
@@ -23,7 +23,7 @@ const INITIAL_DB = {
     messages: [],
     supervision: { remarks: "No remarks yet", grade: "N/A" }
   },
-  "John Doe": {
+  "john@example.com": {
     academic: [],
     liveClasses: [],
     leaveRequests: [],
@@ -32,6 +32,17 @@ const INITIAL_DB = {
     messages: [],
     supervision: { remarks: "No remarks yet", grade: "N/A" }
   }
+};
+
+const resolveStudentEmail = (nameOrEmail) => {
+  if (!nameOrEmail) return "default_key";
+  const normalized = nameOrEmail.toLowerCase().trim();
+  const students = JSON.parse(localStorage.getItem("skills_career_students")) || [];
+  const found = students.find(s => 
+    s.name?.toLowerCase().trim() === normalized || 
+    s.email?.toLowerCase().trim() === normalized
+  );
+  return found ? found.email.toLowerCase().trim() : normalized;
 };
 
 const initDB = () => {
@@ -49,10 +60,11 @@ export const skillsDb = {
     return JSON.parse(localStorage.getItem("skills_career_students"));
   },
   
-  getStudentData: (studentName) => {
+  getStudentData: (studentNameOrEmail) => {
     initDB();
+    const emailKey = resolveStudentEmail(studentNameOrEmail);
     const db = JSON.parse(localStorage.getItem("skills_career_db"));
-    return db[studentName] || {
+    return db[emailKey] || {
       academic: [],
       liveClasses: [],
       leaveRequests: [],
@@ -63,24 +75,44 @@ export const skillsDb = {
     };
   },
 
-  saveStudentData: (studentName, data) => {
+  saveStudentData: (studentNameOrEmail, data) => {
     initDB();
+    const emailKey = resolveStudentEmail(studentNameOrEmail);
     const db = JSON.parse(localStorage.getItem("skills_career_db"));
-    db[studentName] = data;
+    db[emailKey] = data;
     localStorage.setItem("skills_career_db", JSON.stringify(db));
   },
 
-  registerStudent: (name, email) => {
+  registerStudent: (name, email, avatar = null) => {
     initDB();
     const students = JSON.parse(localStorage.getItem("skills_career_students")) || [];
-    if (!students.some(s => s.name === name)) {
+    const normalizedEmail = email?.toLowerCase().trim();
+    if (!normalizedEmail) return;
+
+    const existingIndex = students.findIndex(s => 
+      s.email?.toLowerCase().trim() === normalizedEmail ||
+      s.name?.toLowerCase().trim() === name?.toLowerCase().trim()
+    );
+
+    const avatarUrl = avatar 
+      ? avatar 
+      : `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`;
+
+    if (existingIndex > -1) {
+      students[existingIndex] = {
+        ...students[existingIndex],
+        name,
+        email,
+        avatar: avatarUrl
+      };
+    } else {
       students.push({
         name,
         email,
-        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`
+        avatar: avatarUrl
       });
-      localStorage.setItem("skills_career_students", JSON.stringify(students));
     }
+    localStorage.setItem("skills_career_students", JSON.stringify(students));
   },
 
   addMessage: (studentName, sender, text, fileType = null, fileUrl = null) => {
