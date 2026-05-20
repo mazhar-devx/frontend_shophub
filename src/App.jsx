@@ -73,6 +73,24 @@ const AdminReviews = lazy(() => import("./pages/admin/Reviews"));
 const AdminBanner = lazy(() => import("./pages/admin/Banner"));
 const AdminMarketing = lazy(() => import("./pages/admin/Marketing"));
 const AdminAnalytics = lazy(() => import("./pages/admin/Analytics"));
+const AdminSkills = lazy(() => import("./pages/admin/SkillsManagement"));
+
+// Skills Career Pages Lazy Load
+const SkillsCareerLayout = lazy(() => import("./layouts/SkillsCareerLayout"));
+const SkillsCareerHome = lazy(() => import("./pages/skills-career/index"));
+const Academic = lazy(() => import("./pages/skills-career/Academic"));
+const LiveClasses = lazy(() => import("./pages/skills-career/LiveClasses"));
+const Leave = lazy(() => import("./pages/skills-career/Leave"));
+const Attachments = lazy(() => import("./pages/skills-career/Attachments"));
+const Homework = lazy(() => import("./pages/skills-career/Homework"));
+const ExamMaster = lazy(() => import("./pages/skills-career/ExamMaster"));
+const OnlineExam = lazy(() => import("./pages/skills-career/OnlineExam"));
+const Supervision = lazy(() => import("./pages/skills-career/Supervision"));
+const Attendance = lazy(() => import("./pages/skills-career/Attendance"));
+const Library = lazy(() => import("./pages/skills-career/Library"));
+const Events = lazy(() => import("./pages/skills-career/Events"));
+const FeesHistory = lazy(() => import("./pages/skills-career/FeesHistory"));
+const Messages = lazy(() => import("./pages/skills-career/Messages"));
 
 // Loading Component
 const PageLoader = () => (
@@ -88,7 +106,8 @@ function AppContent() {
                           location.pathname.startsWith('/creator/') || 
                           location.pathname.startsWith('/tag/') ||
                           location.pathname.startsWith('/sound/') ||
-                          location.pathname === '/upload-video';
+                          location.pathname === '/upload-video' ||
+                          location.pathname.startsWith('/skills-career');
 
   useEffect(() => {
     if (theme === 'system') {
@@ -195,6 +214,28 @@ function AppContent() {
           </>
         } />
         
+        {/* Skills Career routes */}
+        <Route path="/skills-career" element={
+          <Suspense fallback={<PageLoader />}>
+            <SkillsCareerLayout />
+          </Suspense>
+        }>
+          <Route index element={<SkillsCareerHome />} />
+          <Route path="academic" element={<Academic />} />
+          <Route path="live-classes" element={<LiveClasses />} />
+          <Route path="leave" element={<Leave />} />
+          <Route path="attachments" element={<Attachments />} />
+          <Route path="homework" element={<Homework />} />
+          <Route path="exam-master" element={<ExamMaster />} />
+          <Route path="online-exam" element={<OnlineExam />} />
+          <Route path="supervision" element={<Supervision />} />
+          <Route path="attendance" element={<Attendance />} />
+          <Route path="library" element={<Library />} />
+          <Route path="events" element={<Events />} />
+          <Route path="fees-history" element={<FeesHistory />} />
+          <Route path="messages" element={<Messages />} />
+        </Route>
+        
         {/* Admin routes */}
         <Route path="/admin/*" element={
           <Suspense fallback={<PageLoader />}>
@@ -214,6 +255,7 @@ function AppContent() {
           <Route path="marketing" element={<AdminMarketing />} />
           <Route path="banner" element={<AdminBanner />} />
           <Route path="analytics" element={<AdminAnalytics />} />
+          <Route path="skills" element={<AdminSkills />} />
         </Route>
       </Routes>
     </>

@@ -1,0 +1,1 @@
+export default function ExamMaster() { return <div className="p-12 text-center bg-white dark:bg-[#111] rounded-3xl border border-gray-100 dark:border-white/5 shadow-xl"><h2 className="text-4xl font-black mb-4 text-primary dark:text-white">ExamMaster</h2><p className="text-lg text-gray-500 dark:text-gray-400">This ultra-professional module is currently being crafted.</p></div>; }

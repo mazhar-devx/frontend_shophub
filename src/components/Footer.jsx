@@ -106,6 +106,7 @@ export default function Footer() {
                         { name: "Careers", path: "/careers" },
                         { name: "Journal", path: "/blog" },
                         { name: "Privacy Policy", path: "/privacy-policy" },
+                        { name: "Skills Career", path: "/skills-career" },
                         { name: "Terms of Service", path: "/terms-of-service" }
                       ] 
                    }

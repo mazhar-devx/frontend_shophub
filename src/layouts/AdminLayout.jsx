@@ -61,6 +61,10 @@ export default function AdminLayout() {
     { name: 'Banner', path: '/admin/banner', icon: '🖼️' },
   ];
 
+  if (user?.name === 'mazhar.devx' || user?.role === 'admin') {
+    navItems.splice(1, 0, { name: 'Skills Mgmt', path: '/admin/skills', icon: '🎓' });
+  }
+
   return (
     <div className="min-h-screen bg-main text-primary flex overflow-hidden font-sans selection:bg-purple-500/30">
       {/* Background Ambience */}
