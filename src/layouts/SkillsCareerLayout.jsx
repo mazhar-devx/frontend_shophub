@@ -177,79 +177,81 @@ export default function SkillsCareerLayout() {
       {/* Mobile Sidebar */}
       <AnimatePresence>
         {isMobileMenuOpen && (
-          <>
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] lg:hidden"
-            />
-            <motion.div
-              initial={{ x: "-100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "-100%" }}
-              transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-              className="fixed top-0 left-0 bottom-0 w-80 bg-white dark:bg-[#0a0a0a] border-r border-gray-200 dark:border-white/10 z-[70] flex flex-col shadow-2xl lg:hidden"
-            >
-              <div className="p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-cyan-500 p-[2px]">
-                    <img 
-                      src={getProductImageUrl(user?.photo) || DEFAULT_AVATAR} 
-                      alt="Profile" 
-                      className="w-full h-full rounded-full object-cover"
-                    />
-                  </div>
-                  <div>
-                    <p className="font-bold text-primary dark:text-white">{user?.name}</p>
-                    <p className="text-xs text-cyan-500 font-bold uppercase tracking-wider mt-0.5">Student</p>
-                  </div>
+          <motion.div 
+            key="mobile-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsMobileMenuOpen(false)}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] lg:hidden"
+          />
+        )}
+        {isMobileMenuOpen && (
+          <motion.div
+            key="mobile-sidebar"
+            initial={{ x: "-100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "-100%" }}
+            transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+            className="fixed top-0 left-0 bottom-0 w-80 bg-white dark:bg-[#0a0a0a] border-r border-gray-200 dark:border-white/10 z-[70] flex flex-col shadow-2xl lg:hidden"
+          >
+            <div className="p-6 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-cyan-500 p-[2px]">
+                  <img 
+                    src={getProductImageUrl(user?.photo) || DEFAULT_AVATAR} 
+                    alt="Profile" 
+                    className="w-full h-full rounded-full object-cover"
+                  />
                 </div>
-                <button 
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="w-8 h-8 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center text-gray-500 hover:text-red-500 transition-colors"
-                >
-                  <X className="w-4 h-4" />
-                </button>
+                <div>
+                  <p className="font-bold text-primary dark:text-white">{user?.name}</p>
+                  <p className="text-xs text-cyan-500 font-bold uppercase tracking-wider mt-0.5">Student</p>
+                </div>
               </div>
+              <button 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="w-8 h-8 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center text-gray-500 hover:text-red-500 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
 
-              <div className="flex-1 overflow-y-auto py-4 px-3 custom-scrollbar">
+            <div className="flex-1 overflow-y-auto py-4 px-3 custom-scrollbar">
+              <Link 
+                to="/"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors mb-2"
+              >
+                <Home className="w-5 h-5 text-gray-400" /> Home
+              </Link>
+              <div className="h-px bg-gray-100 dark:bg-white/5 my-2 mx-4" />
+              
+              {navLinks.map(link => (
                 <Link 
-                  to="/"
+                  key={link.path}
+                  to={link.path}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors mb-2"
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all mb-1 ${
+                    location.pathname === link.path
+                      ? 'bg-gradient-to-r from-cyan-500/10 to-purple-500/10 border-l-2 border-cyan-500 text-cyan-600 dark:text-cyan-400'
+                      : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 border-l-2 border-transparent hover:border-gray-300 dark:hover:border-gray-700'
+                  }`}
                 >
-                  <Home className="w-5 h-5 text-gray-400" /> Home
+                  <span className={location.pathname === link.path ? 'text-cyan-500' : 'text-gray-400'}>
+                    {link.icon}
+                  </span>
+                  {link.name}
                 </Link>
-                <div className="h-px bg-gray-100 dark:bg-white/5 my-2 mx-4" />
-                
-                {navLinks.map(link => (
-                  <Link 
-                    key={link.path}
-                    to={link.path}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all mb-1 ${
-                      location.pathname === link.path
-                        ? 'bg-gradient-to-r from-cyan-500/10 to-purple-500/10 border-l-2 border-cyan-500 text-cyan-600 dark:text-cyan-400'
-                        : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 border-l-2 border-transparent hover:border-gray-300 dark:hover:border-gray-700'
-                    }`}
-                  >
-                    <span className={location.pathname === link.path ? 'text-cyan-500' : 'text-gray-400'}>
-                      {link.icon}
-                    </span>
-                    {link.name}
-                  </Link>
-                ))}
-              </div>
+              ))}
+            </div>
 
-              <div className="p-4 border-t border-gray-100 dark:border-white/5">
-                <button onClick={handleLogout} className="w-full flex items-center justify-center gap-2 py-3 bg-red-50 dark:bg-red-500/10 text-red-500 rounded-xl font-bold text-sm hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors">
-                  <LogOut className="w-4 h-4" /> Logout
-                </button>
-              </div>
-            </motion.div>
-          </>
+            <div className="p-4 border-t border-gray-100 dark:border-white/5">
+              <button onClick={handleLogout} className="w-full flex items-center justify-center gap-2 py-3 bg-red-50 dark:bg-red-500/10 text-red-500 rounded-xl font-bold text-sm hover:bg-red-100 dark:hover:bg-red-500/20 transition-colors">
+                <LogOut className="w-4 h-4" /> Logout
+              </button>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
 

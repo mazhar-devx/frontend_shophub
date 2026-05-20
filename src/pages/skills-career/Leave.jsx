@@ -5,7 +5,7 @@ import { skillsDb } from "../../utils/skillsDb";
 
 export default function Leave() {
   const { user } = useSelector((state) => state.auth);
-  const username = user?.name || "Ali Khan";
+  const studentKey = user?.email || user?.name || "ali@example.com";
 
   const [loading, setLoading] = useState(true);
   const [leaves, setLeaves] = useState([]);
@@ -15,7 +15,7 @@ export default function Leave() {
   const [reason, setReason] = useState("");
 
   const loadLeaves = () => {
-    const data = skillsDb.getStudentData(username);
+    const data = skillsDb.getStudentData(studentKey);
     if (data && data.leaveRequests) {
       setLeaves(data.leaveRequests);
     }
@@ -24,12 +24,12 @@ export default function Leave() {
   useEffect(() => {
     loadLeaves();
     setLoading(false);
-  }, [username]);
+  }, [studentKey]);
 
   const handleSubmitLeave = (e) => {
     e.preventDefault();
     if (!date || !reason) return;
-    skillsDb.addLeaveRequest(username, date, reason);
+    skillsDb.addLeaveRequest(studentKey, date, reason);
     setDate("");
     setReason("");
     loadLeaves();

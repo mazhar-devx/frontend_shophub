@@ -25,16 +25,17 @@ export default function Dashboard() {
   const [studentData, setStudentData] = useState(null);
 
   const username = user?.name || "Ali Khan"; // Defaulting to Ali Khan for testing when not logged in with specific name
+  const studentKey = user?.email || user?.name || "ali@example.com";
 
   useEffect(() => {
     if (user?.name && user.name.toLowerCase() !== "mazhar.devx") {
       skillsDb.registerStudent(user.name, user.email || `${user.name.replace(/\s+/g, '').toLowerCase()}@example.com`);
     }
-    // Attempt to fetch from local database matching username
-    const data = skillsDb.getStudentData(username);
+    // Attempt to fetch from local database matching studentKey
+    const data = skillsDb.getStudentData(studentKey);
     setStudentData(data);
     setLoading(false);
-  }, [username, user]);
+  }, [studentKey, user]);
 
   const dpUrl = getProductImageUrl(user?.photo) || DEFAULT_AVATAR;
   const userDesc = `View the academic profile and skills career dashboard of ${username}. Excelling in their studies with ultra-professional tracking.`;
@@ -94,15 +95,18 @@ export default function Dashboard() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <AnimatePresence mode="wait">
-          {loading ? (
-            Array(4).fill(0).map((_, idx) => (
-              <motion.div 
+      <AnimatePresence mode="wait">
+        {loading ? (
+          <motion.div 
+            key="skeletons"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full"
+          >
+            {Array(4).fill(0).map((_, idx) => (
+              <div 
                 key={`skeleton-${idx}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
                 className="bg-white dark:bg-[#111] rounded-3xl p-6 border border-gray-100 dark:border-white/5 animate-pulse"
               >
                 <div className="flex justify-between mb-4">
@@ -111,10 +115,18 @@ export default function Dashboard() {
                 </div>
                 <div className="w-24 h-3 bg-gray-200 dark:bg-white/10 rounded mb-2"></div>
                 <div className="w-16 h-8 bg-gray-200 dark:bg-white/10 rounded"></div>
-              </motion.div>
-            ))
-          ) : (
-            statCards.map((stat, idx) => (
+              </div>
+            ))}
+          </motion.div>
+        ) : (
+          <motion.div
+            key="stats"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full"
+          >
+            {statCards.map((stat, idx) => (
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -131,23 +143,23 @@ export default function Dashboard() {
                 <p className="text-gray-500 dark:text-gray-400 text-sm font-bold uppercase tracking-wider mb-1">{stat.title}</p>
                 <p className="text-3xl font-black text-primary dark:text-white">{stat.value}</p>
               </motion.div>
-            ))
-          )}
-        </AnimatePresence>
-      </div>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Progress Graph */}
       <div className="bg-white dark:bg-[#111] rounded-3xl p-6 border border-gray-100 dark:border-white/5 shadow-xl min-h-[400px] flex flex-col">
          <h2 className="text-2xl font-black text-primary dark:text-white mb-6 flex items-center gap-2">
             Performance Insights
          </h2>
-         <div className="flex-1 w-full relative">
+         <div className="flex-1 w-full min-h-[300px] relative">
            {loading ? (
              <div className="absolute inset-0 flex items-center justify-center">
                 <div className="w-8 h-8 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
              </div>
            ) : (
-             <ResponsiveContainer width="100%" height="100%">
+             <ResponsiveContainer width="100%" height="100%" minHeight={300}>
                <AreaChart
                  data={graphData}
                  margin={{ top: 10, right: 30, left: 0, bottom: 0 }}

@@ -276,9 +276,7 @@ export default function SkillsManagement() {
             {/* Dynamic tab contents */}
             <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-6">
               <AnimatePresence mode="wait">
-                
-                {/* Tab: Messages / Attachment Sender */}
-                {activeTab === "messages" && (
+                {activeTab === "messages" ? (
                   <motion.div key="messages" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col h-full justify-between">
                      {/* Chat logs */}
                      <div className="flex-1 overflow-y-auto space-y-4 max-h-[300px] border border-white/5 bg-black/10 rounded-2xl p-4 mb-4">
@@ -348,11 +346,11 @@ export default function SkillsManagement() {
                           <label className="p-3 bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white rounded-xl font-bold cursor-pointer transition-all border border-white/10 flex items-center justify-center">
                             <Paperclip className="w-5 h-5" />
                             <input
-                              type="file"
-                              id="admin-file-upload"
-                              accept="image/*,video/*"
-                              onChange={handleFileChange}
-                              className="hidden"
+                               type="file"
+                               id="admin-file-upload"
+                               accept="image/*,video/*"
+                               onChange={handleFileChange}
+                               className="hidden"
                             />
                           </label>
 
@@ -362,10 +360,7 @@ export default function SkillsManagement() {
                         </div>
                      </form>
                   </motion.div>
-                )}
-
-                {/* Tab: Live Classes */}
-                {activeTab === "liveClasses" && (
+                ) : activeTab === "liveClasses" ? (
                   <motion.div key="liveClasses" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
                     <form onSubmit={handleCreateLiveClass} className="space-y-4 bg-black/20 p-6 rounded-3xl border border-white/5">
                        <h3 className="text-lg font-bold text-white flex items-center gap-2">
@@ -418,10 +413,7 @@ export default function SkillsManagement() {
                        )}
                     </div>
                   </motion.div>
-                )}
-
-                {/* Tab: Leave requests */}
-                {activeTab === "leave" && (
+                ) : activeTab === "leave" ? (
                   <motion.div key="leave" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
                      <h3 className="text-lg font-bold text-white mb-4">Leave Management</h3>
                      {studentData?.leaveRequests.length === 0 ? (
@@ -449,10 +441,7 @@ export default function SkillsManagement() {
                        ))
                      )}
                   </motion.div>
-                )}
-
-                {/* Tab: Academic */}
-                {activeTab === "academic" && (
+                ) : activeTab === "academic" ? (
                   <motion.div key="academic" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
                      <form onSubmit={handleAddAcademic} className="space-y-4 bg-black/20 p-6 rounded-3xl border border-white/5">
                         <h3 className="text-lg font-bold text-white flex items-center gap-2">
@@ -506,10 +495,7 @@ export default function SkillsManagement() {
                         )}
                      </div>
                   </motion.div>
-                )}
-
-                {/* Tab: Homework */}
-                {activeTab === "homework" && (
+                ) : activeTab === "homework" ? (
                   <motion.div key="homework" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
                      <form onSubmit={handleAssignHomework} className="space-y-4 bg-black/20 p-6 rounded-3xl border border-white/5">
                         <h3 className="text-lg font-bold text-white flex items-center gap-2">
@@ -551,10 +537,7 @@ export default function SkillsManagement() {
                         )}
                      </div>
                   </motion.div>
-                )}
-
-                {/* Tab: Fees */}
-                {activeTab === "fees" && (
+                ) : activeTab === "fees" ? (
                   <motion.div key="fees" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
                      <form onSubmit={handleAddFee} className="space-y-4 bg-black/20 p-6 rounded-3xl border border-white/5">
                         <h3 className="text-lg font-bold text-white flex items-center gap-2">
@@ -595,8 +578,7 @@ export default function SkillsManagement() {
                         </button>
                      </form>
                   </motion.div>
-                )}
-
+                ) : null}
               </AnimatePresence>
             </div>
           </>

@@ -5,12 +5,12 @@ import { skillsDb } from "../../utils/skillsDb";
 
 export default function Attachments() {
   const { user } = useSelector((state) => state.auth);
-  const username = user?.name || "Ali Khan";
+  const studentKey = user?.email || user?.name || "ali@example.com";
 
   const [attachments, setAttachments] = useState([]);
 
   useEffect(() => {
-    const data = skillsDb.getStudentData(username);
+    const data = skillsDb.getStudentData(studentKey);
     const media = [];
     
     // Gather files from academic
@@ -30,7 +30,7 @@ export default function Attachments() {
     }
 
     setAttachments(media);
-  }, [username]);
+  }, [studentKey]);
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">

@@ -5,18 +5,18 @@ import { skillsDb } from "../../utils/skillsDb";
 
 export default function Homework() {
   const { user } = useSelector((state) => state.auth);
-  const username = user?.name || "Ali Khan";
+  const studentKey = user?.email || user?.name || "ali@example.com";
 
   const [loading, setLoading] = useState(true);
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
-    const data = skillsDb.getStudentData(username);
+    const data = skillsDb.getStudentData(studentKey);
     if (data && data.homework) {
       setTasks(data.homework);
     }
     setLoading(false);
-  }, [username]);
+  }, [studentKey]);
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">

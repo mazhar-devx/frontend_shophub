@@ -5,18 +5,18 @@ import { skillsDb } from "../../utils/skillsDb";
 
 export default function Academic() {
   const { user } = useSelector((state) => state.auth);
-  const username = user?.name || "Ali Khan";
+  const studentKey = user?.email || user?.name || "ali@example.com";
 
   const [loading, setLoading] = useState(true);
   const [resources, setResources] = useState([]);
 
   useEffect(() => {
-    const data = skillsDb.getStudentData(username);
+    const data = skillsDb.getStudentData(studentKey);
     if (data && data.academic) {
       setResources(data.academic);
     }
     setLoading(false);
-  }, [username]);
+  }, [studentKey]);
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">

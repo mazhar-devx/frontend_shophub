@@ -6,14 +6,14 @@ import { skillsDb } from "../../utils/skillsDb";
 
 export default function FeesHistory() {
   const { user } = useSelector((state) => state.auth);
-  const username = user?.name || "Ali Khan";
+  const studentKey = user?.email || user?.name || "ali@example.com";
 
   const [loading, setLoading] = useState(true);
   const [feesData, setFeesData] = useState([]);
   const [pendingDues, setPendingDues] = useState(0);
 
   useEffect(() => {
-    const data = skillsDb.getStudentData(username);
+    const data = skillsDb.getStudentData(studentKey);
     if (data && data.feesHistory) {
       setFeesData(data.feesHistory);
       // Calculate pending dues sum
@@ -23,7 +23,7 @@ export default function FeesHistory() {
       setPendingDues(pendingSum);
     }
     setLoading(false);
-  }, [username]);
+  }, [studentKey]);
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
@@ -45,19 +45,19 @@ export default function FeesHistory() {
         {/* Left Column: Chart */}
         <div className="lg:col-span-2 bg-white dark:bg-[#111] rounded-3xl p-6 border border-gray-100 dark:border-white/5 shadow-xl min-h-[350px] flex flex-col">
            <h2 className="text-xl font-bold text-primary dark:text-white mb-6">Fee Analytics</h2>
-           <div className="flex-1 w-full relative">
-             {loading ? (
-               <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
-               </div>
-             ) : feesData.length === 0 ? (
-               <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-400">
-                  <DollarSign className="w-12 h-12 mb-4 opacity-50" />
-                  <p className="font-bold">No fee history found.</p>
-               </div>
-             ) : (
-               <ResponsiveContainer width="100%" height="100%">
-                 <BarChart data={feesData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+           <div className="flex-1 w-full min-h-[250px] relative">
+              {loading ? (
+                <div className="absolute inset-0 flex items-center justify-center">
+                   <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              ) : feesData.length === 0 ? (
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-400">
+                   <DollarSign className="w-12 h-12 mb-4 opacity-50" />
+                   <p className="font-bold">No fee history found.</p>
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%" minHeight={250}>
+                  <BarChart data={feesData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#333" opacity={0.2} />
                    <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{fill: '#888', fontSize: 12}} />
                    <YAxis axisLine={false} tickLine={false} tick={{fill: '#888', fontSize: 12}} />
