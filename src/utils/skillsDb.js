@@ -6,42 +6,22 @@ const DEFAULT_STUDENTS = [
 
 const INITIAL_DB = {
   "Ali Khan": {
-    academic: [
-      { id: 1, title: "Web Development Roadmap", type: "PDF", url: "#", date: "2026-05-18" },
-      { id: 2, title: "React Components Lecture Note", type: "Doc", url: "#", date: "2026-05-19" }
-    ],
-    liveClasses: [
-      { id: 1, topic: "Advanced State Management in React", time: "Today at 5:00 PM", url: "https://zoom.us" }
-    ],
-    leaveRequests: [
-      { id: 1, date: "2026-05-22", reason: "Medical checkup", status: "Pending" }
-    ],
-    homework: [
-      { id: 1, title: "Create a Redux Store", desc: "Build a counter store using Redux Toolkit", status: "Assigned", date: "2026-05-20" }
-    ],
-    feesHistory: [
-      { month: 'Jan', amount: 500, status: 'Paid', datePaid: '2026-01-10' },
-      { month: 'Feb', amount: 500, status: 'Paid', datePaid: '2026-02-12' },
-      { month: 'Mar', amount: 500, status: 'Paid', datePaid: '2026-03-08' },
-      { month: 'Apr', amount: 500, status: 'Paid', datePaid: '2026-04-09' },
-      { month: 'May', amount: 650, status: 'Pending' },
-    ],
-    messages: [
-      { sender: "admin", text: "Welcome to the Skills & Career program! Let me know if you need any help.", time: "1 day ago" }
-    ],
-    supervision: { remarks: "Good progress. Active participant.", grade: "A" }
+    academic: [],
+    liveClasses: [],
+    leaveRequests: [],
+    homework: [],
+    feesHistory: [],
+    messages: [],
+    supervision: { remarks: "No remarks yet", grade: "N/A" }
   },
   "Sara Ahmed": {
     academic: [],
     liveClasses: [],
     leaveRequests: [],
     homework: [],
-    feesHistory: [
-      { month: 'Jan', amount: 500, status: 'Paid', datePaid: '2026-01-08' },
-      { month: 'Feb', amount: 500, status: 'Paid', datePaid: '2026-02-10' }
-    ],
+    feesHistory: [],
     messages: [],
-    supervision: { remarks: "Needs to complete assignments on time.", grade: "B-" }
+    supervision: { remarks: "No remarks yet", grade: "N/A" }
   },
   "John Doe": {
     academic: [],
@@ -50,7 +30,7 @@ const INITIAL_DB = {
     homework: [],
     feesHistory: [],
     messages: [],
-    supervision: { remarks: "Excellent performance in mock exams.", grade: "A+" }
+    supervision: { remarks: "No remarks yet", grade: "N/A" }
   }
 };
 
@@ -79,7 +59,7 @@ export const skillsDb = {
       homework: [],
       feesHistory: [],
       messages: [],
-      supervision: { remarks: "No record", grade: "N/A" }
+      supervision: { remarks: "No remarks yet", grade: "N/A" }
     };
   },
 
@@ -88,6 +68,19 @@ export const skillsDb = {
     const db = JSON.parse(localStorage.getItem("skills_career_db"));
     db[studentName] = data;
     localStorage.setItem("skills_career_db", JSON.stringify(db));
+  },
+
+  registerStudent: (name, email) => {
+    initDB();
+    const students = JSON.parse(localStorage.getItem("skills_career_students")) || [];
+    if (!students.some(s => s.name === name)) {
+      students.push({
+        name,
+        email,
+        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`
+      });
+      localStorage.setItem("skills_career_students", JSON.stringify(students));
+    }
   },
 
   addMessage: (studentName, sender, text, fileType = null, fileUrl = null) => {

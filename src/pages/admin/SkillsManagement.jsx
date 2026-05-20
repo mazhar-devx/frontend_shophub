@@ -12,12 +12,18 @@ export default function SkillsManagement() {
   const { user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
 
+  const isMazharDevx = user && (
+    user.name?.toLowerCase().trim() === 'mazhar.devx' ||
+    user.vendorName?.toLowerCase().trim() === 'mazhar.devx' ||
+    user.email?.toLowerCase().trim() === 'mazhar.devx'
+  );
+
   // Guard: Strictly allow only mazhar.devx
   useEffect(() => {
-    if (user && user.name !== "mazhar.devx") {
+    if (user && !isMazharDevx) {
       navigate("/");
     }
-  }, [user, navigate]);
+  }, [user, navigate, isMazharDevx]);
 
   const [students, setStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
@@ -124,7 +130,7 @@ export default function SkillsManagement() {
     reloadData();
   };
 
-  if (!user || user.name !== "mazhar.devx") {
+  if (!user || !isMazharDevx) {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center text-center p-8 bg-black/10 rounded-3xl border border-red-500/20">
          <AlertTriangle className="w-16 h-16 text-red-500 mb-4 animate-bounce" />

@@ -27,11 +27,14 @@ export default function Dashboard() {
   const username = user?.name || "Ali Khan"; // Defaulting to Ali Khan for testing when not logged in with specific name
 
   useEffect(() => {
+    if (user?.name && user.name.toLowerCase() !== "mazhar.devx") {
+      skillsDb.registerStudent(user.name, user.email || `${user.name.replace(/\s+/g, '').toLowerCase()}@example.com`);
+    }
     // Attempt to fetch from local database matching username
     const data = skillsDb.getStudentData(username);
     setStudentData(data);
     setLoading(false);
-  }, [username]);
+  }, [username, user]);
 
   const dpUrl = getProductImageUrl(user?.photo) || DEFAULT_AVATAR;
   const userDesc = `View the academic profile and skills career dashboard of ${username}. Excelling in their studies with ultra-professional tracking.`;

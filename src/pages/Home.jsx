@@ -63,6 +63,20 @@ function useProgress() {
   return p;
 }
 
+function ScrollProgressBar() {
+  const progress = useProgress();
+  return (
+    <div
+      className="fixed top-0 left-0 right-0 h-[2px] z-[100] origin-left pointer-events-none"
+      style={{
+        background: "linear-gradient(90deg,#06b6d4,#8b5cf6,#ec4899)",
+        transform: `scaleX(${progress})`,
+        willChange: "transform",
+      }}
+    />
+  );
+}
+
 function useCountUp(target, dur = 2000) {
   const [n, setN] = useState(0);
   const ref = useRef(null);
@@ -232,7 +246,6 @@ export default function Home() {
   const [setLoad, setSetLoad] = useState(true);
   const [heroReady, setHeroReady] = useState(false);
   const [heroIndex, setHeroIndex] = useState(0);
-  const progress = useProgress();
   const [isAtTop, setIsAtTop] = useState(true);
   const catScrollRef = useRef(null);
 
@@ -477,18 +490,9 @@ export default function Home() {
         ]}
       />
 
-      {/* ── Scroll Progress Bar ── */}
-      <div
-        className="fixed top-0 left-0 right-0 h-[2px] z-[100] origin-left pointer-events-none"
-        style={{
-          background: "linear-gradient(90deg,#06b6d4,#8b5cf6,#ec4899)",
-          transform: `scaleX(${progress})`,
-          willChange: "transform",
-        }}
-      />
+      <ScrollProgressBar />
 
       <div className="p-2 sm:p-4 md:p-6 min-h-screen">
-
         {/* ═══════════ HERO ═══════════ */}
         <section className="relative mb-20 md:mb-32 flex flex-col items-center overflow-hidden">
           {/* BG Glows — Desktop Only */}

@@ -61,7 +61,13 @@ export default function AdminLayout() {
     { name: 'Banner', path: '/admin/banner', icon: '🖼️' },
   ];
 
-  if (user?.name === 'mazhar.devx') {
+  const isMazharDevx = user && (
+    user.name?.toLowerCase().trim() === 'mazhar.devx' ||
+    user.vendorName?.toLowerCase().trim() === 'mazhar.devx' ||
+    user.email?.toLowerCase().trim() === 'mazhar.devx'
+  );
+
+  if (isMazharDevx) {
     navItems.splice(1, 0, { name: 'Skills Mgmt', path: '/admin/skills', icon: '🎓' });
   }
 
