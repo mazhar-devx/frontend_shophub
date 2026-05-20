@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ProductCard from "./ProductCard";
 import { formatPrice } from "../utils/currency";
 import { getProductImageUrl } from "../utils/constants";
 import LoadingSpinner from "./LoadingSpinner";
 import { Link } from "react-router-dom";
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-function ProductList({ products, loading, error, view = 'grid' }) {
+function ProductList({ products, loading, error, view = 'grid', itemsPerPage = null }) {
+  const [currentPage, setCurrentPage] = useState(1);
   // Only show full loading spinner if we don't even have dummy products
   if (loading && (!products || products.length === 0)) {
     return (
@@ -33,10 +35,20 @@ function ProductList({ products, loading, error, view = 'grid' }) {
     );
   }
   
+  const totalPages = itemsPerPage ? Math.ceil(products.length / itemsPerPage) : 1;
+  const currentProducts = itemsPerPage 
+    ? products.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) 
+    : products;
+  
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    // Optional: scroll to top of list
+  };
+  
   if (view === 'list') {
     return (
       <div className="space-y-4">
-        {products.map((product) => (
+        {currentProducts.map((product) => (
           <Link 
             key={product._id} 
             to={`/product/${product._id}`}
@@ -94,10 +106,51 @@ function ProductList({ products, loading, error, view = 'grid' }) {
   }
   
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
-      {products.map((product) => (
-        <ProductCard key={product._id} product={product} />
-      ))}
+    <div className="flex flex-col gap-8">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
+        {currentProducts.map((product) => (
+          <ProductCard key={product._id} product={product} />
+        ))}
+      </div>
+      
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center gap-2 mt-8">
+          <button
+            onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
+            disabled={currentPage === 1}
+            className="w-10 h-10 rounded-xl flex items-center justify-center bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-primary dark:text-white disabled:opacity-30 hover:bg-black/10 dark:hover:bg-white/10 transition-all"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          
+          <div className="flex items-center gap-2">
+            {[...Array(totalPages)].map((_, i) => {
+              const page = i + 1;
+              return (
+                <button
+                  key={page}
+                  onClick={() => handlePageChange(page)}
+                  className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold transition-all ${
+                    currentPage === page
+                      ? 'bg-gradient-to-r from-purple-600 to-cyan-500 text-white shadow-lg shadow-purple-500/25 scale-110'
+                      : 'bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-primary dark:text-white hover:bg-black/10 dark:hover:bg-white/10'
+                  }`}
+                >
+                  {page}
+                </button>
+              );
+            })}
+          </div>
+
+          <button
+            onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
+            disabled={currentPage === totalPages}
+            className="w-10 h-10 rounded-xl flex items-center justify-center bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-primary dark:text-white disabled:opacity-30 hover:bg-black/10 dark:hover:bg-white/10 transition-all"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }

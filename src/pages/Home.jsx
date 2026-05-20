@@ -321,7 +321,7 @@ export default function Home() {
   /* ── Derived Data (memoized) ── */
   const real = useMemo(() => (products?.length > 0 ? products : []), [products]);
   const display = useDeferredValue(useMemo(() => (real.length > 0 ? real : []), [real]));
-  const featured = useMemo(() => [...display].sort((a, b) => (b.ratingsAverage || 0) - (a.ratingsAverage || 0)).slice(0, 12), [display]);
+  const featured = useMemo(() => [...display].sort((a, b) => (b.ratingsAverage || 0) - (a.ratingsAverage || 0)).slice(0, 32), [display]);
   const finalTrend = useMemo(() => (trending?.length > 0 ? trending : featured.slice(0, 8)), [trending, featured]);
 
   /* ── Dynamic Category Grids ── */
@@ -746,7 +746,7 @@ export default function Home() {
               </div>
             </Link>
           </div>
-          <ProductList products={featured} loading={loading} error={error} />
+          <ProductList products={featured} loading={loading} error={error} itemsPerPage={8} />
           {real.length === 0 && user?.role === "admin" && (
             <div className="text-center mt-4">
               <p className="text-gray-400 text-sm mb-2">Showing demo products — database is empty.</p>
