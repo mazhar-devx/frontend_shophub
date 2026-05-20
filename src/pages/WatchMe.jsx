@@ -13,6 +13,12 @@ const URL_REGEX = /(https?:\/\/[^\s]+)/g;
 
 const VideoCard = memo(({ video, isActive, isNext, isGlobalMuted, setIsGlobalMuted, onTagClick, isAutoScroll, setIsAutoScroll, showCaptions, setShowCaptions, scrollDown, onNotInterested }) => {
   const shouldLoad = isActive || isNext;
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
+  
+  useEffect(() => {
+    if (shouldLoad) setHasLoadedOnce(true);
+  }, [shouldLoad]);
+
   const videoRef = useRef(null);
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
@@ -432,7 +438,7 @@ const VideoCard = memo(({ video, isActive, isNext, isGlobalMuted, setIsGlobalMut
       {/* Video element */}
       <video
         ref={videoRef}
-        src={shouldLoad ? getProductImageUrl(video.videoUrl) : undefined}
+        src={hasLoadedOnce ? getProductImageUrl(video.videoUrl) : undefined}
         poster={video.thumbnailUrl ? getProductImageUrl(video.thumbnailUrl) : undefined}
         preload={isActive ? "auto" : (isNext ? "metadata" : "none")}
         loop={!isAutoScroll}
@@ -1447,8 +1453,8 @@ export default function WatchMe() {
 
         return (
           <SEO 
-            title={activeVid.name}
-            description={activeVid.description?.substring(0, 160) || "Watch premium short videos and shop the look on ShopHub.pro"}
+            title={`Watch ${activeVid.name} - Video Shopping | ShopHub Pakistan`}
+            description={`Watch ${activeVid.name} on ShopHub.pro. ${activeVid.description?.substring(0, 100)}... Experience premium video shopping in Pakistan.`}
             image={getProductImageUrl(activeVid.thumbnailUrl || activeVid.videoUrl)}
             type="video.other"
             url={`${window.location.origin}/watch-me?v=${activeVid._id}`}

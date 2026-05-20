@@ -40,7 +40,6 @@ export default function Footer() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
                {/* Brand Column */}
                <div className="space-y-6">
-               <div className="space-y-6">
                   <Link to="/" className="flex items-center gap-2" aria-label="ShopHub.pro Home">
                      <div className="w-10 h-10 rounded-xl overflow-hidden border border-black/10 dark:border-white/10 shadow-lg">
                         <img src="/logo.png" alt="ShopHub.pro Logo" className="w-full h-full object-cover dark:invert-0 invert transition-all duration-500" />
