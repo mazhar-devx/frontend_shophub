@@ -40,34 +40,38 @@ export default function Footer() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
                {/* Brand Column */}
                <div className="space-y-6">
-                  <Link to="/" className="flex items-center gap-2" aria-label="HA Store Home">
+               <div className="space-y-6">
+                  <Link to="/" className="flex items-center gap-2" aria-label="ShopHub.pro Home">
                      <div className="w-10 h-10 rounded-xl overflow-hidden border border-black/10 dark:border-white/10 shadow-lg">
-                        <img src="/logo.png" alt="HA Store Logo" className="w-full h-full object-cover dark:invert-0 invert transition-all duration-500" />
+                        <img src="/logo.png" alt="ShopHub.pro Logo" className="w-full h-full object-cover dark:invert-0 invert transition-all duration-500" />
                      </div>
-                     <span className="text-2xl font-black text-primary dark:text-white tracking-tighter uppercase">HA STORE</span>
+                     <span className="text-2xl font-black text-primary dark:text-white tracking-tighter uppercase">SHOPHUB</span>
                   </Link>
                   <p className="text-secondary dark:text-gray-400 text-sm leading-relaxed">
                      Experience the future of commerce. We curate the boldest tech, fashion, and lifestyle products for the visionaries of tomorrow.
                   </p>
+                  <div className="text-secondary dark:text-gray-400 text-xs mt-4 space-y-1 bg-gray-50 dark:bg-white/5 p-4 rounded-xl">
+                     <p><strong className="text-primary dark:text-gray-300">Business Registration:</strong> SHP-2026-98745</p>
+                     <p><strong className="text-primary dark:text-gray-300">Warehouse Location:</strong> Karachi, Pakistan</p>
+                     <p><strong className="text-primary dark:text-gray-300">Support Email:</strong> care@shophub.pro</p>
+                  </div>
                   <div className="flex space-x-4">
                      {[
-                        { name: 'Twitter', icon: 'M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z' },
-                        { name: 'Instagram', icon: 'M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01' },
-                        { name: 'LinkedIn', icon: 'M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z' }
+                        { name: 'Facebook', url: 'https://facebook.com/shophub.pro', icon: 'M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z' },
+                        { name: 'Instagram', url: 'https://instagram.com/shophub.pro', icon: 'M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01' },
+                        { name: 'TikTok', url: 'https://tiktok.com/@shophub.pro', icon: 'M9 0h1.98c.144 2.58 1.97 4.773 4.54 5.342v2.324c-1.353-.024-2.583-.49-3.568-1.258v7.871c0 3.737-3.033 6.77-6.771 6.77-3.738 0-6.77-3.033-6.77-6.77S4.444 7.51 8.182 7.51c.365 0 .717.03 1.06.084v2.404c-.34-.055-.69-.084-1.06-.084-2.428 0-4.397 1.97-4.397 4.396 0 2.428 1.969 4.397 4.397 4.397 2.429 0 4.397-1.969 4.397-4.397V0h-.88z' }
                      ].map((social) => (
                         <a 
                           key={social.name} 
-                          href="#" 
-                          onClick={(e) => {
-                             e.preventDefault();
-                             window.scrollTo({ top: 0, behavior: 'smooth' });
-                          }}
+                          href={social.url} 
+                          target="_blank"
+                          rel="noopener noreferrer"
                           aria-label={`Follow us on ${social.name}`} 
                           className="w-10 h-10 rounded-full bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 flex items-center justify-center text-secondary dark:text-gray-400 hover:text-primary dark:hover:text-white hover:bg-black/10 dark:hover:bg-white/10 hover:border-black/10 dark:hover:border-white/20 transition-all hover:-translate-y-1"
                         >
-                           <svg className="h-4 w-4" fill={social.name === 'Instagram' ? 'none' : 'currentColor'} stroke={social.name === 'Instagram' ? 'currentColor' : 'none'} strokeWidth="2" viewBox="0 0 24 24">
+                           <svg className="h-4 w-4" fill={social.name === 'Instagram' || social.name === 'TikTok' ? 'currentColor' : 'none'} stroke={social.name === 'Facebook' ? 'currentColor' : 'none'} strokeWidth={social.name === 'Facebook' ? "2" : "0"} viewBox="0 0 24 24">
                               <path d={social.icon} />
-                              {social.name === 'Instagram' && <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />}
+                              {social.name === 'Instagram' && <rect x="2" y="2" width="20" height="20" rx="5" ry="5" fill="none" stroke="currentColor" strokeWidth="2" />}
                            </svg>
                         </a>
                      ))}
@@ -146,7 +150,7 @@ export default function Footer() {
 
             <div className="mt-20 pt-8 border-t border-black/5 dark:border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
                <div className="flex flex-col items-center md:items-start gap-2">
-                  <p className="text-secondary dark:text-gray-500 text-sm">© 2024 - 2026 HA Store. All rights reserved.</p>
+                  <p className="text-secondary dark:text-gray-500 text-sm">© 2024 - 2026 ShopHub.pro. All rights reserved.</p>
                   <a 
                      href="https://linkedin.com/in/mazhar-devx" 
                      target="_blank" 

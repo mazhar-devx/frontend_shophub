@@ -6,13 +6,13 @@ export default function PrivacyPolicy() {
     { title: "2. How We Use Your Data", body: "Your data is used to process orders, personalize your shopping experience, and communicate with you about updates and promotions. We do not sell your personal data to third parties." },
     { title: "3. Google One Tap & Authentication", body: "When you use Google One Tap to sign in, we receive your name, email, and profile picture from Google to create your account and simplify your login process. You can manage this at any time in your Google Account settings." },
     { title: "4. Cookies & Tracking", body: "We use essential cookies to keep you logged in and functional/analytics cookies to improve our performance. Marketing cookies (including those for Google AdSense) are only used with your explicit consent." },
-    { title: "5. Your Data Rights", body: "You have the right to access, correct, or delete your personal information. To exercise these rights, please contact our privacy officer at privacy@hastore.pro." }
+    { title: "5. Your Data Rights", body: "You have the right to access, correct, or delete your personal information. To exercise these rights, please contact our privacy officer at privacy@shophub.pro." }
   ];
 
   return (
     <InfoLayout 
       title="Privacy Policy" 
-      subtitle="Your privacy is the core of our trust. Here is how we protect and manage your data at HA Store."
+      subtitle="Your privacy is the core of our trust. Here is how we protect and manage your data at ShopHub.pro."
     >
       <div className="space-y-10">
         <p className="text-secondary dark:text-gray-400 text-sm mb-8">Last Updated: May 12, 2026</p>

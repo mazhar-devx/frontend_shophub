@@ -31,6 +31,7 @@ export default function SEO({
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "ShopHub.pro",
+    "alternateName": ["ShopHub", "Shop Hub", "ShopHub Pakistan", "ShopHub Pro"],
     "url": siteUrl,
     "logo": defaultImage,
     "sameAs": [
@@ -43,7 +44,7 @@ export default function SEO({
       "telephone": "+92-300-1234567",
       "contactType": "customer service",
       "areaServed": "PK",
-      "availableLanguage": "English"
+      "availableLanguage": ["English", "Urdu"]
     }
   };
 

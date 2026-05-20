@@ -6,7 +6,7 @@ const WhatsAppContact = () => {
     const { showToast } = useUIStore();
 
     const phoneNumber = "03291559040";
-    const welcomeMessage = "Assalamualaikum\nWelcome to HA Store\nHave a nice day\nTell us how can we help you ?";
+    const welcomeMessage = "Assalamualaikum\nWelcome to ShopHub.pro\nHow can we help you today?";
     
     const handleWhatsAppClick = () => {
         const encodedMessage = encodeURIComponent(welcomeMessage);
@@ -33,7 +33,7 @@ const WhatsAppContact = () => {
                                 <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-green-500 border-2 border-emerald-900 rounded-full"></div>
                             </div>
                             <div>
-                                <h3 className="text-white font-black text-sm uppercase tracking-tight">Asad Admin</h3>
+                                <h3 className="text-white font-black text-sm uppercase tracking-tight">ShopHub Support</h3>
                                 <div className="flex items-center gap-1.5">
                                     <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
                                     <p className="text-[9px] text-green-400 font-bold uppercase tracking-widest">Always Online</p>
@@ -55,7 +55,7 @@ const WhatsAppContact = () => {
                         <div className="bg-black/5 dark:bg-white/5 rounded-2xl p-4 border border-black/5 dark:border-white/5 relative overflow-hidden group/text">
                             <div className="absolute top-0 left-0 w-1 h-full bg-green-500/50"></div>
                             <p className="text-secondary dark:text-gray-300 text-sm leading-relaxed italic">
-                                "Assalamualaikum! I'm the creator of this store. Message me for direct payments or custom deals! 🔥"
+                                "Assalamualaikum! I'm the ShopHub.pro support team. Message us for direct payments or custom deals! 🔥"
                             </p>
                         </div>
 

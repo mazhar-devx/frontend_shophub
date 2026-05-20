@@ -439,8 +439,8 @@ export default function Home() {
   return (
     <>
       <SEO
-        title="Pakistan's #1 Luxury Shopping & Social Marketplace"
-        description="ShopHub.pro - Experience ultra-premium electronics, fashion, and social video shopping. Discover the latest trends with fast 24h delivery across Pakistan."
+        title="ShopHub.pro - Pakistan's #1 Luxury Online Shopping Store"
+        description="ShopHub.pro - Buy ultra-premium electronics, fashion, and gadgets online in Pakistan at the best prices. Experience fast 24h delivery and cash on delivery."
         keywords="ShopHub.pro, luxury shopping Pakistan, online electronics store, social commerce Pakistan, video shopping app, premium fashion marketplace"
         schema={[
           {

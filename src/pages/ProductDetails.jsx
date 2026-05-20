@@ -220,8 +220,8 @@ export default function ProductDetails() {
   return (
     <>
       <SEO 
-        title={product.name}
-        description={product.description?.substring(0, 160)}
+        title={`Buy ${product.name} Online in Pakistan | Best Price | ShopHub`}
+        description={`Buy ${product.name} online in Pakistan at the best price. ${product.description?.substring(0, 100)}... fast delivery by ShopHub.pro.`}
         image={getProductImageUrl(product.images?.[0] || product.image)}
         type="product"
         price={product.discountPercentage > 0 

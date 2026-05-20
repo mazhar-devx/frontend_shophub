@@ -457,11 +457,29 @@ export default function Checkout() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                  <label onClick={() => setShowComingSoon(true)} className={`relative border rounded-2xl p-6 cursor-pointer transition-all duration-300 ${paymentMethod === "credit_card" ? 'border-purple-500 bg-purple-500/10' : 'border-black/5 dark:border-white/10 opacity-60'}`}>
-                    <span className="font-bold text-primary dark:text-white">Credit Card</span>
+                    <span className="font-bold text-primary dark:text-white flex items-center gap-2">
+                       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
+                       Credit Card
+                    </span>
                  </label>
                  <label className={`relative border rounded-2xl p-6 cursor-pointer transition-all duration-300 ${paymentMethod === "cash_on_delivery" ? 'border-green-500 bg-green-500/10' : 'border-black/5 dark:border-white/10'}`}>
                     <input type="radio" name="payment" value="cash_on_delivery" checked={paymentMethod === "cash_on_delivery"} onChange={() => setPaymentMethod("cash_on_delivery")} className="sr-only" />
-                    <span className="font-bold text-primary dark:text-white">Cash on Delivery</span>
+                    <span className="font-bold text-primary dark:text-white flex items-center gap-2">
+                       <svg className="w-5 h-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                       Cash on Delivery
+                    </span>
+                 </label>
+                 <label onClick={() => setShowComingSoon(true)} className={`relative border rounded-2xl p-6 cursor-pointer transition-all duration-300 ${paymentMethod === "jazzcash" ? 'border-red-500 bg-red-500/10' : 'border-black/5 dark:border-white/10 opacity-60'}`}>
+                    <span className="font-bold text-primary dark:text-white flex items-center gap-2">
+                       <div className="w-4 h-4 bg-red-600 rounded-sm"></div>
+                       JazzCash
+                    </span>
+                 </label>
+                 <label onClick={() => setShowComingSoon(true)} className={`relative border rounded-2xl p-6 cursor-pointer transition-all duration-300 ${paymentMethod === "easypaisa" ? 'border-green-400 bg-green-400/10' : 'border-black/5 dark:border-white/10 opacity-60'}`}>
+                    <span className="font-bold text-primary dark:text-white flex items-center gap-2">
+                       <div className="w-4 h-4 bg-green-500 rounded-sm shadow-sm"></div>
+                       EasyPaisa
+                    </span>
                  </label>
             </div>
             {paymentMethod !== "credit_card" && (
