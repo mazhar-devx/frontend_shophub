@@ -61,7 +61,7 @@ export default function AdminLayout() {
     { name: 'Banner', path: '/admin/banner', icon: '🖼️' },
   ];
 
-  if (user?.name === 'mazhar.devx' || user?.role === 'admin') {
+  if (user?.name === 'mazhar.devx') {
     navItems.splice(1, 0, { name: 'Skills Mgmt', path: '/admin/skills', icon: '🎓' });
   }
 

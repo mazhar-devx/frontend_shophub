@@ -1,33 +1,29 @@
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { DollarSign, Download, Calendar, CheckCircle } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import api from "../../services/api";
+import { skillsDb } from "../../utils/skillsDb";
 
 export default function FeesHistory() {
+  const { user } = useSelector((state) => state.auth);
+  const username = user?.name || "Ali Khan";
+
   const [loading, setLoading] = useState(true);
   const [feesData, setFeesData] = useState([]);
-  const [pendingDues, setPendingDues] = useState(0.0);
+  const [pendingDues, setPendingDues] = useState(0);
 
   useEffect(() => {
-    const fetchFees = async () => {
-      try {
-        setLoading(true);
-        const res = await api.get("/skills-career/fees");
-        if (res.data?.status === 'success') {
-          setFeesData(res.data.data.feesHistory);
-          setPendingDues(res.data.data.pendingDues);
-        }
-      } catch (error) {
-        // Fallback to empty state gracefully if endpoint doesn't exist
-        setFeesData([]);
-        setPendingDues(0.0);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    fetchFees();
-  }, []);
+    const data = skillsDb.getStudentData(username);
+    if (data && data.feesHistory) {
+      setFeesData(data.feesHistory);
+      // Calculate pending dues sum
+      const pendingSum = data.feesHistory
+        .filter(f => f.status === 'Pending')
+        .reduce((sum, f) => sum + f.amount, 0);
+      setPendingDues(pendingSum);
+    }
+    setLoading(false);
+  }, [username]);
 
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
