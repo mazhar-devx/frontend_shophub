@@ -321,7 +321,7 @@ export default function Home() {
   /* ── Derived Data (memoized) ── */
   const real = useMemo(() => (products?.length > 0 ? products : []), [products]);
   const display = useDeferredValue(useMemo(() => (real.length > 0 ? real : []), [real]));
-  const featured = useMemo(() => [...display].sort((a, b) => (b.ratingsAverage || 0) - (a.ratingsAverage || 0)).slice(0, 32), [display]);
+  const featured = useMemo(() => [...display].sort((a, b) => (b.ratingsAverage || 0) - (a.ratingsAverage || 0)), [display]);
   const finalTrend = useMemo(() => (trending?.length > 0 ? trending : featured.slice(0, 8)), [trending, featured]);
 
   /* ── Dynamic Category Grids ── */
