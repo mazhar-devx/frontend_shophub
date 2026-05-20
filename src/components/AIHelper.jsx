@@ -771,7 +771,7 @@ export default function AIHelper() {
     );
 
     return (
-        <div className="fixed bottom-20 md:bottom-6 right-0 md:right-6 z-[1000] flex flex-col items-end w-auto pointer-events-none group/ai ">
+        <div className="fixed bottom-20 md:bottom-6 right-0 md:right-6 z-[90] flex flex-col items-end w-auto pointer-events-none group/ai ">
             <style>{`
                 @keyframes scan { from { top: 0; } to { top: 100%; } }
                 @keyframes grid-move { from { background-position: 0 0; } to { background-position: 0 40px; } }
