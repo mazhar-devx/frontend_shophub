@@ -1,5 +1,6 @@
 {
   "rewrites": [
+    { "source": "/sitemap.xml", "destination": "https://backend-shophub.vercel.app/api/v1/sitemap.xml" },
     { "source": "/((?!assets/|favicon.ico|sw.js|manifest.json).*)", "destination": "/index.html" }
   ],
   "headers": [

@@ -9,6 +9,7 @@ import Modal from "./components/Modal";
 import BackToTop from "./components/BackToTop";
 
 import AIHelper from "./components/AIHelper";
+import GlobalAudioPlayer from "./components/GlobalAudioPlayer";
 import MobileBottomNav from "./components/MobileBottomNav";
 import AdminLayout from "./layouts/AdminLayout";
 import VendorNamePrompt from "./components/VendorNamePrompt";
@@ -47,6 +48,8 @@ const VideoUpload = lazy(() => import("./pages/VideoUpload"));
 const CreatorProfile = lazy(() => import("./pages/CreatorProfile"));
 const SoundPage = lazy(() => import("./pages/SoundPage"));
 const Inbox = lazy(() => import("./pages/Inbox"));
+const Songs = lazy(() => import("./pages/Songs"));
+const Settings = lazy(() => import("./pages/Settings"));
 
 // Informational Pages Lazy Load
 const AboutUs = lazy(() => import("./pages/info/AboutUs"));
@@ -55,10 +58,12 @@ const PrivacyPolicy = lazy(() => import("./pages/info/PrivacyPolicy"));
 const TermsOfService = lazy(() => import("./pages/info/TermsOfService"));
 const HelpCenter = lazy(() => import("./pages/info/HelpCenter"));
 const ShippingReturns = lazy(() => import("./pages/info/ShippingReturns"));
+const ReturnPolicy = lazy(() => import("./pages/info/ReturnPolicy"));
 const SizeGuide = lazy(() => import("./pages/info/SizeGuide"));
 const ContactUs = lazy(() => import("./pages/info/ContactUs"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
+
 
 // Admin Pages Lazy Load
 const AdminDashboard = lazy(() => import("./pages/admin/Dashboard"));
@@ -99,10 +104,13 @@ const PageLoader = () => (
   </div>
 );
 
+import CanonicalSEO from "./components/CanonicalSEO";
+
 function AppContent() {
   const { theme } = useUIStore();
   const location = useLocation();
   const isImmersivePage = location.pathname === '/watch-me' || 
+                          location.pathname === '/songs' ||
                           location.pathname.startsWith('/creator/') || 
                           location.pathname.startsWith('/tag/') ||
                           location.pathname.startsWith('/sound/') ||
@@ -135,12 +143,14 @@ function AppContent() {
 
   return (
     <>
+      <CanonicalSEO />
       <ScrollToTop />
       <GoogleOneTap />
       <VendorNamePrompt />
       <CookieConsent />
       <CustomCursor />
       <CustomContextMenu />
+      <GlobalAudioPlayer />
       <Routes>
         {/* Portfolio route - Full screen, no layout */}
         <Route path="/mazhar.devx" element={
@@ -187,11 +197,13 @@ function AppContent() {
                   <Route path="upload-video" element={<ProtectedRoute><VideoUpload /></ProtectedRoute>} />
                   <Route path="creator/:id" element={<CreatorProfile />} />
                   <Route path="inbox" element={<ProtectedRoute><Inbox /></ProtectedRoute>} />
-                  
+                  <Route path="songs" element={<Songs />} />
+                  <Route path="settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
                   {/* Informational Routes */}
                   <Route path="about-us" element={<AboutUs />} />
                   <Route path="careers" element={<Careers />} />
                   <Route path="privacy-policy" element={<PrivacyPolicy />} />
+                  <Route path="return-policy" element={<ReturnPolicy />} />
                   <Route path="terms-of-service" element={<TermsOfService />} />
                   <Route path="help-center" element={<HelpCenter />} />
                   <Route path="shipping-returns" element={<ShippingReturns />} />

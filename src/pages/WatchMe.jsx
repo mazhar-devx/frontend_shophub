@@ -1196,6 +1196,11 @@ export default function WatchMe() {
   const [isAutoScroll, setIsAutoScroll] = useState(false);
   const [showCaptions, setShowCaptions] = useState(false);
   
+  // Pagination States
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
+  
   // Dynamic Product Strip Logic: Prioritize active video's product, then recent ones
   const prodVideos = videos.filter(v => v.productLink);
   let displayProductVideos = prodVideos.slice(0, 4);
@@ -1246,11 +1251,13 @@ export default function WatchMe() {
   const soundIdParam = new URLSearchParams(window.location.search).get('soundId');
 
   useEffect(() => {
-    fetchVideos();
+    setPage(1);
+    setHasMore(true);
+    fetchVideos(1);
   }, [feedType, selectedTag, userIdParam, soundIdParam]);
 
-  const fetchVideos = async () => {
-    setLoading(true);
+  const fetchVideos = async (pageNum = 1) => {
+    if (pageNum === 1) setLoading(true);
     try {
       const searchParams = new URLSearchParams(window.location.search);
       const userIdParam = searchParams.get('userId');
@@ -1270,13 +1277,34 @@ export default function WatchMe() {
       if (selectedTag) {
         url += `${url.includes('?') ? '&' : '?'}tag=${encodeURIComponent(selectedTag)}`;
       }
+      
+      url += `${url.includes('?') ? '&' : '?'}page=${pageNum}&limit=15`;
+      
       const res = await api.get(url);
-      setVideos(res.data.data.videos);
-      setLoading(false);
+      const newVids = res.data.data.videos;
+      
+      if (pageNum === 1) {
+         setVideos(newVids);
+      } else {
+         setVideos(prev => [...prev, ...newVids]);
+      }
+      
+      setHasMore(newVids.length === 15);
+      if (pageNum === 1) setLoading(false);
+      setIsFetchingMore(false);
     } catch (err) {
       console.error(err);
-      setLoading(false);
+      if (pageNum === 1) setLoading(false);
+      setIsFetchingMore(false);
     }
+  };
+
+  const fetchMoreVideos = () => {
+    if (isFetchingMore || !hasMore) return;
+    setIsFetchingMore(true);
+    const nextPage = page + 1;
+    setPage(nextPage);
+    fetchVideos(nextPage);
   };
 
   const syncNewVideos = async (silent = false) => {
@@ -1380,9 +1408,15 @@ export default function WatchMe() {
   const handleScroll = (e) => {
     const scrollPosition = e.target.scrollTop;
     const height = e.target.clientHeight;
+    const scrollHeight = e.target.scrollHeight;
     const index = Math.round(scrollPosition / height);
     if (index !== activeIndex) {
       setActiveIndex(index);
+    }
+
+    // Trigger infinite scroll when near bottom (e.g. 3 videos away)
+    if (scrollHeight - scrollPosition - height < height * 3 && hasMore && !isFetchingMore) {
+       fetchMoreVideos();
     }
   };
 

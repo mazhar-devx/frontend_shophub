@@ -95,6 +95,7 @@ export default function Footer() {
                         { name: "Help Center", path: "/help-center" },
                         { name: "Order Status", path: "/my-orders" },
                         { name: "Shipping & Returns", path: "/shipping-returns" },
+                        { name: "Return Policy", path: "/return-policy" },
                         { name: "Size Guide", path: "/size-guide" },
                         { name: "Contact Us", path: "/contact-us" }
                       ] 

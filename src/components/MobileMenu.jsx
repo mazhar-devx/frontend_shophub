@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useUIStore } from "../zustand/uiStore";
 import { useSelector } from "react-redux";
 import { getProductImageUrl } from "../utils/constants";
-import { X, LayoutGrid, ShoppingCart, Package, Flame, Play, LogOut, ChevronRight, User, LogIn, UserPlus, BookOpen } from "lucide-react";
+import { X, LayoutGrid, ShoppingCart, Package, Flame, Play, LogOut, ChevronRight, User, LogIn, UserPlus, BookOpen, Music2 } from "lucide-react";
 
 export default function MobileMenu() {
   const { isMenuOpen, toggleMenu } = useUIStore();
@@ -77,6 +77,7 @@ export default function MobileMenu() {
                    { label: 'Categories', path: '/categories', icon: <Package className="w-5 h-5" /> },
                    { label: 'Flash Deals', path: '/deals', icon: <Flame className="w-5 h-5" />, special: true },
                    { label: 'Watch Me', path: '/watch-me', icon: <Play className="w-5 h-5" />, watch: true },
+                   { label: 'Music', path: '/songs', icon: <Music2 className="w-5 h-5" />, music: true },
                    { label: 'Journal', path: '/blog', icon: <BookOpen className="w-5 h-5" /> },
                  ].map((item) => (
                    <Link 
@@ -85,11 +86,12 @@ export default function MobileMenu() {
                      className={`flex items-center gap-4 p-4 rounded-2xl transition-all group ${
                        item.special ? 'bg-red-500/10 text-red-500 dark:text-red-400 border border-red-500/20' :
                        item.watch ? 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20' :
+                       item.music ? 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20' :
                        'text-gray-600 dark:text-gray-400 hover:bg-black/5 dark:hover:bg-white/5 hover:text-primary dark:hover:text-white'
                      }`}
                      onClick={toggleMenu}
                    >
-                     <span className={`${item.special ? 'text-red-500' : item.watch ? 'text-purple-500' : 'text-cyan-600 dark:text-cyan-500'} group-hover:scale-110 transition-transform`}>
+                     <span className={`${item.special ? 'text-red-500' : item.watch ? 'text-purple-500' : item.music ? 'text-cyan-500' : 'text-cyan-600 dark:text-cyan-500'} group-hover:scale-110 transition-transform`}>
                        {item.icon}
                      </span>
                      <span className="font-bold">{item.label}</span>

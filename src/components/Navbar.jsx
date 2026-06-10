@@ -25,7 +25,8 @@ import {
   Settings,
   ArrowRight,
   Download,
-  Play
+  Play,
+  Music2
 } from "lucide-react";
 
 import { toast } from "react-hot-toast";
@@ -245,6 +246,16 @@ export default function Navbar() {
                 Watch Me
                 {location.pathname === '/watch-me' && (
                   <motion.div layoutId="nav-pill" className="absolute inset-0 bg-purple-500/10 rounded-full -z-10" />
+                )}
+              </Link>
+
+              <Link 
+                to="/songs" 
+                className={`relative px-4 py-2 rounded-full text-sm font-bold transition-all hover:bg-black/5 dark:hover:bg-white/10 flex items-center gap-2 ${location.pathname === '/songs' ? 'text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500' : 'text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400'}`}
+              >
+                <Music2 className="w-4 h-4 text-cyan-500" /> Music
+                {location.pathname === '/songs' && (
+                  <motion.div layoutId="nav-pill" className="absolute inset-0 bg-cyan-500/10 rounded-full -z-10" />
                 )}
               </Link>
               

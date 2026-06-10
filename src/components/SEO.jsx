@@ -16,12 +16,12 @@ export default function SEO({
   video,
   children 
 }) {
-  const siteTitle = "ShopHub.pro - Pakistan's Luxury Shopping & Social Hub";
-  const defaultDescription = "ShopHub.pro is your premium destination for high-end fashion, electronics, and immersive social shopping. Experience the future of e-commerce in Pakistan.";
+  const siteTitle = "ShopHub - Pakistan's Luxury Shopping & Social Hub";
+  const defaultDescription = "ShopHub is your premium destination for high-end fashion, electronics, and immersive social shopping. Experience the future of e-commerce in Pakistan.";
   const siteUrl = "https://www.shophub.pro";
   const defaultImage = `${siteUrl}/logo.png`;
 
-  const metaTitle = title ? `${title} | ShopHub.pro` : siteTitle;
+  const metaTitle = title ? `${title} | ShopHub` : siteTitle;
   const metaDescription = (description || defaultDescription).substring(0, 160);
   const metaImage = image ? (image.startsWith('http') ? image : `${siteUrl}${image}`) : defaultImage;
   const metaUrl = url ? (url.startsWith('http') ? url : `${siteUrl}${url}`) : siteUrl;
@@ -30,8 +30,8 @@ export default function SEO({
   const baseSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "ShopHub.pro",
-    "alternateName": ["ShopHub", "Shop Hub", "ShopHub Pakistan", "ShopHub Pro"],
+    "name": "ShopHub",
+    "alternateName": ["ShopHub.pro", "Shop Hub", "ShopHub Pakistan", "ShopHub Pro"],
     "url": siteUrl,
     "logo": defaultImage,
     "sameAs": [
@@ -80,7 +80,7 @@ export default function SEO({
       <meta property="og:description" content={metaDescription} />
       <meta property="og:image" content={metaImage} />
       <meta property="og:url" content={metaUrl} />
-      <meta property="og:site_name" content="ShopHub.pro" />
+      <meta property="og:site_name" content="ShopHub" />
       <meta property="og:locale" content="en_US" />
       
       {price && <meta property="product:price:amount" content={price} />}
