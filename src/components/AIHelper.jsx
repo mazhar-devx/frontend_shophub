@@ -838,9 +838,9 @@ export default function AIHelper() {
 
             {/* ─── AI Chat Panel ─── */}
             <div
-                className={`w-screen md:w-[500px] -mb-46 md:mb-6 pointer-events-auto transition-all duration-700 ${isOpen && !isMinimized
-                    ? "translate-y-0 opacity-100 scale-100"
-                    : "translate-y-20 opacity-0 scale-95 pointer-events-none"
+                className={`w-screen md:w-[500px] -mb-46 md:mb-6 transition-all duration-700 ${isOpen && !isMinimized
+                    ? "translate-y-0 opacity-100 scale-100 pointer-events-auto visible"
+                    : "translate-y-20 opacity-0 scale-95 pointer-events-none invisible"
                     }`}
                 style={{ transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)" }}
             >
@@ -1219,9 +1219,9 @@ export default function AIHelper() {
 
             {/* ─── Minimized Bar ─── */}
             <div
-                className={`w-[calc(100vw-2rem)] md:w-[500px] mb-4 md:mb-6 mx-4 md:mx-0 pointer-events-auto transition-all duration-500 ${isOpen && isMinimized
-                    ? "translate-y-0 opacity-100 scale-100"
-                    : "translate-y-10 opacity-0 scale-95 pointer-events-none"
+                className={`w-[calc(100vw-2rem)] md:w-[500px] mb-4 md:mb-6 mx-4 md:mx-0 transition-all duration-500 ${isOpen && isMinimized
+                    ? "translate-y-0 opacity-100 scale-100 pointer-events-auto visible"
+                    : "translate-y-10 opacity-0 scale-95 pointer-events-none invisible"
                     }`}
             >
                 <button

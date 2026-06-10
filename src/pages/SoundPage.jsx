@@ -17,6 +17,8 @@ export default function SoundPage() {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
   const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const dispatch = require("react-redux").useDispatch();
+  const { loadUser } = require("../features/auth/authSlice");
 
   useEffect(() => {
     fetchSoundData();
@@ -50,6 +52,7 @@ export default function SoundPage() {
      try {
         const res = await api.post(`/videos/${id}/save-sound`);
         setIsSaved(res.data.data.isSaved);
+        dispatch(loadUser());
      } catch (err) {
         console.error(err);
      }

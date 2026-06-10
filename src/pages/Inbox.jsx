@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { ChevronLeft, Send, Search, Music2, Play, User, MessageCircle, MoreVertical, Sparkles, Smile, Image as ImageIcon } from "lucide-react";
 import { ChevronLeft, Send, Search, Music2, Play, User, MessageCircle, MoreVertical, Sparkles } from "lucide-react";
 import api from "../services/api";
 import { getProductImageUrl, DEFAULT_AVATAR_FALLBACK } from "../utils/constants";
@@ -16,6 +17,37 @@ export default function Inbox() {
   const [friends, setFriends] = useState([]);
   const { user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
+  const messagesRef = React.useRef([]);
+  
+  const [showGifPicker, setShowGifPicker] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [gifSearch, setGifSearch] = useState("");
+  const [gifs, setGifs] = useState([]);
+  const emojis = ["😀","😂","😍","🔥","👍","❤️","✨","🙌","😎","🥺","💯","🎉","💡","🚀","🙏"];
+
+  useEffect(() => {
+    if ('Notification' in window && Notification.permission !== 'denied' && Notification.permission !== 'granted') {
+      Notification.requestPermission();
+    }
+  }, []);
+
+  useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
+
+  useEffect(() => {
+     if (!showGifPicker) return;
+     const fetchGifs = async () => {
+        try {
+           const query = gifSearch || "trending";
+           const res = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=Lpw21m9W3f0rLw0iS56t0n4A12qEsqbL&q=${query}&limit=20`);
+           const data = await res.json();
+           if (data.data) setGifs(data.data.map(g => g.images.fixed_height.url));
+        } catch (e) {}
+     };
+     const debounce = setTimeout(fetchGifs, 300);
+     return () => clearTimeout(debounce);
+  }, [gifSearch, showGifPicker]);
 
   useEffect(() => {
     fetchConversations();
@@ -56,7 +88,28 @@ export default function Inbox() {
   const fetchMessages = async (otherUserId, silent = false) => {
     try {
       const res = await api.get(`/messages/${otherUserId}`);
-      setMessages(res.data.data.messages);
+      const newMessages = res.data.data.messages;
+      
+      if (silent && newMessages.length > messagesRef.current.length) {
+         const addedMessages = newMessages.slice(messagesRef.current.length);
+         addedMessages.forEach(msg => {
+            if (msg.sender !== user._id && msg.sender?._id !== user._id) {
+                const senderName = selectedConvo?.otherUser?.vendorName || selectedConvo?.otherUser?.name || 'Someone';
+                const msgType = msg.video ? 'video' : 'text';
+                const textToSpeak = `Hey ${user.name}, user ${senderName} sent you a ${msgType} message, please check it out.`;
+                
+                if ('speechSynthesis' in window) {
+                   const utterance = new SpeechSynthesisUtterance(textToSpeak);
+                   window.speechSynthesis.speak(utterance);
+                }
+
+                if (Notification.permission === "granted") {
+                   new Notification(`New message from ${senderName}`, { body: msg.text || "Sent an attachment" });
+                }
+            }
+         });
+      }
+      setMessages(newMessages);
     } catch (err) {
       console.error(err);
     }
@@ -226,7 +279,11 @@ export default function Inbox() {
                               </div>
                            ) : (
                               <div className={`max-w-[80%] p-4 rounded-2xl text-sm font-medium shadow-xl ${isMine ? 'bg-pink-500 text-white rounded-tr-none' : 'bg-white/10 text-white rounded-tl-none'}`}>
-                                 {msg.text}
+                                 {msg.text.match(/^https?:\/\/.*\.(gif|png|jpe?g)$|giphy\.com|imgur\.com.*\.gif/) ? (
+                                    <img src={msg.text} alt="gif" className="rounded-xl max-w-xs w-full h-auto" />
+                                 ) : (
+                                    msg.text
+                                 )}
                               </div>
                            )}
                            <span className="text-[9px] text-gray-500 font-bold mt-1 uppercase">
@@ -239,8 +296,59 @@ export default function Inbox() {
                </div>
 
                {/* Message Input */}
-               <div className="p-4 border-t border-white/10 bg-black/40 backdrop-blur-xl">
+               <div className="p-4 border-t border-white/10 bg-black/40 backdrop-blur-xl relative">
+                  {/* Emoji Picker Popover */}
+                  <AnimatePresence>
+                     {showEmojiPicker && (
+                        <motion.div 
+                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                          className="absolute bottom-full left-4 mb-2 bg-[#0a0a1a] border border-white/10 rounded-2xl p-4 shadow-2xl z-50 w-64"
+                        >
+                           <div className="grid grid-cols-5 gap-2">
+                              {emojis.map(e => (
+                                 <button key={e} onClick={() => { setNewMessage(prev => prev + e); setShowEmojiPicker(false); }} className="text-xl hover:scale-125 transition-transform">{e}</button>
+                              ))}
+                           </div>
+                        </motion.div>
+                     )}
+                  </AnimatePresence>
+
+                  {/* GIF Picker Popover */}
+                  <AnimatePresence>
+                     {showGifPicker && (
+                        <motion.div 
+                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                          className="absolute bottom-full left-4 mb-2 bg-[#0a0a1a] border border-white/10 rounded-2xl p-4 shadow-2xl z-50 w-72 md:w-96"
+                        >
+                           <input 
+                              type="text" 
+                              placeholder="Search GIFs..."
+                              value={gifSearch}
+                              onChange={(e) => setGifSearch(e.target.value)}
+                              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-sm text-white mb-3 outline-none focus:border-pink-500"
+                           />
+                           <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto custom-scrollbar">
+                              {gifs.map((url, i) => (
+                                 <button key={i} onClick={() => { setNewMessage(url); setShowGifPicker(false); handleSendMessage(); }} className="aspect-video bg-white/5 rounded-lg overflow-hidden hover:scale-105 transition-transform">
+                                    <img src={url} className="w-full h-full object-cover" />
+                                 </button>
+                              ))}
+                           </div>
+                        </motion.div>
+                     )}
+                  </AnimatePresence>
+
                   <div className="flex items-center gap-3 max-w-4xl mx-auto">
+                     <button onClick={() => { setShowEmojiPicker(!showEmojiPicker); setShowGifPicker(false); }} className="p-2 text-gray-400 hover:text-pink-500 transition-colors">
+                        <Smile className="w-6 h-6" />
+                     </button>
+                     <button onClick={() => { setShowGifPicker(!showGifPicker); setShowEmojiPicker(false); }} className="p-2 text-gray-400 hover:text-pink-500 transition-colors">
+                        <span className="font-black text-xs uppercase tracking-widest border-2 border-current rounded px-1.5 py-0.5">GIF</span>
+                     </button>
                      <input 
                        type="text" 
                        placeholder="Send a message..." 

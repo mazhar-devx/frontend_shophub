@@ -454,7 +454,7 @@ const VideoCard = memo(({ video, isActive, isNext, isGlobalMuted, setIsGlobalMut
             scrollDown();
           }
         }}
-        className={`w-full h-full object-cover transition-opacity duration-500 ${isVideoLoaded ? 'opacity-100' : 'opacity-0'}`}
+        className={`w-full h-full object-contain transition-opacity duration-500 ${isVideoLoaded ? 'opacity-100' : 'opacity-0'}`}
       />
 
       {/* Captions Overlay */}
@@ -586,10 +586,10 @@ const VideoCard = memo(({ video, isActive, isNext, isGlobalMuted, setIsGlobalMut
               {isActionLoading.save ? (
                  <div className="w-7 h-7 border-2 border-yellow-500 border-t-transparent rounded-full animate-spin" />
               ) : (
-                 <Bookmark className={`w-7 h-7 ${isSaved ? 'fill-current' : ''}`} />
+                 <Bookmark className={`w-7 h-7 ${isSaved ? 'fill-yellow-500 text-yellow-500' : ''}`} />
               )}
            </div>
-           <span className="text-white text-xs font-bold shadow-sm">{isSaved ? 'Saved' : 'Save'}</span>
+           <span className="text-white text-xs font-bold shadow-sm">{video.savesCount || (isSaved ? 1 : 0)}</span>
         </button>
 
         {/* Share */}
@@ -950,13 +950,14 @@ const VideoCard = memo(({ video, isActive, isNext, isGlobalMuted, setIsGlobalMut
                      <img src={user?.photo ? getProductImageUrl(user.photo) : DEFAULT_AVATAR_FALLBACK} className="w-full h-full object-cover" />
                   </div>
                   
-                   <div className="flex-1 flex items-center bg-black/5 dark:bg-white/5 border-none rounded-3xl pr-2 focus-within:ring-2 focus-within:ring-pink-500 transition-all relative">
+                   <div className="flex-1 flex items-center bg-black/5 dark:bg-white/5 border-none rounded-3xl pr-2 focus-within:ring-2 focus-within:ring-pink-500 transition-all relative min-w-0">
                       <button 
                          onClick={() => setShowGifPicker(!showGifPicker)}
-                         className={`ml-2 px-3 py-1.5 rounded-lg border-2 transition-all flex items-center justify-center gap-1 ${showGifPicker ? 'bg-pink-500 border-pink-500 text-white shadow-lg' : 'border-pink-500/30 text-pink-500 hover:border-pink-500 hover:bg-pink-500/5'}`}
+                         className={`ml-2 px-2 md:px-3 py-1.5 rounded-lg border-2 transition-all flex items-center justify-center gap-1 shrink-0 ${showGifPicker ? 'bg-pink-500 border-pink-500 text-white shadow-lg' : 'border-pink-500/30 text-pink-500 hover:border-pink-500 hover:bg-pink-500/5'}`}
                          title="Add GIF"
                        >
-                          <span className="text-[10px] font-black uppercase tracking-widest">GIF</span>
+                          <span className="text-[10px] font-black uppercase tracking-widest hidden md:inline">GIF</span>
+                          <span className="text-[10px] font-black uppercase tracking-widest md:hidden">GF</span>
                        </button>
                       <input 
                         type="text" 
@@ -964,7 +965,7 @@ const VideoCard = memo(({ video, isActive, isNext, isGlobalMuted, setIsGlobalMut
                         value={commentText}
                         onChange={(e) => setCommentText(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && handleComment()}
-                        className="flex-1 bg-transparent px-4 py-4 text-sm dark:text-white focus:outline-none"
+                        className="flex-1 min-w-0 bg-transparent px-2 md:px-4 py-3 md:py-4 text-xs md:text-sm dark:text-white focus:outline-none"
                       />
                       
                       <div className="flex items-center gap-1">
@@ -1004,9 +1005,13 @@ const VideoCard = memo(({ video, isActive, isNext, isGlobalMuted, setIsGlobalMut
                                         <button 
                                           key={i} 
                                           onClick={() => {
-                                             fetch(url).then(r => r.blob()).then(blob => {
+                                             fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`).then(r => r.blob()).then(blob => {
                                                 const file = new File([blob], "comment.gif", { type: "image/gif" });
                                                 setCommentMedia(file);
+                                                setShowGifPicker(false);
+                                             }).catch(() => {
+                                                // Fallback if proxy fails
+                                                setCommentText(prev => prev + " " + url);
                                                 setShowGifPicker(false);
                                              });
                                           }}
@@ -1516,7 +1521,7 @@ export default function WatchMe() {
                  window.location.href = `/creator/${video.user._id}`;
                }
              }}
-             className="w-full h-full snap-start"
+             className="w-full h-full snap-start snap-always"
            >
              <VideoCard 
                 video={video} 
@@ -1739,7 +1744,14 @@ export default function WatchMe() {
                           <h3 className="text-xs font-black uppercase tracking-widest text-gray-500 mb-4">Videos</h3>
                           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                              {searchResults.videos.map(v => (
-                                <div key={v._id} onClick={() => { setShowSearch(false); navigate(`/watch-me?v=${v._id}`); }} className="relative aspect-[9/16] bg-black rounded-2xl overflow-hidden cursor-pointer group shadow-xl hover:ring-4 ring-pink-500 transition-all">
+                                <div key={v._id} onClick={() => { 
+                                  setShowSearch(false); 
+                                  setVideos(searchResults.videos);
+                                  setHasMore(false); // Stop infinite scroll for local search results
+                                  const idx = searchResults.videos.findIndex(vid => vid._id === v._id);
+                                  setActiveIndex(idx >= 0 ? idx : 0);
+                                  window.history.pushState({}, '', `/watch-me?v=${v._id}`);
+                                }} className="relative aspect-[9/16] bg-black rounded-2xl overflow-hidden cursor-pointer group shadow-xl hover:ring-4 ring-pink-500 transition-all">
                                    <img src={getProductImageUrl(v.thumbnailUrl || v.videoUrl)} className="w-full h-full object-cover opacity-70 group-hover:scale-110 transition-transform" />
                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-3">
                                       <span className="text-white font-black text-[10px] uppercase tracking-tighter line-clamp-1">{v.name}</span>
