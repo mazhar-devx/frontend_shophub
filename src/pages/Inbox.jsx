@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, Send, Search, Music2, Play, User, MessageCircle, MoreVertical, Sparkles, Smile, Image as ImageIcon } from "lucide-react";
-import { ChevronLeft, Send, Search, Music2, Play, User, MessageCircle, MoreVertical, Sparkles } from "lucide-react";
 import api from "../services/api";
 import { getProductImageUrl, DEFAULT_AVATAR_FALLBACK } from "../utils/constants";
 import SEO from "../components/SEO";
