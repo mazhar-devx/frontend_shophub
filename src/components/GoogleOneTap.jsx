@@ -23,6 +23,6 @@ const GoogleOneTap = React.memo(() => {
   });
 
   return null;
-};
+});
 
 export default GoogleOneTap;
