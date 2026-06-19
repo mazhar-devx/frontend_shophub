@@ -140,35 +140,39 @@ const CustomCursor = () => {
       {isAuthenticated && user && (
         <div
           ref={labelRef}
-          className={`absolute left-0 top-0 flex items-center gap-3 px-3 py-2 bg-white/95 dark:bg-black/90 backdrop-blur-xl rounded-2xl border border-pink-500/30 shadow-2xl transition-all duration-300 will-change-transform ${
-            isHovering 
-              ? 'translate-x-[50px] -translate-y-[10px] scale-100 opacity-100' 
-              : 'translate-x-[35px] -translate-y-[10px] scale-100 opacity-100'
-          }`}
+          className="absolute left-0 top-0 pointer-events-none will-change-transform z-[9999999]"
           style={{
             transform: 'translate3d(-100px, -100px, 0)',
           }}
         >
-          <div className="w-10 h-10 rounded-xl overflow-hidden border-2 border-pink-500 shadow-inner bg-gray-100 dark:bg-gray-800">
-            <img 
-              src={getProductImageUrl(user.photo) || DEFAULT_AVATAR_FALLBACK} 
-              className="w-full h-full object-cover" 
-              alt={user.name}
-              onError={(e) => { e.target.src = DEFAULT_AVATAR_FALLBACK; }}
-            />
-          </div>
-          <div className="flex flex-col pr-2">
-            <span className="text-[11px] font-black text-primary dark:text-white uppercase tracking-tight leading-none whitespace-nowrap">
-              {user.role === 'admin' ? (user.vendorName || user.name) : user.name}
-            </span>
-            <div className="flex items-center gap-1.5 mt-1.5">
-               <div className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-               </div>
-               <span className="text-[9px] text-pink-500 font-black uppercase tracking-widest leading-none">
-                  Active Member
-               </span>
+          <div
+            className={`flex items-center gap-3 px-3 py-2 bg-white/95 dark:bg-black/90 backdrop-blur-xl rounded-2xl border border-pink-500/30 shadow-2xl transition-all duration-300 ${
+              isHovering 
+                ? 'translate-x-[50px] -translate-y-[10px] scale-100 opacity-100' 
+                : 'translate-x-[35px] -translate-y-[10px] scale-100 opacity-100'
+            }`}
+          >
+            <div className="w-10 h-10 rounded-xl overflow-hidden border-2 border-pink-500 shadow-inner bg-gray-100 dark:bg-gray-800">
+              <img 
+                src={getProductImageUrl(user.photo) || DEFAULT_AVATAR_FALLBACK} 
+                className="w-full h-full object-cover" 
+                alt={user.name}
+                onError={(e) => { e.target.src = DEFAULT_AVATAR_FALLBACK; }}
+              />
+            </div>
+            <div className="flex flex-col pr-2">
+              <span className="text-[11px] font-black text-primary dark:text-white uppercase tracking-tight leading-none whitespace-nowrap">
+                {user.role === 'admin' ? (user.vendorName || user.name) : user.name}
+              </span>
+              <div className="flex items-center gap-1.5 mt-1.5">
+                 <div className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                 </div>
+                 <span className="text-[9px] text-pink-500 font-black uppercase tracking-widest leading-none">
+                    Active Member
+                 </span>
+              </div>
             </div>
           </div>
         </div>
@@ -177,15 +181,19 @@ const CustomCursor = () => {
       {/* 3. Subtle Trail Circle */}
       <div
         ref={trailRef}
-        className={`absolute left-0 top-0 w-14 h-14 border border-pink-500/5 rounded-full will-change-transform transition-transform duration-300 ${
-          isHovering ? 'scale-150' : 'scale-100'
-        }`}
+        className="absolute left-0 top-0 w-14 h-14 pointer-events-none will-change-transform z-[9999998]"
         style={{
           transform: 'translate3d(-100px, -100px, 0)',
           marginLeft: '-28px', 
           marginTop: '-28px',
         }}
-      />
+      >
+        <div
+          className={`w-full h-full border border-pink-500/10 dark:border-pink-400/15 rounded-full transition-transform duration-300 ${
+            isHovering ? 'scale-150' : 'scale-100'
+          }`}
+        />
+      </div>
     </div>
   );
 };
