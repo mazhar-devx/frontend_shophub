@@ -1065,8 +1065,8 @@ export default function Home() {
 
         {/* ═══════════ MARQUEE ═══════════ */}
         <Reveal className="mb-12 overflow-hidden relative py-12">
-          <div className="absolute top-1/2 left-0 -translate-y-1/2 w-48 h-48 bg-cyan-500/[0.025] rounded-full blur-[120px] pointer-events-none" />
-          <div className="absolute top-1/2 right-0 -translate-y-1/2 w-48 h-48 bg-purple-500/[0.025] rounded-full blur-[120px] pointer-events-none" />
+          <div className="absolute top-1/2 left-0 -translate-y-1/2 w-48 h-48 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-cyan-500/10 to-transparent dark:from-cyan-500/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute top-1/2 right-0 -translate-y-1/2 w-48 h-48 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-500/10 to-transparent dark:from-purple-500/20 rounded-full blur-3xl pointer-events-none" />
 
           <div className="mb-12 text-center px-4">
             <h2 className="text-[clamp(1.75rem,5vw,3rem)] md:text-4xl font-black text-primary dark:text-white mb-3 tracking-[-0.02em] uppercase">
@@ -1083,7 +1083,7 @@ export default function Home() {
             <div className="absolute inset-y-0 left-0 w-16 md:w-48 bg-gradient-to-r from-white dark:from-[#050505] to-transparent z-10 pointer-events-none" />
             <div className="absolute inset-y-0 right-0 w-16 md:w-48 bg-gradient-to-l from-white dark:from-[#050505] to-transparent z-10 pointer-events-none" />
 
-            <div className="flex w-max animate-scroll group-hover/mq:[animation-play-state:paused] will-change-transform py-4">
+            <div className="flex w-max animate-scroll-slow group-hover/mq:[animation-play-state:paused] will-change-transform py-4">
               {[...display, ...display, ...display].map((p, idx) => {
                 const price = p.discountPercentage > 0
                   ? p.price * (1 - p.discountPercentage / 100)
