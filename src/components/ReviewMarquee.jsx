@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import api from '../services/api';
 import { getProductImageUrl } from '../utils/constants';
 
@@ -68,6 +68,8 @@ export default function ReviewMarquee() {
 
   if (loading) return null;
 
+  const marqueeReviews = [...reviews.slice(0, 6), ...reviews.slice(0, 6)];
+
   // Render stars
   const renderStars = (rating) => {
     const fullStars = Math.floor(rating);
@@ -109,7 +111,7 @@ export default function ReviewMarquee() {
         {/* Marquee Track */}
         <div className="flex w-max animate-scroll-slow group-hover:[animation-play-state:paused] will-change-transform py-4">
           {/* Double the list for infinite seamless scrolling */}
-          {[...reviews, ...reviews, ...reviews].map((review, idx) => (
+          {marqueeReviews.map((review, idx) => (
             <div 
               key={`${review._id}-${idx}`} 
               className="w-80 md:w-96 mx-4 bg-white/50 dark:bg-white/5 border border-black/5 dark:border-white/10 rounded-3xl p-6 backdrop-blur-sm flex flex-col justify-between hover:border-cyan-500/30 dark:hover:border-cyan-400/30 hover:shadow-[0_10px_30px_rgba(6,182,212,0.1)] transition-all duration-300 transform hover:-translate-y-1"

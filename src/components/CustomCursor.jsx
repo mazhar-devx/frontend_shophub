@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { motion, useSpring, useMotionValue, AnimatePresence } from 'framer-motion';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getProductImageUrl, DEFAULT_AVATAR_FALLBACK } from '../utils/constants';
 
@@ -8,35 +7,36 @@ const CustomCursor = () => {
   const [isHovering, setIsHovering] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   
-  // RAW Mouse values for instant, zero-delay tracking
-  const mouseX = useMotionValue(-100);
-  const mouseY = useMotionValue(-100);
-
-  // Label spring - ultra-high responsiveness for the trailing effect
-  const labelSpringConfig = { damping: 45, stiffness: 600, mass: 0.1 };
-  const labelX = useSpring(mouseX, labelSpringConfig);
-  const labelY = useSpring(mouseY, labelSpringConfig);
+  const cursorRef = useRef(null);
+  const trailRef = useRef(null);
+  const labelRef = useRef(null);
+  
+  // Track mouse coordinates outside React state to avoid re-renders
+  const mouseCoords = useRef({ x: -100, y: -100 });
+  const cursorCoords = useRef({ x: -100, y: -100 });
+  const trailCoords = useRef({ x: -100, y: -100 });
+  const requestRef = useRef(null);
 
   useEffect(() => {
     const handleMouseMove = (e) => {
-      mouseX.set(e.clientX);
-      mouseY.set(e.clientY);
-      if (!isVisible) setIsVisible(true);
+      mouseCoords.current.x = e.clientX;
+      mouseCoords.current.y = e.clientY;
+      setIsVisible(true);
     };
 
     const handleMouseLeave = () => setIsVisible(false);
     const handleMouseEnter = () => setIsVisible(true);
 
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mouseenter', handleMouseEnter);
-    window.addEventListener('mouseleave', handleMouseLeave);
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    window.addEventListener('mouseenter', handleMouseEnter, { passive: true });
+    window.addEventListener('mouseleave', handleMouseLeave, { passive: true });
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseenter', handleMouseEnter);
       window.removeEventListener('mouseleave', handleMouseLeave);
     };
-  }, [mouseX, mouseY, isVisible]);
+  }, []);
 
   useEffect(() => {
     const handleOver = (e) => {
@@ -53,36 +53,72 @@ const CustomCursor = () => {
       setIsHovering(isClickable);
     };
 
-    window.addEventListener('mouseover', handleOver);
+    window.addEventListener('mouseover', handleOver, { passive: true });
     return () => window.removeEventListener('mouseover', handleOver);
   }, []);
 
-  // Hides the cursor entirely if mouse is not in window, regardless of auth
+  useEffect(() => {
+    // Animation loop using requestAnimationFrame for 60fps/120fps hardware-accelerated movement
+    const animate = () => {
+      const targetX = mouseCoords.current.x;
+      const targetY = mouseCoords.current.y;
+
+      // 1. Instant follow for main cursor
+      cursorCoords.current.x = targetX;
+      cursorCoords.current.y = targetY;
+
+      // 2. Smooth trailing follow for trail circle and user label (lerp)
+      const lerpFactor = 0.12; 
+      trailCoords.current.x += (targetX - trailCoords.current.x) * lerpFactor;
+      trailCoords.current.y += (targetY - trailCoords.current.y) * lerpFactor;
+
+      // Update DOM styles directly
+      if (cursorRef.current) {
+        cursorRef.current.style.transform = `translate3d(${cursorCoords.current.x}px, ${cursorCoords.current.y}px, 0)`;
+      }
+
+      if (trailRef.current) {
+        trailRef.current.style.transform = `translate3d(${trailCoords.current.x}px, ${trailCoords.current.y}px, 0)`;
+      }
+
+      if (labelRef.current) {
+        labelRef.current.style.transform = `translate3d(${trailCoords.current.x}px, ${trailCoords.current.y}px, 0)`;
+      }
+
+      requestRef.current = requestAnimationFrame(animate);
+    };
+
+    requestRef.current = requestAnimationFrame(animate);
+    return () => {
+      if (requestRef.current) {
+        cancelAnimationFrame(requestRef.current);
+      }
+    };
+  }, []);
+
   if (!isVisible) return null;
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[9999999] overflow-hidden hidden lg:block">
-      {/* 1. Sleek Designer Cursor Image - Always shown for everyone on desktop */}
-      <motion.div
+      {/* 1. Main SVG Cursor */}
+      <div
+        ref={cursorRef}
+        className="absolute left-0 top-0 z-[9999999] will-change-transform"
         style={{
-          x: mouseX, 
-          y: mouseY,
-          marginLeft: -2, 
-          marginTop: -2, 
+          transform: 'translate3d(-100px, -100px, 0)',
+          marginLeft: '-2px',
+          marginTop: '-2px',
         }}
-        className="absolute z-[9999999]"
       >
-        <motion.svg 
+        <svg 
           width="28" 
           height="28" 
           viewBox="0 0 28 28" 
           fill="none" 
           xmlns="http://www.w3.org/2000/svg"
-          animate={{ 
-            scale: isHovering ? 1.2 : 1,
-            rotate: isHovering ? -15 : 0
-          }}
-          className="drop-shadow-[0_2px_10px_rgba(236,72,153,0.4)]"
+          className={`drop-shadow-[0_2px_10px_rgba(236,72,153,0.4)] transition-all duration-300 ${
+            isHovering ? 'scale-120 -rotate-15' : 'scale-100 rotate-0'
+          }`}
         >
           <path 
             d="M2 2L11.5 24.5L14.5 14.5L24.5 11.5L2 2Z" 
@@ -97,68 +133,57 @@ const CustomCursor = () => {
               <stop offset="1" stopColor="#8B5CF6" />
             </linearGradient>
           </defs>
-        </motion.svg>
-      </motion.div>
+        </svg>
+      </div>
 
-      {/* 2. Professional Profile Label - Shown ONLY for Authenticated Users */}
-      <AnimatePresence>
-        {isAuthenticated && user && (
-          <motion.div
-            key="user-label"
-            style={{
-              x: labelX,
-              y: labelY,
-            }}
-            className="absolute flex items-center gap-3 px-3 py-2 bg-white/95 dark:bg-black/90 backdrop-blur-xl rounded-2xl border border-pink-500/30 shadow-2xl"
-            initial={{ opacity: 0, scale: 0.8, x: 20 }}
-            animate={{ 
-              translateX: isHovering ? 50 : 35, 
-              translateY: -10,                 
-              opacity: 1,
-              scale: 1
-            }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ 
-               type: "spring", damping: 30, stiffness: 300
-            }}
-          >
-            <div className="w-10 h-10 rounded-xl overflow-hidden border-2 border-pink-500 shadow-inner bg-gray-100 dark:bg-gray-800">
-              <img 
-                src={getProductImageUrl(user.photo) || DEFAULT_AVATAR_FALLBACK} 
-                className="w-full h-full object-cover" 
-                alt={user.name}
-                onError={(e) => { e.target.src = DEFAULT_AVATAR_FALLBACK; }}
-              />
+      {/* 2. User Label Profile Badge */}
+      {isAuthenticated && user && (
+        <div
+          ref={labelRef}
+          className={`absolute left-0 top-0 flex items-center gap-3 px-3 py-2 bg-white/95 dark:bg-black/90 backdrop-blur-xl rounded-2xl border border-pink-500/30 shadow-2xl transition-all duration-300 will-change-transform ${
+            isHovering 
+              ? 'translate-x-[50px] -translate-y-[10px] scale-100 opacity-100' 
+              : 'translate-x-[35px] -translate-y-[10px] scale-100 opacity-100'
+          }`}
+          style={{
+            transform: 'translate3d(-100px, -100px, 0)',
+          }}
+        >
+          <div className="w-10 h-10 rounded-xl overflow-hidden border-2 border-pink-500 shadow-inner bg-gray-100 dark:bg-gray-800">
+            <img 
+              src={getProductImageUrl(user.photo) || DEFAULT_AVATAR_FALLBACK} 
+              className="w-full h-full object-cover" 
+              alt={user.name}
+              onError={(e) => { e.target.src = DEFAULT_AVATAR_FALLBACK; }}
+            />
+          </div>
+          <div className="flex flex-col pr-2">
+            <span className="text-[11px] font-black text-primary dark:text-white uppercase tracking-tight leading-none whitespace-nowrap">
+              {user.role === 'admin' ? (user.vendorName || user.name) : user.name}
+            </span>
+            <div className="flex items-center gap-1.5 mt-1.5">
+               <div className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+               </div>
+               <span className="text-[9px] text-pink-500 font-black uppercase tracking-widest leading-none">
+                  Active Member
+               </span>
             </div>
-            <div className="flex flex-col pr-2">
-              <span className="text-[11px] font-black text-primary dark:text-white uppercase tracking-tight leading-none whitespace-nowrap">
-                {user.role === 'admin' ? (user.vendorName || user.name) : user.name}
-              </span>
-              <div className="flex items-center gap-1.5 mt-1.5">
-                 <div className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                 </div>
-                 <span className="text-[9px] text-pink-500 font-black uppercase tracking-widest leading-none">
-                    Active Member
-                 </span>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </div>
+        </div>
+      )}
 
       {/* 3. Subtle Trail Circle */}
-      <motion.div
+      <div
+        ref={trailRef}
+        className={`absolute left-0 top-0 w-14 h-14 border border-pink-500/5 rounded-full will-change-transform transition-transform duration-300 ${
+          isHovering ? 'scale-150' : 'scale-100'
+        }`}
         style={{
-          x: labelX,
-          y: labelY,
-          marginLeft: '-28px', // half of w-14 (56px)
+          transform: 'translate3d(-100px, -100px, 0)',
+          marginLeft: '-28px', 
           marginTop: '-28px',
-        }}
-        className="absolute w-14 h-14 border border-pink-500/5 rounded-full"
-        animate={{ 
-          scale: isHovering ? 1.5 : 1,
         }}
       />
     </div>

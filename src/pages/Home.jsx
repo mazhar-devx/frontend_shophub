@@ -43,8 +43,8 @@ function useReveal(opts) {
   return [ref, vis];
 }
 
-function useProgress() {
-  const [p, setP] = useState(0);
+function ScrollProgressBar() {
+  const barRef = useRef(null);
   useEffect(() => {
     let ticking = false;
     const fn = () => {
@@ -52,7 +52,10 @@ function useProgress() {
         ticking = true;
         requestAnimationFrame(() => {
           const max = document.documentElement.scrollHeight - window.innerHeight;
-          setP(max > 0 ? window.scrollY / max : 0);
+          const p = max > 0 ? window.scrollY / max : 0;
+          if (barRef.current) {
+            barRef.current.style.transform = `scaleX(${p})`;
+          }
           ticking = false;
         });
       }
@@ -60,17 +63,14 @@ function useProgress() {
     window.addEventListener("scroll", fn, { passive: true });
     return () => window.removeEventListener("scroll", fn);
   }, []);
-  return p;
-}
 
-function ScrollProgressBar() {
-  const progress = useProgress();
   return (
     <div
+      ref={barRef}
       className="fixed top-0 left-0 right-0 h-[2px] z-[100] origin-left pointer-events-none"
       style={{
         background: "linear-gradient(90deg,#06b6d4,#8b5cf6,#ec4899)",
-        transform: `scaleX(${progress})`,
+        transform: "scaleX(0)",
         willChange: "transform",
       }}
     />
@@ -110,7 +110,7 @@ function useCountUp(target, dur = 2000) {
    MICRO COMPONENTS — GPU-Only Transforms
    ═══════════════════════════════════════════════ */
 
-const DIRS = { up: "translateY(48px)", down: "translateY(-48px)", left: "translateX(-48px)", right: "translateX(48px)", scale: "scale(0.93)" };
+const DIRS = { up: "translateY(12px)", down: "translateY(-12px)", left: "translateX(-12px)", right: "translateX(12px)", scale: "scale(0.98)" };
 
 function Reveal({ children, className = "", delay = 0, dir = "up" }) {
   const [ref, v] = useReveal();
@@ -141,7 +141,7 @@ function Stagger({ children, className = "", gap = 80 }) {
           key={i}
           style={{
             opacity: v ? 1 : 0,
-            transform: v ? "none" : "translateY(24px)",
+            transform: v ? "none" : "translateY(8px)",
             transition: `opacity .6s ${EASE} ${i * gap}ms, transform .6s ${EASE} ${i * gap}ms`,
             willChange: v ? "auto" : "opacity, transform",
           }}
@@ -334,6 +334,10 @@ export default function Home() {
   /* ── Derived Data (memoized) ── */
   const real = useMemo(() => (products?.length > 0 ? products : []), [products]);
   const display = useDeferredValue(useMemo(() => (real.length > 0 ? real : []), [real]));
+  const marqueeProducts = useMemo(() => {
+    const list = display.slice(0, 8);
+    return [...list, ...list];
+  }, [display]);
   const featured = useMemo(() => [...display].sort((a, b) => (b.ratingsAverage || 0) - (a.ratingsAverage || 0)), [display]);
   const finalTrend = useMemo(() => (trending?.length > 0 ? trending : featured.slice(0, 8)), [trending, featured]);
   const mostViewed = useMemo(() => [...display].sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, 8), [display]);
@@ -623,9 +627,9 @@ export default function Home() {
                       <AnimatePresence mode="wait">
                         <motion.img
                           key={heroIndex}
-                          initial={{ opacity: 0, filter: "blur(10px)", scale: 0.95 }}
-                          animate={{ opacity: 1, filter: "blur(0px)", scale: 1 }}
-                          exit={{ opacity: 0, filter: "blur(10px)", scale: 1.05 }}
+                          initial={{ opacity: 0, scale: 0.98 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 1.02 }}
                           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                           src={heroImg}
                           alt="Premium product"
@@ -1084,7 +1088,7 @@ export default function Home() {
             <div className="absolute inset-y-0 right-0 w-16 md:w-48 bg-gradient-to-l from-white dark:from-[#050505] to-transparent z-10 pointer-events-none" />
 
             <div className="flex w-max animate-scroll-slow group-hover/mq:[animation-play-state:paused] will-change-transform py-4">
-              {[...display, ...display, ...display].map((p, idx) => {
+              {marqueeProducts.map((p, idx) => {
                 const price = p.discountPercentage > 0
                   ? p.price * (1 - p.discountPercentage / 100)
                   : p.price;

@@ -119,6 +119,12 @@ function AppContent() {
                           location.pathname === '/upload-video' ||
                           location.pathname.startsWith('/skills-career');
 
+  const isAuthPage = location.pathname === '/login' || 
+                     location.pathname === '/register' ||
+                     location.pathname === '/verify-otp' ||
+                     location.pathname === '/forgot-password' ||
+                     location.pathname === '/reset-password';
+
   useEffect(() => {
     if (theme === 'system') {
       const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -148,7 +154,7 @@ function AppContent() {
       <CanonicalSEO />
       <ScrollToTop />
       <ZoomBlocker />
-      <GoogleOneTap />
+      {!isAuthenticated && !isAuthPage && <GoogleOneTap />}
       <VendorNamePrompt />
       <CookieConsent />
       <CustomCursor />

@@ -36,7 +36,9 @@ export const signup = createAsyncThunk(
       }
 
       const response = await api.post("/users/signup", userData);
-      localStorage.setItem("token", response.data.token);
+      if (response.data && response.data.token) {
+        localStorage.setItem("token", response.data.token);
+      }
       return response.data;
     } catch (error) {
       const isNetworkError = error.code === "ERR_NETWORK" || error.message === "Network Error";
@@ -186,8 +188,8 @@ const authSlice = createSlice({
       })
       .addCase(signup.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload.data.user;
-        state.isAuthenticated = true;
+        state.user = null;
+        state.isAuthenticated = false;
         state.validationErrors = {};
       })
       .addCase(signup.rejected, (state, action) => {

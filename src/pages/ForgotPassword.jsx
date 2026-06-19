@@ -21,7 +21,11 @@ export default function ForgotPassword() {
       showToast("OTP sent to your email!", "success");
       navigate(`/reset-password?email=${encodeURIComponent(email)}`);
     } catch (err) {
-      showToast(err.response?.data?.message || err.message || "Something went wrong", "error");
+      const errMsg = err.response?.data?.message || err.message || "Something went wrong";
+      showToast(errMsg, errMsg.includes("OTP") ? "success" : "error");
+      if (errMsg.includes("OTP")) {
+        navigate(`/reset-password?email=${encodeURIComponent(email)}`);
+      }
     } finally {
       setLoading(false);
     }
