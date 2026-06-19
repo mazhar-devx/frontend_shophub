@@ -18,6 +18,7 @@ import CookieConsent from "./components/CookieConsent";
 import CustomCursor from "./components/CustomCursor";
 import CustomContextMenu from "./components/CustomContextMenu";
 import ScrollToTop from "./components/ScrollToTop";
+import ZoomBlocker from "./components/ZoomBlocker";
 import { useEffect, lazy, Suspense } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { loadUser } from "./features/auth/authSlice";
@@ -42,6 +43,7 @@ const Profile = lazy(() => import("./pages/Profile"));
 const SearchResults = lazy(() => import("./pages/SearchResults"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const VerifyOTP = lazy(() => import("./pages/VerifyOTP"));
 const Portfolio = lazy(() => import("./pages/Portfolio"));
 const WatchMe = lazy(() => import("./pages/WatchMe"));
 const VideoUpload = lazy(() => import("./pages/VideoUpload"));
@@ -145,6 +147,7 @@ function AppContent() {
     <>
       <CanonicalSEO />
       <ScrollToTop />
+      <ZoomBlocker />
       <GoogleOneTap />
       <VendorNamePrompt />
       <CookieConsent />
@@ -182,8 +185,9 @@ function AppContent() {
                   <Route path="product/:id" element={<ProductDetails />} />
                   <Route path="login" element={<Login />} />
                   <Route path="register" element={<Register />} />
+                  <Route path="verify-otp" element={<VerifyOTP />} />
                   <Route path="forgot-password" element={<ForgotPassword />} />
-                  <Route path="reset-password/:token" element={<ResetPassword />} />
+                  <Route path="reset-password" element={<ResetPassword />} />
                   <Route path="cart" element={<Cart />} />
                   <Route path="checkout" element={<Checkout />} />
                   <Route path="order-confirmation" element={<ProtectedRoute><OrderSuccess /></ProtectedRoute>} />

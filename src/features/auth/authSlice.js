@@ -65,7 +65,10 @@ export const login = createAsyncThunk(
       const message = isNetworkError
         ? "Server not running. Start the backend (double-click start-backend.bat or run: cd backend_shophub-main\\backend_shophub-main && npm run dev). Then try again."
         : (error.response?.data?.message || error.message || "Login failed");
-      return rejectWithValue({ message });
+      return rejectWithValue({ 
+        message, 
+        status: error.response?.data?.status 
+      });
     }
   }
 
@@ -80,6 +83,19 @@ export const googleLogin = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || { message: "Google Login failed" });
+    }
+  }
+);
+
+export const verifyOTP = createAsyncThunk(
+  "auth/verifyOTP",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/users/verify-otp", data);
+      localStorage.setItem("token", response.data.token);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || { message: "OTP Verification failed" });
     }
   }
 );
@@ -213,6 +229,20 @@ const authSlice = createSlice({
       .addCase(googleLogin.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || "Google Login failed";
+      })
+      // Verify OTP
+      .addCase(verifyOTP.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(verifyOTP.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload?.data?.user;
+        state.isAuthenticated = true;
+      })
+      .addCase(verifyOTP.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || "OTP Verification failed";
       })
       // Logout
       .addCase(logout.fulfilled, (state) => {

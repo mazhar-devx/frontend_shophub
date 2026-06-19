@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../services/api";
 import { useUIStore } from "../zustand/uiStore";
+import { useNavigate } from "react-router-dom";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -9,25 +10,18 @@ export default function ForgotPassword() {
   const [success, setSuccess] = useState(false);
   const { showToast } = useUIStore();
 
+  const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await api.post("/users/forgotPassword", { email });
+      await api.post("/users/forgotPassword", { email });
       
-      // Dev Mode: Auto-redirect if token is returned
-      if (res.data.resetToken) {
-          showToast("Dev Mode: Redirecting to reset page...", "info");
-          setTimeout(() => {
-              window.location.href = `/reset-password/${res.data.resetToken}`;
-          }, 1500);
-          return;
-      }
-
-      setSuccess(true);
-      showToast("Reset link sent to your email!", "success");
+      showToast("OTP sent to your email!", "success");
+      navigate(`/reset-password?email=${encodeURIComponent(email)}`);
     } catch (err) {
-      showToast(err.response?.data?.message || "Something went wrong", "error");
+      showToast(err.response?.data?.message || err.message || "Something went wrong", "error");
     } finally {
       setLoading(false);
     }
@@ -52,7 +46,7 @@ export default function ForgotPassword() {
                 Forgot Password?
               </h2>
               <p className="mt-2 text-center text-sm text-gray-400">
-                Enter your email address and we'll send you a link to reset your password.
+                Enter your email address and we'll send you a 6-digit OTP to reset your password.
               </p>
             </div>
 

@@ -37,7 +37,7 @@ export default function Login() {
     dispatch(login(formData))
       .unwrap()
       .then((payload) => {
-        const user = payload?.data?.user;
+        const user = payload?.data?.user || payload?.user;
         if (redirect) {
           navigate(redirect);
         } else {
@@ -45,11 +45,11 @@ export default function Login() {
         }
       })
       .catch((err) => {
-        const errorMessage = err?.message || "Login failed";
-        console.error("Login failed:", err);
-        // Error is already shown in the red box below via state.auth.error
-        if (errorMessage.includes("Cannot connect")) {
-          // Keep focus on the message in the UI; no extra popup
+        if (err.status === 'unverified') {
+          // User is not verified, redirect to OTP page
+          navigate(`/verify-otp?email=${encodeURIComponent(formData.email)}${redirect ? `&redirect=${redirect}` : ""}`);
+        } else {
+          console.error("Login failed:", err);
         }
       });
   };

@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import api from "../services/api";
 import { useUIStore } from "../zustand/uiStore";
 
 export default function ResetPassword() {
-  const { token } = useParams();
+  const [searchParams] = useSearchParams();
+  const email = searchParams.get("email");
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
+    otp: "",
     password: "",
     passwordConfirm: ""
   });
@@ -26,7 +28,9 @@ export default function ResetPassword() {
 
     setLoading(true);
     try {
-      await api.patch(`/users/resetPassword/${token}`, {
+      await api.patch(`/users/resetPassword`, {
+        email,
+        otp: formData.otp,
         password: formData.password,
         passwordConfirm: formData.passwordConfirm
       });
@@ -62,6 +66,22 @@ export default function ResetPassword() {
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
+            <div>
+              <label htmlFor="otp" className="block text-sm font-medium text-gray-300 mb-1">
+                6-Digit OTP
+              </label>
+              <input
+                id="otp"
+                name="otp"
+                type="text"
+                required
+                maxLength="6"
+                value={formData.otp}
+                onChange={handleChange}
+                className="appearance-none block w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl placeholder-gray-500 text-white text-center tracking-widest font-bold focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                placeholder="000000"
+              />
+            </div>
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-1">
                 New Password

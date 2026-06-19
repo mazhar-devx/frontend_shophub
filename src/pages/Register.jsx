@@ -35,18 +35,19 @@ export default function Register() {
   
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (formData.password !== formData.passwordConfirm) {
+      alert("Passwords do not match!");
+      return;
+    }
+    
     dispatch(signup(formData))
       .unwrap()
       .then(() => {
-        if (redirect) {
-          navigate(redirect);
-        } else {
-          navigate("/");
-        }
+        // Redirect to OTP verification page
+        navigate(`/verify-otp?email=${encodeURIComponent(formData.email)}${redirect ? `&redirect=${redirect}` : ""}`);
       })
       .catch((err) => {
         console.error("Signup failed:", err);
-        if (err.errors) console.table(err.errors);
       });
   };
 

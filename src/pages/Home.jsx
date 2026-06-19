@@ -281,7 +281,7 @@ export default function Home() {
 
   /* ── Data Fetch (parallel) ── */
   useEffect(() => {
-    dispatch(fetchProducts());
+    dispatch(fetchProducts({ limit: 'all' }));
 
     const ctrl1 = new AbortController();
     const ctrl2 = new AbortController();
@@ -336,6 +336,8 @@ export default function Home() {
   const display = useDeferredValue(useMemo(() => (real.length > 0 ? real : []), [real]));
   const featured = useMemo(() => [...display].sort((a, b) => (b.ratingsAverage || 0) - (a.ratingsAverage || 0)), [display]);
   const finalTrend = useMemo(() => (trending?.length > 0 ? trending : featured.slice(0, 8)), [trending, featured]);
+  const mostViewed = useMemo(() => [...display].sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, 8), [display]);
+  const bestSellersTechFashion = useMemo(() => [...display].filter(p => p.category === 'electronics' || p.category === 'fashion').sort((a,b) => (b.sold || 0) - (a.sold || 0)), [display]);
 
   /* ── Dynamic Category Grids ── */
   const dynamicGrids = useMemo(() => {
@@ -761,11 +763,20 @@ export default function Home() {
           )}
         </Reveal>
 
+        {/* ═══════════ MOST VIEWED SLIDER ═══════════ */}
+        <Reveal className="mb-20 md:mb-32">
+           <ProductSlider 
+              title="Most Viewed Products"
+              products={mostViewed}
+              loading={loading}
+           />
+        </Reveal>
+
         {/* ═══════════ BEST SELLERS SLIDER ═══════════ */}
         <Reveal className="mb-20 md:mb-32">
            <ProductSlider 
               title="Best Sellers in Technology & Fashion"
-              products={featured}
+              products={bestSellersTechFashion.length > 0 ? bestSellersTechFashion : featured}
               loading={loading}
            />
         </Reveal>
