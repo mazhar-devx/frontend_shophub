@@ -499,9 +499,9 @@ export default function Home() {
         <section className="relative mb-20 md:mb-32 flex flex-col items-center overflow-hidden">
           {/* BG Glows — Desktop Only */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] -z-10 overflow-hidden hidden md:block pointer-events-none" aria-hidden="true">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-purple-600/[0.025] dark:bg-purple-600/[0.07] rounded-full blur-[120px]" />
-            <div className="absolute top-20 right-0 w-[500px] h-[400px] bg-cyan-500/[0.025] dark:bg-cyan-500/[0.07] rounded-full blur-[100px]" />
-            <div className="absolute bottom-0 left-0 w-[500px] h-[400px] bg-pink-500/[0.02] dark:bg-pink-500/[0.06] rounded-full blur-[100px]" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-600/10 to-transparent dark:from-purple-600/20 rounded-full blur-3xl" />
+            <div className="absolute top-20 right-0 w-[500px] h-[400px] bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-cyan-500/10 to-transparent dark:from-cyan-500/20 rounded-full blur-3xl" />
+            <div className="absolute bottom-0 left-0 w-[500px] h-[400px] bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-pink-500/10 to-transparent dark:from-pink-500/20 rounded-full blur-3xl" />
           </div>
           <Particles />
 
@@ -609,7 +609,7 @@ export default function Home() {
                 }}
               >
                 <div className="relative w-full h-[280px] sm:h-[400px] md:h-[600px] max-w-lg md:max-w-none flex items-center justify-center">
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] md:w-[480px] md:h-[480px] bg-gradient-to-tr from-cyan-200/40 to-purple-200/40 dark:from-cyan-900/25 dark:to-purple-900/25 rounded-full blur-[90px]" />
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] md:w-[480px] md:h-[480px] bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-cyan-200/20 to-transparent dark:from-cyan-900/20 rounded-full blur-3xl" />
                   
                   {settings?.video ? (
                     <video

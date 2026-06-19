@@ -65,10 +65,10 @@ const CustomCursor = () => {
       {/* 1. Sleek Designer Cursor Image - Always shown for everyone on desktop */}
       <motion.div
         style={{
-          left: mouseX, 
-          top: mouseY,
-          x: -2, 
-          y: -2, 
+          x: mouseX, 
+          y: mouseY,
+          marginLeft: -2, 
+          marginTop: -2, 
         }}
         className="absolute z-[9999999]"
       >
@@ -106,14 +106,14 @@ const CustomCursor = () => {
           <motion.div
             key="user-label"
             style={{
-              left: labelX,
-              top: labelY,
+              x: labelX,
+              y: labelY,
             }}
             className="absolute flex items-center gap-3 px-3 py-2 bg-white/95 dark:bg-black/90 backdrop-blur-xl rounded-2xl border border-pink-500/30 shadow-2xl"
             initial={{ opacity: 0, scale: 0.8, x: 20 }}
             animate={{ 
-              x: isHovering ? 50 : 35, 
-              y: -10,                 
+              translateX: isHovering ? 50 : 35, 
+              translateY: -10,                 
               opacity: 1,
               scale: 1
             }}
@@ -151,10 +151,10 @@ const CustomCursor = () => {
       {/* 3. Subtle Trail Circle */}
       <motion.div
         style={{
-          left: labelX,
-          top: labelY,
-          translateX: '-50%',
-          translateY: '-50%',
+          x: labelX,
+          y: labelY,
+          marginLeft: '-28px', // half of w-14 (56px)
+          marginTop: '-28px',
         }}
         className="absolute w-14 h-14 border border-pink-500/5 rounded-full"
         animate={{ 
