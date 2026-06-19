@@ -230,6 +230,70 @@ TypingIndicator.displayName = "TypingIndicator";
 // ─── Main Component ───
 export default function AIHelper() {
     const [isOpen, setIsOpen] = useState(false);
+    const [position, setPosition] = useState({ x: 0, y: 0 });
+    const [isDraggingState, setIsDraggingState] = useState(false);
+    const dragStart = useRef({ x: 0, y: 0 });
+    const buttonStartPos = useRef({ x: 0, y: 0 });
+    const isDragging = useRef(false);
+    const hasDragged = useRef(false);
+
+    const handleMouseDown = useCallback((e) => {
+        if (e.button !== undefined && e.button !== 0) return;
+        
+        let clientX, clientY;
+        if (e.type === 'touchstart') {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+        } else {
+            clientX = e.clientX;
+            clientY = e.clientY;
+        }
+
+        dragStart.current = { x: clientX, y: clientY };
+        buttonStartPos.current = { ...position };
+        isDragging.current = true;
+        setIsDraggingState(true);
+        hasDragged.current = false;
+
+        const onMouseMove = (moveEvent) => {
+            if (!isDragging.current) return;
+            
+            let moveX, moveY;
+            if (moveEvent.type === 'touchmove') {
+                moveX = moveEvent.touches[0].clientX;
+                moveY = moveEvent.touches[0].clientY;
+            } else {
+                moveX = moveEvent.clientX;
+                moveY = moveEvent.clientY;
+            }
+
+            const dx = moveX - dragStart.current.x;
+            const dy = moveY - dragStart.current.y;
+
+            if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+                hasDragged.current = true;
+            }
+
+            setPosition({
+                x: buttonStartPos.current.x + dx,
+                y: buttonStartPos.current.y + dy
+            });
+        };
+
+        const onMouseUp = () => {
+            isDragging.current = false;
+            setIsDraggingState(false);
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+            document.removeEventListener('touchmove', onMouseMove);
+            document.removeEventListener('touchend', onMouseUp);
+        };
+
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+        document.addEventListener('touchmove', onMouseMove, { passive: false });
+        document.addEventListener('touchend', onMouseUp);
+    }, [position]);
     const [messages, setMessages] = useState(() => {
         try {
             const saved = localStorage.getItem("ai_chat_history_v3");
@@ -771,7 +835,13 @@ export default function AIHelper() {
     );
 
     return (
-        <div className="fixed bottom-20 md:bottom-6 right-0 md:right-6 z-[90] flex flex-col items-end w-auto pointer-events-none group/ai ">
+        <div 
+            style={{
+                transform: `translate(${position.x}px, ${position.y}px)`,
+                touchAction: 'none'
+            }}
+            className="fixed bottom-20 md:bottom-6 right-0 md:right-6 z-[90] flex flex-col items-end w-auto pointer-events-none group/ai "
+        >
             <style>{`
                 @keyframes scan { from { top: 0; } to { top: 100%; } }
                 @keyframes grid-move { from { background-position: 0 0; } to { background-position: 0 40px; } }
@@ -1241,11 +1311,15 @@ export default function AIHelper() {
 
             {/* ─── Ultra Toggle Button ─── */}
             <button
+                onMouseDown={handleMouseDown}
+                onTouchStart={handleMouseDown}
                 onClick={() => {
-                    setIsOpen((prev) => !prev);
-                    setIsMinimized(false);
+                    if (!hasDragged.current) {
+                        setIsOpen((prev) => !prev);
+                        setIsMinimized(false);
+                    }
                 }}
-                className={`pointer-events-auto group relative flex items-center justify-center transition-all duration-700 transform hover:scale-110 active:scale-90 mr-4 md:mr-0 ${isOpen ? "rotate-0" : ""}`}
+                className={`pointer-events-auto group relative flex items-center justify-center transition-all duration-700 transform hover:scale-110 active:scale-90 mr-4 md:mr-0 ${isOpen ? "rotate-0" : ""} ${isDraggingState ? "cursor-grabbing" : "cursor-grab"}`}
                 aria-label={isOpen ? "Close AI Assistant" : "Open AI Assistant"}
             >
                 {/* Pulse Rings */}

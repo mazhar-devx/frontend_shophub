@@ -221,7 +221,7 @@ export default function Navbar() {
           </Link>
           
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-1 lg:space-x-2">
+          <div className="hidden lg:flex items-center space-x-1 xl:space-x-2">
               {[
                 { label: 'Home', path: '/' },
                 { label: 'Shop', path: '/products' },
@@ -327,13 +327,13 @@ export default function Navbar() {
               whileTap={{ scale: 0.9 }}
               onClick={() => setShowSearchModal(true)}
               aria-label="Open search"
-              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center hover:bg-black/5 dark:hover:bg-white/10 text-primary dark:text-white transition-all group"
+              className="hidden lg:flex w-9 h-9 sm:w-10 sm:h-10 rounded-full items-center justify-center hover:bg-black/5 dark:hover:bg-white/10 text-primary dark:text-white transition-all group"
             >
                <Search className="h-5 w-5 group-hover:text-cyan-500 transition-colors" />
             </motion.button>
             
             {/* Language Selector */}
-            <div className="relative hidden sm:inline-block" ref={langRef}>
+            <div className="relative hidden xl:inline-block" ref={langRef}>
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
@@ -432,7 +432,7 @@ export default function Navbar() {
             </div>
 
             {/* Theme Switcher */}
-            <div className="relative hidden min-[480px]:inline-block" ref={themeRef}>
+            <div className="relative hidden sm:inline-block" ref={themeRef}>
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
@@ -492,7 +492,7 @@ export default function Navbar() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleInstallClick}
-                className="hidden lg:flex items-center gap-2 px-4 py-2 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-500 rounded-full font-bold text-sm transition-all border border-cyan-500/20 mr-2 group"
+                className="hidden xl:flex items-center gap-2 px-4 py-2 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-500 rounded-full font-bold text-sm transition-all border border-cyan-500/20 mr-2 group"
               >
                 <Download className="w-4 h-4 group-hover:animate-bounce" />
                 <span>Install App</span>
@@ -568,7 +568,7 @@ export default function Navbar() {
               whileTap={{ scale: 0.9 }}
               onClick={toggleMenu}
               aria-label="Open mobile menu"
-              className="md:hidden w-9 h-9 rounded-full flex flex-col items-center justify-center gap-1.5 hover:bg-black/5 dark:hover:bg-white/10"
+              className="lg:hidden w-9 h-9 rounded-full flex flex-col items-center justify-center gap-1.5 hover:bg-black/5 dark:hover:bg-white/10"
             >
               <motion.span 
                 animate={{ rotate: isMenuOpen ? 45 : 0, y: isMenuOpen ? 7 : 0 }}

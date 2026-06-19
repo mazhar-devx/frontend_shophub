@@ -1,17 +1,68 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useUIStore } from "../zustand/uiStore";
 import { useSelector } from "react-redux";
 import { getProductImageUrl } from "../utils/constants";
-import { X, LayoutGrid, ShoppingCart, Package, Flame, Play, LogOut, ChevronRight, User, LogIn, UserPlus, BookOpen, Music2 } from "lucide-react";
+import { X, LayoutGrid, ShoppingCart, Package, Flame, Play, LogOut, ChevronRight, User, LogIn, UserPlus, BookOpen, Music2, Download } from "lucide-react";
 
 export default function MobileMenu() {
-  const { isMenuOpen, toggleMenu } = useUIStore();
+  const { isMenuOpen, toggleMenu, theme, setTheme } = useUIStore();
   const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const [currentLang, setCurrentLang] = useState(localStorage.getItem("preferred_lang") || "en");
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [isInstallable, setIsInstallable] = useState(false);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setIsInstallable(true);
+    };
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      setIsInstallable(false);
+    }
+
+    return () => window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setIsInstallable(false);
+      setDeferredPrompt(null);
+      toggleMenu();
+    }
+  };
+
+  useEffect(() => {
+    const getCookie = (name) => {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+    };
+    const currentGoogTrans = getCookie('googtrans');
+    if (currentGoogTrans) {
+      const lang = currentGoogTrans.split('/').pop();
+      setCurrentLang(lang);
+    }
+  }, []);
+
+  const changeLanguage = (langCode) => {
+    if (window.doGoogleLanguageTranslation) {
+      localStorage.setItem("preferred_lang", langCode);
+      window.doGoogleLanguageTranslation(langCode);
+      setCurrentLang(langCode);
+    }
+  };
   
   if (!isMenuOpen) return null;
   
   return (
-    <div className="fixed inset-0 z-[150] md:hidden">
+    <div className="fixed inset-0 z-[150] lg:hidden">
       {/* Backdrop */}
       <div 
         className="absolute inset-0 bg-black/50 dark:bg-black/80 backdrop-blur-md animate-fade-in"
@@ -64,6 +115,15 @@ export default function MobileMenu() {
                  <ChevronRight className="w-4 h-4 text-gray-400 dark:text-gray-600" />
               </Link>
             )}
+             
+             {isInstallable && (
+               <button
+                 onClick={handleInstallClick}
+                 className="flex items-center justify-center gap-3 w-full mt-4 px-4 py-3 text-sm font-black text-cyan-500 bg-cyan-500/10 border border-cyan-500/20 rounded-2xl hover:bg-cyan-500/20 active:scale-95 transition-all"
+               >
+                 <Download className="w-5 h-5" /> Install App
+               </button>
+             )}
           </div>
           
           {/* 2. SCROLLABLE CONTENT: Navigation */}
@@ -139,6 +199,42 @@ export default function MobileMenu() {
                 </div>
               </div>
             )}
+
+            {/* Preferences */}
+            <div className="space-y-4 pt-6 border-t border-black/5 dark:border-white/10 mt-6">
+               <p className="text-[10px] font-black text-gray-400 dark:text-gray-600 uppercase tracking-[0.2em] ml-2">Preferences</p>
+               <div className="flex gap-4">
+                  {/* Theme Switcher Toggle */}
+                  <div className="flex-1">
+                     <span className="text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase block mb-1">Theme</span>
+                     <select
+                       value={theme}
+                       onChange={(e) => setTheme(e.target.value)}
+                       className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-primary dark:text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none"
+                     >
+                       <option value="light">☀️ Light</option>
+                       <option value="dark">🌙 Dark</option>
+                       <option value="system">💻 System</option>
+                     </select>
+                  </div>
+                  {/* Language Selector Toggle */}
+                  <div className="flex-1">
+                     <span className="text-[9px] font-bold text-gray-400 dark:text-gray-500 uppercase block mb-1">Language</span>
+                     <select
+                       value={currentLang}
+                       onChange={(e) => changeLanguage(e.target.value)}
+                       className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-primary dark:text-white px-3 py-2.5 rounded-xl text-xs font-bold focus:outline-none"
+                     >
+                       <option value="en">English</option>
+                       <option value="ur">Urdu</option>
+                       <option value="ar">Arabic</option>
+                       <option value="es">Spanish</option>
+                       <option value="fr">French</option>
+                       <option value="zh-CN">Chinese</option>
+                     </select>
+                  </div>
+               </div>
+            </div>
           </div>
           
           {/* Footer */}

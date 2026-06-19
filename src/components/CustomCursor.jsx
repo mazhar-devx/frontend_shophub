@@ -82,7 +82,7 @@ const CustomCursor = () => {
       }
 
       if (labelRef.current) {
-        labelRef.current.style.transform = `translate3d(${trailCoords.current.x}px, ${trailCoords.current.y}px, 0)`;
+        labelRef.current.style.transform = `translate3d(${cursorCoords.current.x}px, ${cursorCoords.current.y}px, 0)`;
       }
 
       requestRef.current = requestAnimationFrame(animate);

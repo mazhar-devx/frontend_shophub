@@ -60,12 +60,12 @@
     background-image: none !important;
   }
 
-  /* Force all "white" text to adapt beautifully */
-  [data-theme='light'] .text-white,
-  [data-theme='light'] .text-gray-100,
-  [data-theme='light'] .text-gray-200,
-  [data-theme='light'] .text-gray-300,
-  [data-theme='light'] .text-gray-400 {
+  /* Force all "white" text to adapt beautifully, excluding buttons, active links, or elements on dark backgrounds */
+  [data-theme='light'] .text-white:not(button):not(a):not(.bg-primary):not([class*='bg-gradient-']):not([class*='bg-purple-']):not([class*='bg-cyan-']):not([class*='bg-green-']),
+  [data-theme='light'] .text-gray-100:not(button):not(a):not(.bg-primary):not([class*='bg-gradient-']),
+  [data-theme='light'] .text-gray-200:not(button):not(a):not(.bg-primary):not([class*='bg-gradient-']),
+  [data-theme='light'] .text-gray-300:not(button):not(a):not(.bg-primary):not([class*='bg-gradient-']),
+  [data-theme='light'] .text-gray-400:not(button):not(a):not(.bg-primary):not([class*='bg-gradient-']) {
     color: var(--text-primary);
   }
 
