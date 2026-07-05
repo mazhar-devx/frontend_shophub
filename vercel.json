@@ -1,6 +1,10 @@
 {
   "rewrites": [
     { "source": "/sitemap.xml", "destination": "https://backend-shophub.vercel.app/api/v1/sitemap.xml" },
+    { "source": "/product/:id", "destination": "https://backend-shophub.vercel.app/api/v1/seo?type=product&id=:id" },
+    { "source": "/watch-me", "destination": "https://backend-shophub.vercel.app/api/v1/seo?type=video" },
+    { "source": "/blog/:slug", "destination": "https://backend-shophub.vercel.app/api/v1/seo?type=blog&slug=:slug" },
+    { "source": "/creator/:id", "destination": "https://backend-shophub.vercel.app/api/v1/seo?type=creator&id=:id" },
     { "source": "/((?!assets/|favicon.ico|sw.js|manifest.json).*)", "destination": "/index.html" }
   ],
   "headers": [
