@@ -25,6 +25,15 @@ export default function ProductCard({ product }) {
       aria-label={`View details for ${product.name}`}
       className="group relative block h-full select-none"
       data-product-id={product.slug || product._id}
+      data-product-name={product.name}
+      data-product-price={product.discountPercentage > 0 
+        ? formatPrice(product.price * (1 - product.discountPercentage / 100), product.currency)
+        : formatPrice(product.price, product.currency)}
+      data-product-category={product.category}
+      data-product-stock={product.stock}
+      data-product-image={getProductImageUrl(Array.isArray(product.images) && product.images.length > 0 ? product.images[0] : product.image)}
+      data-product-rating={product.ratingsQuantity > 0 ? `⭐ ${product.ratingsAverage} (${product.ratingsQuantity})` : 'No reviews'}
+      data-product-desc={product.description ? product.description.substring(0, 120) : ''}
     >
         {/* Glow Effect Background - REMOVED for Ultra Light */}
       
