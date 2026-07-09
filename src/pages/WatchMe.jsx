@@ -95,12 +95,24 @@ const VideoCard = memo(({ video, isActive, isNext, isGlobalMuted, setIsGlobalMut
           console.log("Autoplay blocked:", e.message);
           setIsAutoplayBlocked(true);
         });
+
+      // Track watched video IDs in localStorage for guest/user personalization
+      try {
+        const watched = localStorage.getItem('watched_video_ids') || '';
+        const watchedList = watched.split(',').filter(id => id.trim() !== '');
+        if (!watchedList.includes(video._id)) {
+          watchedList.push(video._id);
+          localStorage.setItem('watched_video_ids', watchedList.join(','));
+        }
+      } catch (e) {
+        console.error("Failed to update watched history:", e);
+      }
     } else {
       videoRef.current?.pause();
       if (videoRef.current) videoRef.current.currentTime = 0;
       setIsAutoplayBlocked(false);
     }
-  }, [isActive, video.videoUrl]);
+  }, [isActive, video.videoUrl, video._id]);
 
   const [showShare, setShowShare] = useState(false);
   const [commentText, setCommentText] = useState("");
@@ -1268,15 +1280,16 @@ export default function WatchMe() {
       const userIdParam = searchParams.get('userId');
       const soundIdParam = searchParams.get('soundId');
       
+      const watched = localStorage.getItem('watched_video_ids') || '';
       let url = "/videos";
       if (userIdParam) {
         url = `/videos/user/${userIdParam}`;
       } else if (soundIdParam) {
         url = `/videos?soundId=${soundIdParam}`;
       } else if (feedType === "foryou") {
-        url += `?sort=likes&userId=${user?._id || ''}`;
+        url += `?sort=likes&userId=${user?._id || ''}&watched=${watched}`;
       } else if (feedType === "following") {
-        url += `?feed=following&userId=${user?._id}`;
+        url += `?feed=following&userId=${user?._id}&watched=${watched}`;
       }
       
       if (selectedTag) {
@@ -1318,15 +1331,16 @@ export default function WatchMe() {
         const userIdParam = searchParams.get('userId');
         const soundIdParam = searchParams.get('soundId');
 
+        const watched = localStorage.getItem('watched_video_ids') || '';
         let url = "/videos";
         if (userIdParam) {
           url = `/videos/user/${userIdParam}`;
         } else if (soundIdParam) {
           url = `/videos?soundId=${soundIdParam}`;
         } else if (feedType === "foryou") {
-          url += `?sort=likes&userId=${user?._id || ''}`;
+          url += `?sort=likes&userId=${user?._id || ''}&watched=${watched}`;
         } else if (feedType === "following") {
-          url += `?feed=following&userId=${user?._id}`;
+          url += `?feed=following&userId=${user?._id}&watched=${watched}`;
         }
         
         if (selectedTag) {
@@ -1492,13 +1506,13 @@ export default function WatchMe() {
 
         return (
           <SEO 
-            title={`Watch ${activeVid.name} - Video Shopping | ShopHub Pakistan`}
-            description={`Watch ${activeVid.name} on ShopHub.pro. ${activeVid.description?.substring(0, 100)}... Experience premium video shopping in Pakistan.`}
+            title={`Watch ${activeVid.name} | Dynamic Video Shopping on ShopHub`}
+            description={`Watch short video reviews, unboxing clips, and styling tips for ${activeVid.name} on ShopHub.pro. Created by ${activeVid.user?.vendorName || activeVid.user?.name || 'ShopHub'}. Watch and shop online instantly in Pakistan!`}
             image={getProductImageUrl(activeVid.thumbnailUrl || activeVid.videoUrl)}
             type="video.other"
             url={`${window.location.origin}/watch-me?v=${activeVid._id}`}
             video={getProductImageUrl(activeVid.videoUrl)}
-            keywords={`Watch Me, social shopping, ${activeVid.tags?.join(', ')}, ShopHub.pro`}
+            keywords={`Watch Me, video shopping, ${activeVid.name}, ${activeVid.tags?.join(', ')}, ShopHub.pro`}
             schema={schemas}
           />
         );

@@ -1,12 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getProductImageUrl, DEFAULT_AVATAR_FALLBACK } from '../utils/constants';
+import { Sparkles } from 'lucide-react';
+import api from '../services/api';
 
 const CustomCursor = () => {
   const { user, isAuthenticated } = useSelector((state) => state.auth);
   const [isHovering, setIsHovering] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [hoveredProduct, setHoveredProduct] = useState(null);
+  
+  // Selection Explainer States
+  const [explainingText, setExplainingText] = useState(null);
+  const [explanation, setExplanation] = useState('');
+  const [isExplainingLoading, setIsExplainingLoading] = useState(false);
   
   const cursorRef = useRef(null);
   const trailRef = useRef(null);
@@ -72,6 +79,63 @@ const CustomCursor = () => {
     window.addEventListener('mouseover', handleOver, { passive: true });
     return () => window.removeEventListener('mouseover', handleOver);
   }, []);
+
+  // Selection Explainer AI Handler
+  useEffect(() => {
+    const handleExplain = async (e) => {
+      const text = e.detail.text;
+      if (!text) return;
+      
+      setExplainingText(text);
+      setIsExplainingLoading(true);
+      setExplanation('');
+      
+      try {
+        const { data } = await api.post('/ai/deep-brain', {
+          message: `Explain this text selected by the user on ShopHub: "${text}". Keep it concise, helpful, and under 3 sentences.`
+        });
+        
+        if (data.status === 'success' && data.data?.reply) {
+          const reply = data.data.reply;
+          setIsExplainingLoading(false);
+          
+          // Stream the text character-by-character
+          let current = '';
+          const chars = reply.split('');
+          for (let i = 0; i < chars.length; i++) {
+            current += chars[i];
+            setExplanation(current);
+            await new Promise((r) => setTimeout(r, 12));
+          }
+        } else {
+          throw new Error('AI Error');
+        }
+      } catch (err) {
+        setIsExplainingLoading(false);
+        setExplanation('❌ Sorry, I encountered an error explaining that text. Make sure the backend is active.');
+      }
+    };
+
+    window.addEventListener('ask-shophub-explain', handleExplain);
+    return () => window.removeEventListener('ask-shophub-explain', handleExplain);
+  }, []);
+
+  // Click anywhere to dismiss the selection explanation
+  useEffect(() => {
+    const handleGlobalClick = () => {
+      setExplainingText(null);
+      setExplanation('');
+    };
+    
+    if (explainingText) {
+      // Add delay to prevent registering the click that triggered it
+      setTimeout(() => {
+        window.addEventListener('click', handleGlobalClick);
+      }, 100);
+    }
+    
+    return () => window.removeEventListener('click', handleGlobalClick);
+  }, [explainingText]);
 
   useEffect(() => {
     // Animation loop using requestAnimationFrame for 60fps/120fps hardware-accelerated movement
@@ -147,7 +211,7 @@ const CustomCursor = () => {
           fill="none" 
           xmlns="http://www.w3.org/2000/svg"
           className={`drop-shadow-[0_2px_10px_rgba(236,72,153,0.4)] transition-all duration-300 ${
-            isHovering ? 'scale-120 -rotate-15' : 'scale-100 rotate-0'
+            isHovering || explainingText ? 'scale-120 -rotate-15' : 'scale-100 rotate-0'
           }`}
         >
           <path 
@@ -166,7 +230,7 @@ const CustomCursor = () => {
         </svg>
       </div>
 
-      {/* 2. User/Product Details Box Floating Badge */}
+      {/* 2. User/Product/Explanation details box floating badge */}
       <div
         ref={labelRef}
         className="absolute left-0 top-0 pointer-events-none will-change-transform z-[9999999]"
@@ -176,12 +240,38 @@ const CustomCursor = () => {
       >
         <div
           className={`flex flex-col bg-white/95 dark:bg-[#080808]/95 backdrop-blur-2xl rounded-[1.5rem] border border-pink-500/20 shadow-2xl transition-all duration-500 ease-out overflow-hidden ${
-            hoveredProduct 
-              ? 'translate-x-[40px] -translate-y-[40px] w-72 p-4 scale-100 opacity-100' 
-              : 'translate-x-[35px] -translate-y-[10px] w-60 p-2.5 scale-100 opacity-100'
+            explainingText
+              ? 'translate-x-[40px] -translate-y-[40px] w-80 p-4 scale-100 opacity-100'
+              : hoveredProduct 
+                ? 'translate-x-[40px] -translate-y-[40px] w-72 p-4 scale-100 opacity-100' 
+                : 'translate-x-[35px] -translate-y-[10px] w-60 p-2.5 scale-100 opacity-100'
           }`}
         >
-          {!hoveredProduct ? (
+          {explainingText ? (
+            /* Selected Text AI Explainer State */
+            <div className="flex flex-col gap-3 transition-all duration-500 animate-fadeIn font-sans">
+              <div className="flex items-center justify-between border-b border-pink-500/20 pb-2">
+                <span className="text-[10px] font-black text-pink-500 uppercase tracking-widest flex items-center gap-1.5 font-sans">
+                  <Sparkles className="w-3.5 h-3.5 animate-pulse text-cyan-400" />
+                  AI Explainer
+                </span>
+                <span className="text-[8px] text-gray-400 uppercase font-sans">Click to dismiss</span>
+              </div>
+              <div className="text-[10px] text-gray-400 italic bg-gray-50/50 dark:bg-white/[0.02] p-2 rounded-xl border border-gray-100 dark:border-white/5 line-clamp-2 font-sans">
+                "{explainingText}"
+              </div>
+              {isExplainingLoading ? (
+                <div className="flex items-center gap-2 p-2 text-[10px] font-bold text-cyan-400 uppercase tracking-wider animate-pulse font-sans">
+                  <span className="w-2.5 h-2.5 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></span>
+                  Analyzing Selection...
+                </div>
+              ) : (
+                <p className="text-[11px] text-gray-800 dark:text-gray-200 leading-relaxed font-semibold font-sans">
+                  {explanation}
+                </p>
+              )}
+            </div>
+          ) : !hoveredProduct ? (
             /* User Info State (Default) */
             <div className="flex items-center gap-3 transition-opacity duration-300">
               <div className="w-10 h-10 rounded-xl overflow-hidden border-2 border-pink-500 shadow-inner bg-gray-100 dark:bg-gray-800 shrink-0">
@@ -196,7 +286,7 @@ const CustomCursor = () => {
                 <span className="text-[11px] font-black text-primary dark:text-white uppercase tracking-tight leading-none whitespace-nowrap truncate font-sans">
                   {displayName}
                 </span>
-                <div className="flex items-center gap-1.5 mt-1.5">
+                <div className="flex items-center gap-1.5 mt-1.5 font-sans">
                    <div className="relative flex h-2 w-2 shrink-0">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
@@ -275,7 +365,7 @@ const CustomCursor = () => {
       >
         <div
           className={`w-full h-full border border-pink-500/10 dark:border-pink-400/15 rounded-full transition-transform duration-300 ${
-            isHovering ? 'scale-150' : 'scale-100'
+            isHovering || explainingText ? 'scale-150' : 'scale-100'
           }`}
         />
       </div>

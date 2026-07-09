@@ -17,6 +17,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import CookieConsent from "./components/CookieConsent";
 import CustomCursor from "./components/CustomCursor";
 import CustomContextMenu from "./components/CustomContextMenu";
+import TextSelectionTooltip from "./components/TextSelectionTooltip";
+import AIWindow from "./components/AIWindow";
 import ScrollToTop from "./components/ScrollToTop";
 import ZoomBlocker from "./components/ZoomBlocker";
 import { useEffect, lazy, Suspense } from "react";
@@ -159,6 +161,8 @@ function AppContent() {
       <CookieConsent />
       <CustomCursor />
       <CustomContextMenu />
+      <TextSelectionTooltip />
+      <AIWindow />
       <GlobalAudioPlayer />
       <Routes>
         {/* Portfolio route - Full screen, no layout */}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { RefreshCw, ArrowLeft, ArrowRight, ExternalLink, Search, Info, ShieldCheck } from 'lucide-react';
+import { RefreshCw, ArrowLeft, ArrowRight, ExternalLink, Search, Info, ShieldCheck, Brain } from 'lucide-react';
 
 const CustomContextMenu = () => {
   const [visible, setVisible] = useState(false);
@@ -75,6 +75,13 @@ const CustomContextMenu = () => {
       action: () => navigate('/search') 
     },
     { type: 'separator' },
+    { 
+      label: 'Ask ShopHub AI', 
+      icon: <Brain className="w-4 h-4 text-cyan-400" />, 
+      action: () => {
+        window.dispatchEvent(new CustomEvent('open-shophub-ai-window'));
+      } 
+    },
     { 
       label: 'Secure Store', 
       icon: <ShieldCheck className="w-4 h-4 text-green-500" />, 

@@ -63,6 +63,8 @@ export default function AdminDashboard() {
   }, []);
 
   const [syncing, setSyncing] = useState(false);
+  const [syncingWatchMe, setSyncingWatchMe] = useState(false);
+
   const handleGoogleSync = async () => {
     try {
       setSyncing(true);
@@ -75,6 +77,20 @@ export default function AdminDashboard() {
       alert(err.response?.data?.message || "Sync failed. Check backend logs.");
     } finally {
       setSyncing(false);
+    }
+  };
+
+  const handleWatchMeSync = async () => {
+    try {
+      setSyncingWatchMe(true);
+      const { data } = await api.post("/videos/sync-products");
+      if (data.status === "success") {
+        alert(data.message);
+      }
+    } catch (err) {
+      alert(err.response?.data?.message || "Sync failed. Check backend logs.");
+    } finally {
+      setSyncingWatchMe(false);
     }
   };
 
@@ -136,6 +152,14 @@ export default function AdminDashboard() {
           >
             <span className={`mr-2 ${syncing ? 'animate-spin' : ''}`}>{syncing ? '⏳' : '🔄'}</span>
             {syncing ? 'Syncing...' : 'Sync to Google'}
+          </button>
+          <button
+            onClick={handleWatchMeSync}
+            disabled={syncingWatchMe}
+            className={`flex items-center px-6 py-3 border border-black/5 dark:border-white/10 rounded-xl transition-all transform hover:-translate-y-1 font-bold group ${syncingWatchMe ? 'opacity-50 cursor-not-allowed' : 'bg-pink-500/10 text-pink-600 dark:text-pink-400 border-pink-500/20 hover:bg-pink-500/20'}`}
+          >
+            <span className={`mr-2 ${syncingWatchMe ? 'animate-spin' : ''}`}>{syncingWatchMe ? '⏳' : '🎬'}</span>
+            {syncingWatchMe ? 'Syncing...' : 'Sync to Watch Me'}
           </button>
           <Link 
               to="/admin/products/new"
