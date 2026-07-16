@@ -1260,9 +1260,6 @@ export default function WatchMe() {
      }
   };
 
-  const userIdParam = new URLSearchParams(window.location.search).get('userId');
-  const soundIdParam = new URLSearchParams(window.location.search).get('soundId');
-
   useEffect(() => {
     setPage(1);
     setHasMore(true);
