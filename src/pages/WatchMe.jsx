@@ -6,12 +6,12 @@ import { Heart, MessageCircle, Share2, Bookmark, Plus, X, Music2, Bell, ChevronL
 import SEO from "../components/SEO";
 import NotificationsModal from "../components/NotificationsModal";
 import api from "../services/api";
-import { getProductImageUrl, DEFAULT_AVATAR } from "../utils/constants";
+import { getProductImageUrl, DEFAULT_AVATAR, DEFAULT_AVATAR_FALLBACK } from "../utils/constants";
 
 // URL Detector Regex
 const URL_REGEX = /(https?:\/\/[^\s]+)/g;
 
-const VideoCard = memo(({ video, isActive, isNext, isGlobalMuted, setIsGlobalMuted, onTagClick, isAutoScroll, setIsAutoScroll, showCaptions, setShowCaptions, scrollDown, onNotInterested }) => {
+const VideoCard = memo(({ video, isActive, isNext, isGlobalMuted, setIsGlobalMuted, onTagClick, isAutoScroll, setIsAutoScroll, showCaptions, setShowCaptions, scrollDown, onNotInterested, onSyncFeed }) => {
   const shouldLoad = isActive || isNext;
   const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
   
@@ -409,39 +409,33 @@ const VideoCard = memo(({ video, isActive, isNext, isGlobalMuted, setIsGlobalMut
          </div>
       )}
 
-      {/* Loading Skeleton / Spinner for slow internet */}
+      {/* Background Poster Image (visible while video is loading) */}
+      {!isVideoLoaded && video.thumbnailUrl && (
+        <div className="absolute inset-0 z-0 bg-black flex items-center justify-center">
+          <img 
+            src={getProductImageUrl(video.thumbnailUrl)} 
+            className="w-full h-full object-contain" 
+            alt="Poster"
+          />
+        </div>
+      )}
+
+      {/* Subtle spinner loader */}
       <AnimatePresence>
         {!isVideoLoaded && (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 z-40 bg-black flex flex-col items-center justify-center gap-6"
+            className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none bg-black/10"
           >
-             {/* Blurred Thumbnail as Background */}
-             {video.thumbnailUrl && (
-                <div className="absolute inset-0 overflow-hidden">
-                   <img 
-                     src={getProductImageUrl(video.thumbnailUrl)} 
-                     className="w-full h-full object-cover blur-2xl opacity-50 scale-110" 
-                     alt=""
-                   />
-                </div>
-             )}
-             
-             {/* Spinning Glow */}
-             <div className="relative w-24 h-24">
-                <div className="absolute inset-0 border-4 border-pink-500/20 rounded-full" />
+             <div className="w-12 h-12 relative">
+                <div className="absolute inset-0 border-2 border-white/20 rounded-full" />
                 <motion.div 
                   animate={{ rotate: 360 }}
                   transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                  className="absolute inset-0 border-4 border-t-pink-500 rounded-full shadow-[0_0_20px_rgba(236,72,153,0.5)]"
+                  className="absolute inset-0 border-2 border-t-pink-500 rounded-full shadow-[0_0_10px_rgba(236,72,153,0.3)]"
                 />
-             </div>
-             
-             <div className="text-center z-10">
-                <h3 className="text-white font-black uppercase tracking-widest text-sm mb-2 animate-pulse">Loading Video</h3>
-                <p className="text-gray-500 text-[10px] font-bold uppercase tracking-widest">Experience the moment...</p>
              </div>
           </motion.div>
         )}
@@ -629,7 +623,7 @@ const VideoCard = memo(({ video, isActive, isNext, isGlobalMuted, setIsGlobalMut
                     className="absolute bottom-full right-0 mb-2 w-56 bg-white dark:bg-[#1a1a1a] rounded-2xl shadow-2xl overflow-hidden border border-black/10 dark:border-white/10 pointer-events-auto"
                   >
                      <button 
-                       onClick={() => { syncNewVideos(); setShowVideoMenu(false); }}
+                       onClick={() => { onSyncFeed?.(); setShowVideoMenu(false); }}
                        className="w-full flex items-center gap-3 px-4 py-3 text-sm font-black text-gray-700 dark:text-gray-300 hover:bg-black/5 dark:hover:bg-white/5 transition-colors border-b border-black/5 dark:border-white/5"
                      >
                         <RotateCw className="w-4 h-4 text-cyan-500" /> Refresh Feed
@@ -1197,6 +1191,10 @@ const VideoCard = memo(({ video, isActive, isNext, isGlobalMuted, setIsGlobalMut
 export default function WatchMe() {
   const { tag: routeTag } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const deepLinkVideoId = searchParams.get('v');
+  const userIdParam = searchParams.get('userId');
+  const soundIdParam = searchParams.get('soundId');
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -1206,6 +1204,7 @@ export default function WatchMe() {
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState({ videos: [], users: [] });
+  const [isSearchingApi, setIsSearchingApi] = useState(false);
   const containerRef = useRef(null);
   const { isAuthenticated, user } = useSelector((state) => state.auth);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -1232,13 +1231,10 @@ export default function WatchMe() {
   }
 
   useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const videoId = searchParams.get('v');
-    if (videoId && videos.length > 0) {
-       const index = videos.findIndex(v => v._id === videoId);
+    if (deepLinkVideoId && videos.length > 0) {
+       const index = videos.findIndex(v => v._id === deepLinkVideoId);
        if (index !== -1) {
           setActiveIndex(index);
-          // Scroll to that video with a slight delay to ensure DOM is ready
           setTimeout(() => {
             const container = containerRef.current;
             if (container) {
@@ -1247,7 +1243,7 @@ export default function WatchMe() {
           }, 100);
        }
     }
-  }, [videos, window.location.search]);
+  }, [videos, deepLinkVideoId]);
 
   useEffect(() => {
      if (isAuthenticated) {
@@ -1271,7 +1267,7 @@ export default function WatchMe() {
     setPage(1);
     setHasMore(true);
     fetchVideos(1);
-  }, [feedType, selectedTag, userIdParam, soundIdParam]);
+  }, [feedType, selectedTag, userIdParam, soundIdParam, deepLinkVideoId]);
 
   const fetchVideos = async (pageNum = 1) => {
     if (pageNum === 1) setLoading(true);
@@ -1390,32 +1386,43 @@ export default function WatchMe() {
   };
 
   const handleSearchChange = (e) => {
-     const q = e.target.value;
-     setSearchQuery(q);
-     if (!q.trim()) {
-        setSearchResults({ videos: [], users: [] });
-        return;
-     }
-
-     const query = q.toLowerCase();
-     
-     // Filter videos
-     const vids = videos.filter(v => 
-        v.name.toLowerCase().includes(query) || 
-        v.description?.toLowerCase().includes(query) || 
-        v.tags?.some(t => t.toLowerCase().includes(query))
-     );
-
-     // Extract unique users that match query
-     const usersMap = new Map();
-     videos.forEach(v => {
-        if (v.user && (v.user.name?.toLowerCase().includes(query) || v.user.vendorName?.toLowerCase().includes(query))) {
-           usersMap.set(v.user._id, v.user);
-        }
-     });
-
-     setSearchResults({ videos: vids, users: Array.from(usersMap.values()) });
+     setSearchQuery(e.target.value);
   };
+
+  // Debounced database search query
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+       setSearchResults({ videos: [], users: [] });
+       return;
+    }
+
+    const delayDebounce = setTimeout(async () => {
+       setIsSearchingApi(true);
+       try {
+          const res = await api.get(`/videos?search=${encodeURIComponent(searchQuery)}&limit=30`);
+          const searchVids = res.data.data.videos;
+          
+          // Extract unique users
+          const usersMap = new Map();
+          searchVids.forEach(v => {
+             if (v.user) {
+                usersMap.set(v.user._id, v.user);
+             }
+          });
+          
+          setSearchResults({
+             videos: searchVids,
+             users: Array.from(usersMap.values())
+          });
+       } catch (err) {
+          console.error("Search API failed:", err);
+       } finally {
+          setIsSearchingApi(false);
+       }
+    }, 300);
+
+    return () => clearTimeout(delayDebounce);
+  }, [searchQuery]);
 
   const handleNotInterested = (videoId) => {
     setVideos(prev => prev.filter(v => v._id !== videoId));
@@ -1779,13 +1786,17 @@ export default function WatchMe() {
                           </div>
                        </div>
                    )}
-
-                   {searchQuery && searchResults.videos.length === 0 && searchResults.users.length === 0 && (
-                      <div className="text-center text-gray-500 mt-20">
-                         <Search className="w-12 h-12 mx-auto mb-4 opacity-20" />
-                         <p className="font-bold">No results found for "{searchQuery}"</p>
-                      </div>
-                   )}
+                   {isSearchingApi ? (
+                       <div className="text-center text-gray-500 mt-20 flex flex-col items-center gap-4">
+                          <div className="w-8 h-8 border-2 border-pink-500 border-t-transparent rounded-full animate-spin" />
+                          <span className="text-xs font-bold uppercase tracking-widest text-pink-500 animate-pulse font-black">Searching Database...</span>
+                       </div>
+                    ) : searchQuery && searchResults.videos.length === 0 && searchResults.users.length === 0 && (
+                       <div className="text-center text-gray-500 mt-20">
+                          <Search className="w-12 h-12 mx-auto mb-4 opacity-20" />
+                          <p className="font-bold">No results found for "{searchQuery}"</p>
+                       </div>
+                    )}
                 </div>
              </motion.div>
           )}

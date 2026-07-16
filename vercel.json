@@ -1,39 +1,36 @@
 {
   "rewrites": [
     { "source": "/sitemap.xml", "destination": "https://backend-shophub.vercel.app/api/v1/sitemap.xml" },
+    { "source": "/sitemap-index.xml", "destination": "https://backend-shophub.vercel.app/api/v1/sitemap.xml/index.xml" },
+    { "source": "/sitemap-static.xml", "destination": "https://backend-shophub.vercel.app/api/v1/sitemap.xml/static.xml" },
+    { "source": "/sitemap-blogs.xml", "destination": "https://backend-shophub.vercel.app/api/v1/sitemap.xml/blogs.xml" },
+    { "source": "/sitemap-products-:page.xml", "destination": "https://backend-shophub.vercel.app/api/v1/sitemap.xml/products-:page.xml" },
+    { "source": "/sitemap-videos-:page.xml", "destination": "https://backend-shophub.vercel.app/api/v1/sitemap.xml/videos-:page.xml" },
+    { "source": "/robots.txt", "destination": "https://backend-shophub.vercel.app/robots.txt" },
     { "source": "/product/:id", "destination": "https://backend-shophub.vercel.app/api/v1/seo?type=product&id=:id" },
     { "source": "/watch-me", "destination": "https://backend-shophub.vercel.app/api/v1/seo?type=video" },
     { "source": "/blog/:slug", "destination": "https://backend-shophub.vercel.app/api/v1/seo?type=blog&slug=:slug" },
     { "source": "/creator/:id", "destination": "https://backend-shophub.vercel.app/api/v1/seo?type=creator&id=:id" },
-    { "source": "/((?!assets/|favicon.ico|sw.js|manifest.json).*)", "destination": "/index.html" }
+    { "source": "/((?!assets/|_next/|favicon.ico|logo.png|sw.js|manifest.json|default-avatar.png).*)", "destination": "/index.html" }
   ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        {
-          "key": "Cross-Origin-Opener-Policy",
-          "value": "same-origin-allow-popups"
-        }
+        { "key": "Cross-Origin-Opener-Policy", "value": "same-origin-allow-popups" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "X-XSS-Protection", "value": "1; mode=block" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
       ]
     },
     {
       "source": "/index.html",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        }
-      ]
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }]
     },
     {
       "source": "/assets/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
-      ]
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
     }
   ]
 }
