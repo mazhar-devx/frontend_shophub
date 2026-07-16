@@ -12,7 +12,9 @@ export default function AdminDashboard() {
 
   const [recentOrders, setRecentOrders] = useState([]);
   const [recentProducts, setRecentProducts] = useState([]);
+  const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [logsLoading, setLogsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [lastUpdated, setLastUpdated] = useState(null);
 
@@ -58,8 +60,23 @@ export default function AdminDashboard() {
     }
   };
 
+  const fetchLogs = async () => {
+    try {
+      setLogsLoading(true);
+      const { data } = await api.get("/ai/logs");
+      if (data.status === "success") {
+        setLogs(data.data.logs);
+      }
+    } catch (err) {
+      console.error("Error fetching logs:", err);
+    } finally {
+      setLogsLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchData();
+    fetchLogs();
   }, []);
 
   const [syncing, setSyncing] = useState(false);
@@ -327,6 +344,54 @@ export default function AdminDashboard() {
               </tbody>
             </table>
           </div>
+        </div>
+      </div>
+
+      {/* System Logs */}
+      <div className="glass border border-white/5 rounded-2xl p-6">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-xl font-bold text-primary dark:text-white">Auto-Product Generator Logs</h2>
+            <p className="text-xs text-gray-500 mt-1">Real-time status logs of automatic AI product creation</p>
+          </div>
+          <button 
+            onClick={fetchLogs} 
+            disabled={logsLoading}
+            className="text-xs font-bold bg-purple-500/10 text-purple-400 px-3 py-1.5 rounded-lg border border-purple-500/20 hover:bg-purple-500/20 transition-all flex items-center gap-1.5"
+          >
+            {logsLoading ? '⏳ Refreshing...' : '🔄 Refresh Logs'}
+          </button>
+        </div>
+
+        <div className="max-h-72 overflow-y-auto space-y-3 pr-2 custom-scrollbar">
+          {logs.length === 0 ? (
+            <div className="text-center py-8 text-gray-600 dark:text-gray-500 font-medium">No logs found. Generating products will populate logs.</div>
+          ) : (
+            logs.map((log) => {
+              const typeStyles = {
+                success: "bg-green-500/10 text-green-400 border-green-500/20",
+                error: "bg-red-500/10 text-red-400 border-red-500/20",
+                info: "bg-blue-500/10 text-blue-400 border-blue-500/20"
+              };
+              
+              return (
+                <div key={log._id} className={`flex items-start justify-between p-4 border rounded-2xl bg-black/10 dark:bg-white/5 ${typeStyles[log.type] || typeStyles.info} transition-all`}>
+                  <div className="flex items-start gap-3">
+                    <span className="text-lg mt-0.5">
+                      {log.type === 'success' ? '✅' : log.type === 'error' ? '❌' : 'ℹ️'}
+                    </span>
+                    <div>
+                      <p className="text-sm font-bold text-gray-700 dark:text-gray-200">{log.message}</p>
+                      <p className="text-[10px] text-gray-600 dark:text-gray-500 font-semibold mt-1">{new Date(log.timestamp).toLocaleString()}</p>
+                    </div>
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-lg border border-current opacity-70">
+                    {log.type}
+                  </span>
+                </div>
+              );
+            })
+          )}
         </div>
       </div>
     </div>

@@ -9,16 +9,30 @@ import "./index.css";
 // It was used in AppWithAuth, so we keep it.
 import useAuth from "./hooks/useAuth"; 
 
-// Handle Chunk Load Errors (Auto-refresh on update)
+// Handle Chunk Load Errors (Auto-refresh on update) with throttling
 window.addEventListener('error', (e) => {
   const chunkErrors = [
     'Failed to fetch dynamically imported module',
     'Importing a module script failed',
     'Expected a JavaScript-or-Wasm module script'
   ];
-  if (chunkErrors.some(msg => e.message?.includes(msg) || e.target?.src?.includes('.js'))) {
-    console.log('Chunk load error detected. Reloading...');
-    window.location.reload();
+  
+  const isChunkError = chunkErrors.some(msg => e.message?.includes(msg));
+  const isScriptElementError = e.target && e.target.tagName === 'SCRIPT' && e.target.src && e.target.src.includes('.js');
+  const isOwnDomain = e.target?.src && e.target.src.includes(window.location.host);
+
+  if (isChunkError || (isScriptElementError && isOwnDomain)) {
+    // Prevent infinite reload loop using sessionStorage
+    const lastReload = sessionStorage.getItem('last_chunk_reload');
+    const now = Date.now();
+    
+    if (!lastReload || now - parseInt(lastReload, 10) > 10000) {
+      sessionStorage.setItem('last_chunk_reload', now.toString());
+      console.log('Chunk load error detected. Throttled reload triggered...');
+      window.location.reload();
+    } else {
+      console.warn('Chunk load error loop detected. Reload suppressed.');
+    }
   }
 }, true);
 
