@@ -1,4 +1,5 @@
-import { useDispatch, useRef, useState } from "react";
+import { useRef, useState } from "react";
+import { useDispatch } from "react-redux";
 import { formatPrice } from "../utils/currency";
 import { getProductImageUrl } from "../utils/constants";
 import { Link } from "react-router-dom";

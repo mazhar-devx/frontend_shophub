@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { loadUser } from "../features/auth/authSlice";
 import { motion } from "framer-motion";
 import { Play, Pause, ChevronLeft, Share2, Bookmark, Plus, Music2 } from "lucide-react";
 import api from "../services/api";
@@ -17,8 +18,7 @@ export default function SoundPage() {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
   const { isAuthenticated, user } = useSelector((state) => state.auth);
-  const dispatch = require("react-redux").useDispatch();
-  const { loadUser } = require("../features/auth/authSlice");
+  const dispatch = useDispatch();
 
   useEffect(() => {
     fetchSoundData();
