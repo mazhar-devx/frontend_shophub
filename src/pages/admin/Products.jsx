@@ -11,6 +11,7 @@ export default function AdminProducts() {
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage] = useState(10);
   const [error, setError] = useState(null);
+  const [generating, setGenerating] = useState(false);
 
   const fetchProducts = async () => {
     try {
@@ -24,6 +25,25 @@ export default function AdminProducts() {
       setLoading(false);
     }
   };
+
+  const handleAIGenerateProduct = async () => {
+    setGenerating(true);
+    try {
+      const res = await api.post('/ai/trigger-auto-generate?count=1');
+      if (res.data.status === 'success') {
+        alert(res.data.message || "Product generated successfully!");
+        fetchProducts(); // Reload product list
+      } else {
+        alert("Failed to generate product: " + res.data.message);
+      }
+    } catch (err) {
+      console.error("Error generating product:", err);
+      alert(err.response?.data?.message || err.message || "Failed to generate product");
+    } finally {
+      setGenerating(false);
+    }
+  };
+
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -95,7 +115,7 @@ export default function AdminProducts() {
             <h1 className="text-3xl font-bold">Product Management</h1>
             <p className="mt-2 opacity-90">Manage your entire product catalog with ease</p>
           </div>
-          <div className="flex space-x-4">
+          <div className="flex items-center space-x-4">
             <div className="relative">
               <input
                 type="text"
@@ -110,6 +130,25 @@ export default function AdminProducts() {
                 </svg>
               </div>
             </div>
+            <button
+              onClick={handleAIGenerateProduct}
+              disabled={generating}
+              className="bg-purple-800 text-white px-6 py-3 rounded-xl hover:bg-purple-900 transition-all duration-300 font-semibold flex items-center shadow-lg transform hover:scale-105 disabled:opacity-50 disabled:transform-none"
+            >
+              {generating ? (
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 mr-2 border-t-2 border-b-2 border-white"></div>
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  AI Generate Product
+                </>
+              )}
+            </button>
             <Link
               to="/admin/products/new"
               className="bg-white text-purple-600 px-6 py-3 rounded-xl hover:bg-gray-100 transition-all duration-300 font-semibold flex items-center shadow-lg transform hover:scale-105"

@@ -13,7 +13,15 @@ export default function VendorNamePrompt() {
 
   useEffect(() => {
     // Show prompt if user is admin and hasn't set a vendor name
-    if (user && user.role === "admin" && !user.vendorName) {
+    const isMazharDevx = user && (
+      user.name?.toLowerCase().trim() === 'mazhar.devx' ||
+      user.vendorName?.toLowerCase().trim() === 'mazhar.devx' ||
+      user.email?.toLowerCase().trim() === 'mazhar.devx' ||
+      user.email?.toLowerCase().trim() === 'admin@example.com' ||
+      user.email?.toLowerCase().trim().startsWith('mazhar.devx')
+    );
+
+    if (user && user.role === "admin" && !user.vendorName && !isMazharDevx) {
       setShow(true);
     } else {
       setShow(false);
