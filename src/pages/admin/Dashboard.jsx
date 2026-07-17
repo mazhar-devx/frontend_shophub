@@ -81,6 +81,8 @@ export default function AdminDashboard() {
 
   const [syncing, setSyncing] = useState(false);
   const [syncingWatchMe, setSyncingWatchMe] = useState(false);
+  const [autoGenEnabled, setAutoGenEnabled] = useState(false);
+  const [autoGenLoading, setAutoGenLoading] = useState(false);
 
   const handleGoogleSync = async () => {
     try {
@@ -94,6 +96,47 @@ export default function AdminDashboard() {
       alert(err.response?.data?.message || "Sync failed. Check backend logs.");
     } finally {
       setSyncing(false);
+    }
+  };
+
+  const fetchAutoGenStatus = async () => {
+    try {
+      const { data } = await api.get('/ai/auto-generator/status');
+      if (data.status === 'success') {
+        setAutoGenEnabled(!!data.data.enabled);
+      }
+    } catch (err) {
+      console.error('Failed to fetch auto-gen status', err);
+    }
+  };
+
+  const enableAutoGen = async () => {
+    try {
+      setAutoGenLoading(true);
+      const { data } = await api.post('/ai/auto-generator/enable');
+      if (data.status === 'success') {
+        setAutoGenEnabled(true);
+        fetchLogs();
+      }
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to enable auto generation');
+    } finally {
+      setAutoGenLoading(false);
+    }
+  };
+
+  const disableAutoGen = async () => {
+    try {
+      setAutoGenLoading(true);
+      const { data } = await api.post('/ai/auto-generator/disable');
+      if (data.status === 'success') {
+        setAutoGenEnabled(false);
+        fetchLogs();
+      }
+    } catch (err) {
+      alert(err.response?.data?.message || 'Failed to disable auto generation');
+    } finally {
+      setAutoGenLoading(false);
     }
   };
 
@@ -162,6 +205,22 @@ export default function AdminDashboard() {
             <span className={`mr-2 ${loading ? 'animate-spin' : 'group-hover:rotate-180 transition-transform duration-500'}`}>🔄</span>
             {loading ? 'Refreshing...' : 'Refresh'}
           </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={enableAutoGen}
+              disabled={autoGenLoading || autoGenEnabled}
+              className={`px-4 py-3 rounded-xl border ${autoGenEnabled ? 'opacity-50 cursor-not-allowed' : 'bg-green-500/10 text-green-400 border-green-500/20'} font-bold`}
+            >
+              {autoGenLoading ? '⏳' : 'Enable AI Auto-Gen'}
+            </button>
+            <button
+              onClick={disableAutoGen}
+              disabled={autoGenLoading || !autoGenEnabled}
+              className={`px-4 py-3 rounded-xl border ${!autoGenEnabled ? 'opacity-50 cursor-not-allowed' : 'bg-red-500/10 text-red-400 border-red-500/20'} font-bold`}
+            >
+              {autoGenLoading ? '⏳' : 'Disable AI Auto-Gen'}
+            </button>
+          </div>
           <button
             onClick={handleGoogleSync}
             disabled={syncing}
