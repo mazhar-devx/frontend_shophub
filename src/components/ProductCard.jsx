@@ -161,6 +161,7 @@ export default function ProductCard({ product }) {
                   src={getProductImageUrl(product.images[0])}
                   alt={product.name}
                   loading="lazy"
+                  decoding="async"
                   className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-110 ${
                     isHoveringVideo ? 'opacity-0' : 'opacity-100'
                   }`}
@@ -174,6 +175,7 @@ export default function ProductCard({ product }) {
                     src={getProductImageUrl(product.images[1])}
                     alt={`${product.name} - alt`}
                     loading="lazy"
+                    decoding="async"
                     className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-all duration-700 ease-out group-hover:scale-110 z-10"
                     onError={(e) => { e.target.style.opacity = '0'; }}
                   />

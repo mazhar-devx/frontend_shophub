@@ -21,10 +21,12 @@ export default function SEO({
   const siteUrl = "https://www.shophub.pro";
   const defaultImage = `${siteUrl}/logo.png`;
 
+  const defaultKeywords = "shoes, buy shoes online, shoes online pakistan, mens shoes, womens shoes, sneakers pakistan, luxury shoes, branded shoes, online shopping pakistan, buy online pakistan, luxury fashion pakistan, electronics online store, smartphones pakistan, smart watches, clothing store pakistan, shophub, ShopHub.pro, shophub pakistan, social commerce app, best online store pakistan, fast delivery online shopping";
   const metaTitle = title ? `${title} | ShopHub` : siteTitle;
   const metaDescription = (description || defaultDescription).substring(0, 160);
   const metaImage = image ? (image.startsWith('http') ? image : `${siteUrl}${image}`) : defaultImage;
   const metaUrl = url ? (url.startsWith('http') ? url : `${siteUrl}${url}`) : siteUrl;
+  const metaKeywords = keywords ? `${keywords}, ${defaultKeywords}` : defaultKeywords;
 
   // Standard Structured Data for all pages
   const baseSchema = {
@@ -66,7 +68,7 @@ export default function SEO({
       {/* Standard Metadata */}
       <title>{metaTitle}</title>
       <meta name="description" content={metaDescription} />
-      {keywords && <meta name="keywords" content={keywords} />}
+      <meta name="keywords" content={metaKeywords} />
       <link rel="canonical" href={metaUrl} />
       
       {/* Advanced Indexing */}

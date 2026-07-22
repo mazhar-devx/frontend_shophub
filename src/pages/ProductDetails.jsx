@@ -4,7 +4,7 @@ import { getProductImageUrl } from "../utils/constants";
 import api from "../services/api";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProductById } from "../features/products/productSlice";
+import { fetchProductById, clearSelectedProduct } from "../features/products/productSlice";
 import { fetchProductReviews } from "../features/reviews/reviewSlice";
 import { addToCart } from "../features/cart/cartSlice";
 import { addToWishlist, removeFromWishlist } from "../features/wishlist/wishlistSlice";
@@ -70,9 +70,8 @@ export default function ProductDetails() {
   }, [id]);
 
   useEffect(() => {
-    // We now support slugs. If id is non-empty, we try to fetch.
-    // If backend 404s, it handled the error.
     if (!id) return;
+    dispatch(clearSelectedProduct());
     dispatch(fetchProductById(id));
     dispatch(fetchProductReviews(id));
 

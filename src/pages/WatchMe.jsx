@@ -1192,7 +1192,7 @@ export default function WatchMe() {
   const { tag: routeTag } = useParams();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const deepLinkVideoId = searchParams.get('v');
+  const deepLinkVideoId = searchParams.get('v') || searchParams.get('video') || searchParams.get('id');
   const userIdParam = searchParams.get('userId');
   const soundIdParam = searchParams.get('soundId');
   const [videos, setVideos] = useState([]);
@@ -1292,9 +1292,30 @@ export default function WatchMe() {
       url += `${url.includes('?') ? '&' : '?'}page=${pageNum}&limit=15`;
       
       const res = await api.get(url);
-      const newVids = res.data.data.videos;
+      let newVids = res.data?.data?.videos || res.data?.videos || [];
       
       if (pageNum === 1) {
+         if (deepLinkVideoId) {
+            const exists = newVids.some(v => v._id === deepLinkVideoId);
+            if (!exists) {
+               try {
+                  const directRes = await api.get(`/videos/${deepLinkVideoId}`);
+                  const targetVid = directRes.data?.data?.video || directRes.data?.video;
+                  if (targetVid) {
+                     newVids = [targetVid, ...newVids.filter(v => v._id !== targetVid._id)];
+                  }
+               } catch (e) {
+                  console.log("Could not fetch deep-linked video:", e.message);
+               }
+            } else {
+               const targetIdx = newVids.findIndex(v => v._id === deepLinkVideoId);
+               if (targetIdx > 0) {
+                  const targetVid = newVids[targetIdx];
+                  newVids = [targetVid, ...newVids.filter((_, idx) => idx !== targetIdx)];
+               }
+            }
+            setActiveIndex(0);
+         }
          setVideos(newVids);
       } else {
          setVideos(prev => [...prev, ...newVids]);

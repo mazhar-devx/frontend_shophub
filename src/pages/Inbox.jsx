@@ -67,35 +67,38 @@ export default function Inbox() {
   const fetchFriends = async () => {
     try {
       const res = await api.get("/messages/friends");
-      setFriends(res.data.data.friends);
+      setFriends(res.data?.data?.friends || res.data?.friends || []);
     } catch (err) {
       console.error("Failed to fetch friends:", err);
+      setFriends([]);
     }
   };
 
   const fetchConversations = async () => {
     try {
       const res = await api.get("/messages/conversations");
-      setConversations(res.data.data.conversations);
+      setConversations(res.data?.data?.conversations || res.data?.conversations || []);
       setLoading(false);
     } catch (err) {
       console.error(err);
+      setConversations([]);
       setLoading(false);
     }
   };
 
   const fetchMessages = async (otherUserId, silent = false) => {
+    if (!otherUserId) return;
     try {
       const res = await api.get(`/messages/${otherUserId}`);
-      const newMessages = res.data.data.messages;
+      const newMessages = res.data?.data?.messages || res.data?.messages || [];
       
       if (silent && newMessages.length > messagesRef.current.length) {
          const addedMessages = newMessages.slice(messagesRef.current.length);
          addedMessages.forEach(msg => {
-            if (msg.sender !== user._id && msg.sender?._id !== user._id) {
+            if (msg.sender !== user?._id && msg.sender?._id !== user?._id) {
                 const senderName = selectedConvo?.otherUser?.vendorName || selectedConvo?.otherUser?.name || 'Someone';
                 const msgType = msg.video ? 'video' : 'text';
-                const textToSpeak = `Hey ${user.name}, user ${senderName} sent you a ${msgType} message, please check it out.`;
+                const textToSpeak = `Hey ${user?.name || 'User'}, user ${senderName} sent you a ${msgType} message, please check it out.`;
                 
                 if ('speechSynthesis' in window) {
                    const utterance = new SpeechSynthesisUtterance(textToSpeak);
@@ -115,20 +118,22 @@ export default function Inbox() {
   };
 
   const handleSendMessage = async () => {
-    if (!newMessage.trim() || !selectedConvo) return;
+    if (!newMessage.trim() || !selectedConvo?.otherUser?._id) return;
     try {
       const res = await api.post("/messages/send", {
         recipient: selectedConvo.otherUser._id,
         text: newMessage
       });
-      setMessages([...messages, res.data.data.message]);
-      setNewMessage("");
-      // Update last message in conversations list
-      setConversations(conversations.map(c => 
-        c.otherUser._id === selectedConvo.otherUser._id 
-        ? { ...c, lastMessage: res.data.data.message } 
-        : c
-      ));
+      const sentMsg = res.data?.data?.message || res.data?.message;
+      if (sentMsg) {
+        setMessages(prev => [...prev, sentMsg]);
+        setNewMessage("");
+        setConversations(prev => prev.map(c => 
+          c?.otherUser?._id === selectedConvo.otherUser._id 
+          ? { ...c, lastMessage: sentMsg } 
+          : c
+        ));
+      }
     } catch (err) {
       console.error(err);
     }
@@ -199,11 +204,11 @@ export default function Inbox() {
                   <p className="text-xs mt-2 uppercase tracking-widest">Share a video with a friend!</p>
                </div>
             ) : (
-               conversations.map((convo) => (
+               conversations.filter(c => c && c.otherUser).map((convo) => (
                   <button 
                     key={convo.otherUser._id}
                     onClick={() => setSelectedConvo(convo)}
-                    className={`w-full p-4 flex gap-4 items-center hover:bg-white/5 transition-colors border-b border-white/5 ${selectedConvo?.otherUser._id === convo.otherUser._id ? 'bg-white/10' : ''}`}
+                    className={`w-full p-4 flex gap-4 items-center hover:bg-white/5 transition-colors border-b border-white/5 ${selectedConvo?.otherUser?._id === convo.otherUser._id ? 'bg-white/10' : ''}`}
                   >
                      <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-white/10 flex-shrink-0 bg-gray-800">
                         <img src={convo.otherUser.photo ? getProductImageUrl(convo.otherUser.photo) : DEFAULT_AVATAR_FALLBACK} className="w-full h-full object-cover" />
@@ -211,11 +216,11 @@ export default function Inbox() {
                      <div className="flex-1 text-left">
                         <div className="flex justify-between items-center mb-1">
                            <span className="font-black uppercase tracking-tight text-sm">{convo.otherUser.vendorName || convo.otherUser.name}</span>
-                           <span className="text-[10px] text-gray-500 font-bold">{new Date(convo.lastMessage.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                           <span className="text-[10px] text-gray-500 font-bold">{convo.lastMessage?.createdAt ? new Date(convo.lastMessage.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}</span>
                         </div>
-                        <p className={`text-xs truncate ${convo.lastMessage.read || convo.lastMessage.sender === user._id ? 'text-gray-500' : 'text-pink-500 font-black'}`}>
-                           {convo.lastMessage.sender === user._id ? 'You: ' : ''}
-                           {convo.lastMessage.video ? 'Shared a video' : convo.lastMessage.text}
+                        <p className={`text-xs truncate ${convo.lastMessage?.read || convo.lastMessage?.sender === user?._id ? 'text-gray-500' : 'text-pink-500 font-black'}`}>
+                           {convo.lastMessage?.sender === user?._id ? 'You: ' : ''}
+                           {convo.lastMessage?.video ? 'Shared a video' : convo.lastMessage?.text}
                         </p>
                      </div>
                   </button>

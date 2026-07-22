@@ -120,10 +120,10 @@ function Reveal({ children, className = "", delay = 0, dir = "up" }) {
       className={className}
       style={{
         contain: "layout style paint",
+        contentVisibility: v ? "visible" : "auto",
         opacity: v ? 1 : 0,
         transform: v ? "none" : DIRS[dir],
-        transition: `opacity .85s ${EASE} ${delay}ms, transform .85s ${EASE} ${delay}ms`,
-        willChange: v ? "auto" : "opacity, transform",
+        transition: `opacity .6s ${EASE} ${delay}ms, transform .6s ${EASE} ${delay}ms`,
       }}
     >
       {children}
@@ -281,7 +281,7 @@ export default function Home() {
 
   /* ── Data Fetch (parallel) ── */
   useEffect(() => {
-    dispatch(fetchProducts({ limit: 'all' }));
+    dispatch(fetchProducts({ limit: 24 }));
 
     const ctrl1 = new AbortController();
     const ctrl2 = new AbortController();
