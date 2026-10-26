@@ -19,8 +19,8 @@ export default function InfoLayout({ title, subtitle, children }) {
         </div>
 
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-          <span className="inline-block px-4 py-1.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-[10px] font-black uppercase tracking-[0.2em] mb-6 animate-fade-in">
-            HA Store Official
+          <span className="inline-block px-4 py-1.5 rounded-full bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 text-[10px] font-black uppercase tracking-[0.2em] mb-6 animate-fade-in">
+            ShopHub Official
           </span>
           <h1 className="text-4xl md:text-6xl font-black text-primary dark:text-white mb-6 tracking-tight animate-fade-in-up">
             {title}

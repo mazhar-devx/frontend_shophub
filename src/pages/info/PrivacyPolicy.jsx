@@ -1,4 +1,5 @@
 import InfoLayout from './InfoLayout';
+import SEO from '../../components/SEO';
 
 export default function PrivacyPolicy() {
   const sections = [
@@ -14,6 +15,11 @@ export default function PrivacyPolicy() {
       title="Privacy Policy" 
       subtitle="Your privacy is the core of our trust. Here is how we protect and manage your data at ShopHub.pro."
     >
+      <SEO 
+        title="Privacy Policy | ShopHub Pakistan" 
+        description="ShopHub.pro Privacy Policy. Learn how we collect, protect, and handle your personal data, order information, and cookie preferences." 
+        canonical="https://www.shophub.pro/privacy-policy" 
+      />
       <div className="space-y-10">
         <p className="text-secondary dark:text-gray-400 text-sm mb-8">Last Updated: May 12, 2026</p>
         

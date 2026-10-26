@@ -94,6 +94,8 @@ export default function Footer() {
                       links: [
                         { name: "Help Center", path: "/help-center" },
                         { name: "Order Status", path: "/my-orders" },
+                        { name: "Payment Methods", path: "/payment-methods" },
+                        { name: "Warranty & Guarantee", path: "/warranty" },
                         { name: "Shipping & Returns", path: "/shipping-returns" },
                         { name: "Return Policy", path: "/return-policy" },
                         { name: "Size Guide", path: "/size-guide" },
@@ -133,7 +135,7 @@ export default function Footer() {
 
             {/* Ultra-Professional Portfolio Link Section */}
             <div className="mt-16 flex justify-center md:justify-start">
-               <a href="/mazhar.devx/index.html" className="group flex items-center gap-4 bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 border border-black/10 dark:border-white/10 rounded-full px-6 py-3 transition-all duration-300 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)] hover:border-cyan-500/30">
+               <a href="/mazhar.devx" className="group flex items-center gap-4 bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 border border-black/10 dark:border-white/10 rounded-full px-6 py-3 transition-all duration-300 hover:shadow-[0_0_20px_rgba(6,182,212,0.15)] hover:border-cyan-500/30">
                   <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                      <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />

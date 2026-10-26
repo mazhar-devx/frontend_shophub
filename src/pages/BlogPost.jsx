@@ -1,9 +1,11 @@
 import { useParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { ArrowLeft, Calendar, Clock, User, Share2, Loader2 } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, User, Share2, Loader2, CheckCircle2, ShieldCheck } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import api from "../services/api";
+import NotFound from "./NotFound";
+import { BUYING_GUIDES } from "../data/buyingGuides";
 
 const FacebookIcon = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>;
 const TwitterIcon = ({ className }) => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>;
@@ -15,12 +17,22 @@ export default function BlogPost() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // 1. Check local curated buying guides first
+    const curatedGuide = BUYING_GUIDES.find(g => g.slug === slug);
+    if (curatedGuide) {
+      setPost(curatedGuide);
+      setLoading(false);
+      return;
+    }
+
+    // 2. Fetch from backend API
     const fetchBlog = async () => {
       try {
         const res = await api.get(`/blogs/${slug}`);
         setPost(res.data.data.blog);
       } catch (err) {
         console.error("Failed to fetch blog:", err);
+        setPost(null);
       } finally {
         setLoading(false);
       }
@@ -38,29 +50,34 @@ export default function BlogPost() {
 
   if (!post) {
     return (
-      <div className="min-h-screen bg-white dark:bg-[#050505] pt-24 pb-20 flex flex-col justify-center items-center">
-        <h2 className="text-3xl font-black text-primary dark:text-white mb-4">Blog Post Not Found</h2>
-        <Link to="/blog" className="text-cyan-500 hover:underline">Return to Journal</Link>
-      </div>
+      <NotFound 
+        title="Article Not Found"
+        message="The journal article or review you are looking for does not exist or has been removed."
+      />
     );
   }
 
+  const postSlug = post.slug || slug;
+  const canonicalUrl = `https://www.shophub.pro/blog/${postSlug}`;
+  const isThinSpotlight = post.category === 'Product Spotlight';
+  const metaDescription = post.seoDescription || post.excerpt || (typeof post.content === 'string' ? post.content.replace(/<[^>]*>/g, '').substring(0, 160) : 'ShopHub Journal article');
+
   const schemaOrgJSONLD = {
-    "@context": "http://schema.org",
+    "@context": "https://schema.org",
     "@type": "BlogPosting",
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": `https://www.shophub.pro/blog/${slug}`
+      "@id": canonicalUrl
     },
     "headline": post.title,
     "image": [
       post.image
     ],
-    "datePublished": post.createdAt,
-    "dateModified": post.updatedAt,
+    "datePublished": post.createdAt || new Date().toISOString(),
+    "dateModified": post.updatedAt || post.createdAt || new Date().toISOString(),
     "author": {
       "@type": "Person",
-      "name": post.author
+      "name": post.author || "ShopHub Editorial Team"
     },
     "publisher": {
       "@type": "Organization",
@@ -70,19 +87,35 @@ export default function BlogPost() {
         "url": "https://www.shophub.pro/logo.png"
       }
     },
-    "description": post.seoDescription
+    "description": metaDescription
   };
 
   return (
     <div className="min-h-screen bg-white dark:bg-[#050505] pt-24 pb-20">
       <Helmet>
         <title>{post.title} | ShopHub Journal</title>
-        <meta name="description" content={post.seoDescription} />
+        <meta name="description" content={metaDescription} />
+        <link rel="canonical" href={canonicalUrl} />
+        {isThinSpotlight ? (
+          <meta name="robots" content="noindex, follow" />
+        ) : (
+          <meta name="robots" content="index, follow, max-image-preview:large" />
+        )}
+        
         {/* Open Graph Tags */}
-        <meta property="og:title" content={post.title} />
-        <meta property="og:description" content={post.seoDescription} />
+        <meta property="og:title" content={`${post.title} | ShopHub Journal`} />
+        <meta property="og:description" content={metaDescription} />
         <meta property="og:image" content={post.image} />
+        <meta property="og:url" content={canonicalUrl} />
         <meta property="og:type" content="article" />
+        <meta property="og:site_name" content="ShopHub" />
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={`${post.title} | ShopHub Journal`} />
+        <meta name="twitter:description" content={metaDescription} />
+        <meta name="twitter:image" content={post.image} />
+        
         {/* Schema Markup */}
         <script type="application/ld+json">
           {JSON.stringify(schemaOrgJSONLD)}
@@ -114,7 +147,7 @@ export default function BlogPost() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-4xl md:text-5xl lg:text-6xl font-black text-primary dark:text-white leading-tight mb-6"
+            className="text-3xl md:text-5xl lg:text-6xl font-black text-primary dark:text-white leading-tight mb-6"
           >
             {post.title}
           </motion.h1>
@@ -126,13 +159,13 @@ export default function BlogPost() {
             className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-500 dark:text-gray-400 font-medium"
           >
             <span className="flex items-center gap-2">
-               <User className="w-4 h-4" /> {post.author}
+               <User className="w-4 h-4 text-cyan-500" /> {post.author || "ShopHub Editorial"}
             </span>
             <span className="flex items-center gap-2">
-               <Calendar className="w-4 h-4" /> {new Date(post.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+               <Calendar className="w-4 h-4 text-cyan-500" /> {post.createdAt ? new Date(post.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'March 2026'}
             </span>
             <span className="flex items-center gap-2">
-               <Clock className="w-4 h-4" /> {post.readTime}
+               <Clock className="w-4 h-4 text-cyan-500" /> {post.readTime || '5 min read'}
             </span>
           </motion.div>
         </header>
@@ -142,7 +175,7 @@ export default function BlogPost() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.3, duration: 0.5 }}
-          className="w-full h-[400px] md:h-[500px] lg:h-[600px] rounded-3xl overflow-hidden mb-12 shadow-2xl"
+          className="w-full h-[320px] md:h-[460px] lg:h-[520px] rounded-3xl overflow-hidden mb-12 shadow-2xl relative"
         >
           <img 
             src={post.image} 
@@ -161,22 +194,36 @@ export default function BlogPost() {
                    Share Post
                 </span>
                 <div className="w-[1px] h-12 bg-black/10 dark:bg-white/10 my-2"></div>
-                <button aria-label="Share on Facebook" className="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#1877F2] transition-colors"><FacebookIcon className="w-4 h-4" /></button>
-                <button aria-label="Share on Twitter" className="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#1DA1F2] transition-colors"><TwitterIcon className="w-4 h-4" /></button>
-                <button aria-label="Share on LinkedIn" className="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#0A66C2] transition-colors"><LinkedinIcon className="w-4 h-4" /></button>
+                <button aria-label="Share on Facebook" onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(canonicalUrl)}`, '_blank')} className="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#1877F2] transition-colors"><FacebookIcon className="w-4 h-4" /></button>
+                <button aria-label="Share on Twitter" onClick={() => window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(canonicalUrl)}&text=${encodeURIComponent(post.title)}`, '_blank')} className="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#1DA1F2] transition-colors"><TwitterIcon className="w-4 h-4" /></button>
+                <button aria-label="Share on LinkedIn" onClick={() => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(canonicalUrl)}`, '_blank')} className="w-10 h-10 rounded-full flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#0A66C2] transition-colors"><LinkedinIcon className="w-4 h-4" /></button>
              </div>
           </div>
 
           {/* Main Content */}
-          <div className="lg:col-span-10 prose prose-lg dark:prose-invert prose-cyan max-w-none">
+          <div className="lg:col-span-11 prose prose-lg dark:prose-invert prose-cyan max-w-none">
             <div dangerouslySetInnerHTML={{ __html: post.content }} />
             
+            {/* Trust Banner inside Article */}
+            <div className="not-prose my-12 p-6 rounded-2xl bg-gray-50 dark:bg-white/5 border border-black/5 dark:border-white/10 flex flex-col sm:flex-row items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-cyan-500/10 text-cyan-500 flex items-center justify-center flex-shrink-0">
+                <ShieldCheck className="w-6 h-6" />
+              </div>
+              <div className="flex-1 text-center sm:text-left">
+                <h4 className="font-bold text-primary dark:text-white mb-1">Shop With Total Confidence on ShopHub.pro</h4>
+                <p className="text-xs text-secondary dark:text-gray-400">Cash on Delivery nationwide, 7-day checking warranty, and dedicated support at care@shophub.pro.</p>
+              </div>
+              <Link to="/products" className="px-5 py-2.5 rounded-xl bg-primary text-white dark:bg-white dark:text-black font-bold text-xs hover:opacity-90 transition-opacity">
+                Explore Store
+              </Link>
+            </div>
+
             {/* Mobile Share */}
-            <div className="lg:hidden mt-12 pt-8 border-t border-black/5 dark:border-white/5 flex items-center justify-between">
+            <div className="lg:hidden mt-8 pt-8 border-t border-black/5 dark:border-white/5 flex items-center justify-between">
                <span className="font-bold text-primary dark:text-white flex items-center gap-2"><Share2 className="w-5 h-5" /> Share this post</span>
                <div className="flex gap-2">
-                  <button aria-label="Share on Facebook" className="w-10 h-10 rounded-full flex items-center justify-center bg-black/5 dark:bg-white/5 text-primary dark:text-white"><FacebookIcon className="w-4 h-4" /></button>
-                  <button aria-label="Share on Twitter" className="w-10 h-10 rounded-full flex items-center justify-center bg-black/5 dark:bg-white/5 text-primary dark:text-white"><TwitterIcon className="w-4 h-4" /></button>
+                  <button aria-label="Share on Facebook" onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(canonicalUrl)}`, '_blank')} className="w-10 h-10 rounded-full flex items-center justify-center bg-black/5 dark:bg-white/5 text-primary dark:text-white"><FacebookIcon className="w-4 h-4" /></button>
+                  <button aria-label="Share on Twitter" onClick={() => window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(canonicalUrl)}&text=${encodeURIComponent(post.title)}`, '_blank')} className="w-10 h-10 rounded-full flex items-center justify-center bg-black/5 dark:bg-white/5 text-primary dark:text-white"><TwitterIcon className="w-4 h-4" /></button>
                </div>
             </div>
           </div>

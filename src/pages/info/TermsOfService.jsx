@@ -1,4 +1,5 @@
 import InfoLayout from './InfoLayout';
+import SEO from '../../components/SEO';
 
 export default function TermsOfService() {
   return (
@@ -6,6 +7,11 @@ export default function TermsOfService() {
       title="Terms of Service" 
       subtitle="The legal framework governing your journey with ShopHub.pro. Please read these carefully."
     >
+      <SEO 
+        title="Terms of Service | ShopHub Pakistan" 
+        description="ShopHub.pro Terms of Service. Review the legal terms, customer agreements, and usage policies for ShopHub e-commerce." 
+        canonical="https://www.shophub.pro/terms-of-service" 
+      />
       <div className="space-y-8 text-sm md:text-base text-secondary dark:text-gray-300">
         <section>
           <p className="leading-relaxed">

@@ -15,6 +15,7 @@ import { store } from "../app/store"; // Import store for direct access
 import SEO from "../components/SEO";
 import GoogleAd from "../components/GoogleAd";
 import { Play, Video, Link2, Share2 } from "lucide-react";
+import NotFound from "./NotFound";
 
 // Helper to check if string is a valid MongoDB ObjectId
 function isObjectId(id) {
@@ -156,9 +157,10 @@ export default function ProductDetails() {
 
   if (!product) {
     return (
-      <div className="p-6 text-center glass rounded-2xl border border-black/5 dark:border-white/10 mt-8 mx-auto max-w-2xl">
-        <div className="text-gray-600 dark:text-gray-500 dark:text-gray-400 text-xl">Product not found</div>
-      </div>
+      <NotFound 
+        title="Product Not Found"
+        message="The product you are looking for does not exist, has been removed, or the link is incorrect."
+      />
     );
   }
   

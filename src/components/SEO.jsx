@@ -14,6 +14,7 @@ export default function SEO({
   availability,
   schema,
   video,
+  noindex = false,
   children 
 }) {
   const siteTitle = "ShopHub - Pakistan's Luxury Shopping & Social Hub";
@@ -21,11 +22,28 @@ export default function SEO({
   const siteUrl = "https://www.shophub.pro";
   const defaultImage = `${siteUrl}/logo.png`;
 
-  const defaultKeywords = "shoes, buy shoes online, shoes online pakistan, mens shoes, womens shoes, sneakers pakistan, luxury shoes, branded shoes, online shopping pakistan, buy online pakistan, luxury fashion pakistan, electronics online store, smartphones pakistan, smart watches, clothing store pakistan, shophub, ShopHub.pro, shophub pakistan, social commerce app, best online store pakistan, fast delivery online shopping";
-  const metaTitle = title ? `${title} | ShopHub` : siteTitle;
+  const defaultKeywords = "ShopHub, ShopHub Pakistan, online shopping Pakistan, electronics, lifestyle, fashion, gadgets";
+  
+  // Format title naturally without repeating brand name
+  let metaTitle = siteTitle;
+  if (title) {
+    if (title.toLowerCase().includes('shophub')) {
+      metaTitle = title;
+    } else {
+      metaTitle = `${title} | ShopHub`;
+    }
+  }
+
   const metaDescription = (description || defaultDescription).substring(0, 160);
-  const metaImage = image ? (image.startsWith('http') ? image : `${siteUrl}${image}`) : defaultImage;
-  const metaUrl = url ? (url.startsWith('http') ? url : `${siteUrl}${url}`) : siteUrl;
+  const metaImage = image ? (image.startsWith('http') ? image : `${siteUrl}${image.startsWith('/') ? image : `/${image}`}`) : defaultImage;
+  
+  // Normalize URL - strip trailing slashes, keep root
+  let cleanUrl = siteUrl;
+  if (url) {
+    const rawUrl = url.startsWith('http') ? url : `${siteUrl}${url.startsWith('/') ? url : `/${url}`}`;
+    cleanUrl = rawUrl === `${siteUrl}/` ? siteUrl : rawUrl.replace(/\/+$/, '');
+  }
+  const metaUrl = cleanUrl;
   const metaKeywords = keywords ? `${keywords}, ${defaultKeywords}` : defaultKeywords;
 
   // Standard Structured Data for all pages
@@ -33,7 +51,7 @@ export default function SEO({
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "ShopHub",
-    "alternateName": ["ShopHub.pro", "Shop Hub", "ShopHub Pakistan", "ShopHub Pro"],
+    "alternateName": ["ShopHub.pro", "Shop Hub", "ShopHub Pakistan"],
     "url": siteUrl,
     "logo": defaultImage,
     "sameAs": [
@@ -43,7 +61,7 @@ export default function SEO({
     ],
     "contactPoint": {
       "@type": "ContactPoint",
-      "telephone": "+92-300-1234567",
+      "email": "care@shophub.pro",
       "contactType": "customer service",
       "areaServed": "PK",
       "availableLanguage": ["English", "Urdu"]
@@ -56,7 +74,7 @@ export default function SEO({
     "url": siteUrl,
     "potentialAction": {
       "@type": "SearchAction",
-      "target": `${siteUrl}/search?q={search_term_string}`,
+      "target": `${siteUrl}/products?search={search_term_string}`,
       "query-input": "required name=search_term_string"
     }
   };
@@ -71,9 +89,13 @@ export default function SEO({
       <meta name="keywords" content={metaKeywords} />
       <link rel="canonical" href={metaUrl} />
       
-      {/* Advanced Indexing */}
-      <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-      <meta name="googlebot" content="index, follow" />
+      {/* Indexing Directives */}
+      {noindex ? (
+        <meta name="robots" content="noindex, follow" />
+      ) : (
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+      )}
+      <meta name="googlebot" content={noindex ? "noindex, follow" : "index, follow"} />
       <meta name="theme-color" content="#030014" />
 
       {/* Facebook Open Graph */}
@@ -138,5 +160,6 @@ SEO.propTypes = {
   availability: PropTypes.string,
   schema: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   video: PropTypes.string,
+  noindex: PropTypes.bool,
   children: PropTypes.node
 };

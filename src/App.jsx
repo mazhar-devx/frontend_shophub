@@ -65,8 +65,11 @@ const ShippingReturns = lazy(() => import("./pages/info/ShippingReturns"));
 const ReturnPolicy = lazy(() => import("./pages/info/ReturnPolicy"));
 const SizeGuide = lazy(() => import("./pages/info/SizeGuide"));
 const ContactUs = lazy(() => import("./pages/info/ContactUs"));
+const PaymentMethods = lazy(() => import("./pages/info/PaymentMethods"));
+const WarrantyPolicy = lazy(() => import("./pages/info/WarrantyPolicy"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 
 // Admin Pages Lazy Load
@@ -221,10 +224,13 @@ function AppContent() {
                   <Route path="terms-of-service" element={<TermsOfService />} />
                   <Route path="help-center" element={<HelpCenter />} />
                   <Route path="shipping-returns" element={<ShippingReturns />} />
+                  <Route path="payment-methods" element={<PaymentMethods />} />
+                  <Route path="warranty" element={<WarrantyPolicy />} />
                   <Route path="size-guide" element={<SizeGuide />} />
                   <Route path="contact-us" element={<ContactUs />} />
                   <Route path="blog" element={<Blog />} />
                   <Route path="blog/:slug" element={<BlogPost />} />
+                  <Route path="*" element={<NotFound />} />
                 </Routes>
               </Suspense>
             </main>

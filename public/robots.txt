@@ -1,4 +1,72 @@
+# ShopHub.pro — Robots.txt
+# Canonical Domain: https://www.shophub.pro
+
 User-agent: *
 Allow: /
+Allow: /assets/
+Allow: /img/
+Allow: /logo.png
+Allow: /products
+Allow: /categories
+Allow: /deals
+Allow: /watch-me
+Allow: /blog
+Allow: /blog/
+Allow: /product/
+Allow: /about-us
+Allow: /contact-us
+Allow: /help-center
+Allow: /privacy-policy
+Allow: /terms-of-service
+Allow: /shipping-returns
+Allow: /return-policy
+Allow: /payment-methods
+Allow: /warranty
+Allow: /size-guide
 
+# Disallow private user states, authentication, and checkout
+Disallow: /admin/
+Disallow: /cart
+Disallow: /checkout
+Disallow: /my-orders
+Disallow: /wishlist
+Disallow: /profile
+Disallow: /settings
+Disallow: /inbox
+Disallow: /login
+Disallow: /register
+Disallow: /verify-otp
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /order-confirmation
+Disallow: /upload-video
+Disallow: /api/
+
+# Disallow internal search results and high-cardinality filter queries
+Disallow: /search
+Disallow: /*?*search=
+Disallow: /*?*q=
+Disallow: /*?*sortBy=
+Disallow: /*?*sort=
+Disallow: /*?*token=
+Disallow: /*?*session=
+
+# Search Engines Specific Rules
+User-agent: Googlebot
+Allow: /
+Allow: /assets/*.js
+Allow: /assets/*.css
+Disallow: /admin/
+Disallow: /cart
+Disallow: /checkout
+Disallow: /api/
+Disallow: /search
+
+User-agent: Googlebot-Image
+Allow: /
+Allow: /img/
+Allow: /assets/
+
+# Sitemap Locations
 Sitemap: https://www.shophub.pro/sitemap.xml
+Host: www.shophub.pro
